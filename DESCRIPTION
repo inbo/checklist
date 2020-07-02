@@ -1,0 +1,22 @@
+Type: Package
+Package: checklist
+Title: A Thorough and Strict Set of Checks for R Packages
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Thierry",
+             family = "Onkelinx",
+             role = c("aut", "cre"),
+             email = "thierry.onkelinx@inbo.be",
+             comment = c(ORCID = "0000-0001-8804-4216")),
+      person(given = "Research Institute for Nature and Forest",
+             role = c("cph", "fnd"),
+             email = "info@inbo.be"))
+Description: An opinated set of rules for R packages and code.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Imports:
+  assertthat,
+  rcmdcheck
