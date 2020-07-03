@@ -2,8 +2,10 @@
 
 export(check_package)
 export(checklist_template)
+export(read_checklist)
 importFrom(assertthat,assert_that)
 importFrom(assertthat,has_name)
 importFrom(assertthat,is.string)
 importFrom(rcmdcheck,rcmdcheck)
+importFrom(yaml,read_yaml)
 importFrom(yaml,write_yaml)
