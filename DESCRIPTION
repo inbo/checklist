@@ -19,4 +19,5 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
 Imports:
   assertthat,
-  rcmdcheck
+  rcmdcheck,
+  yaml
