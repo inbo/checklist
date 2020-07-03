@@ -19,7 +19,7 @@ checklist_template <- function(output, path = ".") {
     description = "Configuration file for checklist::check_pkg()",
     allowed = list(
       warnings = lapply(output$warnings, key_value),
-      checks = lapply(output$notes, key_value)
+      notes = lapply(output$notes, key_value)
     )
   ) -> template
   write_yaml(template, file.path(path, "checklist_template.yml"))

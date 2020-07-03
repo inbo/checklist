@@ -4,11 +4,14 @@
 \alias{check_package}
 \title{A standardised test for R packages}
 \usage{
-check_package(path = ".")
+check_package(path = ".", fail = TRUE)
 }
 \arguments{
 \item{path}{The path of the package.
 Defaults to \code{"."}}
+
+\item{fail}{Should the function return an error in case of a problem?
+Defaults to \code{TRUE}.}
 }
 \description{
 A standardised test for R packages
