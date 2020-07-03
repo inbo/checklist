@@ -6,6 +6,7 @@
 #' Defaults to `TRUE`.
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom rcmdcheck rcmdcheck
+#' @importFrom utils file_test
 #' @export
 check_package <- function(path = ".", fail = TRUE) {
   assert_that(is.string(path))

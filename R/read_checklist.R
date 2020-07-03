@@ -3,6 +3,7 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
+#' @importFrom utils file_test
 #' @importFrom yaml read_yaml
 read_checklist <- function(path = ".") {
   assert_that(is.string(path))

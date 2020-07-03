@@ -3,6 +3,7 @@
 #' @param output The output of `check_package()`.
 #' @inheritParams check_package
 #' @importFrom assertthat assert_that has_name
+#' @importFrom utils file_test
 #' @importFrom yaml write_yaml
 #' @export
 checklist_template <- function(output, path = ".") {
@@ -11,6 +12,11 @@ checklist_template <- function(output, path = ".") {
   assert_that(is.character(output$warnings))
   assert_that(has_name(output, "notes"))
   assert_that(is.character(output$notes))
+  assert_that(is.string(path))
+  assert_that(
+    file_test("-d", path),
+    msg = "`path` is not a directory."
+  )
 
   key_value <- function(x) {
     list(motivation = "", value = x)
