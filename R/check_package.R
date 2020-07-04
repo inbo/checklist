@@ -19,7 +19,7 @@ check_package <- function(path = ".", fail = TRUE) {
   checklist <- read_checklist(path = path)
   check_output <- rcmdcheck(
     path = path,
-    args = c("--timings", "--as-cran"),
+    args = c("--timings", "--as-cran", "--no-manual"),
     error_on = "never"
   )
 
