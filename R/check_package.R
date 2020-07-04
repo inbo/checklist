@@ -5,10 +5,15 @@
 #' @param fail Should the function return an error in case of a problem?
 #' Defaults to `TRUE`.
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom lintr lint_package
 #' @importFrom rcmdcheck rcmdcheck
 #' @importFrom utils file_test
 #' @export
 check_package <- function(path = ".", fail = TRUE) {
+  old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
+  options(lintr.rstudio_source_markers = FALSE)
+  on.exit(options(lintr.rstudio_source_markers = old_lint_option))
+
   assert_that(is.string(path))
   assert_that(
     file_test("-d", path),
@@ -16,6 +21,7 @@ check_package <- function(path = ".", fail = TRUE) {
   )
   assert_that(is.flag(fail))
   assert_that(noNA(fail))
+
   checklist <- read_checklist(path = path)
   check_output <- rcmdcheck(
     path = path,
@@ -30,25 +36,44 @@ check_package <- function(path = ".", fail = TRUE) {
 
   warning_ok <- vapply(checklist$allowed$warnings, `[[`, character(1), "value")
   problem <- !check_output$warnings %in% warning_ok
-  problem_summary$`new warnings` <- check_output$warnings[problem]
+  problem_summary$new_warnings <- check_output$warnings[problem]
   problem_summary$count <- problem_summary$count + sum(problem)
   problem <- !warning_ok %in% check_output$warnings
-  problem_summary$`missing warnings` <- warning_ok[problem]
+  problem_summary$`missing_warnings` <- warning_ok[problem]
   problem_summary$count <- problem_summary$count + sum(problem)
 
   notes_ok <- vapply(checklist$allowed$notes, `[[`, character(1), "value")
   problem <- !check_output$notes %in% notes_ok
-  problem_summary$`new notes` <- check_output$notes[problem]
+  problem_summary$new_notes <- check_output$notes[problem]
   problem_summary$count <- problem_summary$count + sum(problem)
   problem <- !notes_ok %in% check_output$notes
-  problem_summary$`missing notes` <- notes_ok[problem]
+  problem_summary$missing_notes <- notes_ok[problem]
   problem_summary$count <- problem_summary$count + sum(problem)
+
+  cat("
+--------------------------------------------------------------------------------
+
+Checking code style\n")
+  lint_output <- lint_package(path = ".")
+  cat("\n")
+  if (length(lint_output)) {
+    print(lint_output)
+  } else {
+    cat("no code style issues\n")
+  }
+  problem_summary$count <- problem_summary$count + length(lint_output)
+  lint_m <- sort(table(vapply(lint_output, `[[`, character(1), "message")))
+  problem_summary$linters <- sprintf("%2i files with %s", lint_m, names(lint_m))
+
+  names(problem_summary) <- gsub("_", " ", names(problem_summary))
 
   if (problem_summary$count > 0) {
     cat("
 ################################################################################
 
-Summary of problems:", problem_summary$count, "problems found
+Summary of problems:", problem_summary$count, "problem",
+    ifelse(problem_summary$count > 1, "s", ""),
+    " found
 
 ################################################################################
 ")
