@@ -6,7 +6,6 @@
 #' Defaults to `TRUE`.
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom lintr lint_package
-#' @importFrom rcmdcheck rcmdcheck
 #' @importFrom utils file_test
 #' @export
 check_package <- function(path = ".", fail = TRUE) {
@@ -22,33 +21,9 @@ check_package <- function(path = ".", fail = TRUE) {
   assert_that(is.flag(fail))
   assert_that(noNA(fail))
 
-  checklist <- read_checklist(path = path)
-  check_output <- rcmdcheck(
-    path = path,
-    args = c("--timings", "--as-cran", "--no-manual"),
-    error_on = "never"
-  )
-
-  problem_summary <- list(
-    count = length(check_output$errors),
-    errors = check_output$errors
-  )
-
-  warning_ok <- vapply(checklist$allowed$warnings, `[[`, character(1), "value")
-  problem <- !check_output$warnings %in% warning_ok
-  problem_summary$new_warnings <- check_output$warnings[problem]
-  problem_summary$count <- problem_summary$count + sum(problem)
-  problem <- !warning_ok %in% check_output$warnings
-  problem_summary$`missing_warnings` <- warning_ok[problem]
-  problem_summary$count <- problem_summary$count + sum(problem)
-
-  notes_ok <- vapply(checklist$allowed$notes, `[[`, character(1), "value")
-  problem <- !check_output$notes %in% notes_ok
-  problem_summary$new_notes <- check_output$notes[problem]
-  problem_summary$count <- problem_summary$count + sum(problem)
-  problem <- !notes_ok %in% check_output$notes
-  problem_summary$missing_notes <- notes_ok[problem]
-  problem_summary$count <- problem_summary$count + sum(problem)
+  check_output <- check_cran(path = path)
+  problem_summary <- check_output$problem_summary
+  check_output <- check_output$check_output
 
   cat("
 --------------------------------------------------------------------------------
