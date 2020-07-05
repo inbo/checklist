@@ -4,14 +4,14 @@
 \alias{read_checklist}
 \title{Read the check list file from a package}
 \usage{
-read_checklist(path = ".")
+read_checklist(x = ".")
 }
 \arguments{
-\item{path}{The path of the package.
-Defaults to \code{"."}}
+\item{x}{Either a \code{Checklist} object or a path to the package.
+Defaults to \code{.}.}
 }
 \value{
-a named list with check list information
+A \code{Checklist} object.
 }
 \description{
 Read the check list file from a package

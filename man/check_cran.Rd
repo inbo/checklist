@@ -4,11 +4,14 @@
 \alias{check_cran}
 \title{Run the package checks required by CRAN}
 \usage{
-check_cran(path = ".")
+check_cran(x = ".")
 }
 \arguments{
-\item{path}{The path of the package.
-Defaults to \code{"."}}
+\item{x}{Either a \code{Checklist} object or a path to the package.
+Defaults to \code{.}.}
+}
+\value{
+A \code{Checklist} object.
 }
 \description{
 Run the package checks required by CRAN

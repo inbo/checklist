@@ -4,13 +4,11 @@
 \alias{checklist_template}
 \title{Create a template with acceptable problems in the package}
 \usage{
-checklist_template(output, path = ".")
+checklist_template(x = ".")
 }
 \arguments{
-\item{output}{The output of \code{check_package()}.}
-
-\item{path}{The path of the package.
-Defaults to \code{"."}}
+\item{x}{Either a \code{Checklist} object or a path to the package.
+Defaults to \code{.}.}
 }
 \description{
 Create a template with acceptable problems in the package

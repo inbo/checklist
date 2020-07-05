@@ -1,36 +1,38 @@
 #' Read the check list file from a package
-#' @return a named list with check list information
-#' @inheritParams check_package
+#' @param x Either a `Checklist` object or a path to the package.
+#' Defaults to `.`.
+#' @return A `Checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
 #' @importFrom utils file_test
 #' @importFrom yaml read_yaml
-read_checklist <- function(path = ".") {
-  assert_that(is.string(path))
-  assert_that(
-    file_test("-d", path),
-    msg = "`path` is not a directory."
-  )
-  if (!file_test("-f", file.path(path, "checklist.yml"))) {
-    return(
-      list(
-        description = "Configuration file for checklist::check_pkg()",
-        allowed = list(warnings = list(), notes = list())
-      )
-    )
+read_checklist <- function(x = ".") {
+  if (!inherits(x, "Checklist")) {
+    assert_that(is.string(x))
+    x <- checklist$new(x = x)
   }
-  checklist <- read_yaml(file.path(path, "checklist.yml"))
-  assert_that(has_name(checklist, "description"))
-  assert_that(has_name(checklist, "allowed"))
-  assert_that(has_name(checklist$allowed, "warnings"))
-  assert_that(has_name(checklist$allowed, "notes"))
-  assert_that(is.list(checklist$allowed$warnings))
-  assert_that(is.list(checklist$allowed$notes))
+
+  checklist_file <- file.path(x$get_path, "checklist.yml")
+  if (!file_test("-f", checklist_file)) {
+    # no check list file found
+    x <- x$allowed(warnings = character(0), notes = character(0))
+    return(x)
+  }
+
+  # read existing check list file
+  allowed <- read_yaml(checklist_file)
+  assert_that(has_name(allowed, "description"))
+  assert_that(has_name(allowed, "allowed"))
+  allowed <- allowed$allowed
+  assert_that(has_name(allowed, "warnings"))
+  assert_that(has_name(allowed, "notes"))
+  assert_that(is.list(allowed$warnings))
+  assert_that(is.list(allowed$notes))
   motivation <- vapply(
-    checklist$allowed$warnings, `[[`, character(1), "motivation"
+    allowed$warnings, `[[`, character(1), "motivation"
   )
   assert_that(
-    length(checklist$allowed$warnings) == length(motivation),
+    length(allowed$warnings) == length(motivation),
     msg = "Each warning in the checklist requires a motivation"
   )
   assert_that(
@@ -38,10 +40,10 @@ read_checklist <- function(path = ".") {
     msg = "Please add a motivation for each warning the checklist"
   )
   motivation <- vapply(
-    checklist$allowed$notes, `[[`, character(1), "motivation"
+    allowed$notes, `[[`, character(1), "motivation"
   )
   assert_that(
-    length(checklist$allowed$notes) == length(motivation),
+    length(allowed$notes) == length(motivation),
     msg = "Each note in the checklist requires a motivation"
   )
   assert_that(
@@ -49,18 +51,21 @@ read_checklist <- function(path = ".") {
     msg = "Please add a motivation for each note the checklist"
   )
   value <- vapply(
-    checklist$allowed$warnings, `[[`, character(1), "value"
+    allowed$warnings, `[[`, character(1), "value"
   )
   assert_that(
-    length(checklist$allowed$warnings) == length(value),
+    length(allowed$warnings) == length(value),
     msg = "Each warning in the checklist requires a value"
   )
+  allowed$warnings <- value
   value <- vapply(
-    checklist$allowed$notes, `[[`, character(1), "value"
+    allowed$notes, `[[`, character(1), "value"
   )
   assert_that(
-    length(checklist$allowed$notes) == length(value),
+    length(allowed$notes) == length(value),
     msg = "Each note in the checklist requires a value"
   )
-  return(checklist)
+  allowed$notes <- value
+  x <- x$allowed(warnings = allowed$warnings, notes = allowed$notes)
+  return(x)
 }
