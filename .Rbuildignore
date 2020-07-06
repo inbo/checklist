@@ -3,3 +3,4 @@
 ^checklist.yml$
 ^Dockerfile$
 ^.dockerignore$
+^entrypoint.sh$
