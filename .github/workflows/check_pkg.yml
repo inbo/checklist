@@ -1,0 +1,14 @@
+on:
+  push:
+    branches-ignore:
+      - master
+      - ghpages
+
+name: render
+
+jobs:
+  render-indicator:
+    runs-on: ubuntu-latest
+    name: "check package"
+    steps:
+      - uses: inbo/actions/check_pkg@master

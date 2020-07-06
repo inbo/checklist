@@ -4,3 +4,4 @@
 ^Dockerfile$
 ^.dockerignore$
 ^entrypoint.sh$
+^.github$
