@@ -4,14 +4,15 @@
 \alias{check_package}
 \title{A standardised test for R packages}
 \usage{
-check_package(x = ".", fail = TRUE)
+check_package(x = ".", fail = !interactive())
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the package.
 Defaults to \code{.}.}
 
 \item{fail}{Should the function return an error in case of a problem?
-Defaults to \code{TRUE}.}
+Defaults to \code{TRUE} on non-interactive session and \code{FALSE} on an interactive
+session.}
 }
 \description{
 A standardised test for R packages
