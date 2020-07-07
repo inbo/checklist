@@ -57,6 +57,7 @@ read_checklist <- function(x = ".") {
     length(allowed$warnings) == length(value),
     msg = "Each warning in the checklist requires a value"
   )
+  attr(value, "motivation") <- motivation
   allowed$warnings <- value
   value <- vapply(
     allowed$notes, `[[`, character(1), "value"
@@ -65,6 +66,7 @@ read_checklist <- function(x = ".") {
     length(allowed$notes) == length(value),
     msg = "Each note in the checklist requires a value"
   )
+  attr(value, "motivation") <- motivation
   allowed$notes <- value
   x <- x$allowed(warnings = allowed$warnings, notes = allowed$notes)
   return(x)

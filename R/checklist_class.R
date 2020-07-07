@@ -129,10 +129,19 @@ checklist <- R6Class(
       if (all(ok)) {
         return(character(0))
       }
+      motivation <- ifelse(
+        is.null(attr(input, "motivation")),
+        ifelse(
+          is.null(attr(output, "motivation")),
+          "",
+          paste("\nmotivation: ", attr(output, "motivation"))
+        ),
+        paste("\nmotivation: ", attr(input, "motivation"))
+      )
       sprintf(
         "%i %s %s%s\n%s",
         sum(!ok), type, variable, ifelse(sum(!ok) > 1, "s", ""),
-        paste(private$rules("-"), input[!ok], collapse = "")
+        paste(private$rules("-"), input[!ok], motivation[!ok], collapse = "")
       )
     },
     summarise_linter = function() {
