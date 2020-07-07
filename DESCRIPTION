@@ -23,3 +23,5 @@ Imports:
   rcmdcheck,
   R6,
   yaml
+Suggests: 
+  testthat
