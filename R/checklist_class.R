@@ -12,6 +12,39 @@ checklist <- R6Class(
       private$checked <- sort(unique(c(private$checked, "lintr")))
       invisible(self)
     },
+    #' @description Add motivation for allowed issues.
+    #' @param which Which kind of issue to add.
+    add_motivation = function(which = c("warnings", "notes")) {
+      which <- match.arg(which)
+      allowed <- get(paste0("allowed_", which), envir = private)
+      value <- private$extract(allowed)
+      motivation <- private$extract(allowed, "motivation")
+      current <- get(which, envir = private)
+      keep <- current %in% value
+      new_motivation <- vapply(
+        seq_along(current)[!keep],
+        function(i) {
+          message(current[i])
+          ifelse(
+            yesno("Motivated why to allow this ", which, "?"),
+            readline(prompt = "Motivation: "),
+            ""
+          )
+        },
+        character(1)
+      )
+      extra <- new_motivation != ""
+      new_motivation <- c(motivation, new_motivation[extra])
+      new_allowed <- c(value, current[!keep][extra])
+      new_allowed <- lapply(
+        order(new_allowed),
+        function(i) {
+          list(motivation = new_motivation[i], value = new_allowed[i])
+        }
+      )
+      assign(paste0("allowed_", which), new_allowed, envir = private)
+      invisible(self)
+    },
     #' @description Add results from `rcmdcheck::rcmdcheck`
     #' @param errors A vector with errors.
     #' @param warnings A vector with warning messages.
@@ -28,10 +61,26 @@ checklist <- R6Class(
     #' Defaults to `character(0)`.
     #' @param notes A vector with allowed notes.
     #' Defaults to `character(0)`
-    allowed = function(warnings = character(0), notes = character(0)) {
+    allowed = function(warnings = list(0), notes = list(0)) {
       private$allowed_warnings <- warnings
       private$allowed_notes <- notes
       private$checked <- sort(unique(c(private$checked, "checklist")))
+      invisible(self)
+    },
+    #' @description Confirm the current motivation for allowed issues.
+    #' @param which Which kind of issue to confirm.
+    confirm_motivation = function(which = c("warnings", "notes")) {
+      which <- match.arg(which)
+      current <- get(paste0("allowed_", which), envir = private)
+      selection <- vapply(
+        seq_along(current),
+        function(i) {
+          message(current[[i]]$value, "\nMotivation: ", current[[i]]$motivation)
+          yesno("Keep this motivation?")
+        },
+        logical(1)
+      )
+      assign(paste0("allowed_", which), current[selection], envir = private)
       invisible(self)
     },
     #' @description Initialize a new Checklist object.
@@ -49,27 +98,45 @@ checklist <- R6Class(
           private$rules(), private$path
         ),
         private$format_output(
-          input = private$warnings, output = private$allowed_warnings,
+          input = private$warnings,
+          output = private$extract(private$allowed_warnings),
+          motivation = private$extract(
+            private$allowed_warnings, "motivation", "\nmotivation: "
+          ),
           type = "allowed", variable = "warning", negate = TRUE
         ),
         private$format_output(
-          input = private$warnings, output = private$allowed_warnings,
+          input = private$warnings,
+          output = private$extract(private$allowed_warnings),
           type = "new", variable = "warning"
         ),
         private$format_output(
-          input = private$allowed_warnings, output = private$warnings,
+          input = private$extract(private$allowed_warnings),
+          output = private$warnings,
+          motivation = private$extract(
+            private$allowed_warnings, "motivation", "\nmotivation: "
+          ),
           type = "missing", variable = "warning"
         ),
         private$format_output(
-          input = private$notes, output = private$allowed_notes,
+          input = private$notes,
+          output = private$extract(private$allowed_notes),
+          motivation = private$extract(
+            private$allowed_notes, "motivation", "\nmotivation: "
+          ),
           type = "allowed", variable = "note", negate = TRUE
         ),
         private$format_output(
-          input = private$notes, output = private$allowed_notes,
+          input = private$notes,
+          output = private$extract(private$allowed_notes),
           type = "new", variable = "note"
         ),
         private$format_output(
-          input = private$allowed_notes, output = private$notes,
+          input = private$extract(private$allowed_notes),
+          output = private$notes,
+          motivation = private$extract(
+            private$allowed_notes, "motivation", "\nmotivation: "
+          ),
           type = "missing", variable = "note"
         ),
         private$summarise_linter()
@@ -94,19 +161,16 @@ checklist <- R6Class(
       any(!required_checks %in% private$checked) ||
         length(private$errors) ||
         length(private$linter) ||
-        any(!private$warnings %in% private$allowed_warnings) ||
-        any(!private$notes %in% private$allowed_notes)
+        any(!private$warnings %in% private$extract(private$allowed_warnings)) ||
+        any(!private$notes %in% private$extract(private$allowed_notes))
     },
     #' @field template A list for a check list template.
     template = function() {
-      key_value <- function(x) {
-        list(motivation = "", value = x)
-      }
       list(
         description = "Configuration file for checklist::check_pkg()",
         allowed = list(
-          warnings = lapply(private$warnings, key_value),
-          notes = lapply(private$notes, key_value)
+          warnings = private$allowed_warnings,
+          notes = private$allowed_notes
         )
       )
     }
@@ -115,29 +179,26 @@ checklist <- R6Class(
     path = character(0),
     checked = character(0),
     errors = character(0),
-    allowed_warnings = character(0),
+    allowed_warnings = list(0),
     warnings = character(0),
-    allowed_notes = character(0),
+    allowed_notes = list(0),
     notes = character(0),
     linter = list(),
+    extract = function(x, name = "value", prefix = rep("", length(x))) {
+      paste0(prefix, vapply(x, `[[`, character(1), name))
+    },
     rules = function(x = "#") {
       nl <- switch(x, "#" = "\n\n", "\n")
       paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")
     },
-    format_output = function(input, output, type, variable, negate = FALSE) {
+    format_output = function(
+      input, output, motivation = rep("", length = length(input)), type,
+      variable, negate = FALSE
+    ) {
       ok <- xor(input %in% output, negate)
       if (all(ok)) {
         return(character(0))
       }
-      motivation <- ifelse(
-        is.null(attr(input, "motivation")),
-        ifelse(
-          is.null(attr(output, "motivation")),
-          "",
-          paste("\nmotivation: ", attr(output, "motivation"))
-        ),
-        paste("\nmotivation: ", attr(input, "motivation"))
-      )
       sprintf(
         "%i %s %s%s\n%s",
         sum(!ok), type, variable, ifelse(sum(!ok) > 1, "s", ""),

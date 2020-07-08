@@ -16,11 +16,11 @@ check_package <- function(x = ".", fail = !interactive()) {
   print(x)
   if (!x$fail) {
     cat("\nNo problems found. Good job!\n\n")
-    return(x)
+    return(invisible(x))
   }
   if (fail) {
     stop("Checking the package revealed some problems.")
   }
   cat("\nChecking the package revealed some problems.\n\n")
-  return(x)
+  return(invisible(x))
 }

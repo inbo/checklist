@@ -23,8 +23,10 @@ A class which contains all checklist results.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-add_linter}{\code{checklist$add_linter()}}
+\item \href{#method-add_motivation}{\code{checklist$add_motivation()}}
 \item \href{#method-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
 \item \href{#method-allowed}{\code{checklist$allowed()}}
+\item \href{#method-confirm_motivation}{\code{checklist$confirm_motivation()}}
 \item \href{#method-new}{\code{checklist$new()}}
 \item \href{#method-print}{\code{checklist$print()}}
 \item \href{#method-clone}{\code{checklist$clone()}}
@@ -43,6 +45,23 @@ Add results from \code{lintr::lint_package()}
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{linter}}{A vector with linter errors.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-add_motivation}{}}}
+\subsection{Method \code{add_motivation()}}{
+Add motivation for allowed issues.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_motivation(which = c("warnings", "notes"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{which}}{Which kind of issue to add.}
 }
 \if{html}{\out{</div>}}
 }
@@ -74,7 +93,7 @@ Add results from \code{rcmdcheck::rcmdcheck}
 \subsection{Method \code{allowed()}}{
 Add allowed warnings and notes
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$allowed(warnings = character(0), notes = character(0))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$allowed(warnings = list(0), notes = list(0))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -85,6 +104,23 @@ Defaults to \code{character(0)}.}
 
 \item{\code{notes}}{A vector with allowed notes.
 Defaults to \code{character(0)}}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-confirm_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-confirm_motivation}{}}}
+\subsection{Method \code{confirm_motivation()}}{
+Confirm the current motivation for allowed issues.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$confirm_motivation(which = c("warnings", "notes"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{which}}{Which kind of issue to confirm.}
 }
 \if{html}{\out{</div>}}
 }
