@@ -22,6 +22,7 @@ A class which contains all checklist results.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-add_error}{\code{checklist$add_error()}}
 \item \href{#method-add_linter}{\code{checklist$add_linter()}}
 \item \href{#method-add_motivation}{\code{checklist$add_motivation()}}
 \item \href{#method-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
@@ -30,6 +31,25 @@ A class which contains all checklist results.
 \item \href{#method-new}{\code{checklist$new()}}
 \item \href{#method-print}{\code{checklist$print()}}
 \item \href{#method-clone}{\code{checklist$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_error"></a>}}
+\if{latex}{\out{\hypertarget{method-add_error}{}}}
+\subsection{Method \code{add_error()}}{
+Add errors
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_error(errors, item)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{errors}}{A vector with errors.}
+
+\item{\code{item}}{The item on which to store the errors.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

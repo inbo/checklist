@@ -5,6 +5,14 @@
 checklist <- R6Class(
   "Checklist",
   public = list(
+    #' @description Add errors
+    #' @param errors A vector with errors.
+    #' @param item The item on which to store the errors.
+    add_error = function(errors, item) {
+      private$errors[[item]] <- errors
+      private$checked <- sort(unique(c(private$checked, item)))
+      invisible(self)
+    },
     #' @description Add results from `lintr::lint_package()`
     #' @param linter A vector with linter errors.
     add_linter = function(linter) {
@@ -50,10 +58,10 @@ checklist <- R6Class(
     #' @param warnings A vector with warning messages.
     #' @param notes A vector with notes.
     add_rcmdcheck = function(errors, warnings, notes) {
-      private$errors <- errors
+      self$add_error(errors, "R CMD check")
       private$warnings <- warnings
       private$notes <- notes
-      private$checked <- sort(unique(c(private$checked, "rcmd")))
+      private$checked <- sort(unique(c(private$checked, "R CMD check")))
       invisible(self)
     },
     #' @description Add allowed warnings and notes
@@ -139,7 +147,8 @@ checklist <- R6Class(
           ),
           type = "missing", variable = "note"
         ),
-        private$summarise_linter()
+        private$summarise_linter(),
+        private$format_error()
       )
       cat(output, sep = private$rules())
       cat(private$rules())
@@ -156,10 +165,11 @@ checklist <- R6Class(
     },
     #' @field fail A logical indicating if all checks passed.
     fail = function() {
-      required_checks <- c("checklist", "lintr", "rcmd")
+      required_checks <- c("checklist", "DESCRIPTION", "lintr", "R CMD check")
       stopifnot(all(private$checked %in% required_checks))
+      errors <- vapply(private$errors, length, integer(1))
       any(!required_checks %in% private$checked) ||
-        length(private$errors) ||
+        any(errors > 0) ||
         length(private$linter) ||
         any(!private$warnings %in% private$extract(private$allowed_warnings)) ||
         any(!private$notes %in% private$extract(private$allowed_notes))
@@ -178,10 +188,10 @@ checklist <- R6Class(
   private = list(
     path = character(0),
     checked = character(0),
-    errors = character(0),
-    allowed_warnings = list(0),
+    errors = list(),
+    allowed_warnings = list(),
     warnings = character(0),
-    allowed_notes = list(0),
+    allowed_notes = list(),
     notes = character(0),
     linter = list(),
     extract = function(x, name = "value", prefix = rep("", length(x))) {
@@ -217,6 +227,21 @@ checklist <- R6Class(
         length(private$linter), ifelse(length(private$linter) > 1, "s", ""),
         private$rules("-"),
         paste(messages, collapse = "\n")
+      )
+    },
+    format_error = function() {
+      error_length <- vapply(private$errors, length, integer(1))
+      vapply(
+        names(private$errors)[error_length > 0],
+        function(x) {
+          sprintf(
+            "%s: %i error%s%s",
+            x, length(private$errors[[x]]),
+            ifelse(length(private$errors[[x]]) > 1, "s", ""),
+            paste(private$rules("-"), private$errors[[x]], collapse = "")
+          )
+        },
+        character(1)
       )
     }
   )
