@@ -13,16 +13,17 @@ Authors@R:
              email = "info@inbo.be"))
 Description: An opinated set of rules for R packages and code.
 License: GPL-3
+Imports:
+    assertthat,
+    git2r,
+    lintr,
+    R6,
+    rcmdcheck,
+    usethis,
+    yaml
+Suggests: 
+    testthat
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Imports:
-  assertthat,
-  git2r,
-  lintr,
-  rcmdcheck,
-  R6,
-  yaml
-Suggests: 
-  testthat

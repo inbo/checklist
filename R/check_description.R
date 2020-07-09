@@ -2,8 +2,9 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat has_name
 #' @importFrom git2r branches branch_target commits repository repository_head
-#' sha
+#' reset sha
 #' @importFrom stats na.omit
+#' @importFrom usethis use_tidy_description
 #' @importFrom utils head tail
 #' @export
 check_description <- function(x = ".") {
@@ -36,6 +37,15 @@ check_description <- function(x = ".") {
       "git", args = c("diff", "origin/master", "--", "DESCRIPTION"),
       stdout = TRUE
     )
+  }
+  clean <- is_workdir_clean(repo)
+  use_tidy_description()
+  if (clean && !is_workdir_clean(repo)) {
+    desc_error <- c(
+      desc_error,
+      "DESCRIPTION not tidy. use `usethis::use_tidy_description()`"
+    )
+    reset(repo)
   }
   old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
   old_version <- gsub("-Version: ", "", old_version)

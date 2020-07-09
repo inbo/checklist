@@ -21,3 +21,14 @@ yesno <- function(...) {
 
   menu(qs[rand]) == which(rand == 1)
 }
+
+#' Check if the current workdir of a repo is clean
+#' @param repo Either a `git2r::repository()` or path to the repository.
+#' @return `TRUE` when there are no staged, unstaged or untracked files.
+#' Otherwise `FALSE`
+#' @export
+#' @importFrom git2r status
+is_workdir_clean <- function(repo) {
+  current_status <- status(repo)
+  all(vapply(current_status, length, integer(1)) == 0)
+}
