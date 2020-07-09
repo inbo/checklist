@@ -16,6 +16,9 @@ check_package <- function(x = ".", fail = !interactive()) {
   cat("Checking description\n")
   x <- check_description(x)
 
+  cat("Checking documentation\n")
+  x <- check_documentation(x)
+
   print(x)
   if (!x$fail) {
     cat("\nNo problems found. Good job!\n\n")

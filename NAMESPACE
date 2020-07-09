@@ -2,6 +2,7 @@
 
 export(check_cran)
 export(check_description)
+export(check_documentation)
 export(check_lintr)
 export(check_package)
 export(checklist)

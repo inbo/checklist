@@ -165,7 +165,9 @@ checklist <- R6Class(
     },
     #' @field fail A logical indicating if all checks passed.
     fail = function() {
-      required_checks <- c("checklist", "DESCRIPTION", "lintr", "R CMD check")
+      required_checks <- c(
+        "checklist", "DESCRIPTION", "lintr", "R CMD check", "documentation"
+      )
       stopifnot(all(private$checked %in% required_checks))
       errors <- vapply(private$errors, length, integer(1))
       any(!required_checks %in% private$checked) ||
