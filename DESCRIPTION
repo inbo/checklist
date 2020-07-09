@@ -15,10 +15,12 @@ Description: An opinated set of rules for R packages and code.
 License: GPL-3
 Imports:
     assertthat,
+    devtools,
     git2r,
     lintr,
     R6,
     rcmdcheck,
+    rmarkdown,
     usethis,
     yaml
 Suggests: 

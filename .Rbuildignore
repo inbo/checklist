@@ -5,3 +5,4 @@
 ^.dockerignore$
 ^entrypoint.sh$
 ^.github$
+^README\.Rmd$
