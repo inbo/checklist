@@ -46,15 +46,108 @@ check_documentation <- function(x = ".") {
     }
   }
 
-  doc_error <- c(
-    doc_error,
-    "Don't use NEWS.Rmd"[file_test("-f", file.path(x$get_path, "NEWS.Rmd"))]
-  )
-
-  md_files <- file.path(x$get_path, c("NEWS.md", "README.md"))
+  md_files <- file.path(x$get_path, "README.md")
   ok <- file_test("-f", md_files)
   doc_error <- c(doc_error, sprintf("Missing %s", basename(md_files[!ok])))
 
+  doc_error <- c(doc_error, check_news(x))
+
   x$add_error(doc_error, "documentation")
   return(x)
+}
+
+check_news <- function(x) {
+  doc_error <- "Don't use NEWS.Rmd"[
+    file_test("-f", file.path(x$get_path, "NEWS.Rmd"))
+  ]
+  md_file <- file.path(x$get_path, "NEWS.md")
+  if (!file_test("-f", md_file)) {
+    return(c(doc_error, "Missing NEWS.md"))
+  }
+
+  description <- read.dcf(file.path(x$get_path, "DESCRIPTION"))
+  news_file <- readLines(md_file)
+  version_location <- grep(paste0("#.*", description[, "Package"]), news_file)
+  doc_error <- c(
+    doc_error,
+    "No reference to a package version in NEWS.md.
+Use `# name version` format"[
+      length(version_location) == 0
+    ]
+  )
+  ok <- grepl(
+    paste("#", description[, "Package"], "[0-9]+\\.[0-9]+(\\.[0-9])+"),
+    news_file[version_location]
+  )
+  doc_error <- c(
+    doc_error,
+    sprintf(
+      "Package version in NEWS.md in incorrect format.
+  \"%s\"
+  Use `# name version` format",
+      news_file[version_location[!ok]]
+    ),
+    "NEWS.md does not contain the current package version"[
+      !any(grepl(description[, "Version"], news_file[version_location]))
+    ]
+  )
+
+  news_file <- apply(
+    cbind(
+      version_location + 1,
+      c(tail(version_location - 1, -1), length(news_file))
+    ),
+    1,
+    function(i) {
+      news_file[i[1]:i[2]]
+    }
+  )
+
+  blank_lines <- vapply(
+    news_file,
+    function(i) {
+      blank <- which(i == "")
+      c(
+        start = blank[1] == 1,
+        mid = any(1 < blank & blank < length(i)),
+        end = tail(blank, 1) == length(i)
+      )
+    },
+    logical(3)
+  )
+  blank_lines["end", ncol(blank_lines)] <- TRUE
+
+  news_file <- lapply(
+    news_file,
+    function(i) {
+      i[i != ""]
+    }
+  )
+  news_format <- vapply(
+    news_file,
+    function(i) {
+      item <- grepl(i, pattern = "^\\* \\S")
+      extra_line <- grepl(i, pattern = "^  \\S")
+      any(nchar(i) > 80) || head(extra_line, 1) || !all(item | extra_line)
+    },
+    logical(1)
+  )
+
+  doc_error <- c(
+    doc_error,
+    "NEWS.md must contain a blank line before and after each version."[
+      any(!blank_lines[c("start", "end"), ])
+    ],
+    "NEWS.md must not contain blank lines between items."[
+      any(blank_lines["mid", ])
+    ],
+    "NEWS.md formating issues. Required format
+- Item starts with `* `.
+- No lines longer than 80 characters.
+- Multiline items start with `  `.
+- No blank lines between items.
+    "[any(news_format)]
+  )
+
+  return(doc_error)
 }
