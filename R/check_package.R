@@ -13,6 +13,9 @@ check_package <- function(x = ".", fail = !interactive()) {
   cat("Checking code style\n")
   x <- check_lintr(x)
 
+  cat("Checking filename conventions\n")
+  x <- check_filename(x)
+
   cat("Checking description\n")
   x <- check_description(x)
 

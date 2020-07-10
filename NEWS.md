@@ -4,6 +4,7 @@
 * Rework `checklist_template()` into `write_checklist()`.
 * Add `check_description()`.
 * Add `check_documentation()`.
+* Add `check_filename()`.
 * Activate GitHub action `inbo/check_package`.
 
 # checklist 0.1.0
