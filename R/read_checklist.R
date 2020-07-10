@@ -1,5 +1,5 @@
 #' Read the check list file from a package
-#' @param x Either a `Checklist` object or a path to the package.
+#' @param x Either a `Checklist` object or a path to the source code.
 #' Defaults to `.`.
 #' @return A `Checklist` object.
 #' @export
@@ -15,14 +15,18 @@ read_checklist <- function(x = ".") {
   checklist_file <- file.path(x$get_path, "checklist.yml")
   if (!file_test("-f", checklist_file)) {
     # no check list file found
-    x <- x$allowed(warnings = character(0), notes = character(0))
+    message("No `checklist.yml` found. Assuming you want to test a package.
+See `?write_checklist()` to generate a `checklist.yml`.")
+    x <- x$allowed()
     return(x)
   }
 
   # read existing check list file
   allowed <- read_yaml(checklist_file)
   assert_that(has_name(allowed, "description"))
+  assert_that(has_name(allowed, "package"))
   assert_that(has_name(allowed, "allowed"))
+  package <- allowed$package
   allowed <- allowed$allowed
   assert_that(has_name(allowed, "warnings"))
   assert_that(has_name(allowed, "notes"))
@@ -65,5 +69,6 @@ read_checklist <- function(x = ".") {
     msg = "Each note in the checklist requires a value"
   )
   x <- x$allowed(warnings = allowed$warnings, notes = allowed$notes)
+  x$package <- package
   return(x)
 }

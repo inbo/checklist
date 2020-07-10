@@ -6,6 +6,14 @@
 \description{
 A class which contains all checklist results.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{package}}{A logical indicating whether the source code refers to a
+package.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -113,17 +121,23 @@ Add results from \code{rcmdcheck::rcmdcheck}
 \subsection{Method \code{allowed()}}{
 Add allowed warnings and notes
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$allowed(warnings = list(0), notes = list(0))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$allowed(
+  warnings = vector(mode = "list", length = 0),
+  notes = vector(mode = "list", length = 0)
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{warnings}}{A vector with allowed warning messages.
-Defaults to \code{character(0)}.}
+Defaults to an empty list.}
 
 \item{\code{notes}}{A vector with allowed notes.
-Defaults to \code{character(0)}}
+Defaults to an empty list.}
+
+\item{\code{package}}{Does the check list refers to a package.
+Defaults to \code{TRUE}.}
 }
 \if{html}{\out{</div>}}
 }

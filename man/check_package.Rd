@@ -7,7 +7,7 @@
 check_package(x = ".", fail = !interactive())
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the package.
+\item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{fail}{Should the function return an error in case of a problem?

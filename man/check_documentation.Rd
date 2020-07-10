@@ -7,7 +7,7 @@
 check_documentation(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the package.
+\item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
 \description{

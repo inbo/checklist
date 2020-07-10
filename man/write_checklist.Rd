@@ -2,14 +2,17 @@
 % Please edit documentation in R/write_checklist.R
 \name{write_checklist}
 \alias{write_checklist}
-\title{Write a check list with allowed issues in the package}
+\title{Write a check list with allowed issues in the source code}
 \usage{
-write_checklist(x = ".")
+write_checklist(x = ".", package = TRUE)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the package.
+\item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{package}{Logical indication if \code{checklist.yml} refers to an R package.
+Defaults to \code{TRUE}.}
 }
 \description{
-Write a check list with allowed issues in the package
+Write a check list with allowed issues in the source code
 }

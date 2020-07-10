@@ -66,10 +66,15 @@ checklist <- R6Class(
     },
     #' @description Add allowed warnings and notes
     #' @param warnings A vector with allowed warning messages.
-    #' Defaults to `character(0)`.
+    #' Defaults to an empty list.
     #' @param notes A vector with allowed notes.
-    #' Defaults to `character(0)`
-    allowed = function(warnings = list(0), notes = list(0)) {
+    #' Defaults to an empty list.
+    #' @param package Does the check list refers to a package.
+    #' Defaults to `TRUE`.
+    allowed = function(
+      warnings = vector(mode = "list", length = 0),
+      notes = vector(mode = "list", length = 0)
+    ) {
       private$allowed_warnings <- warnings
       private$allowed_notes <- notes
       private$checked <- sort(unique(c(private$checked, "checklist")))
@@ -97,6 +102,9 @@ checklist <- R6Class(
       private$path <- normalizePath(x, winslash = "/", mustWork = TRUE)
       invisible(self)
     },
+    #' @field package A logical indicating whether the source code refers to a
+    #' package.
+    package = TRUE,
     #' @description Print the Checklist object.
     #' @param ... currently ignored.
     print = function(...) {
@@ -165,10 +173,11 @@ checklist <- R6Class(
     },
     #' @field fail A logical indicating if all checks passed.
     fail = function() {
-      required_checks <- c(
-        "checklist", "DESCRIPTION", "documentation", "filename conventions",
-        "lintr", "R CMD check"
+      required_checks <- list(
+        always = c("checklist", "filename conventions", "lintr"),
+        package = c("DESCRIPTION", "documentation", "R CMD check")
       )
+      required_checks <- unlist(required_checks[c(TRUE, self$package)])
       stopifnot(all(private$checked %in% required_checks))
       errors <- vapply(private$errors, length, integer(1))
       any(!required_checks %in% private$checked) ||
@@ -181,6 +190,7 @@ checklist <- R6Class(
     template = function() {
       list(
         description = "Configuration file for checklist::check_pkg()",
+        package = self$package,
         allowed = list(
           warnings = private$allowed_warnings,
           notes = private$allowed_notes
@@ -226,7 +236,8 @@ checklist <- R6Class(
       messages <- sort(table(linter_message), decreasing = TRUE)
       messages <- sprintf("%i times \"%s\"", messages, names(messages))
       sprintf(
-        "%i linter%s found\n%s%s",
+        "%i linter%s found.
+`styler::style_file()` can fix some problems automatically. \n%s%s",
         length(private$linter), ifelse(length(private$linter) > 1, "s", ""),
         private$rules("-"),
         paste(messages, collapse = "\n")

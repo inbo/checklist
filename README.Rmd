@@ -24,7 +24,7 @@ The goal of `checklist` is to provide an elaborate and strict set of checks for 
 
 You can install the development version from [GitHub](https://github.com/) with:
 
-``` r
+```{r installation, eval = FALSE}
 # install.packages("remotes")
 remotes::install_github("inbo/checklist")
 ```
