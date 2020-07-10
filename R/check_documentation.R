@@ -7,6 +7,11 @@ check_documentation <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)
   }
+  assert_that(
+    x$package,
+    msg = "`check_description()` is only relevant for packages.
+`checklist.yml` indicates this is not a package."
+  )
 
   rd_files <- c(
     file.path(x$get_path, "NAMESPACE"),

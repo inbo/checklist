@@ -1,4 +1,4 @@
-#' A standardised test for R packages
+#' Standardised test for an R source repository
 #'
 #' @inheritParams read_checklist
 #' @param fail Should the function return an error in case of a problem?
@@ -7,11 +7,9 @@
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom utils file_test
 #' @export
-check_package <- function(x = ".", fail = !interactive()) {
+check_source <- function(x = ".", fail = !interactive()) {
   assert_that(is.flag(fail))
   assert_that(noNA(fail))
-
-  x <- check_cran(x = x)
 
   cat("Checking code style\n")
   x <- check_lintr(x)
@@ -19,20 +17,14 @@ check_package <- function(x = ".", fail = !interactive()) {
   cat("Checking filename conventions\n")
   x <- check_filename(x)
 
-  cat("Checking description\n")
-  x <- check_description(x)
-
-  cat("Checking documentation\n")
-  x <- check_documentation(x)
-
   print(x)
   if (!x$fail) {
     cat("\nNo problems found. Good job!\n\n")
     return(invisible(x))
   }
   if (fail) {
-    stop("Checking the package revealed some problems.")
+    stop("Checking the source code revealed some problems.")
   }
-  cat("\nChecking the package revealed some problems.\n\n")
+  cat("\nChecking the source code revealed some problems.\n\n")
   return(invisible(x))
 }
