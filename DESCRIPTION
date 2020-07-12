@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(person(given = "Thierry",
              family = "Onkelinx",
@@ -13,13 +13,19 @@ Authors@R:
              email = "info@inbo.be"))
 Description: An opinated set of rules for R packages and code.
 License: GPL-3
+Imports:
+    assertthat,
+    devtools,
+    git2r,
+    lintr,
+    R6,
+    rcmdcheck,
+    rmarkdown,
+    usethis,
+    yaml
+Suggests: 
+    testthat
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Imports:
-  assertthat,
-  lintr,
-  rcmdcheck,
-  R6,
-  yaml

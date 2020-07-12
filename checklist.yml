@@ -1,8 +1,9 @@
 description: Configuration file for checklist::check_pkg()
+package: yes
 allowed:
   warnings: []
   notes:
-  - motivation: 'Package is not published on CRAN'
+  - motivation: Package is not published on CRAN
     value: |-
       checking CRAN incoming feasibility ... NOTE
       Maintainer: ‘Thierry Onkelinx <thierry.onkelinx@inbo.be>’

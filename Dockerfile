@@ -59,6 +59,9 @@ RUN  apt-get update \
     libxml2-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
 
+## install git2r
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
+
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
@@ -68,14 +71,26 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 ## install microbenchmark
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 
+## install pillar
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pillar")'
+
+## install Rcpp
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("Rcpp")'
+
 ## install rcmdcheck
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
+
+## install rlang
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
 
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
 
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("spelling")'
+
+## install tibble
+RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("tibble")'
 
 ## install tidyverse
 RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("tidyverse")'
@@ -90,5 +105,6 @@ RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOpt
 COPY . /checklist/
 RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY entrypoint_package.sh /entrypoint_package.sh
+COPY entrypoint_package.sh /entrypoint_source.sh
+ENTRYPOINT ["/entrypoint_package.sh"]

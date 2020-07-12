@@ -6,6 +6,14 @@
 \description{
 A class which contains all checklist results.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{package}}{A logical indicating whether the source code refers to a
+package.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -22,12 +30,34 @@ A class which contains all checklist results.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-add_error}{\code{checklist$add_error()}}
 \item \href{#method-add_linter}{\code{checklist$add_linter()}}
+\item \href{#method-add_motivation}{\code{checklist$add_motivation()}}
 \item \href{#method-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
 \item \href{#method-allowed}{\code{checklist$allowed()}}
+\item \href{#method-confirm_motivation}{\code{checklist$confirm_motivation()}}
 \item \href{#method-new}{\code{checklist$new()}}
 \item \href{#method-print}{\code{checklist$print()}}
 \item \href{#method-clone}{\code{checklist$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_error"></a>}}
+\if{latex}{\out{\hypertarget{method-add_error}{}}}
+\subsection{Method \code{add_error()}}{
+Add errors
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_error(errors, item)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{errors}}{A vector with errors.}
+
+\item{\code{item}}{The item on which to store the errors.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -43,6 +73,23 @@ Add results from \code{lintr::lint_package()}
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{linter}}{A vector with linter errors.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-add_motivation}{}}}
+\subsection{Method \code{add_motivation()}}{
+Add motivation for allowed issues.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_motivation(which = c("warnings", "notes"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{which}}{Which kind of issue to add.}
 }
 \if{html}{\out{</div>}}
 }
@@ -74,17 +121,40 @@ Add results from \code{rcmdcheck::rcmdcheck}
 \subsection{Method \code{allowed()}}{
 Add allowed warnings and notes
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$allowed(warnings = character(0), notes = character(0))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$allowed(
+  warnings = vector(mode = "list", length = 0),
+  notes = vector(mode = "list", length = 0)
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{warnings}}{A vector with allowed warning messages.
-Defaults to \code{character(0)}.}
+Defaults to an empty list.}
 
 \item{\code{notes}}{A vector with allowed notes.
-Defaults to \code{character(0)}}
+Defaults to an empty list.}
+
+\item{\code{package}}{Does the check list refers to a package.
+Defaults to \code{TRUE}.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-confirm_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-confirm_motivation}{}}}
+\subsection{Method \code{confirm_motivation()}}{
+Confirm the current motivation for allowed issues.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$confirm_motivation(which = c("warnings", "notes"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{which}}{Which kind of issue to confirm.}
 }
 \if{html}{\out{</div>}}
 }
