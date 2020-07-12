@@ -106,5 +106,5 @@ COPY . /checklist/
 RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
 
 COPY entrypoint_package.sh /entrypoint_package.sh
-COPY entrypoint_package.sh /entrypoint_source.sh
+COPY entrypoint_source.sh /entrypoint_source.sh
 ENTRYPOINT ["/entrypoint_package.sh"]
