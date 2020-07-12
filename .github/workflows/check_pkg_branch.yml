@@ -4,10 +4,10 @@ on:
       - master
       - ghpages
 
-name: render
+name: "check package"
 
 jobs:
-  render-indicator:
+  check-package:
     runs-on: ubuntu-latest
     name: "check package"
     steps:
