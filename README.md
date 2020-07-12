@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![R build
+status](https://github.com/inbo/checklist/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/checklist/actions)
 <!-- badges: end -->
 
 The goal of `checklist` is to provide an elaborate and strict set of

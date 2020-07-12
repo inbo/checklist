@@ -6,3 +6,4 @@
 ^entrypoint.sh$
 ^.github$
 ^README\.Rmd$
+^\.github$
