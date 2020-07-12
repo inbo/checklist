@@ -1,8 +1,8 @@
 #' Check the DESCRIPTION file
 #' @inheritParams read_checklist
 #' @importFrom assertthat has_name
-#' @importFrom git2r branches branch_target commits repository repository_head
-#' reset sha
+#' @importFrom git2r branches branch_target commits lookup_commit parents
+#' repository repository_head reset sha when
 #' @importFrom stats na.omit
 #' @importFrom usethis use_tidy_description
 #' @importFrom utils head tail
@@ -29,10 +29,10 @@ check_description <- function(x = ".") {
   branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
   head_sha <- sha(repository_head(repo))
   current_branch <- head(names(which(branch_sha == head_sha)), 1)
-  if (current_branch == "master") {
-    old_sha <- vapply(
-      tail(commits(repo, ref = "master", n = 2), 1), sha, character(1)
-    )
+  if (length(current_branch) && current_branch == "master") {
+    parent_commits <- parents(lookup_commit(repository_head(repo)))
+    oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
+    old_sha <- sha(parent_commits[[oldest]])
     desc_diff <- system2(
       "git", args = c("diff", old_sha, head_sha, "DESCRIPTION"),
       stdout = TRUE
