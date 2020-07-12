@@ -90,5 +90,6 @@ RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOpt
 COPY . /checklist/
 RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY entrypoint.sh /entrypoint_package.sh
+COPY entrypoint.sh /entrypoint_source.sh
+ENTRYPOINT ["/entrypoint_package.sh"]
