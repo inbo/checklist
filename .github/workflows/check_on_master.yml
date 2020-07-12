@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: '6 0 * * 1'
 
 name: "check package on master"
 
