@@ -3,7 +3,8 @@
 ^checklist.yml$
 ^Dockerfile$
 ^.dockerignore$
-^entrypoint.sh$
+^entrypoint_package.sh$
+^entrypoint_source.sh$
 ^.github$
 ^README\.Rmd$
 ^\.github$
