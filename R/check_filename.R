@@ -45,8 +45,10 @@ Failing folder: `%s`",
     "^(%s)$",
     paste(
       c(
-        "\\.[a-zA-Z]+ignore", "DESCRIPTION", "NAMESPACE", "README\\.R?md",
-        "NEWS\\.md", "Dockerfile"
+        "\\.[a-zA-Z]+ignore", ".RProfile",
+        "DESCRIPTION", "NAMESPACE",
+        "README\\.R?md", "NEWS\\.md",
+        "Dockerfile"
       ),
       collapse = "|"
     )
