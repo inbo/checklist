@@ -1,3 +1,7 @@
+# checklist 0.1.2
+
+* Correctly check the package version on the master branch and during rebasing.
+
 # checklist 0.1.1
 
 * Added a `NEWS.md` file to track changes to the package.
