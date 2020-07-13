@@ -17,3 +17,5 @@ if [ $? -ne 0 ]; then
   echo '\nThe package failed some checks. Please check the error message above.\n';
   exit 1
 fi
+echo '\nChecking code coverage...\n'
+Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE); message(result$message)'

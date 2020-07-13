@@ -48,6 +48,9 @@ RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
     git
 
+## install INLA
+RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"))'
+
 ## install remotes package
 RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
 
@@ -58,6 +61,9 @@ RUN  apt-get update \
     libssl-dev \
     libxml2-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
+
+## install covr
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
 ## install git2r
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
@@ -97,9 +103,6 @@ RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("tidyverse")'
 
 ## install yaml
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
-
-## install INLA
-RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"))'
 
 ## install checklist
 COPY . /checklist/

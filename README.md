@@ -7,6 +7,8 @@
 
 [![R build
 status](https://github.com/inbo/checklist/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/checklist/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/inbo/checklist/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=master)
 <!-- badges: end -->
 
 The goal of `checklist` is to provide an elaborate and strict set of
