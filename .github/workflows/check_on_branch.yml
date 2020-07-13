@@ -12,3 +12,5 @@ jobs:
     name: "check package"
     steps:
       - uses: inbo/actions/check_pkg@master
+        with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
