@@ -17,5 +17,10 @@ if [ $? -ne 0 ]; then
   echo '\nThe package failed some checks. Please check the error message above.\n';
   exit 1
 fi
+
+export CODECOV_TOKEN=$4
 echo '\nChecking code coverage...\n'
 Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE); message(result$message)'
+
+echo '\nUpdating tag...\n'
+Rscript --no-save --no-restore -e 'checklist::set_tag()'
