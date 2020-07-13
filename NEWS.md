@@ -1,3 +1,7 @@
+# checklist 0.1.3
+
+* Bugfixes
+
 # checklist 0.1.2
 
 * Correctly check the package version on the master branch and during rebasing.
