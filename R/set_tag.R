@@ -40,8 +40,7 @@ set_tag <- function(x = ".") {
   tag(
     repo,
     name = paste0("v", version),
-    message = paste(news[seq(start[current], end[current])], collapse = "\n"),
-    tagger = "checklist"
+    message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
   push(repo)
 }

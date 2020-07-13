@@ -45,7 +45,7 @@ Failing folder: `%s`",
     "^(%s)$",
     paste(
       c(
-        "\\.[a-zA-Z]+ignore", ".RProfile",
+        "\\.[a-zA-Z]+ignore", "\\.Rprofile",
         "DESCRIPTION", "NAMESPACE",
         "README\\.R?md", "NEWS\\.md",
         "Dockerfile"
