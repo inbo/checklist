@@ -23,7 +23,9 @@ Imports:
     R6,
     rcmdcheck,
     rmarkdown,
+    rorcid,
     usethis,
+    utils,
     yaml
 Suggests: 
     covr,

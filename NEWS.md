@@ -1,6 +1,7 @@
 # checklist 0.1.3
 
 * Add `validate_email()` to check for valid email adresses.
+* Add `orcid2person()` which converts a valid ORCID into a `person` object.
 
 # checklist 0.1.2
 

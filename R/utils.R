@@ -54,3 +54,37 @@ validate_email <- function(email) {
     email
   )
 }
+
+#' Convert an ORCID to a `person` object.
+#' @param orcid The ORCID of the person.
+#' @param email An optional email of the person.
+#' Require when the ORCID record does not contain a public email.
+#' @param role The role of the person.
+#' See `utils::person` for all possible values.
+#' @export
+#' @importFrom assertthat assert_that is.string
+#' @importFrom rorcid as.orcid
+#' @importFrom utils person
+orcid2person <- function(orcid, email, role = c("aut", "cre")) {
+  assert_that(is.string(orcid))
+  assert_that(
+    nchar(orcid) == 19,
+    msg = "Please provide `orcid` in the `0000-0000-0000-0000` format."
+  )
+  details <- as.orcid(orcid)
+  if (missing(email)) {
+    email <- details[[1]]$emails$email
+    assert_that(
+      length(email) > 0,
+      msg = "No public email found at ORCID. Please provide `email`."
+    )
+    email <- head(email$email, 1)
+  }
+  person(
+    given = details[[1]]$name$`given-names`$value,
+    family = details[[1]]$name$`family-name`$value,
+    email = tolower(email),
+    role = role,
+    comment = c(ORCID = orcid)
+  )
+}

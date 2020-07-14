@@ -89,6 +89,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
 ## install rlang
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
 
+## install rorcid
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
+
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
 
