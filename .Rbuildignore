@@ -9,3 +9,4 @@
 ^README\.Rmd$
 ^\.github$
 ^codecov\.yml$
+^\.httr-oauth$
