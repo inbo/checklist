@@ -33,7 +33,9 @@ check_documentation <- function(x = ".") {
       doc_error,
       "Missing documentation. Run `devtools::document()`"
     )
-    reset(repo)
+    if (length(unlist(status(repo, untracked = FALSE)))) {
+      reset(repo)
+    }
   }
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
@@ -45,9 +47,11 @@ check_documentation <- function(x = ".") {
     if (clean && !is_workdir_clean(repo)) {
       doc_error <- c(
         doc_error,
-        "Missing documentation. Run `devtools::document()`"
+        "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"
       )
-      reset(repo)
+      if (length(unlist(status(repo, untracked = FALSE)))) {
+        reset(repo)
+      }
     }
   }
 
@@ -97,14 +101,14 @@ Use `# name version` format"[
     ]
   )
 
-  news_file <- apply(
-    cbind(
-      version_location + 1,
-      c(tail(version_location - 1, -1), length(news_file))
-    ),
-    1,
+  ranges <- cbind(
+    version_location + 1,
+    c(tail(version_location - 1, -1), length(news_file))
+  )
+  news_file <- lapply(
+    seq_len(nrow(ranges)),
     function(i) {
-      news_file[i[1]:i[2]]
+      news_file[ranges[i, 1]:ranges[i, 2]]
     }
   )
 

@@ -26,22 +26,36 @@ check_description <- function(x = ".") {
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
 
-  branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
-  head_sha <- sha(repository_head(repo))
-  current_branch <- head(names(which(branch_sha == head_sha)), 1)
-  if (length(current_branch) && current_branch == "master") {
-    parent_commits <- parents(lookup_commit(repository_head(repo)))
-    oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
-    old_sha <- sha(parent_commits[[oldest]])
-    desc_diff <- system2(
-      "git", args = c("diff", old_sha, head_sha, "DESCRIPTION"),
-      stdout = TRUE
+  if (length(commits(repo)) > 1) {
+    branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
+    head_sha <- sha(repository_head(repo))
+    current_branch <- head(names(which(branch_sha == head_sha)), 1)
+    if (length(current_branch) && current_branch == "master") {
+      parent_commits <- parents(lookup_commit(repository_head(repo)))
+      oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
+      old_sha <- sha(parent_commits[[oldest]])
+      desc_diff <- system2(
+        "git", args = c("diff", old_sha, head_sha, "DESCRIPTION"),
+        stdout = TRUE
+      )
+    } else {
+      desc_diff <- system2(
+        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"),
+        stdout = TRUE
+      )
+    }
+    old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
+    old_version <- gsub("-Version: ", "", old_version)
+    version_bump <- ifelse(
+      length(old_version),
+      ifelse(
+        package_version(old_version) < package_version(version),
+        NA,
+        "Package version not increased"
+      ),
+      "Package version not updated"
     )
-  } else {
-    desc_diff <- system2(
-      "git", args = c("diff", "origin/master", "--", "DESCRIPTION"),
-      stdout = TRUE
-    )
+    desc_error <- c(desc_error, na.omit(version_bump))
   }
   clean <- is_workdir_clean(repo)
   use_tidy_description()
@@ -52,18 +66,6 @@ check_description <- function(x = ".") {
     )
     reset(repo)
   }
-  old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
-  old_version <- gsub("-Version: ", "", old_version)
-  version_bump <- ifelse(
-    length(old_version),
-    ifelse(
-      package_version(old_version) < package_version(version),
-      NA,
-      "Package version not increased"
-    ),
-    "Package version not updated"
-  )
-  desc_error <- c(desc_error, na.omit(version_bump))
 
   x$add_error(desc_error, "DESCRIPTION")
   return(x)

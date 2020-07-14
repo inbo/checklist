@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^checklist.yml$
+^Dockerfile$
+^.dockerignore$
+^.github$
+^README\.Rmd$
+^\.github$
+^codecov\.yml$
+^\.httr-oauth$
