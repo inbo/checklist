@@ -1,6 +1,6 @@
 # checklist 0.1.3
 
-* Bugfixes
+* Add `validate_email()` to check for valid email adresses.
 
 # checklist 0.1.2
 
