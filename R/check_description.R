@@ -1,10 +1,10 @@
 #' Check the DESCRIPTION file
 #' @inheritParams read_checklist
 #' @importFrom assertthat has_name
+#' @importFrom desc description
 #' @importFrom git2r branches branch_target commits lookup_commit parents
 #' repository repository_head reset sha when
 #' @importFrom stats na.omit
-#' @importFrom usethis use_tidy_description
 #' @importFrom utils head tail
 #' @export
 check_description <- function(x = ".") {
@@ -18,10 +18,9 @@ check_description <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  description <- file.path(x$get_path, "DESCRIPTION")
-  assert_that(file_test("-f", description), msg = "DESCRIPTION file missing")
+  description <- desc::description$new(file = x$get_path)
 
-  version <- read.dcf(description)[, "Version"]
+  version <- description$get_version()
   "Incorrect version tag format. Use `0.0`, `0.0.0`"[
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
@@ -58,15 +57,36 @@ check_description <- function(x = ".") {
     desc_error <- c(desc_error, na.omit(version_bump))
   }
   clean <- is_workdir_clean(repo)
-  use_tidy_description()
+  tidy_desc(description)
+  description$write(x$get_path)
   if (clean && !is_workdir_clean(repo)) {
     desc_error <- c(
       desc_error,
-      "DESCRIPTION not tidy. use `usethis::use_tidy_description()`"
+      "DESCRIPTION not tidy. Use `usethis::use_tidy_description()`"
     )
     reset(repo)
   }
 
   x$add_error(desc_error, "DESCRIPTION")
   return(x)
+}
+
+tidy_desc <- function(desc) {
+  # Alphabetise dependencies
+  deps <- desc$get_deps()
+  deps <- deps[order(deps$type, deps$package), , drop = FALSE]
+  desc$del_deps()
+  desc$set_deps(deps)
+
+  # Alphabetise remotes
+  remotes <- desc$get_remotes()
+  if (length(remotes) > 0) {
+    desc$set_remotes(sort(remotes))
+  }
+
+  desc$set("Encoding" = "UTF-8")
+
+  # Normalize all fields (includes reordering)
+  # Wrap in a try() so it always succeeds, even if user options are malformed
+  try(desc$normalize(), silent = TRUE)
 }

@@ -6,7 +6,7 @@
 #' @param maintainer The output of `orcid2person()`.
 #' @export
 #' @importFrom assertthat assert_that is.string
-#' @importFrom git2r add commit init
+#' @importFrom git2r add  init
 #' @importFrom tools toTitleCase
 #' @importFrom utils sessionInfo
 create_package <- function(
@@ -56,6 +56,9 @@ RoxygenNote: %s
     sessionInfo("roxygen2")$otherPkgs$roxygen2$Version
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
+  description <- desc::description$new(file = path)
+  tidy_desc(description)
+  description$write(path)
   add(repo = repo, "DESCRIPTION")
 
   # create NAMESPACE
@@ -120,10 +123,6 @@ allowed:
   )
   add(repo = repo, "checklist.yml")
 
-  commit(
-    repo = repo,
-    message = "Initial commit created by `checklist::create_package()`"
-  )
   message("package created at `", path, "`")
   return(invisible(NULL))
 }

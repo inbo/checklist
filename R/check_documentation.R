@@ -74,9 +74,9 @@ check_news <- function(x) {
     return(c(doc_error, "Missing NEWS.md"))
   }
 
-  description <- read.dcf(file.path(x$get_path, "DESCRIPTION"))
+  description <- desc::description$new(file = x$get_path)
   news_file <- readLines(md_file)
-  version_location <- grep(paste0("#.*", description[, "Package"]), news_file)
+  version_location <- grep(paste0("#.*", description$get("Package")), news_file)
   doc_error <- c(
     doc_error,
     "No reference to a package version in NEWS.md.
@@ -85,7 +85,7 @@ Use `# name version` format"[
     ]
   )
   ok <- grepl(
-    paste("#", description[, "Package"], "[0-9]+\\.[0-9]+(\\.[0-9])+"),
+    paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9])+"),
     news_file[version_location]
   )
   doc_error <- c(
@@ -97,7 +97,7 @@ Use `# name version` format"[
       news_file[version_location[!ok]]
     ),
     "NEWS.md does not contain the current package version"[
-      !any(grepl(description[, "Version"], news_file[version_location]))
+      !any(grepl(description$get_version(), news_file[version_location]))
     ]
   )
 
