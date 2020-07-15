@@ -66,7 +66,9 @@ check_description <- function(x = ".") {
       desc_error,
       "DESCRIPTION not tidy. Use `usethis::use_tidy_description()`"
     )
-    reset(repo)
+    if (length(unlist(status(repo, untracked = FALSE)))) {
+      reset(repo)
+    }
   }
 
   x$add_error(desc_error, "DESCRIPTION")
