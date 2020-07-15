@@ -30,20 +30,28 @@ You can run the full list of checks
 
 ``` r
 library(checklist)
-check_package()
+check_package() # for packages
+check_source() # for a project with R and Rmd files
 ```
 
 Or run the individual checks
 
 ``` r
 check_cran()
-check_lintr()
 check_description()
 check_documentation()
+check_lintr()
+check_filename()
 ```
 
 Create a `checklist.yml` to allow some of warnings or notes.
 
 ``` r
 write_checklist()
+```
+
+Start a package from scratch with everything set-up
+
+``` r
+create_package()
 ```
