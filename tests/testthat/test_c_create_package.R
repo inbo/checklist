@@ -1,6 +1,10 @@
 test_that("create_package() works", {
-  maintainer <- orcid2person(
-    orcid = "0000-0001-8804-4216", email = "thierry.onkelinx@inbo.be"
+  maintainer <- person(
+    given = "Thierry",
+    family = "Onkelinx",
+    role = c("aut", "cre"),
+    email = "thierry.onkelinx@inbo.be",
+    comment = c(ORCID = "0000-0001-8804-4216")
   )
   path <- tempfile("test_package")
   package <- "junk"

@@ -17,10 +17,11 @@ set_tag <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
   repo <- repository(x$get_path)
-  description <- desc::description$new(file = x$get_path)
-  version <- description$get_version()
-  news <- readLines("NEWS.md")
-  description$get("Package")
+  description <- desc::description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
+  version <- as.character(description$get_version())
+  news <- readLines(file.path(x$get_path, "NEWS.md"))
   regex <- paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9]+)")
   start <- grep(regex, news)
   end <- c(tail(start, -1) - 1, length(news))
@@ -34,7 +35,11 @@ set_tag <- function(x = ".") {
       user.email = old_config$local$user.email
     )
   })
-  config(user.name = "Checklist package", user.email = "checklist@inbo.be")
+  config(
+    repo = repo,
+    user.name = "Checklist package",
+    user.email = "checklist@inbo.be"
+  )
   tag(
     repo,
     name = paste0("v", version),

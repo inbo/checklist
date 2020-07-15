@@ -74,7 +74,9 @@ check_news <- function(x) {
     return(c(doc_error, "Missing NEWS.md"))
   }
 
-  description <- desc::description$new(file = x$get_path)
+  description <- desc::description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
   news_file <- readLines(md_file)
   version_location <- grep(paste0("#.*", description$get("Package")), news_file)
   doc_error <- c(
@@ -97,7 +99,11 @@ Use `# name version` format"[
       news_file[version_location[!ok]]
     ),
     "NEWS.md does not contain the current package version"[
-      !any(grepl(description$get_version(), news_file[version_location]))
+      !any(
+        grepl(
+          as.character(description$get_version()),
+          news_file[version_location])
+      )
     ]
   )
 

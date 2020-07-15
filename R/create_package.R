@@ -43,7 +43,7 @@ Authors@R:
     person(given = \"Research Institute for Nature and Forest\",
            role = c(\"cph\", \"fnd\"),
            email = \"info@inbo.be\"))
-Description: %s.
+Description: %s
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -56,9 +56,9 @@ RoxygenNote: %s
     sessionInfo("roxygen2")$otherPkgs$roxygen2$Version
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
-  description <- desc::description$new(file = path)
+  description <- desc::description$new(file = file.path(path, "DESCRIPTION"))
   tidy_desc(description)
-  description$write(path)
+  description$write(file.path(path, "DESCRIPTION"))
   add(repo = repo, "DESCRIPTION")
 
   # create NAMESPACE

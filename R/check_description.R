@@ -18,9 +18,11 @@ check_description <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  description <- desc::description$new(file = x$get_path)
+  description <- desc::description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
 
-  version <- description$get_version()
+  version <- as.character(description$get_version())
   "Incorrect version tag format. Use `0.0`, `0.0.0`"[
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
@@ -58,7 +60,7 @@ check_description <- function(x = ".") {
   }
   clean <- is_workdir_clean(repo)
   tidy_desc(description)
-  description$write(x$get_path)
+  description$write(file.path(x$get_path, "DESCRIPTION"))
   if (clean && !is_workdir_clean(repo)) {
     desc_error <- c(
       desc_error,
