@@ -70,7 +70,7 @@ RoxygenNote: %s
 
   # create RStudio project
   file.copy(
-    system.file("package_template/rproj", package = "checklist"),
+    system.file("package_template/rproj.template", package = "checklist"),
     file.path(path, paste0(package, ".Rproj"))
   )
   add(repo = repo, paste0(package, ".Rproj"))
