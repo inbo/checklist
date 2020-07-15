@@ -1,9 +1,9 @@
 #!/bin/sh -l
 
 echo '\nGetting the code...\n'
-git clone --quiet https://$2@github.com/$1 check
+git clone https://$2@github.com/$1 check
 cd check
-git checkout --quiet $GITHUB_SHA
+git checkout $GITHUB_SHA
 cd $3
 
 Rscript --no-save --no-restore -e 'remotes::install_local(quiet = TRUE, dependencies = TRUE)'
