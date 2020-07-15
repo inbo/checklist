@@ -26,33 +26,28 @@ check_documentation <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  clean <- is_workdir_clean(repo)
+  status_before <- status(repo)
   document(x$get_path)
-  if (clean && !is_workdir_clean(repo)) {
-    doc_error <- c(
-      doc_error,
-      "Missing documentation. Run `devtools::document()`"
-    )
-    if (length(unlist(status(repo, untracked = FALSE)))) {
-      reset(repo)
-    }
-  }
+  doc_error <- c(
+    doc_error,
+    "Missing documentation. Run `devtools::document()`"[
+      !unchanged_repo(repo, status_before)
+    ]
+  )
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
+    status_before <- status(repo)
     render(
       file.path(x$get_path, "README.Rmd"),
       output_format = github_document(html_preview = FALSE),
       encoding = "UTF-8"
     )
-    if (clean && !is_workdir_clean(repo)) {
-      doc_error <- c(
-        doc_error,
-        "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"
-      )
-      if (length(unlist(status(repo, untracked = FALSE)))) {
-        reset(repo)
-      }
-    }
+    doc_error <- c(
+      doc_error,
+      "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"[
+        !unchanged_repo(repo, status_before)
+      ]
+    )
   }
 
   md_files <- file.path(x$get_path, "README.md")

@@ -17,7 +17,7 @@ set_tag <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
   repo <- repository(x$get_path)
-  description <- desc::description$new(
+  description <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
   version <- as.character(description$get_version())

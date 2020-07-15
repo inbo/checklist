@@ -11,7 +11,7 @@ export CODECOV_TOKEN=$4
 export ORCID_TOKEN=$5
 
 echo '\nTrying to install the package...\n'
-Rscript --no-save --no-restore -e 'remotes::install_local(dependencies = TRUE)'
+Rscript --no-save --no-restore -e 'remotes::install_local(dependencies = TRUE, force = TRUE)'
 if [ $? -ne 0 ]; then
   echo '\nBuilding the package failed. Please check the error message above.\n';
   exit 1

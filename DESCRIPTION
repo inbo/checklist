@@ -16,12 +16,12 @@ Description: An opinated set of rules for R packages and R
     source code projects.
 License: GPL-3
 Imports:
+    R6,
     assertthat,
     desc,
     devtools,
     git2r,
     lintr,
-    R6,
     rcmdcheck,
     rmarkdown,
     rorcid,

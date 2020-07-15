@@ -3,7 +3,7 @@
 #' @importFrom assertthat has_name
 #' @importFrom desc description
 #' @importFrom git2r branches branch_target commits lookup_commit parents
-#' repository repository_head reset sha when
+#' repository repository_head sha when
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -18,7 +18,7 @@ check_description <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  description <- desc::description$new(
+  description <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
 
@@ -58,24 +58,44 @@ check_description <- function(x = ".") {
     )
     desc_error <- c(desc_error, na.omit(version_bump))
   }
-  clean <- is_workdir_clean(repo)
-  tidy_desc(description)
-  description$write(file.path(x$get_path, "DESCRIPTION"))
-  if (clean && !is_workdir_clean(repo)) {
-    desc_error <- c(
-      desc_error,
-      "DESCRIPTION not tidy. Use `usethis::use_tidy_description()`"
-    )
-    if (length(unlist(status(repo, untracked = FALSE)))) {
-      reset(repo)
-    }
-  }
+  status_before <- status(repo)
+  tidy_desc(x)
+  cat(readLines(file.path(x$get_path, "DESCRIPTION")), sep = "\n")
+  desc_error <- c(
+    desc_error,
+    "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
+      !unchanged_repo(repo, status_before)
+    ]
+  )
 
   x$add_error(desc_error, "DESCRIPTION")
   return(x)
 }
 
-tidy_desc <- function(desc) {
+#' Make your description tidy
+#' @inheritParams read_checklist
+#' @export
+#' @importFrom desc description
+tidy_desc <- function(x = ".") {
+  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
+    x <- read_checklist(x = x)
+  }
+
+
+  old_ctype <- Sys.getlocale(category = "LC_CTYPE")
+  old_collate <- Sys.getlocale(category = "LC_COLLATE")
+  old_time <- Sys.getlocale(category = "LC_TIME")
+  Sys.setlocale(category = "LC_CTYPE", locale = "C")
+  Sys.setlocale(category = "LC_COLLATE", locale = "C")
+  Sys.setlocale(category = "LC_TIME", locale = "C")
+  on.exit({
+    Sys.setlocale(category = "LC_CTYPE", locale = old_ctype)
+    Sys.setlocale(category = "LC_COLLATE", locale = old_collate)
+    Sys.setlocale(category = "LC_TIME", locale = old_time)
+  })
+
+  desc <- description$new(file.path(x$get_path, "DESCRIPTION"))
+
   # Alphabetise dependencies
   deps <- desc$get_deps()
   deps <- deps[order(deps$type, deps$package), , drop = FALSE]
@@ -93,4 +113,22 @@ tidy_desc <- function(desc) {
   # Normalize all fields (includes reordering)
   # Wrap in a try() so it always succeeds, even if user options are malformed
   try(desc$normalize(), silent = TRUE)
+  desc$write(file.path(x$get_path, "DESCRIPTION"))
+  return(desc)
+}
+
+unchanged_repo <- function(repo, old_status) {
+  current_status <- status(repo)
+  identical(
+    current_status$staged,
+    old_status$staged
+  ) &&
+    identical(
+      current_status$unstaged,
+      old_status$unstaged
+    ) &&
+    identical(
+      current_status$untracked,
+      old_status$untracked
+    )
 }

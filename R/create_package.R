@@ -56,9 +56,7 @@ RoxygenNote: %s
     sessionInfo("roxygen2")$otherPkgs$roxygen2$Version
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
-  description <- desc::description$new(file = file.path(path, "DESCRIPTION"))
-  tidy_desc(description)
-  description$write(file.path(path, "DESCRIPTION"))
+  tidy_desc(path)
   add(repo = repo, "DESCRIPTION")
 
   # create NAMESPACE
