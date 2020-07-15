@@ -19,6 +19,7 @@ if [ $? -ne 0 ]; then
 fi
 
 export CODECOV_TOKEN=$4
+export ORCID_TOKEN=$5
 echo '\nChecking code coverage...\n'
 Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE); message(result$message)'
 

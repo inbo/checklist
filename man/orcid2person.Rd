@@ -16,5 +16,13 @@ Require when the ORCID record does not contain a public email.}
 See \code{utils::person} for all possible values.}
 }
 \description{
-Convert an ORCID to a \code{person} object.
+This function requires that your \code{ORCID_TOKEN} is set as an environment
+variable.
+First run \code{rorcid::orcid_auth()}.
+A browser window should open where you can log into \code{ORCID}.
+Run \code{rorcid::orcid_auth()}, which should return something like
+\code{"Bearer dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e"}.
+Copy this (not the \code{Bearer} part) and append it to your \code{.Renviron} as
+follows: \verb{ORCID_TOKEN=dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e}.
+Don't forget to append your UUID instead of the example given here.
 }

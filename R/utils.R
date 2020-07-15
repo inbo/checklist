@@ -56,6 +56,16 @@ validate_email <- function(email) {
 }
 
 #' Convert an ORCID to a `person` object.
+#'
+#' This function requires that your `ORCID_TOKEN` is set as an environment
+#' variable.
+#' First run `rorcid::orcid_auth()`.
+#' A browser window should open where you can log into `ORCID`.
+#' Run `rorcid::orcid_auth()`, which should return something like
+#' `"Bearer dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e"`.
+#' Copy this (not the `Bearer` part) and append it to your `.Renviron` as
+#' follows: `ORCID_TOKEN=dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e`.
+#' Don't forget to append your UUID instead of the example given here.
 #' @param orcid The ORCID of the person.
 #' @param email An optional email of the person.
 #' Require when the ORCID record does not contain a public email.
@@ -70,6 +80,10 @@ orcid2person <- function(orcid, email, role = c("aut", "cre")) {
   assert_that(
     nchar(orcid) == 19,
     msg = "Please provide `orcid` in the `0000-0000-0000-0000` format."
+  )
+  assert_that(
+    Sys.getenv("ORCID_TOKEN") != "",
+    msg = "Please set ORCID_TOKEN. See ?orcid2person for instructions."
   )
   details <- as.orcid(orcid)
   if (missing(email)) {
