@@ -1,7 +1,6 @@
 Type: Package
 Package: checklist
-Title: A Thorough and Strict Set of Checks for R Packages and
-    Source Code
+Title: A Thorough and Strict Set of Checks for R Packages and Source Code
 Version: 0.1.3
 Authors@R: 
     c(person(given = "Thierry",
@@ -12,8 +11,8 @@ Authors@R:
       person(given = "Research Institute for Nature and Forest",
              role = c("cph", "fnd"),
              email = "info@inbo.be"))
-Description: An opinated set of rules for R packages and R
-    source code projects.
+Description: An opinated set of rules for R packages and R source code
+    projects.
 License: GPL-3
 Imports:
     R6,

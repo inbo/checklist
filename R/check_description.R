@@ -60,7 +60,6 @@ check_description <- function(x = ".") {
   }
   status_before <- status(repo)
   tidy_desc(x)
-  cat(readLines(file.path(x$get_path, "DESCRIPTION")), sep = "\n")
   desc_error <- c(
     desc_error,
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
@@ -81,7 +80,7 @@ tidy_desc <- function(x = ".") {
     x <- read_checklist(x = x)
   }
 
-
+  # set locale to get a stable sorting order
   old_ctype <- Sys.getlocale(category = "LC_CTYPE")
   old_collate <- Sys.getlocale(category = "LC_COLLATE")
   old_time <- Sys.getlocale(category = "LC_TIME")
@@ -93,6 +92,11 @@ tidy_desc <- function(x = ".") {
     Sys.setlocale(category = "LC_COLLATE", locale = old_collate)
     Sys.setlocale(category = "LC_TIME", locale = old_time)
   })
+
+  # turn crayon off
+  old_crayon <- getOption("crayon.enabled")
+  on.exit(options("crayon.enabled" = old_crayon))
+  options("crayon.enabled" = FALSE)
 
   desc <- description$new(file.path(x$get_path, "DESCRIPTION"))
 
