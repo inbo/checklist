@@ -1,3 +1,9 @@
+# checklist 0.1.3
+
+* Add `validate_email()` to check for valid email adresses.
+* Add `orcid2person()` which converts a valid ORCID into a `person` object.
+* Add `create_package()` which prepare an RStudio project with an empty package.
+
 # checklist 0.1.2
 
 * Correctly check the package version on the master branch and during rebasing.

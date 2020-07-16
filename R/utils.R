@@ -32,3 +32,73 @@ is_workdir_clean <- function(repo) {
   current_status <- status(repo)
   all(vapply(current_status, length, integer(1)) == 0)
 }
+
+#' Check if a vector contains valid email
+#' @param email A vector with email addresses.
+#' @return A logical vector.
+#' @export
+#' @importFrom assertthat assert_that
+validate_email <- function(email) {
+  assert_that(is.character(email))
+  # expression taken from https://emailregex.com/
+  grepl(
+    paste0(
+      "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"",
+      "(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|",
+      "\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*",
+      "[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|",
+      "2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]", #nolint
+      "[0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a",
+      "\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])"
+    ),
+    email
+  )
+}
+
+#' Convert an ORCID to a `person` object.
+#'
+#' This function requires that your `ORCID_TOKEN` is set as an environment
+#' variable.
+#' First run `rorcid::orcid_auth()`.
+#' A browser window should open where you can log into `ORCID`.
+#' Run `rorcid::orcid_auth()`, which should return something like
+#' `"Bearer dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e"`.
+#' Copy this (not the `Bearer` part) and append it to your `.Renviron` as
+#' follows: `ORCID_TOKEN=dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e`.
+#' Don't forget to append your UUID instead of the example given here.
+#' @param orcid The ORCID of the person.
+#' @param email An optional email of the person.
+#' Require when the ORCID record does not contain a public email.
+#' @param role The role of the person.
+#' See `utils::person` for all possible values.
+#' @export
+#' @importFrom assertthat assert_that is.string
+#' @importFrom rorcid as.orcid
+#' @importFrom utils person
+orcid2person <- function(orcid, email, role = c("aut", "cre")) {
+  assert_that(is.string(orcid))
+  assert_that(
+    nchar(orcid) == 19,
+    msg = "Please provide `orcid` in the `0000-0000-0000-0000` format."
+  )
+  assert_that(
+    Sys.getenv("ORCID_TOKEN") != "",
+    msg = "Please set ORCID_TOKEN. See ?orcid2person for instructions."
+  )
+  details <- as.orcid(orcid)
+  if (missing(email)) {
+    email <- details[[1]]$emails$email
+    assert_that(
+      length(email) > 0,
+      msg = "No public email found at ORCID. Please provide `email`."
+    )
+    email <- head(email$email, 1)
+  }
+  person(
+    given = details[[1]]$name$`given-names`$value,
+    family = details[[1]]$name$`family-name`$value,
+    email = tolower(email),
+    role = role,
+    comment = c(ORCID = orcid)
+  )
+}

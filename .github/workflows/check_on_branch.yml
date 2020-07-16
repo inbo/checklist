@@ -14,3 +14,4 @@ jobs:
       - uses: inbo/actions/check_pkg@master
         with:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}

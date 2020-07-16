@@ -17,16 +17,15 @@ set_tag <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
   repo <- repository(x$get_path)
-  description <- file.path(x$get_path, "DESCRIPTION")
-  assert_that(file_test("-f", description), msg = "DESCRIPTION file missing")
-
-  description <- read.dcf(description)
-  version <- description[, "Version"]
-  news <- readLines("NEWS.md")
-  regex <- paste("#", description[, "Package"], "[0-9]+\\.[0-9]+(\\.[0-9]+)")
+  description <- description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
+  version <- as.character(description$get_version())
+  news <- readLines(file.path(x$get_path, "NEWS.md"))
+  regex <- paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9]+)")
   start <- grep(regex, news)
   end <- c(tail(start, -1) - 1, length(news))
-  current <- grepl(paste("#", description[, "Package"], version), news[start])
+  current <- grepl(paste("#", description$get("Package"), version), news[start])
   assert_that(any(current), msg = "Current version not found in NEWS.md")
   old_config <- config(repo)
   on.exit({
@@ -36,12 +35,15 @@ set_tag <- function(x = ".") {
       user.email = old_config$local$user.email
     )
   })
-  config(user.name = "Checklist package", user.email = "checklist@inbo.be")
+  config(
+    repo = repo,
+    user.name = "Checklist package",
+    user.email = "checklist@inbo.be"
+  )
   tag(
     repo,
     name = paste0("v", version),
-    message = paste(news[seq(start[current], end[current])], collapse = "\n"),
-    tagger = "checklist"
+    message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
   push(repo)
 }

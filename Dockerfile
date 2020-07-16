@@ -62,8 +62,14 @@ RUN  apt-get update \
     libxml2-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
 
+## install assertthat
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
+
 ## install covr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
+
+## install desc
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 
 ## install git2r
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
@@ -88,6 +94,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
 
 ## install rlang
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
+
+## install rorcid
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'

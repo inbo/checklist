@@ -26,29 +26,28 @@ check_documentation <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  clean <- is_workdir_clean(repo)
+  status_before <- status(repo)
   document(x$get_path)
-  if (clean && !is_workdir_clean(repo)) {
-    doc_error <- c(
-      doc_error,
-      "Missing documentation. Run `devtools::document()`"
-    )
-    reset(repo)
-  }
+  doc_error <- c(
+    doc_error,
+    "Missing documentation. Run `devtools::document()`"[
+      !unchanged_repo(repo, status_before)
+    ]
+  )
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
+    status_before <- status(repo)
     render(
       file.path(x$get_path, "README.Rmd"),
       output_format = github_document(html_preview = FALSE),
       encoding = "UTF-8"
     )
-    if (clean && !is_workdir_clean(repo)) {
-      doc_error <- c(
-        doc_error,
-        "Missing documentation. Run `devtools::document()`"
-      )
-      reset(repo)
-    }
+    doc_error <- c(
+      doc_error,
+      "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"[
+        !unchanged_repo(repo, status_before)
+      ]
+    )
   }
 
   md_files <- file.path(x$get_path, "README.md")
@@ -70,9 +69,11 @@ check_news <- function(x) {
     return(c(doc_error, "Missing NEWS.md"))
   }
 
-  description <- read.dcf(file.path(x$get_path, "DESCRIPTION"))
+  description <- desc::description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
   news_file <- readLines(md_file)
-  version_location <- grep(paste0("#.*", description[, "Package"]), news_file)
+  version_location <- grep(paste0("#.*", description$get("Package")), news_file)
   doc_error <- c(
     doc_error,
     "No reference to a package version in NEWS.md.
@@ -81,7 +82,7 @@ Use `# name version` format"[
     ]
   )
   ok <- grepl(
-    paste("#", description[, "Package"], "[0-9]+\\.[0-9]+(\\.[0-9])+"),
+    paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9])+"),
     news_file[version_location]
   )
   doc_error <- c(
@@ -93,18 +94,22 @@ Use `# name version` format"[
       news_file[version_location[!ok]]
     ),
     "NEWS.md does not contain the current package version"[
-      !any(grepl(description[, "Version"], news_file[version_location]))
+      !any(
+        grepl(
+          as.character(description$get_version()),
+          news_file[version_location])
+      )
     ]
   )
 
-  news_file <- apply(
-    cbind(
-      version_location + 1,
-      c(tail(version_location - 1, -1), length(news_file))
-    ),
-    1,
+  ranges <- cbind(
+    version_location + 1,
+    c(tail(version_location - 1, -1), length(news_file))
+  )
+  news_file <- lapply(
+    seq_len(nrow(ranges)),
     function(i) {
-      news_file[i[1]:i[2]]
+      news_file[ranges[i, 1]:ranges[i, 2]]
     }
   )
 
