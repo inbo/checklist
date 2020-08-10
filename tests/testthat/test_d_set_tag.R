@@ -31,21 +31,42 @@ test_that("set_tag() works", {
   )
 
   # not on GITHUB or master
-  current_env <- Sys.getenv("GITHUB_REF")
-  on.exit(Sys.setenv(GITHUB_REF = current_env))
+  current_ref <- Sys.getenv("GITHUB_REF")
+  on.exit(Sys.setenv(GITHUB_REF = current_ref))
   Sys.setenv(GITHUB_REF = "")
+  current_actions <- Sys.getenv("GITHUB_ACTIONS")
+  on.exit(Sys.setenv(GITHUB_ACTIONS = current_actions))
+  Sys.setenv(GITHUB_ACTIONS = "")
+  current_event <- Sys.getenv("GITHUB_EVENT_NAME")
+  on.exit(Sys.setenv(GITHUB_EVENT_NAME = current_event))
+  Sys.setenv(GITHUB_EVENT_NAME = "")
   expect_message(
     set_tag(file.path(path, package)),
-    "Not on GitHub or not on master."
+    "Not on GitHub, not a push or not on master."
   )
+
   Sys.setenv(GITHUB_REF = "refs/heads/junk")
   expect_message(
     set_tag(file.path(path, package)),
-    "Not on GitHub or not on master."
+    "Not on GitHub, not a push or not on master."
   )
 
-  # on master
+  # on master, not GitHub
   Sys.setenv(GITHUB_REF = "refs/heads/master")
+  expect_message(
+    set_tag(file.path(path, package)),
+    "Not on GitHub, not a push or not on master."
+  )
+
+  # on master, GitHub, not push
+  Sys.setenv(GITHUB_ACTIONS = "true")
+  expect_message(
+    set_tag(file.path(path, package)),
+    "Not on GitHub, not a push or not on master."
+  )
+
+  # on master, GitHub, not push
+  Sys.setenv(GITHUB_EVENT_NAME = "push")
   expect_invisible(set_tag(file.path(path, package)))
 
   unlink(path, recursive = TRUE)

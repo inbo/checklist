@@ -4,8 +4,12 @@
 #' @importFrom assertthat assert_that
 #' @importFrom git2r config push repository tag tags
 set_tag <- function(x = ".") {
-  if (Sys.getenv("GITHUB_REF") != "refs/heads/master") {
-    message("Not on GitHub or not on master.")
+  if (
+    !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
+      Sys.getenv("GITHUB_REF") != "refs/heads/master" ||
+      Sys.getenv("GITHUB_EVENT_NAME") != "push"
+  ) {
+    message("Not on GitHub, not a push or not on master.")
     return(invisible(NULL))
   }
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
