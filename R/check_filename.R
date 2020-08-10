@@ -48,6 +48,7 @@ Failing folder: `%s`",
         "\\.[a-zA-Z]+ignore", "\\.Rprofile",
         "DESCRIPTION", "NAMESPACE",
         "README\\.R?md", "NEWS\\.md",
+        "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md",
         "Dockerfile"
       ),
       collapse = "|"
