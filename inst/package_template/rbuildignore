@@ -1,10 +1,21 @@
+# Rstudio
 ^.*\.Rproj$
 ^\.Rproj\.user$
+
+# checklist package
 ^checklist.yml$
-^Dockerfile$
-^.dockerignore$
-^.github$
 ^README\.Rmd$
+
+# GitHub
 ^\.github$
+
+# code coverage
 ^codecov\.yml$
+
+# OAuth tokens
 ^\.httr-oauth$
+
+# pkgdown
+^_pkgdown.yml$
+^pkgdown$
+^docs$
