@@ -28,6 +28,8 @@ Imports:
     yaml
 Suggests: 
     covr,
+    pkgdown,
+    roxygen2,
     testthat
 Encoding: UTF-8
 LazyData: true

@@ -84,6 +84,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 
 ## install pillar
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
+
+## install pillar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pillar")'
 
 ## install Rcpp
@@ -96,6 +99,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
 
 ## install rorcid
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
+
+## install roxygen2
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
 ## install R6
