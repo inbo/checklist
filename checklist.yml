@@ -6,6 +6,6 @@ allowed:
   - motivation: Package is not published on CRAN
     value: |-
       checking CRAN incoming feasibility ... NOTE
-      Maintainer: ‘Thierry Onkelinx <thierry.onkelinx@inbo.be>’
+      Maintainer: Thierry Onkelinx <thierry.onkelinx@inbo.be>
 
       New submission
