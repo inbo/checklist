@@ -22,6 +22,9 @@
 ^pkgdown$
 ^docs$
 
+# license
+^LICENSE.md$
+
 # Docker
 ^Dockerfile$
 ^.dockerignore$

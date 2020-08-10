@@ -19,3 +19,6 @@
 ^_pkgdown.yml$
 ^pkgdown$
 ^docs$
+
+# license
+^LICENSE.md$
