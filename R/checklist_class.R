@@ -2,6 +2,7 @@
 #' @description A class which contains all checklist results.
 #' @export
 #' @importFrom R6 R6Class
+#' @importFrom sessioninfo session_info
 checklist <- R6Class(
   "Checklist",
   public = list(
@@ -108,6 +109,7 @@ checklist <- R6Class(
     #' @description Print the Checklist object.
     #' @param ... currently ignored.
     print = function(...) {
+      print(session_info())
       output <- c(
         sprintf(
           "%sChecklist summary for the package located at:\n%s",

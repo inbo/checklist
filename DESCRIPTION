@@ -24,6 +24,7 @@ Imports:
     rcmdcheck,
     rmarkdown,
     rorcid,
+    sessioninfo,
     utils,
     yaml
 Suggests: 

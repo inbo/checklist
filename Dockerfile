@@ -1,4 +1,4 @@
-FROM rocker/r-base
+FROM rocker/r-ubuntu:20.04
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -54,6 +54,9 @@ RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOpt
 ## install remotes package
 RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
 
+## install older version of cp11 needed for tidyr 1.1.1
+RUN Rscript --no-save --no-restore -e 'remotes::install_version("cpp11", version = "0.1")'
+
 ## install devtools
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -106,6 +109,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
+
+## install spelling
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
 
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("spelling")'
