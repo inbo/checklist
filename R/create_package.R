@@ -121,6 +121,21 @@ allowed:
   )
   add(repo = repo, "checklist.yml")
 
+  # Add code of conduct
+  dir.create(file.path(path, ".github"))
+  file.copy(
+    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
+    file.path(path, ".github", "CODE_OF_CONDUCT.md")
+  )
+  add(repo = repo, ".github/CODE_OF_CONDUCT.md")
+
+  # Add contributing guidelines
+  file.copy(
+    system.file("package_template/CONTRIBUTING.md", package = "checklist"),
+    file.path(path, ".github", "CONTRIBUTING.md")
+  )
+  add(repo = repo, ".github/CONTRIBUTING.md")
+
   message("package created at `", path, "`")
   return(invisible(NULL))
 }

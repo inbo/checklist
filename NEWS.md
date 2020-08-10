@@ -1,6 +1,7 @@
 # checklist 0.1.4
 
 * `set_tag()` skips if the tag already exists.
+* `create_package()` sets a code of conduct and contributing guidelines.
 
 # checklist 0.1.3
 
