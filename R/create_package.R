@@ -110,6 +110,13 @@ RoxygenNote: %s
   writeLines(readme, file.path(path, "README.Rmd"))
   add(repo = repo, "README.Rmd")
 
+  # add LICENSE.md
+  file.copy(
+    system.file("package_template/gplv3.md", package = "checklist"),
+    file.path(path, "LICENSE.md")
+  )
+  add(repo = repo, "LICENSE.md")
+
   # add checklist.yml
   writeLines(
   "description: Configuration file for checklist::check_pkg()

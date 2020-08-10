@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # {{{ Package }}}
 
 <!-- badges: start -->
+![GitHub](https://img.shields.io/github/license/inbo/{{{ Package }}})
 <!-- badges: end -->
 
 The goal of {{{ Package }}} is to ...
