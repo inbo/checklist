@@ -2,7 +2,7 @@
 #' @export
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config push repository tag
+#' @importFrom git2r config push repository tag tags
 set_tag <- function(x = ".") {
   if (Sys.getenv("GITHUB_REF") != "refs/heads/master") {
     message("Not on GitHub or not on master.")
@@ -27,6 +27,10 @@ set_tag <- function(x = ".") {
   end <- c(tail(start, -1) - 1, length(news))
   current <- grepl(paste("#", description$get("Package"), version), news[start])
   assert_that(any(current), msg = "Current version not found in NEWS.md")
+  if (paste0("v", version) %in% names(tags(repo))) {
+    message("tag v", version, " already exists.")
+    return(invisible(NULL))
+  }
   old_config <- config(repo)
   on.exit({
     config(
@@ -46,4 +50,5 @@ set_tag <- function(x = ".") {
     message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
   push(repo)
+  return(invisible(NULL))
 }

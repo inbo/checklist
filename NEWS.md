@@ -1,3 +1,7 @@
+# checklist 0.1.4
+
+* `set_tag()` skips if the tag already exists.
+
 # checklist 0.1.3
 
 * Add `validate_email()` to check for valid email adresses.
