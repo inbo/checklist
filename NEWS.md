@@ -1,3 +1,7 @@
+# checklist 0.1.5
+
+* Fix deploying pkgdown website and release.
+
 # checklist 0.1.4
 
 * `set_tag()` skips if the tag already exists.

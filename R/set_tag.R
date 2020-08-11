@@ -2,7 +2,7 @@
 #' @export
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config push repository tag tags
+#' @importFrom git2r config repository tag tags
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -18,7 +18,7 @@ set_tag <- function(x = ".") {
   }
   assert_that(
     x$package,
-    msg = "`check_description()` is only relevant for packages.
+    msg = "`set_tag()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
   repo <- repository(x$get_path)
@@ -46,7 +46,7 @@ set_tag <- function(x = ".") {
   })
   config(
     repo = repo,
-    user.name = "Checklist package",
+    user.name = "Checklist bot",
     user.email = "checklist@inbo.be"
   )
   tag(
@@ -54,6 +54,6 @@ set_tag <- function(x = ".") {
     name = paste0("v", version),
     message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
-  push(repo)
+  system2("git", args = c("push", "--follow-tags"))
   return(invisible(NULL))
 }
