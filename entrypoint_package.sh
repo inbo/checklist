@@ -47,7 +47,7 @@ else
   Rscript --no-save --no-restore -e 'checklist::set_tag()';
 
   echo '\nPush pkgdown website...\n'
-  cp -R /check/docs /docs
+  cp -R docs ../docs
   if [ -z  "$(git branch -r | grep origin/gh-pages)" ]; then
     git checkout --orphan gh-pages
     git rm -rf --quiet .
@@ -57,7 +57,7 @@ else
     git rm -rf --quiet .
     rm -R *
   fi
-  cp -R /docs/. /check
+  cp -R ../docs/. .
   git add --all
   git commit --amend -m "Automated update of gh-pages website"
   git push --force --set-upstream origin gh-pages
