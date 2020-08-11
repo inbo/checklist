@@ -3,9 +3,6 @@
 echo '\nGetting the code...\n'
 git clone https://$2@github.com/$1 check
 cd check
-echo 'GitHub actions:' $GITHUB_ACTIONS
-echo 'Event name:' $GITHUB_EVENT_NAME
-echo 'ref:' $GITHUB_REF
 
 git config user.name "Checklist bot"
 git config user.email "checklist@inbo.be"
@@ -36,15 +33,18 @@ Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE); messa
 echo '\nBuilding pkgdown website...\n'
 Rscript --no-save --no-restore -e 'pkgdown::build_site()'
 
-if [ "${GITHUB_ACTIONS}" != "true" ]; then
+echo 'GitHub actions:' $GITHUB_ACTIONS
+echo 'Event name:' $GITHUB_EVENT_NAME
+echo 'ref:' $GITHUB_REF
+if [ "$GITHUB_ACTIONS" != "true" ]; then
   echo '\nNot updating tag, because not a GitHub action.';
-else if [ "${GITHUB_EVENT_NAME}" != "push" ];
+elif [ "$GITHUB_EVENT_NAME" != "push" ]; then
   echo '\nNot updating tag, because not a push event.';
-else if [ "${GITHUB_REF}" != "refs/heads/master"];
+elif [ "$GITHUB_REF" != "refs/heads/master" ]; then
   echo '\nNot updating tag, because not on master.';
 else
-  echo '\nUpdating tag...\n'
-  Rscript --no-save --no-restore -e 'checklist::set_tag()'
+  echo '\nUpdating tag...\n';
+  Rscript --no-save --no-restore -e 'checklist::set_tag()';
 
   echo '\nPush pkgdown website...\n'
   cp -R /check/docs /docs
