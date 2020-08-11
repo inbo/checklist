@@ -26,3 +26,10 @@ Copy this (not the \code{Bearer} part) and append it to your \code{.Renviron} as
 follows: \verb{ORCID_TOKEN=dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e}.
 Don't forget to append your UUID instead of the example given here.
 }
+\seealso{
+Other utils: 
+\code{\link{is_workdir_clean}()},
+\code{\link{validate_email}()},
+\code{\link{yesno}()}
+}
+\concept{utils}

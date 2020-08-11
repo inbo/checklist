@@ -16,3 +16,10 @@ Defaults to \code{TRUE}.}
 \description{
 Write a check list with allowed issues in the source code
 }
+\seealso{
+Other both: 
+\code{\link{check_filename}()},
+\code{\link{check_lintr}()},
+\code{\link{read_checklist}()}
+}
+\concept{both}

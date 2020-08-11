@@ -3,6 +3,7 @@
 #' @export
 #' @importFrom devtools document
 #' @importFrom rmarkdown github_document render
+#' @family package
 check_documentation <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)

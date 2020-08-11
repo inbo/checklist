@@ -14,6 +14,26 @@ navbar:
   - icon: fa-facebook fg-lg
     href: https://www.facebook.com/pg/INBOVlaanderen
 
+reference:
+- title: Checking packages
+  contents:
+  - has_concept("package")
+- title: Checking scripts
+  contents:
+  - has_concept("source")
+- title: Checking packages or scripts
+  contents:
+  - has_concept("both")
+- title: Setting up a project
+  contents:
+  - has_concept("setup")
+- title: R6 class
+  contents:
+  - has_concept("class")
+- title: Auxiliary functions
+  contents:
+  - has_concept("utils")
+
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"

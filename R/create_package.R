@@ -9,6 +9,7 @@
 #' @importFrom git2r add  init
 #' @importFrom tools toTitleCase
 #' @importFrom utils sessionInfo
+#' @family setup
 create_package <- function(
   package, path = ".", title, description, maintainer
 ) {

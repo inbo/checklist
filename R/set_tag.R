@@ -3,6 +3,7 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom git2r config push repository tag tags
+#' @family package
 set_tag <- function(x = ".") {
   if (
     !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||

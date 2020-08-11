@@ -6,6 +6,7 @@
 #' @importFrom assertthat assert_that has_name is.string
 #' @importFrom utils file_test
 #' @importFrom yaml read_yaml
+#' @family both
 read_checklist <- function(x = ".") {
   if (!inherits(x, "Checklist")) {
     assert_that(is.string(x))

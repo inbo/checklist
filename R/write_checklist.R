@@ -6,6 +6,7 @@
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom yaml write_yaml
 #' @export
+#' @family both
 write_checklist <- function(x = ".", package = TRUE) {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- suppressMessages(read_checklist(x = x))

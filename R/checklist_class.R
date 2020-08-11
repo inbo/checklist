@@ -3,6 +3,7 @@
 #' @export
 #' @importFrom assertthat assert_that is.string noNA
 #' @importFrom R6 R6Class
+#' @family class
 checklist <- R6Class(
 
   "Checklist",

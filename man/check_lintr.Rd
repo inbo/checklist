@@ -13,3 +13,10 @@ Defaults to \code{.}.}
 \description{
 Check the packages for linters
 }
+\seealso{
+Other both: 
+\code{\link{check_filename}()},
+\code{\link{read_checklist}()},
+\code{\link{write_checklist}()}
+}
+\concept{both}

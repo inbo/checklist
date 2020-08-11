@@ -2,6 +2,7 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom git2r in_repository ls_tree
+#' @family both
 check_filename <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)

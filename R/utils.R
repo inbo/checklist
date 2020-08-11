@@ -8,6 +8,7 @@
 #' @return A logical where `TRUE` implies a "yes" answer from the user.
 #' @export
 #' @importFrom utils menu
+#' @family utils
 yesno <- function(...) {
   stopifnot(interactive())
   yeses <- c(
@@ -28,6 +29,7 @@ yesno <- function(...) {
 #' Otherwise `FALSE`
 #' @export
 #' @importFrom git2r status
+#' @family utils
 is_workdir_clean <- function(repo) {
   current_status <- status(repo)
   all(vapply(current_status, length, integer(1)) == 0)
@@ -38,6 +40,7 @@ is_workdir_clean <- function(repo) {
 #' @return A logical vector.
 #' @export
 #' @importFrom assertthat assert_that
+#' @family utils
 validate_email <- function(email) {
   assert_that(is.character(email))
   # expression taken from https://emailregex.com/
@@ -75,6 +78,7 @@ validate_email <- function(email) {
 #' @importFrom assertthat assert_that is.string
 #' @importFrom rorcid as.orcid
 #' @importFrom utils person
+#' @family utils
 orcid2person <- function(orcid, email, role = c("aut", "cre")) {
   assert_that(is.string(orcid))
   assert_that(

@@ -6,6 +6,7 @@
 \description{
 A class which contains all checklist results.
 }
+\concept{class}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{

@@ -7,6 +7,7 @@
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
+#' @family package
 check_description <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)
@@ -75,6 +76,7 @@ check_description <- function(x = ".") {
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom desc description
+#' @family package
 tidy_desc <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)
