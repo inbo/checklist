@@ -1,5 +1,11 @@
+# Rstudio
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# OAuth tokens
 .httr-oauth
+
+# pkgdown
+docs/*

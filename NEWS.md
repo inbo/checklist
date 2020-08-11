@@ -1,3 +1,13 @@
+# checklist 0.1.4
+
+* `set_tag()` skips if the tag already exists.
+* `create_package()` sets a code of conduct and contributing guidelines.
+* `create_package()` sets `LICENSE.md`.
+* Run `pkgdown::build_site()` during the 
+  [`check_pkg`](https://github.com/inbo/actions/) GitHub action.
+* Deploy the `pkgdown` website to a `gp-pages` branch when pushing to master 
+  during the [`check_pkg`](https://github.com/inbo/actions/) GitHub action.
+
 # checklist 0.1.3
 
 * Add `validate_email()` to check for valid email adresses.

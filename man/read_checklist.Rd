@@ -16,3 +16,10 @@ A \code{Checklist} object.
 \description{
 Read the check list file from a package
 }
+\seealso{
+Other both: 
+\code{\link{check_filename}()},
+\code{\link{check_lintr}()},
+\code{\link{write_checklist}()}
+}
+\concept{both}

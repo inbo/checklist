@@ -9,6 +9,7 @@
 #' @importFrom git2r add  init
 #' @importFrom tools toTitleCase
 #' @importFrom utils sessionInfo
+#' @family setup
 create_package <- function(
   package, path = ".", title, description, maintainer
 ) {
@@ -110,6 +111,13 @@ RoxygenNote: %s
   writeLines(readme, file.path(path, "README.Rmd"))
   add(repo = repo, "README.Rmd")
 
+  # add LICENSE.md
+  file.copy(
+    system.file("package_template/gplv3.md", package = "checklist"),
+    file.path(path, "LICENSE.md")
+  )
+  add(repo = repo, "LICENSE.md")
+
   # add checklist.yml
   writeLines(
   "description: Configuration file for checklist::check_pkg()
@@ -120,6 +128,35 @@ allowed:
     file.path(path, "checklist.yml")
   )
   add(repo = repo, "checklist.yml")
+
+  # Add code of conduct
+  dir.create(file.path(path, ".github"))
+  file.copy(
+    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
+    file.path(path, ".github", "CODE_OF_CONDUCT.md")
+  )
+  add(repo = repo, ".github/CODE_OF_CONDUCT.md")
+
+  # Add contributing guidelines
+  file.copy(
+    system.file("package_template/CONTRIBUTING.md", package = "checklist"),
+    file.path(path, ".github", "CONTRIBUTING.md")
+  )
+  add(repo = repo, ".github/CONTRIBUTING.md")
+
+  # prepare pkgdown
+  file.copy(
+    system.file("package_template/_pkgdown.yml", package = "checklist"),
+    file.path(path, "_pkgdown.yml")
+  )
+  add(repo = repo, "_pkgdown.yml")
+
+  dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
+  file.copy(
+    system.file("package_template/pkgdown.css", package = "checklist"),
+    file.path(path, "pkgdown", "extra.css")
+  )
+  add(repo = repo, "pkgdown/extra.css")
 
   message("package created at `", path, "`")
   return(invisible(NULL))

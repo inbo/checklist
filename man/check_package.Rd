@@ -17,3 +17,12 @@ session.}
 \description{
 A standardised test for R packages
 }
+\seealso{
+Other package: 
+\code{\link{check_cran}()},
+\code{\link{check_description}()},
+\code{\link{check_documentation}()},
+\code{\link{set_tag}()},
+\code{\link{tidy_desc}()}
+}
+\concept{package}

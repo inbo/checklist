@@ -1,0 +1,44 @@
+navbar:
+  title: ~
+  type: default
+  left:
+  - text: NEWS
+    href: news/index.html
+  - text: Functions
+    href: reference/index.html
+  - text: Contributing
+    href: CONTRIBUTING.html
+  right:
+  - icon: fa-twitter fa-lg
+    href: https://twitter.com/INBOVlaanderen
+  - icon: fa-facebook fg-lg
+    href: https://www.facebook.com/pg/INBOVlaanderen
+
+reference:
+- title: Checking packages
+  contents:
+  - has_concept("package")
+- title: Checking scripts
+  contents:
+  - has_concept("source")
+- title: Checking packages or scripts
+  contents:
+  - has_concept("both")
+- title: Setting up a project
+  contents:
+  - has_concept("setup")
+- title: R6 class
+  contents:
+  - has_concept("class")
+- title: Auxiliary functions
+  contents:
+  - has_concept("utils")
+
+authors:
+  Thierry Onkelinx:
+    href: "https://www.muscardinus.be"
+  Research Institute for Nature and Forest:
+    href: "https://www.inbo.be/en"
+    html: "<img src='https://ropensci.github.io/git2rdata/reference/figures/logo_en.png' height=24>"
+
+url: https://inbo.github.io/checklist

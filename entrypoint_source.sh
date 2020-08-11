@@ -3,6 +3,7 @@
 echo '\nGetting the code...\n'
 git clone https://$2@github.com/$1 check
 cd check
+git config advice.detachedHead false
 git checkout $GITHUB_SHA
 cd $3
 

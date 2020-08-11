@@ -13,3 +13,10 @@ Defaults to \code{.}.}
 \description{
 Check the style of file names
 }
+\seealso{
+Other both: 
+\code{\link{check_lintr}()},
+\code{\link{read_checklist}()},
+\code{\link{write_checklist}()}
+}
+\concept{both}

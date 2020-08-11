@@ -20,3 +20,4 @@ create_package(package, path = ".", title, description, maintainer)
 \description{
 Create an R package according to INBO requirements
 }
+\concept{setup}

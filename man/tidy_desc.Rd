@@ -13,3 +13,12 @@ Defaults to \code{.}.}
 \description{
 Make your description tidy
 }
+\seealso{
+Other package: 
+\code{\link{check_cran}()},
+\code{\link{check_description}()},
+\code{\link{check_documentation}()},
+\code{\link{check_package}()},
+\code{\link{set_tag}()}
+}
+\concept{package}

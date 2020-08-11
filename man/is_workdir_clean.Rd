@@ -16,3 +16,10 @@ Otherwise \code{FALSE}
 \description{
 Check if the current workdir of a repo is clean
 }
+\seealso{
+Other utils: 
+\code{\link{orcid2person}()},
+\code{\link{validate_email}()},
+\code{\link{yesno}()}
+}
+\concept{utils}

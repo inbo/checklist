@@ -4,6 +4,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom rcmdcheck rcmdcheck
 #' @export
+#' @family package
 check_cran <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)

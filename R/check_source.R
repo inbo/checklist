@@ -7,6 +7,7 @@
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom utils file_test
 #' @export
+#' @family source
 check_source <- function(x = ".", fail = !interactive()) {
   assert_that(is.flag(fail))
   assert_that(noNA(fail))

@@ -3,6 +3,7 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom lintr lint_dir lint_package
+#' @family both
 check_lintr <- function(x = ".") {
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
   options(lintr.rstudio_source_markers = FALSE)

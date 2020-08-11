@@ -8,6 +8,7 @@
 #' @return A logical where `TRUE` implies a "yes" answer from the user.
 #' @export
 #' @importFrom utils menu
+#' @family utils
 yesno <- function(...) {
   stopifnot(interactive())
   yeses <- c(
@@ -28,6 +29,7 @@ yesno <- function(...) {
 #' Otherwise `FALSE`
 #' @export
 #' @importFrom git2r status
+#' @family utils
 is_workdir_clean <- function(repo) {
   current_status <- status(repo)
   all(vapply(current_status, length, integer(1)) == 0)
@@ -38,6 +40,7 @@ is_workdir_clean <- function(repo) {
 #' @return A logical vector.
 #' @export
 #' @importFrom assertthat assert_that
+#' @family utils
 validate_email <- function(email) {
   assert_that(is.character(email))
   # expression taken from https://emailregex.com/
@@ -75,6 +78,7 @@ validate_email <- function(email) {
 #' @importFrom assertthat assert_that is.string
 #' @importFrom rorcid as.orcid
 #' @importFrom utils person
+#' @family utils
 orcid2person <- function(orcid, email, role = c("aut", "cre")) {
   assert_that(is.string(orcid))
   assert_that(
@@ -101,4 +105,123 @@ orcid2person <- function(orcid, email, role = c("aut", "cre")) {
     role = role,
     comment = c(ORCID = orcid)
   )
+}
+
+checklist_extract <- function(x, name = "value", prefix = rep("", length(x))) {
+  paste0(prefix, vapply(x, `[[`, character(1), name))
+}
+
+checklist_format_error <- function(errors) {
+  error_length <- vapply(errors, length, integer(1))
+  vapply(
+    names(errors)[error_length > 0],
+    function(x) {
+      sprintf(
+        "%s: %i error%s%s",
+        x, length(errors[[x]]),
+        ifelse(length(errors[[x]]) > 1, "s", ""),
+        paste(rules("-"), errors[[x]], collapse = "")
+      )
+    },
+    character(1)
+  )
+}
+
+checklist_format_output <- function(
+  input, output, motivation = rep("", length = length(input)), type,
+  variable, negate = FALSE
+) {
+  ok <- xor(input %in% output, negate)
+  if (all(ok)) {
+    return(character(0))
+  }
+  sprintf(
+    "%i %s %s%s\n%s",
+    sum(!ok), type, variable, ifelse(sum(!ok) > 1, "s", ""),
+    paste(rules("-"), input[!ok], motivation[!ok], collapse = "")
+  )
+}
+
+#' @importFrom sessioninfo session_info
+checklist_print <- function(
+  path, warnings, allowed_warnings, notes, allowed_notes, linter, errors
+) {
+  print(session_info())
+  output <- c(
+    sprintf(
+      "%sChecklist summary for the package located at:\n%s",
+      rules(), path
+    ),
+    checklist_format_output(
+      input = warnings,
+      output = checklist_extract(allowed_warnings),
+      motivation = checklist_extract(
+        allowed_warnings, "motivation", "\nmotivation: "
+      ),
+      type = "allowed", variable = "warning", negate = TRUE
+    ),
+    checklist_format_output(
+      input = warnings,
+      output = checklist_extract(allowed_warnings),
+      type = "new", variable = "warning"
+    ),
+    checklist_format_output(
+      input = checklist_extract(allowed_warnings),
+      output = warnings,
+      motivation = checklist_extract(
+        allowed_warnings, "motivation", "\nmotivation: "
+      ),
+      type = "missing", variable = "warning"
+    ),
+    checklist_format_output(
+      input = notes,
+      output = checklist_extract(allowed_notes),
+      motivation = checklist_extract(
+        allowed_notes, "motivation", "\nmotivation: "
+      ),
+      type = "allowed", variable = "note", negate = TRUE
+    ),
+    checklist_format_output(
+      input = notes,
+      output = checklist_extract(allowed_notes),
+      type = "new", variable = "note"
+    ),
+    checklist_format_output(
+      input = checklist_extract(allowed_notes),
+      output = notes,
+      motivation = checklist_extract(
+        allowed_notes, "motivation", "\nmotivation: "
+      ),
+      type = "missing", variable = "note"
+    ),
+    checklist_summarise_linter(linter),
+    checklist_format_error(errors)
+  )
+  cat(output, sep = rules())
+  cat(rules())
+}
+
+checklist_summarise_linter <- function(linter) {
+  if (length(linter) == 0) {
+    return(character(0))
+  }
+  linter_message <- vapply(linter, `[[`, character(1), "message")
+  messages <- sort(table(linter_message), decreasing = TRUE)
+  messages <- sprintf("%i times \"%s\"", messages, names(messages))
+  sprintf(
+    "%i linter%s found.
+`styler::style_file()` can fix some problems automatically. \n%s%s",
+    length(linter), ifelse(length(linter) > 1, "s", ""),
+    rules("-"),
+    paste(messages, collapse = "\n")
+  )
+}
+
+rules <- function(x = "#", nl = "\n") {
+  if (missing(nl)) {
+    nl <- switch(x, "#" = "\n\n", "\n")
+  } else {
+    assert_that(is.string(nl), noNA(nl))
+  }
+  paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")
 }
