@@ -143,6 +143,20 @@ allowed:
   )
   add(repo = repo, ".github/CONTRIBUTING.md")
 
+  # prepare pkgdown
+  file.copy(
+    system.file("package_template/_pkgdown.yml", package = "checklist"),
+    file.path(path, "_pkgdown.yml")
+  )
+  add(repo = repo, "_pkgdown.yml")
+
+  dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
+  file.copy(
+    system.file("package_template/pkgdown.css", package = "checklist"),
+    file.path(path, "pkgdown", "extra.css")
+  )
+  add(repo = repo, "pkgdown/extra.css")
+
   message("package created at `", path, "`")
   return(invisible(NULL))
 }
