@@ -89,11 +89,9 @@ tidy_desc <- function(x = ".") {
   Sys.setlocale(category = "LC_CTYPE", locale = "C")
   Sys.setlocale(category = "LC_COLLATE", locale = "C")
   Sys.setlocale(category = "LC_TIME", locale = "C")
-  on.exit({
-    Sys.setlocale(category = "LC_CTYPE", locale = old_ctype)
-    Sys.setlocale(category = "LC_COLLATE", locale = old_collate)
-    Sys.setlocale(category = "LC_TIME", locale = old_time)
-  })
+  on.exit(Sys.setlocale(category = "LC_CTYPE", locale = old_ctype))
+  on.exit(Sys.setlocale(category = "LC_COLLATE", locale = old_collate))
+  on.exit(Sys.setlocale(category = "LC_TIME", locale = old_time))
 
   # turn crayon off
   old_crayon <- getOption("crayon.enabled")
