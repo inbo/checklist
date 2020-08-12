@@ -54,6 +54,6 @@ set_tag <- function(x = ".") {
     name = paste0("v", version),
     message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
-  system2("git", args = c("push", "--follow-tags"))
+  system2("git", args = c("push", paste0("v", version)))
   return(invisible(NULL))
 }
