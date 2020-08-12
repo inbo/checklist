@@ -98,11 +98,19 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
 ## install rlang
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
 
+## install rgdal
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libgdal-dev \
+    libproj-dev \
+  && apt-get clean
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("rgdal")'
+
 ## install rorcid
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
 ## install roxygen2
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
 
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
