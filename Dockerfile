@@ -54,9 +54,6 @@ RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOpt
 ## install remotes package
 RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
 
-## install older version of cp11 needed for tidyr 1.1.1
-RUN Rscript --no-save --no-restore -e 'remotes::install_version("cpp11", version = "0.1")'
-
 ## install devtools
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
