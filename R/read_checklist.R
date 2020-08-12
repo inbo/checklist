@@ -16,7 +16,7 @@ read_checklist <- function(x = ".") {
   checklist_file <- file.path(x$get_path, "checklist.yml")
   if (!file_test("-f", checklist_file)) {
     # no check list file found
-    message("No `checklist.yml` found. Assuming you want to test a package.
+    message("No `checklist.yml` found. Assuming this is a package.
 See `?write_checklist()` to generate a `checklist.yml`.")
     x <- x$allowed()
     return(x)

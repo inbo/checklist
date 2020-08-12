@@ -83,6 +83,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 ## install microbenchmark
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 
+## install mockery
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("mockery")'
+
 ## install pillar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 

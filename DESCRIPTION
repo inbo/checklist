@@ -30,6 +30,7 @@ Imports:
     yaml
 Suggests: 
     covr,
+    mockery,
     pkgdown,
     roxygen2,
     testthat
