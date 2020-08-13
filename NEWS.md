@@ -1,5 +1,9 @@
 # checklist 0.1.5
 
+* `check_documentation()` allows `NEWS.md` to have level 2 headings (`##`) and
+  single line subitems (`    *`).
+  It doesn't count URLs when determining the line of a line. 
+  This allows lines to be longer than 80 characters due to long URLs.
 * Fix deploying pkgdown website and release.
 
 # checklist 0.1.4
