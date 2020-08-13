@@ -106,7 +106,7 @@ RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
     libgdal-dev \
     libproj-dev \
-  && apt-get clean
+  && apt-get clean \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("rgdal")'
 
 ## install rorcid
