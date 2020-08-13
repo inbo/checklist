@@ -64,17 +64,30 @@ checklist <- R6Class(
       invisible(self)
     },
 
+    #' @description Add notes
+    #' @param notes A vector with notes.
+    add_notes = function(notes) {
+      assert_that(is.character(notes), noNA(notes))
+      private$notes <- unique(c(private$notes, notes))
+      invisible(self)
+    },
+
     #' @description Add results from `rcmdcheck::rcmdcheck`
     #' @param errors A vector with errors.
     #' @param warnings A vector with warning messages.
     #' @param notes A vector with notes.
     add_rcmdcheck = function(errors, warnings, notes) {
-      assert_that(is.character(warnings), noNA(warnings))
-      assert_that(is.character(notes), noNA(notes))
       self$add_error(errors, "R CMD check")
-      private$warnings <- warnings
-      private$notes <- notes
-      private$checked <- sort(unique(c(private$checked, "R CMD check")))
+      self$add_warnings(warnings)
+      self$add_notes(notes)
+      invisible(self)
+    },
+
+    #' @description Add warnings
+    #' @param warnings A vector with warnings.
+    add_warnings = function(warnings) {
+      assert_that(is.character(warnings), noNA(warnings))
+      private$warnings <- unique(c(private$warnings, warnings))
       invisible(self)
     },
 

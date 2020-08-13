@@ -34,7 +34,9 @@ package.}
 \item \href{#method-add_error}{\code{checklist$add_error()}}
 \item \href{#method-add_linter}{\code{checklist$add_linter()}}
 \item \href{#method-add_motivation}{\code{checklist$add_motivation()}}
+\item \href{#method-add_notes}{\code{checklist$add_notes()}}
 \item \href{#method-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
+\item \href{#method-add_warnings}{\code{checklist$add_warnings()}}
 \item \href{#method-allowed}{\code{checklist$allowed()}}
 \item \href{#method-confirm_motivation}{\code{checklist$confirm_motivation()}}
 \item \href{#method-new}{\code{checklist$new()}}
@@ -96,6 +98,23 @@ Add motivation for allowed issues.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_notes"></a>}}
+\if{latex}{\out{\hypertarget{method-add_notes}{}}}
+\subsection{Method \code{add_notes()}}{
+Add notes
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_notes(notes)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{notes}}{A vector with notes.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_rcmdcheck"></a>}}
 \if{latex}{\out{\hypertarget{method-add_rcmdcheck}{}}}
 \subsection{Method \code{add_rcmdcheck()}}{
@@ -112,6 +131,23 @@ Add results from \code{rcmdcheck::rcmdcheck}
 \item{\code{warnings}}{A vector with warning messages.}
 
 \item{\code{notes}}{A vector with notes.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-add_warnings"></a>}}
+\if{latex}{\out{\hypertarget{method-add_warnings}{}}}
+\subsection{Method \code{add_warnings()}}{
+Add warnings
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_warnings(warnings)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{warnings}}{A vector with warnings.}
 }
 \if{html}{\out{</div>}}
 }

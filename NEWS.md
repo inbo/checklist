@@ -4,6 +4,14 @@
   single line subitems (`    *`).
   It doesn't count URLs when determining the line of a line. 
   This allows lines to be longer than 80 characters due to long URLs.
+* `check_filename()` is more liberal.
+    * Allows files ending on `-package.Rd`.
+    * Allows filename `cran-comment.md` and `WORDLIST`.
+    * Allows `man-roxygen` as folder name.
+    * Requires underscore (`_`) as separator for non-graphics files.
+    * Requires dash (`-`) as separator for graphics files.
+    * Basename separator issue are warnings instead of errors.
+  So you can allow these warnings via `write_checklist()`.
 * Fix deploying pkgdown website and release.
 
 # checklist 0.1.4

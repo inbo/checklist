@@ -28,7 +28,8 @@ check_filename <- function(x = ".") {
   # ignore git and RStudio files
   dirs <- dirs[!grepl("\\.(git|Rproj.user)(/.*)?$", dirs)]
   ok_dirs <- c(
-    "", "R", ".github/ISSUE_TEMPLATE", ".github/PULL_REQUEST_TEMPLATE"
+    "", "R", ".github/ISSUE_TEMPLATE", ".github/PULL_REQUEST_TEMPLATE",
+    "man-roxygen"
   )
   dirs <- dirs[!dirs %in% c(ok_dirs)]
   check_dir <- grepl("^\\.?([a-z0-9_\\/])+$", dirs)
@@ -50,7 +51,8 @@ Failing folder: `%s`",
         "DESCRIPTION", "NAMESPACE",
         "README\\.R?md", "NEWS\\.md",
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md",
-        "Dockerfile"
+        "Dockerfile",
+        ".*-package\\.Rd", "cran-comments.md", "WORDLIST"
       ),
       collapse = "|"
     )
@@ -60,8 +62,9 @@ Failing folder: `%s`",
   problems <- c(
     problems,
     sprintf(
-      "Basename must contain only lower case, numbers or `_`.\nFails: `%s`",
-      files[!grepl("^[a-z0-9_]*$", base)]
+      "Basename must contain only lower case, numbers, `_` or `-`.
+Fails: `%s`",
+      files[!grepl("^[a-z0-9_-]*$", base)]
     )
   )
 
@@ -84,6 +87,21 @@ Failing folder: `%s`",
     )
   )
 
+  graphics_file <- extension %in% c("eps", "jpg", "jpeg", "pdf", "png", "ps")
+  warnings <- c(
+    sprintf(
+      "Use `_` as separator in the basename of non-graphics files.
+  File: `%s`",
+      files[grepl("-+", base) & !graphics_file]
+    ),
+    sprintf(
+      "Use `-` as separator in the basename of graphics files.
+  File: `%s`",
+      files[grepl("_+", base) & graphics_file]
+    )
+  )
+
+  x$add_warnings(warnings)
   x$add_error(problems, "filename conventions")
 
   return(x)
