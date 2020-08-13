@@ -22,3 +22,6 @@
 
 # license
 ^LICENSE.md$
+
+# Zenodo
+^\.zenodo\.json$

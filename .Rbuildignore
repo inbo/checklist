@@ -28,3 +28,6 @@
 # Docker
 ^Dockerfile$
 ^.dockerignore$
+
+# Zenodo
+^\.zenodo\.json$

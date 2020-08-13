@@ -1,0 +1,22 @@
+{
+    "title": "A Thorough and Strict Set of Checks for R Packages and Source Code",
+    "description": "An opinated set of rules for R packages and R source code projects an used at the Research Institute for Nature and Forest (INBO), Brussels, Belgium (<a href=\"https://www.inbo.be/en\">www.inbo.be</a>).",
+    "license": "GPL-3.0",
+    "upload_type": "other",
+    "access_right": "open",
+    "creators": [
+        {
+            "name": "Onkelinx, Thierry",
+            "affiliation": "Research Institute for Nature and Forest",
+            "orcid": "0000-0001-8804-4216"
+        }
+    ],
+    "keywords": [
+        "R",
+        "package",
+        "open science",
+        "continous integreation",
+        "unit test",
+        "code style"
+        ]
+}
