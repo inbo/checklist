@@ -47,7 +47,7 @@ Failing folder: `%s`",
     "^(%s)$",
     paste(
       c(
-        "\\.[a-zA-Z]+ignore", "\\.Rprofile",
+        "\\.[a-zA-Z]+ignore", "\\.Rprofile", "\\.[a-zA-Z]+\\.(json|yml)",
         "DESCRIPTION", "NAMESPACE",
         "README\\.R?md", "NEWS\\.md",
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md",

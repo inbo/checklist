@@ -6,6 +6,7 @@
   This allows lines to be longer than 80 characters due to long URLs.
 * `check_filename()` is more liberal.
     * Allows files ending on `-package.Rd`.
+    * Allows json or yml files starting with a dot and followed by letters.
     * Allows filename `cran-comment.md` and `WORDLIST`.
     * Allows `man-roxygen` as folder name.
     * Requires underscore (`_`) as separator for non-graphics files.
