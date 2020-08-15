@@ -14,6 +14,8 @@
     * Basename separator issue are warnings instead of errors.
   So you can allow these warnings via `write_checklist()`.
 * Fix deploying pkgdown website and release.
+* Package require a `codemeta.json` as written by `codemetar::write_codemeta`.
+  Suggestions by `codemetar` to improve the package become checklist notes.
 
 # checklist 0.1.4
 

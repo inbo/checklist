@@ -15,9 +15,11 @@ Description: An opinated set of rules for R packages and R source code
     projects.
 License: GPL-3
 URL: https://inbo.github.io/checklist, https://github.com/inbo/checklist
+BugReports: https://github.com/inbo/checklist/issues
 Imports:
     R6,
     assertthat,
+    codemetar,
     desc,
     devtools,
     git2r,

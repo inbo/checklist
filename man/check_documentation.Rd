@@ -15,6 +15,7 @@ Check the documentation
 }
 \seealso{
 Other package: 
+\code{\link{check_codemeta}()},
 \code{\link{check_cran}()},
 \code{\link{check_description}()},
 \code{\link{check_package}()},

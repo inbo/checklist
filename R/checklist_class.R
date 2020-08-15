@@ -170,7 +170,7 @@ checklist <- R6Class(
     fail = function() {
       required_checks <- list(
         always = c("checklist", "filename conventions", "lintr"),
-        package = c("DESCRIPTION", "documentation", "R CMD check")
+        package = c("DESCRIPTION", "documentation", "R CMD check", "codemeta")
       )
       required_checks <- unlist(required_checks[c(TRUE, self$package)])
       stopifnot(all(private$checked %in% required_checks))

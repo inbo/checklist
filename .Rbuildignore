@@ -31,3 +31,4 @@
 
 # Zenodo
 ^\.zenodo\.json$
+^codemeta\.json$
