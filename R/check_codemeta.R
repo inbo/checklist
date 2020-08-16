@@ -6,7 +6,7 @@
 #' @importFrom git2r repository status
 #' @export
 #' @family package
-check_codemeta <- function(x) {
+check_codemeta <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
     x <- read_checklist(x = x)
   }

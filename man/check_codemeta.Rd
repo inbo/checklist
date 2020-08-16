@@ -4,7 +4,7 @@
 \alias{check_codemeta}
 \title{Check the package metadata}
 \usage{
-check_codemeta(x)
+check_codemeta(x = ".")
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
