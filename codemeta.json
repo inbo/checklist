@@ -7,8 +7,6 @@
   "identifier": "checklist",
   "description": "An opinated set of rules for R packages and R source code\n    projects.",
   "name": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "codeRepository": "https://github.com/inbo/checklist",
-  "relatedLink": "https://inbo.github.io/checklist",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.1.5",
   "programmingLanguage": {
@@ -141,6 +139,7 @@
       "@type": "SoftwareApplication",
       "identifier": "codemetar",
       "name": "codemetar",
+      "version": ">= 0.1.10",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -263,17 +262,19 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "releaseNotes": "https://github.com/inbo/checklist/blob/master/NEWS.md",
-  "readme": "https://github.com/inbo/checklist/blob/master/README.md",
-  "fileSize": "0KB",
+  "fileSize": "138.458KB",
   "contIntegration": "https://codecov.io/gh/inbo/checklist?branch=master",
   "developmentStatus": ["https://www.repostatus.org/#wip", "https://www.tidyverse.org/lifecycle/#experimental"],
+  "codeRepository": "https://github.com/inbo/checklist",
+  "relatedLink": "https://inbo.github.io/checklist",
+  "issueTracker": "https://github.com/inbo/checklist/issues",
+  "releaseNotes": "https://github.com/inbo/checklist/blob/master/NEWS.md",
+  "readme": "https://github.com/inbo/checklist/blob/master/README.md",
   "keywords": [
     "r",
     "checklist",
     "continuous-integration",
     "continuous-testing",
     "quality-assurance"
-  ],
-  "issueTracker": "https://github.com/inbo/checklist/issues"
+  ]
 }

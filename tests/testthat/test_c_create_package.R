@@ -33,14 +33,14 @@ test_that("create_package() works", {
     x$add_motivation(which = "notes"),
     "Checklist"
   )
-  expect_length(x$.__enclos_env__$private$allowed_notes, 1)
+  expect_length(x$.__enclos_env__$private$allowed_notes, 3)
 
   stub(x$confirm_motivation, "yesno", TRUE, depth = 2)
   expect_is(
     x$confirm_motivation(which = "notes"),
     "Checklist"
   )
-  expect_length(x$.__enclos_env__$private$allowed_notes, 1)
+  expect_length(x$.__enclos_env__$private$allowed_notes, 3)
 
   stub(write_checklist, "x$add_motivation", NULL)
   stub(write_checklist, "x$confirm_motivation", NULL)
