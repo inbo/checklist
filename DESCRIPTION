@@ -19,7 +19,7 @@ BugReports: https://github.com/inbo/checklist/issues
 Imports:
     R6,
     assertthat,
-    codemetar,
+    codemetar (>= 0.1.10),
     desc,
     devtools,
     git2r,
