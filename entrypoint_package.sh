@@ -29,6 +29,10 @@ fi
 
 echo '\nChecking code coverage...\n'
 Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE); message(result$message)'
+if [ $? -ne 0 ]; then
+  echo '\nChecking code coverage failed. Please check the error message above.\n';
+  exit 1
+fi
 
 echo '\nBuilding pkgdown website...\n'
 Rscript --no-save --no-restore -e 'pkgdown::build_site()'
