@@ -47,6 +47,7 @@ elif [ "$GITHUB_EVENT_NAME" != "push" ]; then
 elif [ "$GITHUB_REF" != "refs/heads/master" ]; then
   echo '\nNot updating tag, because not on master.';
 else
+  git checkout master
   echo '\nUpdating tag...\n';
   Rscript --no-save --no-restore -e 'checklist::set_tag()';
 

@@ -2,7 +2,7 @@
 #' @export
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config repository tag tags
+#' @importFrom git2r config is_detached repository tag tags
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -22,6 +22,10 @@ set_tag <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
   repo <- repository(x$get_path)
+  assert_that(
+    !is_detached(repo),
+    msg = "`set_tag()` doesn't work on a repository with detached HEAD."
+  )
   description <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
@@ -54,6 +58,6 @@ set_tag <- function(x = ".") {
     name = paste0("v", version),
     message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
-  system2("git", args = c("push", paste0("v", version)))
+  system2("git", args = c("push", "origin", paste0("v", version)))
   return(invisible(NULL))
 }

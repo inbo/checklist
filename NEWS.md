@@ -16,6 +16,7 @@
 * Fix deploying pkgdown website and release.
 * Package require a `codemeta.json` as written by `codemetar::write_codemeta`.
   Suggestions by `codemetar` to improve the package become checklist notes.
+* `set_tag()` fails when in a detached HEAD state.
 
 # checklist 0.1.4
 
