@@ -262,7 +262,7 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "fileSize": "138.458KB",
+  "fileSize": "138.714KB",
   "contIntegration": "https://codecov.io/gh/inbo/checklist?branch=master",
   "developmentStatus": ["https://www.repostatus.org/#wip", "https://www.tidyverse.org/lifecycle/#experimental"],
   "codeRepository": "https://github.com/inbo/checklist",

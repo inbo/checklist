@@ -36,6 +36,8 @@ Suggests:
     pkgdown,
     roxygen2,
     testthat
+Remotes: 
+    ropensci/codemetar@dev
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
