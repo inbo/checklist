@@ -186,6 +186,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "httr",
+      "name": "httr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=httr"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "lintr",
       "name": "lintr",
       "provider": {
@@ -262,7 +274,7 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "fileSize": "138.714KB",
+  "fileSize": "139.002KB",
   "contIntegration": "https://codecov.io/gh/inbo/checklist?branch=master",
   "developmentStatus": ["https://www.repostatus.org/#wip", "https://www.tidyverse.org/lifecycle/#experimental"],
   "codeRepository": "https://github.com/inbo/checklist",

@@ -7,9 +7,9 @@ allowed:
       version of codemetar
     value: |-
       checking CRAN incoming feasibility ... NOTE
-      Maintainer: <U+2018>Thierry Onkelinx <thierry.onkelinx@inbo.be><U+2019>
+      Maintainer: ‘Thierry Onkelinx <thierry.onkelinx@inbo.be>’
 
       New submission
 
       Unknown, possibly mis-spelled, fields in DESCRIPTION:
-        <U+2018>Remotes<U+2019>
+        ‘Remotes’

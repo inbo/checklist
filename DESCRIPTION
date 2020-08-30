@@ -23,6 +23,7 @@ Imports:
     desc,
     devtools,
     git2r,
+    httr,
     lintr,
     rcmdcheck,
     rmarkdown,

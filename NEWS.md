@@ -17,6 +17,7 @@
 * Package require a `codemeta.json` as written by `codemetar::write_codemeta`.
   Suggestions by `codemetar` to improve the package become checklist notes.
 * `set_tag()` fails when in a detached HEAD state.
+* `check_cran()` ignore system time check when world clock API is not available.
 
 # checklist 0.1.4
 

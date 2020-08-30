@@ -84,6 +84,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
+## install httr
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("httr")'
+
 ## install lintr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 
@@ -93,7 +96,7 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 ## install mockery
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("mockery")'
 
-## install pillar
+## install pkgdown
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
 ## install pillar

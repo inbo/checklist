@@ -2,6 +2,7 @@
 #' @inheritParams read_checklist
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
+#' @importFrom httr HEAD
 #' @importFrom rcmdcheck rcmdcheck
 #' @export
 #' @family package
@@ -14,6 +15,11 @@ check_cran <- function(x = ".") {
     msg = "`check_cran()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
+
+  clock_status <- HEAD("http://worldclockapi.com/api/json/utc/now")$status_code
+  if (clock_status != 200) {
+    Sys.setenv("_R_CHECK_SYSTEM_CLOCK_" = 0)
+  }
 
   check_output <- rcmdcheck(
     path = x$get_path,
