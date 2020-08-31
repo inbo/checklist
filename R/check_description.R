@@ -1,6 +1,6 @@
 #' Check the DESCRIPTION file
 #' @inheritParams read_checklist
-#' @importFrom assertthat has_name
+#' @importFrom assertthat assert_that
 #' @importFrom desc description
 #' @importFrom git2r branches branch_target commits lookup_commit parents
 #' repository repository_head sha when
@@ -69,7 +69,8 @@ check_description <- function(x = ".") {
   )
 
   x$add_error(desc_error, "DESCRIPTION")
-  return(x)
+
+  check_license(x = x)
 }
 
 #' Make your description tidy
@@ -135,4 +136,61 @@ unchanged_repo <- function(repo, old_status) {
       current_status$untracked,
       old_status$untracked
     )
+}
+
+#' Check the license
+#' @inheritParams read_checklist
+#' @importFrom assertthat assert_that
+#' @importFrom desc description
+#' @export
+#' @family package
+check_license <- function(x = ".") {
+  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
+    x <- read_checklist(x = x)
+  }
+  assert_that(
+    x$package,
+    msg = "`check_license()` is only relevant for packages.
+`checklist.yml` indicates this is not a package."
+  )
+  description <- description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
+
+  # check if the license is allowed
+  problems <- sprintf(
+    "%s license currently not allowed.
+Please send a pull request if you need support for this license.",
+    description$get_field("License")
+  )[
+    !description$get_field("License") %in% c("GPL-3")
+  ]
+
+  # check if LICENSE.md exists
+  if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
+    x$add_error(
+      errors = c(problems, "No LICENSE.md file"),
+      item = "License"
+    )
+    return(x)
+  }
+
+  # check if LICENSE.md matches the official version
+  current <- readLines(file.path(x$get_path, "LICENSE.md"))
+  official <- switch(
+    description$get_field("License"),
+    "GPL-3" = system.file("package_template", "gplv3.md", package = "checklist")
+  )
+  official <- readLines(official)
+  x$add_error(
+    errors = c(
+      problems,
+      "LICENSE.md doesn't match official version"[
+        (length(current) != length(official)) || any(current != official)
+      ]
+    ),
+    item = "license"
+  )
+
+  return(x)
 }
