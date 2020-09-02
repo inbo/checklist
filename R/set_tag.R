@@ -41,13 +41,14 @@ set_tag <- function(x = ".") {
     return(invisible(NULL))
   }
   old_config <- config(repo)
-  on.exit({
+  on.exit(
     config(
       repo,
       user.name = old_config$local$user.name,
       user.email = old_config$local$user.email
-    )
-  })
+    ),
+    add = TRUE
+  )
   config(
     repo = repo,
     user.name = "Checklist bot",

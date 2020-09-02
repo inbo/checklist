@@ -90,13 +90,16 @@ tidy_desc <- function(x = ".") {
   Sys.setlocale(category = "LC_CTYPE", locale = "C")
   Sys.setlocale(category = "LC_COLLATE", locale = "C")
   Sys.setlocale(category = "LC_TIME", locale = "C")
-  on.exit(Sys.setlocale(category = "LC_CTYPE", locale = old_ctype))
-  on.exit(Sys.setlocale(category = "LC_COLLATE", locale = old_collate))
-  on.exit(Sys.setlocale(category = "LC_TIME", locale = old_time))
+  on.exit(Sys.setlocale(category = "LC_CTYPE", locale = old_ctype), add = TRUE)
+  on.exit(
+    Sys.setlocale(category = "LC_COLLATE", locale = old_collate),
+    add = TRUE
+  )
+  on.exit(Sys.setlocale(category = "LC_TIME", locale = old_time), add = TRUE)
 
   # turn crayon off
   old_crayon <- getOption("crayon.enabled")
-  on.exit(options("crayon.enabled" = old_crayon))
+  on.exit(options("crayon.enabled" = old_crayon), add = TRUE)
   options("crayon.enabled" = FALSE)
 
   desc <- description$new(file.path(x$get_path, "DESCRIPTION"))
