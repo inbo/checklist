@@ -13,6 +13,11 @@ cd $3
 export CODECOV_TOKEN=$4
 export ORCID_TOKEN=$5
 
+if [ ! -z "$6" ]; then
+  apt-get update
+  apt-get install -y --no-install-recommends $6
+fi
+
 echo '\nTrying to install the package...\n'
 Rscript --no-save --no-restore -e 'remotes::install_local(dependencies = TRUE, force = TRUE)'
 if [ $? -ne 0 ]; then
