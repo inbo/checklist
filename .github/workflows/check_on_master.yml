@@ -17,4 +17,4 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
           token: ${{ secrets.pat }}
-          aptget: libfontconfig1-dev
+          aptget: libfontconfig1-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev

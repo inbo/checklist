@@ -100,6 +100,10 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("mockery")'
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
        libfontconfig1-dev \
+       libfreetype6-dev \
+       libjpeg-dev \
+       libpng-dev \
+       libtiff5-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
 ## install pillar
