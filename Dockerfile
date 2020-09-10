@@ -97,7 +97,10 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("mockery")'
 
 ## install pkgdown
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
+RUN  apt-get update \
+  && apt-get install -y --no-install-recommends \
+       libfontconfig1-dev \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
 ## install pillar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pillar")'
