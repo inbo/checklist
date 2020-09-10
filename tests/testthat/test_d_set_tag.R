@@ -65,7 +65,7 @@ test_that("set_tag() works", {
     "Not on GitHub, not a push or not on master."
   )
 
-  # on master, GitHub, not push
+  # on master, GitHub, push
   Sys.setenv(GITHUB_EVENT_NAME = "push")
   expect_invisible(set_tag(file.path(path, package)))
 
