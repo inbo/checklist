@@ -274,7 +274,7 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "fileSize": "141.493KB",
+  "fileSize": "141.892KB",
   "contIntegration": "https://codecov.io/gh/inbo/checklist?branch=master",
   "developmentStatus": ["https://www.repostatus.org/#wip", "https://www.tidyverse.org/lifecycle/#experimental"],
   "codeRepository": "https://github.com/inbo/checklist",
@@ -282,11 +282,5 @@
   "issueTracker": "https://github.com/inbo/checklist/issues",
   "releaseNotes": "https://github.com/inbo/checklist/blob/master/NEWS.md",
   "readme": "https://github.com/inbo/checklist/blob/master/README.md",
-  "keywords": [
-    "r",
-    "checklist",
-    "continuous-integration",
-    "continuous-testing",
-    "quality-assurance"
-  ]
+  "keywords": ["r", "checklist", "continuous-integration", "continuous-testing", "quality-assurance"]
 }

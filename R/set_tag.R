@@ -59,6 +59,8 @@ set_tag <- function(x = ".") {
     name = paste0("v", version),
     message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
-  system2("git", args = c("push", "origin", paste0("v", version)))
+  cmd <- sprintf("cd %s; git push origin v%s", repo$path, version)
+  message(cmd)
+  system(cmd)
   return(invisible(NULL))
 }
