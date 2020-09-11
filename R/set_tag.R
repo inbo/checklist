@@ -1,4 +1,7 @@
-#' Set a new tag
+#' Set a New Tag and Create a Release
+#'
+#' This function only works when run in a GitHub Action on the master branch.
+#' Otherwise it will only return a message.
 #' @export
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
@@ -62,5 +65,43 @@ set_tag <- function(x = ".") {
   cmd <- sprintf("cd %s; git push origin v%s", repo$path, version)
   message(cmd)
   system(cmd)
+
+  create_release(repo = repo, version = version, message = message)
   return(invisible(NULL))
+}
+
+#' @importFrom httr add_headers POST
+#' @importFrom git2r remote_url
+create_release <- function(repo, version, message) {
+  url <- remote_url(repo, "origin")
+  if (!grepl("github.com", url)) {
+    warning("no `origin` or `origin` not on GitHub.")
+    return(invisible(NULL))
+  }
+  owner <- gsub(".*github.com:(.*?)/(.*?)\\.git", "\\1", url)
+  repo <- gsub(".*github.com:(.*?)/(.*?)\\.git", "\\1", url)
+  url <- sprintf("https://api.github.com/repos/%s/%s/releases", owner, repo)
+  body <- c(
+    tag_name = paste0("v", version),
+    name = paste("Version", version),
+    body = message,
+    draft = "false",
+    release = "false"
+  )
+  body <- sprintf(
+    "{\n%s\n}",
+    paste(
+      sprintf("  \"%s\" : \"%s\"", names(body), body),
+      collapse = "\n"
+    )
+  )
+  POST(
+    url = url,
+    config = add_headers(
+      "User-Agent" = "inbo/checklist package",
+      accept = "application/vnd.github.v3+json"
+    ),
+    body = body,
+    encode = "raw"
+  )
 }

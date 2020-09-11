@@ -17,6 +17,7 @@
 * Package require a `codemeta.json` as written by `codemetar::write_codemeta`.
   Suggestions by `codemetar` to improve the package become checklist notes.
 * `set_tag()` fails when in a detached HEAD state.
+* `set_tag()` creates a release when a tag is created on GitHub.
 * `check_cran()` ignores system time check when world clock API is not
   available.
 * `check_license()` verifies the license information of a package.
