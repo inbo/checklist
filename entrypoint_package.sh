@@ -33,7 +33,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo '\nChecking code coverage...\n'
-Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE, commit="$GITHUB_SHA"); message(result$message)'
+Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE, commit="'$GITHUB_SHA'"); message(result$message)'
 if [ $? -ne 0 ]; then
   echo '\nChecking code coverage failed. Please check the error message above.\n';
   exit 1
