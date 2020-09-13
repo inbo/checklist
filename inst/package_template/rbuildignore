@@ -1,24 +1,12 @@
-# Rstudio
 ^.*\.Rproj$
 ^\.Rproj\.user$
-
-# checklist package
 ^checklist.yml$
 ^README\.Rmd$
-
-# GitHub
 ^\.github$
-
-# code coverage
 ^codecov\.yml$
-
-# OAuth tokens
 ^\.httr-oauth$
-
-# pkgdown
 ^_pkgdown.yml$
 ^pkgdown$
 ^docs$
-
-# license
 ^LICENSE.md$
+^\.zenodo\.json$

@@ -16,7 +16,14 @@ knitr::opts_chunk$set(
 # {{{ Package }}}
 
 <!-- badges: start -->
+[![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 ![GitHub](https://img.shields.io/github/license/inbo/{{{ Package }}})
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![R build status](https://github.com/inbo/{{{ Package }}}/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/{{{ Package }}}/actions)
+[![Codecov test coverage](https://codecov.io/gh/inbo/{{{ Package }}}/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/{{{ Package }}}?branch=master)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/{{{ Package }}}.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/inbo/{{{ Package }}}.svg)
 <!-- badges: end -->
 
 The goal of {{{ Package }}} is to ...

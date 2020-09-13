@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_tag.R
 \name{set_tag}
 \alias{set_tag}
-\title{Set a new tag}
+\title{Set a New Tag and Create a Release}
 \usage{
 set_tag(x = ".")
 }
@@ -11,13 +11,16 @@ set_tag(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Set a new tag
+This function only works when run in a GitHub Action on the master branch.
+Otherwise it will only return a message.
 }
 \seealso{
 Other package: 
+\code{\link{check_codemeta}()},
 \code{\link{check_cran}()},
 \code{\link{check_description}()},
 \code{\link{check_documentation}()},
+\code{\link{check_license}()},
 \code{\link{check_package}()},
 \code{\link{tidy_desc}()}
 }

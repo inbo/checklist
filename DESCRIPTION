@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: 
     c(person(given = "Thierry",
              family = "Onkelinx",
@@ -15,12 +15,15 @@ Description: An opinated set of rules for R packages and R source code
     projects.
 License: GPL-3
 URL: https://inbo.github.io/checklist, https://github.com/inbo/checklist
+BugReports: https://github.com/inbo/checklist/issues
 Imports:
     R6,
     assertthat,
+    codemetar (>= 0.1.10),
     desc,
     devtools,
     git2r,
+    httr,
     lintr,
     rcmdcheck,
     rmarkdown,
@@ -30,9 +33,12 @@ Imports:
     yaml
 Suggests: 
     covr,
+    mockery,
     pkgdown,
     roxygen2,
     testthat
+Remotes: 
+    ropensci/codemetar@dev
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

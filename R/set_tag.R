@@ -1,8 +1,11 @@
-#' Set a new tag
+#' Set a New Tag and Create a Release
+#'
+#' This function only works when run in a GitHub Action on the master branch.
+#' Otherwise it will only return a message.
 #' @export
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config push repository tag tags
+#' @importFrom git2r config is_detached repository tag tags
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -18,10 +21,14 @@ set_tag <- function(x = ".") {
   }
   assert_that(
     x$package,
-    msg = "`check_description()` is only relevant for packages.
+    msg = "`set_tag()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
   repo <- repository(x$get_path)
+  assert_that(
+    !is_detached(repo),
+    msg = "`set_tag()` doesn't work on a repository with detached HEAD."
+  )
   description <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
@@ -37,16 +44,17 @@ set_tag <- function(x = ".") {
     return(invisible(NULL))
   }
   old_config <- config(repo)
-  on.exit({
+  on.exit(
     config(
       repo,
       user.name = old_config$local$user.name,
       user.email = old_config$local$user.email
-    )
-  })
+    ),
+    add = TRUE
+  )
   config(
     repo = repo,
-    user.name = "Checklist package",
+    user.name = "Checklist bot",
     user.email = "checklist@inbo.be"
   )
   tag(
@@ -54,6 +62,46 @@ set_tag <- function(x = ".") {
     name = paste0("v", version),
     message = paste(news[seq(start[current], end[current])], collapse = "\n")
   )
-  push(repo)
+  cmd <- sprintf("cd %s; git push origin v%s", repo$path, version)
+  message(cmd)
+  system(cmd)
+
+  create_release(repo = repo, version = version, message = message)
   return(invisible(NULL))
+}
+
+#' @importFrom httr add_headers POST
+#' @importFrom git2r remote_url
+create_release <- function(repo, version, message) {
+  url <- remote_url(repo, "origin")
+  if (!grepl("github.com", url)) {
+    warning("no `origin` or `origin` not on GitHub.")
+    return(invisible(NULL))
+  }
+  owner <- gsub(".*github.com:(.*?)/(.*?)\\.git", "\\1", url)
+  repo <- gsub(".*github.com:(.*?)/(.*?)\\.git", "\\1", url)
+  url <- sprintf("https://api.github.com/repos/%s/%s/releases", owner, repo)
+  body <- c(
+    tag_name = paste0("v", version),
+    name = paste("Version", version),
+    body = message,
+    draft = "false",
+    release = "false"
+  )
+  body <- sprintf(
+    "{\n%s\n}",
+    paste(
+      sprintf("  \"%s\" : \"%s\"", names(body), body),
+      collapse = "\n"
+    )
+  )
+  POST(
+    url = url,
+    config = add_headers(
+      "User-Agent" = "inbo/checklist package",
+      accept = "application/vnd.github.v3+json"
+    ),
+    body = body,
+    encode = "raw"
+  )
 }

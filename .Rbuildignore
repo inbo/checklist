@@ -1,30 +1,17 @@
-# Rstudio
 ^.*\.Rproj$
 ^\.Rproj\.user$
-
-# checklist package
 ^checklist.yml$
 ^README\.Rmd$
 ^entrypoint_package.sh$
 ^entrypoint_source.sh$
-
-# GitHub
 ^\.github$
-
-# code coverage
 ^codecov\.yml$
-
-# OAuth tokens
 ^\.httr-oauth$
-
-# pkgdown
 ^_pkgdown.yml$
 ^pkgdown$
 ^docs$
-
-# license
 ^LICENSE.md$
-
-# Docker
 ^Dockerfile$
 ^.dockerignore$
+^\.zenodo\.json$
+^codemeta\.json$

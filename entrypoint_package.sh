@@ -13,6 +13,11 @@ cd $3
 export CODECOV_TOKEN=$4
 export ORCID_TOKEN=$5
 
+if [ ! -z "$6" ]; then
+  apt-get update
+  apt-get install -y --no-install-recommends $6
+fi
+
 echo '\nTrying to install the package...\n'
 Rscript --no-save --no-restore -e 'remotes::install_local(dependencies = TRUE, force = TRUE)'
 if [ $? -ne 0 ]; then
@@ -28,7 +33,11 @@ if [ $? -ne 0 ]; then
 fi
 
 echo '\nChecking code coverage...\n'
-Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE); message(result$message)'
+Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE, commit="'$GITHUB_SHA'"); message(result$message)'
+if [ $? -ne 0 ]; then
+  echo '\nChecking code coverage failed. Please check the error message above.\n';
+  exit 1
+fi
 
 echo '\nBuilding pkgdown website...\n'
 Rscript --no-save --no-restore -e 'pkgdown::build_site()'
@@ -43,11 +52,12 @@ elif [ "$GITHUB_EVENT_NAME" != "push" ]; then
 elif [ "$GITHUB_REF" != "refs/heads/master" ]; then
   echo '\nNot updating tag, because not on master.';
 else
+  git checkout master
   echo '\nUpdating tag...\n';
   Rscript --no-save --no-restore -e 'checklist::set_tag()';
 
   echo '\nPush pkgdown website...\n'
-  cp -R /check/docs /docs
+  cp -R docs ../docs
   if [ -z  "$(git branch -r | grep origin/gh-pages)" ]; then
     git checkout --orphan gh-pages
     git rm -rf --quiet .
@@ -57,7 +67,7 @@ else
     git rm -rf --quiet .
     rm -R *
   fi
-  cp -R /docs/. /check
+  cp -R ../docs/. .
   git add --all
   git commit --amend -m "Automated update of gh-pages website"
   git push --force --set-upstream origin gh-pages

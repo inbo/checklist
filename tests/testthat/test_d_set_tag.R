@@ -32,13 +32,13 @@ test_that("set_tag() works", {
 
   # not on GITHUB or master
   current_ref <- Sys.getenv("GITHUB_REF")
-  on.exit(Sys.setenv(GITHUB_REF = current_ref))
+  on.exit(Sys.setenv(GITHUB_REF = current_ref), add = TRUE)
   Sys.setenv(GITHUB_REF = "")
   current_actions <- Sys.getenv("GITHUB_ACTIONS")
-  on.exit(Sys.setenv(GITHUB_ACTIONS = current_actions))
+  on.exit(Sys.setenv(GITHUB_ACTIONS = current_actions), add = TRUE)
   Sys.setenv(GITHUB_ACTIONS = "")
   current_event <- Sys.getenv("GITHUB_EVENT_NAME")
-  on.exit(Sys.setenv(GITHUB_EVENT_NAME = current_event))
+  on.exit(Sys.setenv(GITHUB_EVENT_NAME = current_event), add = TRUE)
   Sys.setenv(GITHUB_EVENT_NAME = "")
   expect_message(
     set_tag(file.path(path, package)),
@@ -65,7 +65,7 @@ test_that("set_tag() works", {
     "Not on GitHub, not a push or not on master."
   )
 
-  # on master, GitHub, not push
+  # on master, GitHub, push
   Sys.setenv(GITHUB_EVENT_NAME = "push")
   expect_invisible(set_tag(file.path(path, package)))
 

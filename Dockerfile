@@ -39,9 +39,9 @@ RUN  apt-get update \
 ENV PATH="/root/bin:${PATH}"
 
 ## Install pandoc
-RUN wget https://github.com/jgm/pandoc/releases/download/2.10/pandoc-2.10-1-amd64.deb \
-  && dpkg -i pandoc-2.10-1-amd64.deb \
-  && rm pandoc-2.10-1-amd64.deb
+RUN wget https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-1-amd64.deb \
+  && dpkg -i pandoc-2.7.3-1-amd64.deb \
+  && rm pandoc-2.7.3-1-amd64.deb
 
 ## install git
 RUN  apt-get update \
@@ -53,9 +53,6 @@ RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOpt
 
 ## install remotes package
 RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
-
-## install older version of cp11 needed for tidyr 1.1.1
-RUN Rscript --no-save --no-restore -e 'remotes::install_version("cpp11", version = "0.1")'
 
 ## install devtools
 RUN  apt-get update \
@@ -71,6 +68,13 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
 ## install covr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
+## install codemetar
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libgit2-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_github("ropensci/codemetar@dev")'
+
 ## install desc
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 
@@ -80,14 +84,27 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
+## install httr
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("httr")'
+
 ## install lintr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 
 ## install microbenchmark
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 
-## install pillar
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
+## install mockery
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("mockery")'
+
+## install pkgdown
+RUN  apt-get update \
+  && apt-get install -y --no-install-recommends \
+       libfontconfig1-dev \
+       libfreetype6-dev \
+       libjpeg-dev \
+       libpng-dev \
+       libtiff5-dev \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
 ## install pillar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pillar")'
@@ -101,11 +118,19 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
 ## install rlang
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
 
+## install rgdal
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libgdal-dev \
+    libproj-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("rgdal")'
+
 ## install rorcid
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
 ## install roxygen2
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
 
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'

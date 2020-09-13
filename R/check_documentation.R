@@ -75,15 +75,17 @@ check_news <- function(x) {
   )
   news_file <- readLines(md_file)
   version_location <- grep(paste0("#.*", description$get("Package")), news_file)
-  doc_error <- c(
-    doc_error,
-    "No reference to a package version in NEWS.md.
-Use `# name version` format"[
-      length(version_location) == 0
-    ]
-  )
+  if (length(version_location) == 0) {
+    return(
+      c(
+        doc_error,
+"No reference to a package version in NEWS.md.
+See the details in ?pkgdown::build_news for the required format."
+      )
+    )
+  }
   ok <- grepl(
-    paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9])+"),
+    paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9]+)?"),
     news_file[version_location]
   )
   doc_error <- c(
@@ -94,70 +96,46 @@ Use `# name version` format"[
   Use `# name version` format",
       news_file[version_location[!ok]]
     ),
-    "NEWS.md does not contain the current package version"[
-      !any(
-        grepl(
-          as.character(description$get_version()),
-          news_file[version_location])
+    "NEWS.md start with the current package version"[
+      news_file[1] != paste(
+        "#", description$get("Package"), as.character(description$get_version())
       )
+    ],
+    "NEWS.md should not contain level 3+ headings"[
+      any(grepl("^##(#)+", news_file))
     ]
   )
 
-  ranges <- cbind(
-    version_location + 1,
-    c(tail(version_location - 1, -1), length(news_file))
-  )
-  news_file <- lapply(
-    seq_len(nrow(ranges)),
-    function(i) {
-      news_file[ranges[i, 1]:ranges[i, 2]]
-    }
-  )
+  # remove URLs to avoid long line linters
+  news_file <- gsub("(http[a-zA-Z0-9:/\\._-]+)", "", news_file)
 
-  blank_lines <- vapply(
-    news_file,
-    function(i) {
-      blank <- which(i == "")
-      c(
-        start = blank[1] == 1,
-        mid = any(1 < blank & blank < length(i)),
-        end = tail(blank, 1) == length(i)
-      )
-    },
-    logical(3)
+  headings <- grep("^#", news_file)
+  blank_line_before <- news_file[tail(headings, -1) - 1] == ""
+  blank_line_after <- news_file[headings + 1] == ""
+  doc_error <- c(
+    doc_error,
+    "NEWS.md needs a blank line before each heading."[any(!blank_line_before)],
+    "NEWS.md needs a blank line after each heading."[any(!blank_line_after)]
   )
-  blank_lines["end", ncol(blank_lines)] <- TRUE
-
-  news_file <- lapply(
-    news_file,
-    function(i) {
-      i[i != ""]
-    }
-  )
-  news_format <- vapply(
-    news_file,
-    function(i) {
-      item <- grepl(i, pattern = "^\\* \\S")
-      extra_line <- grepl(i, pattern = "^  \\S")
-      any(nchar(i) > 80) || head(extra_line, 1) || !all(item | extra_line)
-    },
-    logical(1)
-  )
+  # remove headings and the surrounding blank lines
+  news_file <- news_file[-c(
+    headings,                                  # heading
+    tail(headings, -1)[blank_line_before] - 1, #blank line before
+    headings[blank_line_after] + 1             #blank line after
+  )]
 
   doc_error <- c(
     doc_error,
-    "NEWS.md must contain a blank line before and after each version."[
-      any(!blank_lines[c("start", "end"), ])
+    "NEWS.md should only contain a single blank line before or after a heading"[
+      any(news_file == "" | grepl("^\\w+$", news_file))
     ],
-    "NEWS.md must not contain blank lines between items."[
-      any(blank_lines["mid", ])
+    "NEWS.md has a line longer than 80 characters (excluding URLs)."[
+      any(nchar(news_file) > 80)
     ],
-    "NEWS.md formating issues. Required format
-- Item starts with `* `.
-- No lines longer than 80 characters.
-- Multiline items start with `  `.
-- No blank lines between items.
-    "[any(news_format)]
+    "Item starts with `* ` or `    * `. Multiline items start with `  `.
+    "[
+      !all(grepl("^((( ){4})?\\*| ) \\S", news_file)) # nolint
+    ]
   )
 
   return(doc_error)

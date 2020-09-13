@@ -1,11 +1,10 @@
 on:
   push:
-    branches:
+    branches-ignore:
       - master
-  schedule:
-    - cron: '6 0 * * 1'
+      - ghpages
 
-name: "check package on master"
+name: "check package"
 
 jobs:
   check-package:
@@ -16,5 +15,3 @@ jobs:
         with:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
-          token: ${{ secrets.pat }}
-          aptget: libfontconfig1-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev

@@ -18,8 +18,10 @@ Run the package checks required by CRAN
 }
 \seealso{
 Other package: 
+\code{\link{check_codemeta}()},
 \code{\link{check_description}()},
 \code{\link{check_documentation}()},
+\code{\link{check_license}()},
 \code{\link{check_package}()},
 \code{\link{set_tag}()},
 \code{\link{tidy_desc}()}
