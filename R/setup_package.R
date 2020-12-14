@@ -96,14 +96,6 @@ allowed:
   )
   add(repo = repo, ".github/CONTRIBUTING.md", force = TRUE)
 
-  # Add code of conduct
-  dir.create(file.path(path, ".github"), showWarnings = FALSE)
-  file.copy(
-    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
-    file.path(path, ".github", "CODE_OF_CONDUCT.md")
-  )
-  add(repo = repo, ".github/CODE_OF_CONDUCT.md", force = TRUE)
-
   # Add GitHub actions
   dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
   file.copy(
