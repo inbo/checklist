@@ -3,9 +3,7 @@
 ### Fixing typos
 
 Small typos or grammatical errors in documentation may be edited directly using the GitHub web interface, so long as the changes are made in the _source_ file.
-
-*  YES: you edit a roxygen comment in a `.R` file below `R/`.
-*  NO: you edit an `.Rd` file below `man/`.
+E.g. edit a roxygen comment in a `.R` file below `R/`, not in an `.Rd` file below `man/`.
 
 ### Prerequisites
 
