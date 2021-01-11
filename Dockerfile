@@ -58,6 +58,7 @@ RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
+    libgit2-dev \
     libssl-dev \
     libxml2-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
