@@ -4,7 +4,7 @@
 \alias{setup_package}
 \title{Add or update the checklist infrastructure to an existing package}
 \usage{
-setup_package(path)
+setup_package(path = ".")
 }
 \arguments{
 \item{path}{The path to the package.

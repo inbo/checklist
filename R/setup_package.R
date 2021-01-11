@@ -7,7 +7,7 @@
 #' @importFrom git2r add repository
 #' @importFrom utils file_test
 #' @family setup
-setup_package <- function(path) {
+setup_package <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   assert_that(
     file_test("-f", file.path(path, "DESCRIPTION")),
