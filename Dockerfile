@@ -79,7 +79,7 @@ RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
     libgit2-dev \
   && apt-get clean \
-  && Rscript --no-save --no-restore -e 'remotes::install_github("ropensci/codemetar@dev")'
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("ropensci/codemetar")'
 
 ## install desc
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
