@@ -3,8 +3,6 @@ The Checklist Package
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<!-- badges: start -->
-
 [![Project Status: WIP – Initial development is in progress, but there
 has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
@@ -19,7 +17,6 @@ coverage](https://codecov.io/gh/inbo/checklist/branch/master/graph/badge.svg)](h
 bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo
 size](https://img.shields.io/github/repo-size/inbo/checklist.svg)
-<!-- badges: end -->
 
 The goal of `checklist` is to provide an elaborate and strict set of
 checks for R packages and R code.
