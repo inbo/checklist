@@ -3,13 +3,9 @@ package: yes
 allowed:
   warnings: []
   notes:
-  - motivation: Package not on CRAN; Remotes required because we need the development
-      version of codemetar
+  - motivation: Package not on CRAN
     value: |-
       checking CRAN incoming feasibility ... NOTE
       Maintainer: ‘Thierry Onkelinx <thierry.onkelinx@inbo.be>’
 
       New submission
-
-      Unknown, possibly mis-spelled, fields in DESCRIPTION:
-        ‘Remotes’
