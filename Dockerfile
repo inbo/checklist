@@ -66,7 +66,12 @@ RUN  apt-get update \
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
 
 ## install covr
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libharfbuzz-dev \
+    libfribidi-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
 ## install codemetar
 RUN apt-get update \
