@@ -2,6 +2,7 @@ The Checklist Package
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start -->
 
 [![Project Status: WIP – Initial development is in progress, but there
