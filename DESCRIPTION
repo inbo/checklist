@@ -26,7 +26,6 @@ Imports:
     httr,
     lintr,
     rcmdcheck,
-    rmarkdown,
     rorcid,
     sessioninfo,
     utils,
