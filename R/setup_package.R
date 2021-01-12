@@ -100,12 +100,14 @@ allowed:
   dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
   file.copy(
     system.file("package_template/check_on_branch.yml", package = "checklist"),
-    file.path(path, ".github", "workflows", "check_on_branch.yml")
+    file.path(path, ".github", "workflows", "check_on_branch.yml"),
+    overwrite = TRUE
   )
   add(repo = repo, ".github/workflows/check_on_branch.yml", force = TRUE)
   file.copy(
     system.file("package_template/check_on_master.yml", package = "checklist"),
-    file.path(path, ".github", "workflows", "check_on_master.yml")
+    file.path(path, ".github", "workflows", "check_on_master.yml"),
+    overwrite = TRUE
   )
   add(repo = repo, ".github/workflows/check_on_master.yml", force = TRUE)
   file.copy(
@@ -113,13 +115,27 @@ allowed:
       "package_template/check_on_different_r_os.yml",
       package = "checklist"
     ),
-    file.path(path, ".github", "workflows", "check_on_different_r_os.yml")
+    file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
+    overwrite = TRUE
   )
   add(
     repo = repo,
     ".github/workflows/check_on_different_r_os.yml",
     force = TRUE
   )
+
+  # Add pkgdown website
+  file.copy(
+    system.file("package_template/_pkgdown.yml", package = "checklist"),
+    file.path(path, "_pkgdown.yml")
+  )
+  add(repo = repo, "_pkgdown.yml", force = TRUE)
+  dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
+  file.copy(
+    system.file("package_template/pkgdown.css", package = "checklist"),
+    file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
+  )
+  add(repo = repo, "pkgdown/extra.css", force = TRUE)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))
