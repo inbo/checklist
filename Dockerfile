@@ -58,6 +58,7 @@ RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
+    libgit2-dev \
     libssl-dev \
     libxml2-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
@@ -66,14 +67,19 @@ RUN  apt-get update \
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
 
 ## install covr
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libharfbuzz-dev \
+    libfribidi-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
 ## install codemetar
 RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
     libgit2-dev \
   && apt-get clean \
-  && Rscript --no-save --no-restore -e 'remotes::install_github("ropensci/codemetar@dev")'
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
 
 ## install desc
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'

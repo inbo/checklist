@@ -7,7 +7,7 @@
 #' @importFrom git2r add repository
 #' @importFrom utils file_test
 #' @family setup
-setup_package <- function(path) {
+setup_package <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   assert_that(
     file_test("-f", file.path(path, "DESCRIPTION")),
@@ -95,14 +95,6 @@ allowed:
     file.path(path, ".github", "CONTRIBUTING.md")
   )
   add(repo = repo, ".github/CONTRIBUTING.md", force = TRUE)
-
-  # Add code of conduct
-  dir.create(file.path(path, ".github"), showWarnings = FALSE)
-  file.copy(
-    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
-    file.path(path, ".github", "CODE_OF_CONDUCT.md")
-  )
-  add(repo = repo, ".github/CODE_OF_CONDUCT.md", force = TRUE)
 
   # Add GitHub actions
   dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)

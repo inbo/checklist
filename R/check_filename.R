@@ -70,12 +70,13 @@ Fails: `%s`",
 
   extension <- gsub("(.*)\\.(.*)?", "\\2", basename(files))
   # extension exceptions
-  exception <- grepl("^R(proj|d|md|nw)?$", extension)
+  exception <- grepl("^R(proj|d|md|nw)?$", extension) |
+    grepl("^([a-z0-9])*?$", extension)
   problems <- c(
     problems,
     sprintf(
       "File extension must be all lower case or numbers.\nFails: `%s`",
-      files[!exception & !grepl("^([a-z0-9])*?$", extension)]
+      files[!exception]
     )
   )
   # R related requires upper case R

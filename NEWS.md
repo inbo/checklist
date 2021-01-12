@@ -1,3 +1,8 @@
+# checklist 0.1.6
+
+* Drop the `codemeta.json` file.
+  It requires constant updating as it contains a package file size.
+
 # checklist 0.1.5
 
 * `check_documentation()` allows `NEWS.md` to have level 2 headings (`##`) and
