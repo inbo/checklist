@@ -17,6 +17,7 @@ coverage](https://codecov.io/gh/inbo/checklist/branch/master/graph/badge.svg)](h
 bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo
 size](https://img.shields.io/github/repo-size/inbo/checklist.svg)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4028303.svg)](https://doi.org/10.5281/zenodo.4028303)
 
 The goal of `checklist` is to provide an elaborate and strict set of
 checks for R packages and R code.
