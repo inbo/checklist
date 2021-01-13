@@ -54,7 +54,7 @@ elif [ "$GITHUB_REF" != "refs/heads/master" ]; then
 else
   git checkout master
   echo '\nUpdating tag...\n';
-  Rscript --no-save --no-restore -e 'checklist::set_tag()';
+  Rscript --no-save --no-restore -e 'checklist::set_tag(token = "$2")';
 
   echo '\nPush pkgdown website...\n'
   cp -R docs ../docs
