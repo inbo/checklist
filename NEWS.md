@@ -1,3 +1,12 @@
+# checklist 0.1.7
+
+* Pushing to master should automatically create a release, using `set_tag()`.
+* Add a Zenodo DOI badge to the README and DOI URL to DESCRIPTION.
+* `check_description()` now checks authors (#7).
+    * INBO is set as copyright holder and funder.
+    * Every author has an ORCID.
+* `setup_package()` adds the required files for a `pkgdown` website (#21).
+
 # checklist 0.1.6
 
 * Drop the `codemeta.json` file.
