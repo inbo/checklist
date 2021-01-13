@@ -3,7 +3,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '6 0 * * 1'
+    - cron: '6 0 15 * *'
 
 name: "check package on master"
 

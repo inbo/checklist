@@ -1,8 +1,7 @@
 #' Check the documentation
 #' @inheritParams read_checklist
 #' @export
-#' @importFrom devtools document
-#' @importFrom rmarkdown github_document render
+#' @importFrom devtools build_readme document
 #' @family package
 check_documentation <- function(x = ".") {
   if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
@@ -38,11 +37,7 @@ check_documentation <- function(x = ".") {
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
     status_before <- status(repo)
-    render(
-      file.path(x$get_path, "README.Rmd"),
-      output_format = github_document(html_preview = FALSE),
-      encoding = "UTF-8"
-    )
+    build_readme(x$get_path, encoding = "UTF-8")
     doc_error <- c(
       doc_error,
       "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"[

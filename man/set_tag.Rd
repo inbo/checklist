@@ -4,11 +4,13 @@
 \alias{set_tag}
 \title{Set a New Tag and Create a Release}
 \usage{
-set_tag(x = ".")
+set_tag(x = ".", token)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{token}{The GitHub access token}
 }
 \description{
 This function only works when run in a GitHub Action on the master branch.

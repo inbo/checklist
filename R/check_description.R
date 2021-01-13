@@ -65,9 +65,9 @@ check_description <- function(x = ".") {
     desc_error,
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
       !unchanged_repo(repo, status_before)
-    ]
+    ],
+    check_authors(description)
   )
-
   x$add_error(desc_error, "DESCRIPTION")
 
   check_license(x = x)
@@ -196,4 +196,26 @@ Please send a pull request if you need support for this license.",
   )
 
   return(x)
+}
+
+check_authors <- function(description) {
+  authors <- description$get_authors()
+  authors <- lapply(authors, unlist, recursive = FALSE)
+  inbo <- person(
+    given = "Research Institute for Nature and Forest",
+    role = c("cph", "fnd"), email = "info@inbo.be"
+  )
+  problems <- paste(
+    "Research Institute for Nature and Forest must be listed as copyright",
+    "holder and funder and use info@inbo.be as email."
+  )[!inbo %in% authors]
+  authors <- authors[!authors %in% inbo]
+  orcid <- sapply(authors, `[[`, "comment")
+  c(
+    problems,
+    "Every author and contributor must have an ORCID"[
+      any(names(orcid) != "ORCID")
+    ]
+  )
+
 }
