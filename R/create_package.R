@@ -1,9 +1,36 @@
 #' Create an R package according to INBO requirements
+#'
+#' Creates a package template in a new folder.
+#' Use this function when you want to start a new package.
+#'
+#' What you get:
+#'
+#' - minimal folder structure and files required for an R package using INBO
+#'   guidelines with GPL-3 license.
+#' - an RStudio project file
+#' - a local git repository
+#' - an initial `NEWS.md` file
+#' - a template for an `README.Rmd`
+#' - set-up for automate checks and releases of the package using GitHub
+#'   Actions.
+#' - a code of conduct and contributing guidelines.
+#' - the set-up for a `pkgdown` website using the INBO corporate identity.
+#'
+#' What you still have to do:
+#'
+#' - create a new repository on https://github.com/inbo.
+#' - set this repository as the remote origin of the local git repository.
+#' - configure the build tools in RStudio to render Roxygen documentation
+#'   whenever you install or restart the package.
+#' - add some functions to the package.
+#' - commit changes and push them to GitHub.
 #' @param package Name of the new package.
 #' @param path Where to create the package directory.
 #' @param title A single sentence with the title of the package.
 #' @param description A single paragraph describing the package.
-#' @param maintainer The output of `orcid2person()`.
+#' @param maintainer The output of [utils::person()] or `orcid2person()`.
+#'   If you use [utils::person()], then you must provide `given`, `family`,
+#'   `role`, `email` and  `comment` with valid `ORCID`.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom git2r add  init
@@ -143,6 +170,47 @@ allowed:
     file.path(path, ".github", "CONTRIBUTING.md")
   )
   add(repo = repo, ".github/CONTRIBUTING.md")
+
+  # Add GitHub actions
+  dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
+  file.copy(
+    system.file("package_template/check_on_branch.yml", package = "checklist"),
+    file.path(path, ".github", "workflows", "check_on_branch.yml"),
+    overwrite = TRUE
+  )
+  add(repo = repo, ".github/workflows/check_on_branch.yml", force = TRUE)
+  file.copy(
+    system.file("package_template/check_on_master.yml", package = "checklist"),
+    file.path(path, ".github", "workflows", "check_on_master.yml"),
+    overwrite = TRUE
+  )
+  add(repo = repo, ".github/workflows/check_on_master.yml", force = TRUE)
+  file.copy(
+    system.file(
+      "package_template/check_on_different_r_os.yml",
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo,
+    ".github/workflows/check_on_different_r_os.yml",
+    force = TRUE
+  )
+  file.copy(
+    system.file(
+      "package_template/release.yml",
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "release.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo,
+    ".github/workflows/release.yml",
+    force = TRUE
+  )
 
   # prepare pkgdown
   file.copy(

@@ -2,6 +2,8 @@
 
 * Create a release when pushing a tag starting with `v`.
   We use a GitHub Action to create the release.
+* Add more documentation on:
+    * `create_package()`
 
 # checklist 0.1.7
 

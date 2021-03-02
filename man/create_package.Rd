@@ -15,10 +15,38 @@ create_package(package, path = ".", title, description, maintainer)
 
 \item{description}{A single paragraph describing the package.}
 
-\item{maintainer}{The output of \code{orcid2person()}.}
+\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{orcid2person()}.
+If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
+\code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.}
 }
 \description{
-Create an R package according to INBO requirements
+Creates a package template in a new folder.
+Use this function when you want to start a new package.
+}
+\details{
+What you get:
+\itemize{
+\item minimal folder structure and files required for an R package using INBO
+guidelines with GPL-3 license.
+\item an RStudio project file
+\item a local git repository
+\item an initial \code{NEWS.md} file
+\item a template for an \code{README.Rmd}
+\item set-up for automate checks and releases of the package using GitHub
+Actions.
+\item a code of conduct and contributing guidelines.
+\item the set-up for a \code{pkgdown} website using the INBO corporate identity.
+}
+
+What you still have to do:
+\itemize{
+\item create a new repository on https://github.com/inbo.
+\item set this repository as the remote origin of the local git repository.
+\item configure the build tools in RStudio to render Roxygen documentation
+whenever you install or restart the package.
+\item add some functions to the package.
+\item commit changes and push them to GitHub.
+}
 }
 \seealso{
 Other setup: 
