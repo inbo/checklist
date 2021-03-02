@@ -123,6 +123,19 @@ allowed:
     ".github/workflows/check_on_different_r_os.yml",
     force = TRUE
   )
+  file.copy(
+    system.file(
+      "package_template/release.yml",
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "release.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo,
+    ".github/workflows/release.yml",
+    force = TRUE
+  )
 
   # Add pkgdown website
   file.copy(

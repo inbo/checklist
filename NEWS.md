@@ -1,3 +1,8 @@
+# checklist 0.1.8
+
+* Create a release when pushing a tag starting with `v`.
+  We use a GitHub Action to create the release.
+
 # checklist 0.1.7
 
 * Pushing to master should automatically create a release, using `set_tag()`.

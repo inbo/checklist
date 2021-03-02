@@ -64,46 +64,5 @@ set_tag <- function(x = ".", token) {
     "cd %s; git push origin; git push origin v%s", repo$path, version
   )
   system(cmd)
-
-  create_release(
-    repo = repo, version = version, tag_message = tag_message, token = token
-  )
   return(invisible(NULL))
-}
-
-#' @importFrom httr add_headers POST
-#' @importFrom git2r remote_url
-create_release <- function(repo, version, tag_message, token) {
-  url <- remote_url(repo, "origin")
-  if (!grepl("github.com", url)) {
-    warning("no `origin` or `origin` not on GitHub.")
-    return(invisible(NULL))
-  }
-  owner <- tolower(gsub(".*github.com:(.*?)/(.*?)\\.git", "\\1", url))
-  repo <- gsub(".*github.com:(.*?)/(.*?)\\.git", "\\2", url)
-  url <- sprintf("https://api.github.com/repos/%s/%s/releases", owner, repo)
-  body <- c(
-    tag_name = paste0("\"v", version, "\""),
-    name = paste("\"Version", version, "\""),
-    body = paste0("\"", tag_message, "\""),
-    draft = "false",
-    prerelease = "false"
-  )
-  body <- sprintf(
-    "{\n%s\n}",
-    paste(
-      sprintf("  \"%s\" : %s", names(body), body),
-      collapse = ",\n"
-    )
-  )
-  POST(
-    url = url,
-    config = add_headers(
-      # "User-Agent" = "inbo/checklist package",
-      Authorization = paste("Bearer", token),
-      accept = "application/vnd.github.v3+json"
-    ),
-    body = body,
-    encode = "raw"
-  )
 }

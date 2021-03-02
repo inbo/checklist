@@ -14,7 +14,8 @@ Authors@R:
 Description: An opinated set of rules for R packages and R source code
     projects.
 License: GPL-3
-URL: https://packages.inbo.be/checklist/, https://github.com/inbo/checklist,
+URL: https://packages.inbo.be/checklist/,
+    https://github.com/inbo/checklist,
     https://doi.org/10.5281/zenodo.4028303
 BugReports: https://github.com/inbo/checklist/issues
 Imports:
