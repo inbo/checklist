@@ -140,7 +140,7 @@ RoxygenNote: %s
 
   # add LICENSE.md
   file.copy(
-    system.file("licenses/gplv3.md", package = "checklist"),
+    system.file("generic_template/gplv3.md", package = "checklist"),
     file.path(path, "LICENSE.md")
   )
   add(repo = repo, "LICENSE.md")
