@@ -175,7 +175,11 @@ checklist <- R6Class(
         )
       )
       required_checks <- unlist(required_checks[c(TRUE, self$package)])
-      stopifnot(all(private$checked %in% required_checks))
+      assert_that(
+        all(private$checked %in% required_checks),
+        msg = "Something went wrong while checking the package.
+Please contact the maintainer of the checklist package."
+      )
       errors <- vapply(private$errors, length, integer(1))
       any(!required_checks %in% private$checked) ||
         any(errors > 0) ||

@@ -173,7 +173,7 @@ Please send a pull request if you need support for this license.",
   if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
     x$add_error(
       errors = c(problems, "No LICENSE.md file"),
-      item = "License"
+      item = "license"
     )
     return(x)
   }
