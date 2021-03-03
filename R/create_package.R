@@ -103,7 +103,7 @@ RoxygenNote: %s
 
   # add .gitignore
   file.copy(
-    system.file("package_template/.gitignore", package = "checklist"),
+    system.file("generic_template/.gitignore", package = "checklist"),
     file.path(path, ".gitignore")
   )
   add(repo = repo, ".gitignore")
@@ -140,7 +140,7 @@ RoxygenNote: %s
 
   # add LICENSE.md
   file.copy(
-    system.file("package_template/gplv3.md", package = "checklist"),
+    system.file("licenses/gplv3.md", package = "checklist"),
     file.path(path, "LICENSE.md")
   )
   add(repo = repo, "LICENSE.md")
@@ -159,7 +159,7 @@ allowed:
   # Add code of conduct
   dir.create(file.path(path, ".github"))
   file.copy(
-    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
+    system.file("generic_template/CODE_OF_CONDUCT.md", package = "checklist"),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
   add(repo = repo, ".github/CODE_OF_CONDUCT.md")
@@ -225,6 +225,9 @@ allowed:
     file.path(path, "pkgdown", "extra.css")
   )
   add(repo = repo, "pkgdown/extra.css")
+  dir.create(
+    file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
+  )
   file.copy(
     system.file("help/figures/logo-en.png", package = "checklist"),
     file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE

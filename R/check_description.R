@@ -182,13 +182,13 @@ Please send a pull request if you need support for this license.",
   current <- readLines(file.path(x$get_path, "LICENSE.md"))
   official <- switch(
     description$get_field("License"),
-    "GPL-3" = system.file("package_template", "gplv3.md", package = "checklist")
+    "GPL-3" = system.file("generic_template", "gplv3.md", package = "checklist")
   )
   official <- readLines(official)
   x$add_error(
     errors = c(
       problems,
-      "LICENSE.md doesn't match official version"[
+      "LICENSE.md doesn't match the version in the checklist package"[
         (length(current) != length(official)) || any(current != official)
       ]
     ),

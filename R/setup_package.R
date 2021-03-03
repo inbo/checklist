@@ -75,7 +75,7 @@ allowed:
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
     file.copy(
-      system.file("package_template/gplv3.md", package = "checklist"),
+      system.file("generic_template/gplv3.md", package = "checklist"),
       file.path(path, "LICENSE.md")
     )
     add(repo = repo, "LICENSE.md", force = TRUE)
@@ -84,7 +84,7 @@ allowed:
   # Add code of conduct
   dir.create(file.path(path, ".github"), showWarnings = FALSE)
   file.copy(
-    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
+    system.file("generic_template/CODE_OF_CONDUCT.md", package = "checklist"),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
   add(repo = repo, ".github/CODE_OF_CONDUCT.md", force = TRUE)
@@ -149,6 +149,9 @@ allowed:
     file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
   )
   add(repo = repo, "pkgdown/extra.css", force = TRUE)
+  dir.create(
+    file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
+  )
   file.copy(
     system.file("help/figures/logo-en.png", package = "checklist"),
     file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE

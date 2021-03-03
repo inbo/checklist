@@ -2,6 +2,7 @@
 
 * Create a release when pushing a tag starting with `v`.
   We use a GitHub Action to create the release.
+* New function: `setup_source()` to setup projects with only source files.
 * Add more documentation on:
     * `create_package()`
 

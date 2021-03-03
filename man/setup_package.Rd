@@ -15,6 +15,7 @@ Add or update the checklist infrastructure to an existing package
 }
 \seealso{
 Other setup: 
-\code{\link{create_package}()}
+\code{\link{create_package}()},
+\code{\link{setup_source}()}
 }
 \concept{setup}

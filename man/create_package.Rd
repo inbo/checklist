@@ -50,6 +50,7 @@ whenever you install or restart the package.
 }
 \seealso{
 Other setup: 
-\code{\link{setup_package}()}
+\code{\link{setup_package}()},
+\code{\link{setup_source}()}
 }
 \concept{setup}
