@@ -149,6 +149,27 @@ allowed:
     file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
   )
   add(repo = repo, "pkgdown/extra.css", force = TRUE)
+  file.copy(
+    system.file("help/figures/logo-en.png", package = "checklist"),
+    file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
+  )
+  add(repo = repo, "man/figures/logo-en.png", force = TRUE)
+  file.copy(
+    system.file("help/figures/background-pattern.png", package = "checklist"),
+    file.path(path, "man", "figures", "background-pattern.png"),
+    overwrite = TRUE
+  )
+  add(repo = repo, "man/figures/background-pattern.png", force = TRUE)
+  file.copy(
+    system.file("package_template/flanders.woff2", package = "checklist"),
+    file.path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
+  )
+  add(repo = repo, "man/figures/flanders.woff2", force = TRUE)
+  file.copy(
+    system.file("package_template/flanders.woff", package = "checklist"),
+    file.path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
+  )
+  add(repo = repo, "man/figures/flanders.woff", force = TRUE)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))

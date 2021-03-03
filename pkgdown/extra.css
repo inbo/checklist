@@ -1,7 +1,7 @@
 body {
   background-color: #efefef;
   color: #5e5e5e;
-  background-image: url('https://package.inbo.be/checklist/reference/figures/background-pattern.png');
+  background-image: url('reference/figures/background-pattern.png');
   font-family: FlandersArtSans-Light, Verdana, Arial, sans-serif;
 }
 
@@ -44,8 +44,8 @@ a:hover {
 @font-face{
   font-family: inbo;
   src:
-    url('https://package.inbo.be/checklist/reference/figures/FlandersArtSans-Light.woff2') format('woff2'),
-    url('https://package.inbo.be/checklist/reference/figures/FlandersArtSans-Light.woff') format('woff');
+    url('figures/flanders.woff2') format('woff2'),
+    url('reference/figures/flanders.woff') format('woff');
 ;
   font-weight:normal;
   font-style:normal;
