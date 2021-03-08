@@ -5,6 +5,8 @@
 * New function: `setup_source()` to setup projects with only source files.
 * Add more documentation on:
     * `create_package()`
+* Use Ubuntu 18.04 instead of the end of life Ubuntu 16.04 when checking the
+  package on the previous R release.
 
 # checklist 0.1.7
 
