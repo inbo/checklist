@@ -87,6 +87,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 ## install git2r
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
 
+## install hexSticker
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
+
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
