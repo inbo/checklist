@@ -17,6 +17,7 @@ Check if a vector contains valid email
 }
 \seealso{
 Other utils: 
+\code{\link{create_hexsticker}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{orcid2person}()},
 \code{\link{yesno}()}

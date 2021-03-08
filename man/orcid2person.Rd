@@ -28,6 +28,7 @@ Don't forget to append your UUID instead of the example given here.
 }
 \seealso{
 Other utils: 
+\code{\link{create_hexsticker}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{validate_email}()},
 \code{\link{yesno}()}

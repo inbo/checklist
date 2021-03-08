@@ -24,6 +24,7 @@ Imports:
     desc,
     devtools,
     git2r,
+    hexSticker,
     httr,
     lintr,
     rcmdcheck,
