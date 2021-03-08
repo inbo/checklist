@@ -1,3 +1,7 @@
+# checklist 0.1.8
+
+* Add auxiliary function `create_hexsticker()`.
+
 # checklist 0.1.7
 
 * Pushing to master should automatically create a release, using `set_tag()`.
