@@ -29,7 +29,6 @@ Imports:
     desc,
     devtools,
     git2r,
-    hexSticker,
     httr,
     lintr,
     rcmdcheck,
@@ -39,6 +38,7 @@ Imports:
     yaml
 Suggests: 
     covr,
+    hexSticker,
     mockery,
     pkgdown,
     roxygen2,

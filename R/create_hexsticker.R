@@ -10,20 +10,20 @@
 #'
 #' @export
 #'
-#' @importFrom hexSticker sticker
-#'
 #' @family utils
 #'
 #' @examples
 #' create_hexsticker("checklist", filename = "hexsticker.png")
 
 create_hexsticker <- function(package_name, filename = "hexsticker.png") {
-  background <- system.file("inbo-empty.png", package = "checklist")
-  sticker(
-    background, s_x = 1, s_y = 1, s_width = 1, s_height = 1, asp = 0.85,
-    package = package_name, p_y = 0.75, p_color = "#000000",
-    p_family = "Flanders Art Sans", p_size = 24, p_fontface = "bold",
-    h_color = "#c04384", filename = filename
-  )
+  if (require("hexSticker")) {
+    background <- system.file("inbo-empty.png", package = "checklist")
+    sticker(
+      background, s_x = 1, s_y = 1, s_width = 1, s_height = 1, asp = 0.85,
+      package = package_name, p_y = 0.75, p_color = "#000000",
+      p_family = "Flanders Art Sans", p_size = 24, p_fontface = "bold",
+      h_color = "#c04384", filename = filename
+    )
+  }
 }
 
