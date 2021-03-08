@@ -4,7 +4,7 @@
 #' package name.
 #'
 #' @param package_name package name that should be mentioned on the hexsticker
-#' @param filename filename to save the sticker
+#' @param filename filename to save the sticker (default saved in man/figures)
 #'
 #' @return A figure is saved in the working directory or provided path
 #'
@@ -15,7 +15,8 @@
 #' @examples
 #' create_hexsticker("checklist", filename = "hexsticker.png")
 
-create_hexsticker <- function(package_name, filename = "hexsticker.png") {
+create_hexsticker <-
+  function(package_name, filename = "man/figures/hexsticker.png") {
   if (require("hexSticker")) {
     background <- system.file("inbo-empty.png", package = "checklist")
     sticker(

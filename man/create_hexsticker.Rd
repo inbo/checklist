@@ -4,12 +4,12 @@
 \alias{create_hexsticker}
 \title{Make hexagonal logo for package}
 \usage{
-create_hexsticker(package_name, filename = "hexsticker.png")
+create_hexsticker(package_name, filename = "man/figures/hexsticker.png")
 }
 \arguments{
 \item{package_name}{package name that should be mentioned on the hexsticker}
 
-\item{filename}{filename to save the sticker}
+\item{filename}{filename to save the sticker (default saved in man/figures)}
 }
 \value{
 A figure is saved in the working directory or provided path
