@@ -144,7 +144,7 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
 
-## install spelling
+## install sessioninfo
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
 
 ## install showtext
