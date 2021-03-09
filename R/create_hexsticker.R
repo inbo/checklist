@@ -17,7 +17,7 @@
 
 create_hexsticker <-
   function(package_name, filename = "man/figures/hexsticker.png") {
-  if (requireNamespace("hexSticker") & requireNamespace(showtext)) {
+  if (requireNamespace("hexSticker") & requireNamespace("showtext")) {
     background <- system.file("inbo-empty.png", package = "checklist")
     showtext::font_add(family = "Flanders Art Sans", regular = "FlandersArtSans-Medium.otf")
     hexSticker::sticker(
