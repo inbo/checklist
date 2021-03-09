@@ -16,7 +16,7 @@ A figure is saved in the working directory or provided path
 }
 \description{
 This function makes a hexsticker in INBO style for the provided
-package name.
+package name.  It requires the package hexSticker to be installed.
 }
 \examples{
 create_hexsticker("checklist", filename = "hexsticker.png")

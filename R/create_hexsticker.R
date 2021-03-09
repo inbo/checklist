@@ -1,7 +1,7 @@
 #' @title Make hexagonal logo for package
 #'
 #' @description This function makes a hexsticker in INBO style for the provided
-#' package name.
+#' package name.  It requires the package hexSticker to be installed.
 #'
 #' @param package_name package name that should be mentioned on the hexsticker
 #' @param filename filename to save the sticker (default saved in man/figures)
