@@ -10,7 +10,7 @@ Authors@R:
              comment = c(ORCID = "0000-0001-8804-4216")),
       person(given = "Els",
              family = "Lommelen",
-             role = c("ctb"),
+             role = "ctb",
              email = "els.lommelen@inbo.be",
              comment = c(ORCID = "0000-0002-3481-5684")),
       person(given = "Research Institute for Nature and Forest",
