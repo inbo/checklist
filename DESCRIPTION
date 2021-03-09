@@ -43,6 +43,7 @@ Suggests:
     pkgdown,
     roxygen2,
     showtext,
+    sysfonts,
     testthat
 Encoding: UTF-8
 LazyData: true
