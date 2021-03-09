@@ -26,6 +26,8 @@ create_hexsticker <-
       p_family = "Flanders Art Sans", p_size = 24,
       h_color = "#c04384", filename = filename
     )
+  } else {
+    stop("Package hexSticker should be installed to create a hexsticker.")
   }
 }
 
