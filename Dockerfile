@@ -88,7 +88,11 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
 
 ## install hexSticker
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libmagick++-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
 
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
