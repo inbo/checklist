@@ -147,6 +147,9 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
 
+## install showtext
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("showtext")'
+
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("spelling")'
 

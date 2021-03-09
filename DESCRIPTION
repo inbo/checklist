@@ -42,6 +42,7 @@ Suggests:
     mockery,
     pkgdown,
     roxygen2,
+    showtext,
     testthat
 Encoding: UTF-8
 LazyData: true

@@ -17,12 +17,13 @@
 
 create_hexsticker <-
   function(package_name, filename = "man/figures/hexsticker.png") {
-  if (require("hexSticker")) {
+  if (require("hexSticker") & require(showtext)) {
     background <- system.file("inbo-empty.png", package = "checklist")
+    font_add(family = "Flanders Art Sans", regular = "FlandersArtSans-Medium.otf")
     sticker(
       background, s_x = 1, s_y = 1, s_width = 1, s_height = 1, asp = 0.85,
       package = package_name, p_y = 0.75, p_color = "#000000",
-      p_family = "Flanders Art Sans", p_size = 24, p_fontface = "bold",
+      p_family = "Flanders Art Sans", p_size = 24,
       h_color = "#c04384", filename = filename
     )
   }
