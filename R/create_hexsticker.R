@@ -13,7 +13,9 @@
 #' @family utils
 #'
 #' @examples
-#' create_hexsticker("checklist", filename = "hexsticker.png")
+#' # make tempfile to save logo (or just use (path and) filename)
+#' output <- tempfile(pattern = "hexsticker", fileext = ".png")
+#' create_hexsticker("checklist", filename = output)
 
 create_hexsticker <-
   function(package_name, filename = "man/figures/hexsticker.png") {

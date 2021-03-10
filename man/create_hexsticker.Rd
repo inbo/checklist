@@ -19,7 +19,9 @@ This function makes a hexsticker in INBO style for the provided
 package name.  It requires the package hexSticker to be installed.
 }
 \examples{
-create_hexsticker("checklist", filename = "hexsticker.png")
+# make tempfile to save logo (or just use (path and) filename)
+output <- tempfile(pattern = "hexsticker", fileext = ".png")
+create_hexsticker("checklist", filename = output)
 }
 \seealso{
 Other utils: 
