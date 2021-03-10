@@ -16,7 +16,8 @@ A figure is saved in the working directory or provided path
 }
 \description{
 This function makes a hexsticker in INBO style for the provided
-package name.  It requires the package hexSticker to be installed.
+package name.
+It requires the package hexSticker to be installed.
 }
 \examples{
 # make tempfile to save logo (or just use (path and) filename)
