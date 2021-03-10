@@ -36,4 +36,3 @@ create_hexsticker <-
     stop("Package hexSticker should be installed to create a hexsticker.")
   }
 }
-
