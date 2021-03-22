@@ -41,8 +41,9 @@ Actions.
 What you still have to do:
 \itemize{
 \item create a new repository on https://github.com/inbo.
+\item Set the ORCID_TOKEN and CODEDOC_TOKEN as repository secrets.
 \item set this repository as the remote origin of the local git repository.
-\item configure the build tools in RStudio to render Roxygen documentation
+\item configure the build tools in RStudio to render Roxygen documentation.
 whenever you install or restart the package.
 \item add some functions to the package.
 \item commit changes and push them to GitHub.
