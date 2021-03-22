@@ -33,10 +33,14 @@ Imports:
     yaml
 Suggests: 
     covr,
+    knitr,
     mockery,
     pkgdown,
+    rmarkdown,
     roxygen2,
     testthat
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
