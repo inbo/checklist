@@ -34,6 +34,23 @@ setup_package <- function(path = ".") {
   tidy_desc(path)
   add(repo = repo, "DESCRIPTION", force = TRUE)
 
+  if (!file_test("-f", file.path(path, ".Rbuildignore"))) {
+    file.copy(
+      system.file("package_template/rbuildignore", package = "checklist"),
+      file.path(path, ".Rbuildignore")
+    )
+  } else {
+    current <- readLines(file.path(path, ".Rbuildignore"))
+    new <- readLines(
+      system.file("package_template/rbuildignore", package = "checklist")
+    )
+    writeLines(
+      sort(unique(c(new, current))),
+      file.path(path, ".Rbuildignore")
+    )
+  }
+  add(repo = repo, ".Rbuildignore", force = TRUE)
+
   # add checklist.yml
   writeLines(
     "description: Configuration file for checklist::check_pkg()
