@@ -29,9 +29,12 @@ check_filename <- function(x = ".") {
   dirs <- dirs[!grepl("\\.(git|Rproj.user)(/.*)?$", dirs)]
   ok_dirs <- c(
     "", "R", ".github/ISSUE_TEMPLATE", ".github/PULL_REQUEST_TEMPLATE",
-    "man-roxygen"
+    "data-raw", "man-roxygen"
   )
   dirs <- dirs[!dirs %in% c(ok_dirs)]
+  dirs <- dirs[
+    !grepl(file.path("inst", "local_tex", "fonts", "opentype"), dirs)
+  ]
   check_dir <- grepl("^\\.?([a-z0-9_\\/])+$", dirs)
   problems <- sprintf(
 "Folder names should only contain lower case letters, numbers and underscore.
