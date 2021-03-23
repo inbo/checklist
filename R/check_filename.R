@@ -62,6 +62,7 @@ Failing folder: `%s`",
     )
   )
   files <- files[!grepl(re, basename(files))]
+  files <- files[!grepl("\\.(otf|ttf)$", basename(files))] # ignore fonts files
   base <- gsub("(.*)\\.(.*)?", "\\1", basename(files))
   problems <- c(
     problems,
