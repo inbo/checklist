@@ -93,7 +93,9 @@ Fails: `%s`",
     )
   )
 
-  graphics_file <- extension %in% c("eps", "jpg", "jpeg", "pdf", "png", "ps")
+  graphics_file <- extension %in% c(
+    "eps", "jpg", "jpeg", "pdf", "png", "ps", "csl"
+  )
   warnings <- c(
     sprintf(
       "Use `_` as separator in the basename of non-graphics files.
