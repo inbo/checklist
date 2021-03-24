@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ### Prerequistes
 
-1. Make sure the package in using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
+1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
 You'll need to commit all changes first.
 It is OK to have Untracked files.
@@ -28,17 +28,18 @@ It is OK to have Untracked files.
 
 ### Local setup
 
-1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `setup_checklist()`.
+1. Install the checklist package by typing `remotes::install_github("inbo/checklist")` in the R console (preferably directly in the R app, not the RStudio app).
+If asked to update other packages, select update all.
+1. Open the RStudio project associated with your package and run `checklist::setup_checklist()`.
 This will add and/or modify files.
-Inspect the modified files.
-Especially if you are updating to a new checklist version and made some tweaks in the past.
+Inspect the modified files by looking at the Diff in the Git pane.
+Especially if you are updating to a new version of the `checklist` package and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_package()` and fix any issues.
 Repeat this until you have only issues that are not a problem.
 1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
-Then it askes which warnings and notes you want to allow.
+Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_package()`.
 This should run without returning an error.
@@ -55,7 +56,7 @@ Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
 1. Run `rorcid::orcid_auth()` and sign in with your [ORCID iD](https://www.orcid.org) if requested.
-Upon success, the function returns a string starting with `Bearer` followe by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
+Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
