@@ -39,7 +39,7 @@ Especially if you are updating to a new version of the `checklist` package and m
 Repeat this until you have only issues that are not a problem.
 1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
-Then it askes which warnings and notes you want to allow.
+Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_package()`.
 This should run without returning an error.
@@ -56,7 +56,7 @@ Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
 1. Run `rorcid::orcid_auth()` and sign in with your [ORCID iD](https://www.orcid.org) if requested.
-Upon success, the function returns a string starting with `Bearer` followe by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
+Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
