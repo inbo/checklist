@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ### Prerequistes
 
-1. Make sure the package in using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
+1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
 You'll need to commit all changes first.
 It is OK to have Untracked files.
@@ -28,11 +28,12 @@ It is OK to have Untracked files.
 
 ### Local setup
 
-1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `setup_checklist()`.
+1. Install the checklist package by typing `remotes::install_github("inbo/checklist")` in the R console (preferably directly in the R app, not the RStudio app).
+If asked to update other packages, select update all.
+1. Open the RStudio project associated with your package and run `checklist::setup_checklist()`.
 This will add and/or modify files.
-Inspect the modified files.
-Especially if you are updating to a new checklist version and made some tweaks in the past.
+Inspect the modified files by looking at the Diff in the Git pane.
+Especially if you are updating to a new version of the `checklist` package and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_package()` and fix any issues.
 Repeat this until you have only issues that are not a problem.
