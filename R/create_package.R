@@ -64,20 +64,22 @@ create_package <- function(
   # create DESCRIPTION
   description <- sprintf(
 "Type: Package
-Package: %s
-Title: %s
+Package: %1$s
+Title: %2$s
 Version: 0.0.0
 Authors@R:
-  c(%s,
+  c(%3$s,
     person(given = \"Research Institute for Nature and Forest\",
            role = c(\"cph\", \"fnd\"),
            email = \"info@inbo.be\"))
-Description: %s
+Description: %4$s
 License: GPL-3
+URL: https://github.com/inbo/%1$s
+BugReports: https://github.com/inbo/%1$s/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: %s
+RoxygenNote: %5$s
 ",
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
