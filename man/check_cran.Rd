@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_cran.R
 \name{check_cran}
 \alias{check_cran}
-\title{Run the package checks required by CRAN}
+\title{Run all the package checks required by CRAN}
 \usage{
 check_cran(x = ".")
 }
@@ -14,7 +14,10 @@ Defaults to \code{.}.}
 A \code{Checklist} object.
 }
 \description{
-Run the package checks required by CRAN
+CRAN imposes an impressive list of tests on every package before publication.
+This suite of test is available in every R installation.
+Hence we use this full suit of tests too.
+Notice that \code{check_package()} runs several additional tests.
 }
 \seealso{
 Other package: 
@@ -23,7 +26,6 @@ Other package:
 \code{\link{check_documentation}()},
 \code{\link{check_license}()},
 \code{\link{check_package}()},
-\code{\link{set_tag}()},
 \code{\link{tidy_desc}()}
 }
 \concept{package}

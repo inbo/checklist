@@ -1,4 +1,9 @@
-#' Run the package checks required by CRAN
+#' Run all the package checks required by CRAN
+#'
+#' CRAN imposes an impressive list of tests on every package before publication.
+#' This suite of test is available in every R installation.
+#' Hence we use this full suit of tests too.
+#' Notice that `check_package()` runs several additional tests.
 #' @inheritParams read_checklist
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that

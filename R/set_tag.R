@@ -1,8 +1,8 @@
-#' Set a New Tag and Create a Release
+#' Set a New Tag
 #'
 #' This function only works when run in a GitHub Action on the master branch.
 #' Otherwise it will only return a message.
-#' @export
+#' @noRd
 #' @inheritParams read_checklist
 #' @param token The GitHub access token
 #' @importFrom assertthat assert_that

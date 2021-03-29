@@ -1,4 +1,26 @@
-#' Check the DESCRIPTION file
+#' Check the `DESCRIPTION` file
+#'
+#' The `DESCRIPTION` file contains the most important meta-data of the package.
+#' A good `DESCRIPTION` is tidy, has a meaningful version number, full
+#' author details and a clear license.
+#'
+#' #' This function ensures the `DESCRIPTION` is tidy, using `tidy_desc()`.
+#'
+#' The version number of the package must have either a `0.0` or a `0.0.0`
+#' format (see this [discussion](https://github.com/inbo/checklist/issues/1) why
+#' we allow only these formats).
+#' The version number in every branch must be larger than the current version
+#' number in the master branch.
+#' New commits in the master must have a larger version number than the previous
+#' commit.
+#' We recommend to protect the master branch and to not commit into the master.
+#'
+#' Furthermore we check the author information.
+#' - Is INBO listed as copyright holder and funder?
+#' - Has every author an ORCID?
+#'
+#' We check the license through `check_license()`.
+#'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
@@ -73,7 +95,11 @@ check_description <- function(x = ".") {
   check_license(x = x)
 }
 
-#' Make your description tidy
+#' Make your DESCRIPTION tidy
+#'
+#' A tidy `DESCRIPTION` use a strict formatting and order of key-value pairs.
+#' This function reads the current `DESCRIPTION` and overwrites is with a tidy
+#' version.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom desc description
@@ -141,7 +167,25 @@ unchanged_repo <- function(repo, old_status) {
     )
 }
 
-#' Check the license
+#' Check the license of a package
+#'
+#' Every package need a clear license.
+#' Without a license, the end-users have no clue under what conditions they can
+#' use the package.
+#' You must specify the license in the `DESCRIPTION` and provide a `LICENSE.md`
+#' file.
+#'
+#' @details
+#' This functions checks if the `DESCRIPTION` mentions one of the standard
+#' licenses.
+#' The `LICENSE.md` must match this license.
+#' Use `setup_package()` to add the correct `LICENSE.md` to the package.
+#'
+#' Currently, following licenses are allowed:
+#' - GPL-3
+#'
+#' We will consider pull requests adding support for other open source licenses.
+#'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description

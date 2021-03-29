@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_description.R
 \name{check_description}
 \alias{check_description}
-\title{Check the DESCRIPTION file}
+\title{Check the \code{DESCRIPTION} file}
 \usage{
 check_description(x = ".")
 }
@@ -11,7 +11,29 @@ check_description(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Check the DESCRIPTION file
+The \code{DESCRIPTION} file contains the most important meta-data of the package.
+A good \code{DESCRIPTION} is tidy, has a meaningful version number, full
+author details and a clear license.
+}
+\details{
+#' This function ensures the \code{DESCRIPTION} is tidy, using \code{tidy_desc()}.
+
+The version number of the package must have either a \code{0.0} or a \verb{0.0.0}
+format (see this \href{https://github.com/inbo/checklist/issues/1}{discussion} why
+we allow only these formats).
+The version number in every branch must be larger than the current version
+number in the master branch.
+New commits in the master must have a larger version number than the previous
+commit.
+We recommend to protect the master branch and to not commit into the master.
+
+Furthermore we check the author information.
+\itemize{
+\item Is INBO listed as copyright holder and funder?
+\item Has every author an ORCID?
+}
+
+We check the license through \code{check_license()}.
 }
 \seealso{
 Other package: 
@@ -20,7 +42,6 @@ Other package:
 \code{\link{check_documentation}()},
 \code{\link{check_license}()},
 \code{\link{check_package}()},
-\code{\link{set_tag}()},
 \code{\link{tidy_desc}()}
 }
 \concept{package}
