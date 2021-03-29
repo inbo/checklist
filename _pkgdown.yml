@@ -19,19 +19,20 @@ navbar:
     href: https://www.facebook.com/pg/INBOVlaanderen
 
 reference:
-- title: Checking packages
+- title: Functions relevant for checking packages
   contents:
+  - check_package
   - has_concept("package")
-- title: Checking scripts
+- title: Functions relevant for checking scripts
   contents:
   - has_concept("source")
-- title: Checking packages or scripts
+- title: Functions relevant for checking packages and scripts
   contents:
   - has_concept("both")
-- title: Setting up a project
+- title: Setting up a project use the checklist package
   contents:
   - has_concept("setup")
-- title: R6 class
+- title: R6 class behind the checklist package
   contents:
   - has_concept("class")
 - title: Auxiliary functions
