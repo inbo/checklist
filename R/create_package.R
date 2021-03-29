@@ -29,7 +29,7 @@
 #' @param path Where to create the package directory.
 #' @param title A single sentence with the title of the package.
 #' @param description A single paragraph describing the package.
-#' @param maintainer The output of [utils::person()] or `orcid2person()`.
+#' @param maintainer The output of [utils::person()] or [`orcid2person()`].
 #'   If you use [utils::person()], then you must provide `given`, `family`,
 #'   `role`, `email` and  `comment` with valid `ORCID`.
 #' @export

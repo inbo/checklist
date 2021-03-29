@@ -15,7 +15,7 @@ create_package(package, path = ".", title, description, maintainer)
 
 \item{description}{A single paragraph describing the package.}
 
-\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{orcid2person()}.
+\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{\link[=orcid2person]{orcid2person()}}.
 If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
 \code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.}
 }
