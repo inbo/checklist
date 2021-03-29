@@ -4,6 +4,8 @@ navbar:
   left:
   - text: NEWS
     href: news/index.html
+  - text: Tutorials
+    href: articles/index.html
   - text: Functions
     href: reference/index.html
   - text: Contributing
@@ -36,6 +38,12 @@ reference:
   contents:
   - has_concept("utils")
 
+articles:
+- title: Getting started
+  contents:
+  - getting_started
+
+
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"
@@ -43,4 +51,4 @@ authors:
     href: "https://www.vlaanderen.be/inbo/en-gb"
     html: "<img src='https://packages.inbo.be/checklist/reference/figures/logo-en.png' height=24>"
 
-url: https://packages.inbo.be/checklist
+url: https://inbo.github.io/checklist
