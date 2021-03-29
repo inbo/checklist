@@ -22,9 +22,10 @@ If you use \code{\link[utils:person]{utils::person()}}, then you must provide \c
 \description{
 Creates a package template in a new folder.
 Use this function when you want to start a new package.
+DO READ \code{vignette("getting_started")} before you run this function.
 }
 \details{
-What you get:
+What you get with a checklist setup:
 \itemize{
 \item minimal folder structure and files required for an R package using INBO
 guidelines with GPL-3 license.
@@ -36,17 +37,6 @@ guidelines with GPL-3 license.
 Actions.
 \item a code of conduct and contributing guidelines.
 \item the set-up for a \code{pkgdown} website using the INBO corporate identity.
-}
-
-What you still have to do:
-\itemize{
-\item create a new repository on https://github.com/inbo.
-\item Set the ORCID_TOKEN and CODEDOC_TOKEN as repository secrets.
-\item set this repository as the remote origin of the local git repository.
-\item configure the build tools in RStudio to render Roxygen documentation.
-whenever you install or restart the package.
-\item add some functions to the package.
-\item commit changes and push them to GitHub.
 }
 }
 \seealso{

@@ -2,29 +2,10 @@
 #'
 #' Creates a package template in a new folder.
 #' Use this function when you want to start a new package.
+#' DO READ `vignette("getting_started")` before you run this function.
 #'
-#' What you get:
+#' @template checklist_structure
 #'
-#' - minimal folder structure and files required for an R package using INBO
-#'   guidelines with GPL-3 license.
-#' - an RStudio project file
-#' - a local git repository
-#' - an initial `NEWS.md` file
-#' - a template for an `README.Rmd`
-#' - set-up for automate checks and releases of the package using GitHub
-#'   Actions.
-#' - a code of conduct and contributing guidelines.
-#' - the set-up for a `pkgdown` website using the INBO corporate identity.
-#'
-#' What you still have to do:
-#'
-#' - create a new repository on https://github.com/inbo.
-#' - Set the ORCID_TOKEN and CODEDOC_TOKEN as repository secrets.
-#' - set this repository as the remote origin of the local git repository.
-#' - configure the build tools in RStudio to render Roxygen documentation.
-#'   whenever you install or restart the package.
-#' - add some functions to the package.
-#' - commit changes and push them to GitHub.
 #' @param package Name of the new package.
 #' @param path Where to create the package directory.
 #' @param title A single sentence with the title of the package.
