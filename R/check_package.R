@@ -1,4 +1,22 @@
-#' A standardised test for R packages
+#' Run the complete set of standardised tests on a package
+#'
+#' A convenience function that runs all packages related tests in sequence.
+#' The details lists the relevant functions.
+#' When you fixed a problem, you can speed things up by running only the related
+#' check.
+#' We still recommend to run `check_package()` before you push to GitHub.
+#' And only push when the functions indicates that there are no problems.
+#' This caches most problems before sending the code to GitHub.
+#'
+#' @details
+#' List of checks in order:
+#'
+#' 1. `check_cran()`
+#' 1. `check_lintr()`
+#' 1. `check_filename()`
+#' 1. `check_description()`
+#' 1. `check_documentation()`
+#' 1. `check_codemeta()`
 #'
 #' @inheritParams read_checklist
 #' @param fail Should the function return an error in case of a problem?
