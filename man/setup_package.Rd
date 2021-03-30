@@ -11,7 +11,8 @@ setup_package(path = ".")
 Defaults to \code{"."}.}
 }
 \description{
-Use this function when you have an existing package and you want to use the checklist functionality.
+Use this function when you have an existing package and you want to use the
+checklist functionality.
 Please keep in mind that the checklist is an opinionated list of checks.
 It might require some breaking changes.
 DO READ \code{vignette("getting_started")} before you run this function.
