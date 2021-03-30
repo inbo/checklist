@@ -14,7 +14,10 @@ Defaults to \code{.}.}
 A \code{Checklist} object.
 }
 \description{
-Read the check list file from a package
+The checklist package stores configuration information in the \code{checklist.yml}
+file in the root of a project.
+This function reads this configuration.
+It is mainly used by the other functions inside the package.
 }
 \seealso{
 Other both: 

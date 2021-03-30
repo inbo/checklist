@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_filename.R
 \name{check_filename}
 \alias{check_filename}
-\title{Check the style of file names}
+\title{Check the style of file and folder names}
 \usage{
 check_filename(x = ".")
 }
@@ -11,8 +11,54 @@ check_filename(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Check the style of file names
+A consistent naming schema avoids problems when working together.
+Especially when working with different OS.
+Some OS (e.g. Windows) are case-insensitive whereas others (e.g. Linux) are
+case-sensitive.
+Note that the the checklist GitHub Actions will test your code on Linux,
+Windows and MacOS.
 }
+\details{
+The sections below describe the default rules.
+We allow several exceptions when the community standard is different.
+E.g. a package stores the function scripts in the \code{R} folder, while our
+standard we enforces lower case folder names.
+Use the the community standard, even if it does conform with the checklist
+rules.
+Most likely checklist will have an exception for the name.
+If not, you can file an \href{https://github.com/inbo/checklist/issues}{issue} and
+motivate why you think we should add an exception.
+}
+\section{Rules for folder names}{
+
+\itemize{
+\item Folder names should only contain lower case letters, numbers and
+underscore (\verb{_}).
+\item They can start with a single dot (\code{.}).
+}
+}
+
+\section{Rules for file names}{
+
+\itemize{
+\item Base names should only contain lower case letters, numbers and
+underscore (\verb{_}).
+\item File extensions should only contains lower case letters and numbers.
+Exceptions: file extensions related to \code{R} must have an upper case \code{R} (
+\code{.R}, \code{.Rmd}, \code{.Rd}, \code{.Rnw}, \code{.Rproj}).
+}
+}
+
+\section{Rules for graphical file names}{
+
+\itemize{
+\item Applies to file with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
+and "ps"
+\item Same rules except that you need to use a dash (\code{-}) as separator instead of
+an underscore (\verb{_}).
+}
+}
+
 \seealso{
 Other both: 
 \code{\link{check_lintr}()},

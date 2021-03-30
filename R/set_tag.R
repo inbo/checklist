@@ -2,13 +2,15 @@
 #'
 #' This function only works when run in a GitHub Action on the master branch.
 #' Otherwise it will only return a message.
-#' @noRd
+#' It sets new tag a the current commit using the related entry from `NEWS.md`
+#' as message.
+#' This tag will turn into a release.
 #' @inheritParams read_checklist
-#' @param token The GitHub access token
+#' @export
 #' @importFrom assertthat assert_that
 #' @importFrom git2r config is_detached repository tag tags
 #' @family package
-set_tag <- function(x = ".", token) {
+set_tag <- function(x = ".") {
   if (
     !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
       Sys.getenv("GITHUB_REF") != "refs/heads/master" ||

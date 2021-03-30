@@ -24,6 +24,8 @@ yesno <- function(...) {
 }
 
 #' Check if the current workdir of a repo is clean
+#'
+#' A clean working directory has no staged, unstaged or untracked files.
 #' @param repo Either a `git2r::repository()` or path to the repository.
 #' @return `TRUE` when there are no staged, unstaged or untracked files.
 #' Otherwise `FALSE`
@@ -36,6 +38,8 @@ is_workdir_clean <- function(repo) {
 }
 
 #' Check if a vector contains valid email
+#'
+#' It only checks the format of the text, not if the email works.
 #' @param email A vector with email addresses.
 #' @return A logical vector.
 #' @export

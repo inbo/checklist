@@ -37,6 +37,7 @@ Other package:
 \code{\link{check_description}()},
 \code{\link{check_documentation}()},
 \code{\link{check_package}()},
+\code{\link{set_tag}()},
 \code{\link{tidy_desc}()}
 }
 \concept{package}

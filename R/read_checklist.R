@@ -1,4 +1,9 @@
 #' Read the check list file from a package
+#'
+#' The checklist package stores configuration information in the `checklist.yml`
+#' file in the root of a project.
+#' This function reads this configuration.
+#' It is mainly used by the other functions inside the package.
 #' @param x Either a `Checklist` object or a path to the source code.
 #' Defaults to `.`.
 #' @return A `Checklist` object.

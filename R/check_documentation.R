@@ -1,4 +1,39 @@
 #' Check the documentation
+#'
+#' Checks if all required documentation is present and rendered.
+#' A common problem is that one forgets to render the documentation after
+#' updating it.
+#' You'll get an error when you forgot to update the documentation.
+#' But the function will render the documentation while checking it.
+#' So the rendered documentation is available after the check completes.
+#' The function relies on git to detect changes.
+#' Run the checks after committing all changes.
+#' You can amend the commit in case you forgot to render something.
+#'
+#' @details
+#' Rules:
+#' - You must use [roxygen2](https://roxygen2.r-lib.org) to document the
+#'   functions.
+#' - If you use a `README.Rmd`, if should be rendered.
+#'   You need at least a `README.md`.
+#' - Don't use a `NEWS.Rmd` but a `NEWS.md`.
+#' - `NEWS.md` must contain an entry for the current package version.
+#'
+#'
+#' @section Required format for `NEWS.md`:
+#'
+#' ```
+#' # package_name version
+#'
+#' * Description of something that changed.
+#' * Lines should not exceed 80 characters.
+#'   Start a new line with two space to continue an item.
+#' * Add a single blank line before and after each header.
+#'
+#' ## Second level heading
+#'
+#' * You can use second level headings when you want to add more structure.
+#' ```
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom devtools build_readme document

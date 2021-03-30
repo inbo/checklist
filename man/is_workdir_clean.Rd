@@ -14,7 +14,7 @@ is_workdir_clean(repo)
 Otherwise \code{FALSE}
 }
 \description{
-Check if the current workdir of a repo is clean
+A clean working directory has no staged, unstaged or untracked files.
 }
 \seealso{
 Other utils: 

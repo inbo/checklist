@@ -14,7 +14,19 @@ Defaults to \code{.}.}
 Defaults to \code{TRUE}.}
 }
 \description{
-Write a check list with allowed issues in the source code
+First run \code{x <- checklist::check_package()} or
+\code{x <- checklist::check_source()}.
+These commands runs the checks and store the CheckList object in the variable
+\code{x}.
+Next you can store the configuration with \code{checklist::write_checklist(x)}.
+This will first list any existing allowed warnings or notes.
+For every one of them, you choose whether you want to keep it or not.
+Next, the function presents every new warning or note which can you allow.
+If you choose to allow a warning or note, you must provide a motivation.
+Please provide a sensible motivation.
+Keep in mind that \code{checklist.yml} stores these motivations in plain text.
+So they are visible for other users.
+We use the \code{yesno()} function to make sure you carefully read the questions.
 }
 \seealso{
 Other both: 

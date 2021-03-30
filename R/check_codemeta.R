@@ -1,4 +1,6 @@
 #' Check the package metadata
+#'
+#' Use the checks from [codemetar::give_opinions()].
 #' @inheritParams read_checklist
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that

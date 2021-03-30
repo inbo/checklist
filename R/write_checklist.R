@@ -1,5 +1,18 @@
 #' Write a check list with allowed issues in the source code
 #'
+#' First run `x <- checklist::check_package()` or
+#' `x <- checklist::check_source()`.
+#' These commands runs the checks and store the CheckList object in the variable
+#' `x`.
+#' Next you can store the configuration with `checklist::write_checklist(x)`.
+#' This will first list any existing allowed warnings or notes.
+#' For every one of them, you choose whether you want to keep it or not.
+#' Next, the function presents every new warning or note which can you allow.
+#' If you choose to allow a warning or note, you must provide a motivation.
+#' Please provide a sensible motivation.
+#' Keep in mind that `checklist.yml` stores these motivations in plain text.
+#' So they are visible for other users.
+#' We use the `yesno()` function to make sure you carefully read the questions.
 #' @inheritParams read_checklist
 #' @param package Logical indication if `checklist.yml` refers to an R package.
 #' Defaults to `TRUE`.

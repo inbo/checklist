@@ -1,4 +1,38 @@
-#' Check the style of file names
+#' Check the style of file and folder names
+#'
+#' A consistent naming schema avoids problems when working together.
+#' Especially when working with different OS.
+#' Some OS (e.g. Windows) are case-insensitive whereas others (e.g. Linux) are
+#' case-sensitive.
+#' Note that the the checklist GitHub Actions will test your code on Linux,
+#' Windows and MacOS.
+#'
+#' The sections below describe the default rules.
+#' We allow several exceptions when the community standard is different.
+#' E.g. a package stores the function scripts in the `R` folder, while our
+#' standard we enforces lower case folder names.
+#' Use the the community standard, even if it does conform with the checklist
+#' rules.
+#' Most likely checklist will have an exception for the name.
+#' If not, you can file an [issue](https://github.com/inbo/checklist/issues) and
+#' motivate why you think we should add an exception.
+#'
+#' @section Rules for folder names:
+#' - Folder names should only contain lower case letters, numbers and
+#'   underscore (`_`).
+#' - They can start with a single dot (`.`).
+#' @section Rules for file names:
+#' - Base names should only contain lower case letters, numbers and
+#'   underscore (`_`).
+#' - File extensions should only contains lower case letters and numbers.
+#'   Exceptions: file extensions related to `R` must have an upper case `R` (
+#'   `.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
+#'
+#' @section Rules for graphical file names:
+#' - Applies to file with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
+#' and "ps"
+#' - Same rules except that you need to use a dash (`-`) as separator instead of
+#'   an underscore (`_`).
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom git2r in_repository ls_tree
@@ -94,7 +128,7 @@ Fails: `%s`",
   )
 
   graphics_file <- extension %in% c(
-    "eps", "jpg", "jpeg", "pdf", "png", "ps", "csl"
+    "csl", "eps", "jpg", "jpeg", "pdf", "png", "ps"
   )
   warnings <- c(
     sprintf(
