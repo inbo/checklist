@@ -38,7 +38,7 @@ allowed:
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
     file.copy(
-      system.file("generic_template/cc_by_4_0.md", package = "checklist"),
+      system.file("generic_template/cc_by_sa_4_0.md", package = "checklist"),
       file.path(path, "LICENSE.md")
     )
     add(repo = repo, "LICENSE.md", force = TRUE)
