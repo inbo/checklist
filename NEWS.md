@@ -1,12 +1,25 @@
 # checklist 0.1.8
 
 * Create a release when pushing a tag starting with `v`.
-  We use a GitHub Action to create the release.
+  We use a GitHub Action to create the release instead of an R function.
 * New function: `setup_source()` to setup projects with only source files.
-* Add more documentation on:
-    * `create_package()`
+* Update `check_filename()` rules
+    * Allow a `data-raw` folder
+    * Allow more default GitHub file names
+    * Ignore font files
+    * csl files must follow the rules for graphics files
+* `create_package()` adds
+    * URL and BugReports to `DESCRIPTION`
+    * GitHub Actions
+    * basic setup for [`pkgdown`](https://pkgdown.r-lib.org/).
+* `setup_package()` updates `.Rbuildignore` and basic setup for
+  [`pkgdown`](https://pkgdown.r-lib.org/).
+* Add more documentation on all functions.
+* Add two vignettes:
+    * `vignette("getting_started")`
+    * `vignette("philosophy")`
 * Use Ubuntu 18.04 instead of the end of life Ubuntu 16.04 when checking the
-  package on the previous R release.
+  package on the previous R release (#31).
 
 # checklist 0.1.7
 
