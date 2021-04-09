@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Starting from scratch
+## Starting an R package from scratch
 
 ### Prepare online setup
 
@@ -100,7 +100,7 @@ It is OK to have Untracked files.
 ### Local setup
 
 1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `setup_checklist()`.
+1. Run `setup_package()`.
 This will add and/or modify files.
 Inspect the modified files.
 Especially if you are updating to a new checklist version and made some tweaks in the past.
@@ -113,8 +113,6 @@ Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_package()`.
 This should run without returning an error.
-
-### Online setup
 
 ### Online setup
 
@@ -136,6 +134,50 @@ Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID 
 Search for your package repository in the INBO organisation.
 Copy the token.
 Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
+1. Push changes from your local repository to GitHub.
+This will start the checks on GitHub.
+An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
+Wait for all tests to finish (either green thick or red cross).
+1. Go in your package GitHub repository to _Settings_ > _Branches_.
+_Add rule_ for _Branch name pattern_ `master` and select the following items and _Save changes_.
+    - `Require status checks to pass before merging`
+    - `Require branches to be up to date before merging`
+    - _Status checks found in the last week for this repository_
+        - `check package`
+        - `macOS-latest (release)`
+        - `ubuntu-18.04 (oldrel)`
+        - `ubuntu-20.04 (devel)`
+        - `windows-latest (release)`
+
+## Adding or updating checklist support to a project with R scripts
+
+### Prerequistes
+
+1. Make sure the package in using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
+1. The git status must be clean.
+You'll need to commit all changes first.
+It is OK to have Untracked files.
+1. You need a **public** remote git repository at https://github.com/inbo.
+
+### Local setup
+
+1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
+1. Run `setup_source()`.
+This will add and/or modify files.
+Inspect the modified files.
+Especially if you are updating to a new checklist version and made some tweaks in the past.
+1. Commit the changes.
+1. Run `x <- checklist::check_source()` and fix any issues.
+Repeat this until you have only issues that are not a problem.
+1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
+This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
+Then it asks which warnings and notes you want to allow.
+You'll need to motivate each of them.
+1. Run `x <- checklist::check_source()`.
+This should run without returning an error.
+
+### Online setup
+
 1. Push changes from your local repository to GitHub.
 This will start the checks on GitHub.
 An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
