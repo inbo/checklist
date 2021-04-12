@@ -8,7 +8,7 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config is_detached repository tag tags
+#' @importFrom git2r config is_detached push repository tag tags
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -62,9 +62,6 @@ set_tag <- function(x = ".") {
   )
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
   tag(repo, name = paste0("v", version), message = tag_message)
-  cmd <- sprintf(
-    "cd %s; git push origin; git push origin v%s", repo$path, version
-  )
-  system(cmd)
+  push(repo, name = paste0("v", version))
   return(invisible(NULL))
 }
