@@ -24,6 +24,7 @@
 #' @importFrom lintr lint_dir lint_package
 #' @family both
 check_lintr <- function(x = ".") {
+  options(lintr.linter_file = system.file(".lintr", package = "checklist"))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
   options(lintr.rstudio_source_markers = FALSE)
   on.exit(options(lintr.rstudio_source_markers = old_lint_option), add = TRUE)
