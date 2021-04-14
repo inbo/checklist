@@ -27,7 +27,7 @@ test_that("set_tag() works", {
   git2r::remote_add(repo, name = "origin", url = file.path(path, "origin"))
   git2r::commit(repo = repo, message = "Initital commit")
   git2r::push(
-    repo, name = "origin", refspec = "refs/heads/master", set_upstream = TRUE
+    repo, name = "origin", refspec = "refs/heads/master", set_upstream = TRUE  # nolint
   )
 
   # not on GITHUB or master
@@ -45,14 +45,14 @@ test_that("set_tag() works", {
     "Not on GitHub, not a push or not on master."
   )
 
-  Sys.setenv(GITHUB_REF = "refs/heads/junk")
+  Sys.setenv(GITHUB_REF = "refs/heads/junk")  # nolint
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on master."
   )
 
   # on master, not GitHub
-  Sys.setenv(GITHUB_REF = "refs/heads/master")
+  Sys.setenv(GITHUB_REF = "refs/heads/master") # nolint
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on master."

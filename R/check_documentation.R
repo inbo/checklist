@@ -157,7 +157,7 @@ See the details in ?pkgdown::build_news for the required format."
   doc_error <- c(
     doc_error,
     "NEWS.md should only contain a single blank line before or after a heading"[
-      any(news_file == "" | grepl("^\\w+$", news_file))
+      any(news_file == "" | grepl("^\\w+$", news_file)) # nolint
     ],
     "NEWS.md has a line longer than 80 characters (excluding URLs)."[
       any(nchar(news_file) > 80)

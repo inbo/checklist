@@ -48,32 +48,48 @@ check_filename <- function(x = ".") {
       files <- ls_tree(repo = repo)
       dirs <- unique(files$path)
       files <- paste0(files$path, files$name)
-      dirs <- gsub("/$", "", dirs)
     } else {
       dirs <- unique(dirname(files))
-      dirs <- dirs[dirs != "."]
     }
   } else {
     dirs <- list.dirs(x$get_path, recursive = TRUE, full.names = FALSE)
     files <- list.files(x$get_path, recursive = TRUE, all.files = TRUE)
   }
 
+  dirs <- lapply(dirs, split_path)
   # ignore git and RStudio files
-  dirs <- dirs[!grepl("\\.(git|Rproj.user)(/.*)?$", dirs)]
-  ok_dirs <- c(
-    "", "R", ".github/ISSUE_TEMPLATE", ".github/PULL_REQUEST_TEMPLATE",
-    "data-raw", "man-roxygen"
+  ignored_dirs <- vapply(
+    dirs,
+    function(x) {
+     x[1] %in% c("", ".", ".git", ".Rproj.user") |
+        identical(x[1:4], c("inst", "local_tex", "fonts", "opentype"))
+    },
+    logical(1)
   )
-  dirs <- dirs[!dirs %in% c(ok_dirs)]
-  dirs <- dirs[
-    !grepl(file.path("inst", "local_tex", "fonts", "opentype"), dirs)
-  ]
-  check_dir <- grepl("^\\.?([a-z0-9_\\/])+$", dirs)
+  dirs <- dirs[!ignored_dirs]
+  exceptions <- list(
+    c("R"), c("data-raw"), c("man-roxygen"),
+    c(".github", "ISSUE_TEMPLATE"), c(".github", "PULL_REQUEST_TEMPLATE")
+  )
+  dirs <- dirs[!dirs %in% exceptions]
+  check_dir <- vapply(
+    dirs,
+    function(x) {
+      all(grepl("^\\.?([a-z0-9_\\/])+$", x))
+    },
+    logical(1)
+  )
   problems <- sprintf(
 "Folder names should only contain lower case letters, numbers and underscore.
 They can start with a single dot.
 Failing folder: `%s`",
-    dirs[!check_dir]
+    vapply(
+      dirs[!check_dir],
+      function(x) {
+        do.call(file.path, as.list(x))
+      },
+      character(1)
+    )
   )
 
   # ignore git and RStudio files
@@ -85,7 +101,7 @@ Failing folder: `%s`",
       c(
         "\\.[a-zA-Z]+ignore", "\\.Rprofile", "\\.[a-zA-Z]+\\.(json|yml)",
         "DESCRIPTION", "NAMESPACE",
-        "README\\.R?md", "NEWS\\.md",
+        "README\\.R?md", "NEWS\\.md", # nolint
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md", "SUPPORT.md",
         "SECURITY.md", "FUNDING.yml",
         "Dockerfile",
@@ -146,4 +162,9 @@ Fails: `%s`",
   x$add_error(problems, "filename conventions")
 
   return(x)
+}
+
+split_path <- function(path) {
+  if (dirname(path) %in% c(".", path)) return(basename(path))
+  return(c(split_path(dirname(path)), basename(path)))
 }

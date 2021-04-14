@@ -64,7 +64,7 @@ check_description <- function(x = ".") {
       )
     } else {
       desc_diff <- system2(
-        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"),
+        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"), # nolint
         stdout = TRUE
       )
     }
