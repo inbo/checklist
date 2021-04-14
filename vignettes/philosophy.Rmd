@@ -97,6 +97,7 @@ Doing so enforces you to consistently use the same coding style, making it easy 
     - Use `assertthat::assert_that()` to validate object or conditions instead of `if() stop()`.
     - See if you can use `ifelse()` instead of `if()`.
     - Split the main function of your code over a few sub functions.
+    - Don't use else if not strictly necessary.
 
 ## File name conventions
 

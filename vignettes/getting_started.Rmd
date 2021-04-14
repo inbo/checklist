@@ -162,7 +162,7 @@ It is OK to have Untracked files.
 ### Local setup
 
 1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `setup_source()`.
+1. Run `checklist::setup_source()`.
 This will add and/or modify files.
 Inspect the modified files,
 especially if you are updating to a new checklist version and made some tweaks in the past.
