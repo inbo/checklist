@@ -2,7 +2,7 @@
 #'
 #' Creates a package template in a new folder.
 #' Use this function when you want to start a new package.
-#' DO READ `vignette("getting_started")` before you run this function.
+#' Please DO READ `vignette("getting_started")` before running this function.
 #'
 #' @template checklist_structure
 #'

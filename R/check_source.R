@@ -1,7 +1,7 @@
 #' Standardised test for an R source repository
 #'
 #' A convenience function that runs all source related tests in sequence.
-#' The details lists the relevant functions.
+#' The details section lists the relevant functions.
 #' When you fixed a problem, you can speed things up by running only the related
 #' check.
 #' We still recommend to run `check_source()` before you push to GitHub.

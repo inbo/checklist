@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ### Prepare online setup
 
-1. Go to https://github.com and login.
+1. Go to [https://github.com](https://github.com) and login.
   Create a new public repository in the INBO organisation.
   Use the package name as repository name.
   Enter the repository name and optionally a description.
@@ -44,13 +44,13 @@ knitr::opts_chunk$set(
 1. _Build_ the package.
 1. Run `x <- checklist::check_package()`.
   Fix any issues that arise during the checks.
-  Repeat the last two steps unless you end up with only a single new note about a _New submission_.
+  Repeat the last two steps until you end up with only a single new note about a _New submission_.
 1. Run `checklist::write_checklist(x)`.
   This functions can convert some 'new' warnings and notes into 'allowed' warnings and notes.
 1. Run `x <- checklist::check_package()` again to check that only 'allowed' warnings and notes remain.
   Repeat the last four steps until you get _No problems found_ at the end of the checklist output.
 1. Commit any remaining changes.
-1. Run in the terminal the command `git remote add origin git@github.com:inbo/_your_package_name_.git` where you replace `_your_package_name_` with the actual repository name.
+1. Run in the git terminal the command `git remote add origin git@github.com:inbo/_your_package_name_.git` where you replace `_your_package_name_` with the actual repository name.
 1. Run in the terminal the command `git push -u origin master`.
   This will run the checklist test on GitHub for the first time.
   An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
@@ -91,7 +91,7 @@ _Add rule_ for _Branch name pattern_ `master` and select the following items and
 
 ### Prerequistes
 
-1. Make sure the package in using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
+1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
 You'll need to commit all changes first.
 It is OK to have Untracked files.
@@ -100,10 +100,10 @@ It is OK to have Untracked files.
 ### Local setup
 
 1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `setup_package()`.
+1. Run `checklist::setup_package()`.
 This will add and/or modify files.
-Inspect the modified files.
-Especially if you are updating to a new checklist version and made some tweaks in the past.
+Inspect the modified files,
+especially if you are updating to a new checklist version and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_package()` and fix any issues.
 Repeat this until you have only issues that are not a problem.
@@ -164,8 +164,8 @@ It is OK to have Untracked files.
 1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
 1. Run `setup_source()`.
 This will add and/or modify files.
-Inspect the modified files.
-Especially if you are updating to a new checklist version and made some tweaks in the past.
+Inspect the modified files,
+especially if you are updating to a new checklist version and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_source()` and fix any issues.
 Repeat this until you have only issues that are not a problem.

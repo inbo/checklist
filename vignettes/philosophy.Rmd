@@ -31,17 +31,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-Everybody develops their own coding habits and style.
+Everybody develops its own coding habits and style.
 Some people take a lot of effort in making their source code [readable](https://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code), while others don't bother at all.
 Working together with different people is easier when everyone uses the same standard.
 The `checklist` package defines a set of standards and provides tools to validate whether your project or R package adheres to these standards.
-You can run these tools interactive on your machine.
+You can run these tools interactively on your machine.
 You can also add these checks as [GitHub actions](https://github.com/features/actions), which runs them automatically after every [push](https://github.com/git-guides/git-push) to the repository on [GitHub](https://github.com).
 
 ## Coding style
 
 The most visible part of a coding style is the naming convention.
-People use many different styles of naming convention within the R ecosystem [@Baath2012].
+People use many different styles of naming conventions within the R ecosystem [@Baath2012].
 Popular ones are `alllowercase`, `period.separated`, `underscore_separated`, `lowerCamelCase` and `UpperCamelCase`.
 We picked `underscore_separated` because that is the naming covention of the [`tidyverse`](https://tidyverse.org) packages.
 It is also the default setting in the [`lintr`](https://github.com/jimhester/lintr/blob/master/README.md) package which we use to do the [static code analysis](https://en.wikipedia.org/wiki/Static_program_analysis).
@@ -88,7 +88,7 @@ Doing so enforces you to consistently use the same coding style, making it easy 
   Only use `=` to pass arguments to a function (e.g. `check_package(fail = TRUE)`).
 - Use `is.na(x)` instead of `x == NA`.
 - Use `seq_len()` or `seq_along()` instead of `1:length(x)`, `1:nrow(x)`, ...
-  When `length(x) == 0`, `1:length(x)` yields `c(1, 0)`, whereas `seq_along(x)` would yield an empty vector.
+  Advantage: when `length(x) == 0`, `1:length(x)` yields `c(1, 0)`, whereas `seq_along(x)` would yield an empty vector.
 - Don't store code in comments.
   If you don't want to loose code, use version control systems like [`git`](https://git-scm.com/).
 - Avoid code with lots of nested loop or if statements.
@@ -103,7 +103,7 @@ Doing so enforces you to consistently use the same coding style, making it easy 
 To make this easier to remember we choose the same name conventions for file names as for objects.
 We acknowledge that these rules sometimes clash with requirements from other sources (e.g. `DESCRIPTION` in an R package, `README.md` on GitHub, `.gitignore` for git, ...).
 In such case we allow the file names as required by R, git or GitHub.
-When `check_filename()` does not allow a certain file or folder name and you think this is a false positive, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this is a false positive.
+When `check_filename()` does unfairly not allow a certain file or folder name, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this should be allowed.
 
 ### Rules for folder names
 
@@ -147,14 +147,15 @@ In the long run you save time due to a better quality of your code.
   This avoids the need to copy-paste large chunks of scripts and replace a few values.
   The copy-paste work flow typically results in hard-to-read long scripts.
   Imagine you made a mistake in the code and copy-pasted that mistake several times before you found it.
-  You have to check your entire project to fix the mistake.
+  You have to check your entire project to fix the mistake several times.
   Having it as a function reduces the workload to fixing only the function.
 - Packages require that every object is either defined within the package or imported from another package.
   Global variables are not allowed.
-  This ensures that the functions inside your package only work with the objects defined inside the package.
+  This ensures that the functions inside your package work with only the objects defined inside the package.
   They are not masked by objects defined by the user.
   Something that can happen in standalone scripts.
-- A package forces you to write (minimal) documentation.
+- A package gives the opportunity to add documentation to your code.
+  Afterwards you can simply consult this documentation rather than having to dig into your code to find out what it is actually doing.
   Every function needs at least a title and an entry for every argument.
 - Most likely you would still need a short script that combines a few high level functions of your package to run the analysis.
   The `inst` folder is an ideal place to bundle such scripts within the package.

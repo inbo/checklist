@@ -2,9 +2,9 @@
 #'
 #' A convenience function that runs all packages related tests in sequence.
 #' The details section lists the relevant functions.
-#' When you fixed a problem, you can speed things up by running only the related
+#' After fixing a problem, you can quickly check if it is solved by running only the related
 #' check.
-#' We still recommend to run `check_package()` before you push to GitHub.
+#' But we still recommend to run `check_package()` before you push to GitHub.
 #' And only push when the functions indicate that there are no problems.
 #' This catches most problems before sending the code to GitHub.
 #'

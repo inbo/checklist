@@ -39,7 +39,7 @@ is_workdir_clean <- function(repo) {
 
 #' Check if a vector contains valid email
 #'
-#' It only checks the format of the text, not if the email works.
+#' It only checks the format of the text, not if the email address exists.
 #' @param email A vector with email addresses.
 #' @return A logical vector.
 #' @export

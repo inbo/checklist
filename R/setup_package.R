@@ -3,8 +3,8 @@
 #' Use this function when you have an existing package and you want to use the
 #' checklist functionality.
 #' Please keep in mind that the checklist is an opinionated list of checks.
-#' It might require some breaking changes.
-#' DO READ `vignette("getting_started")` before you run this function.
+#' It might require some breaking changes in your package.
+#' Please DO READ `vignette("getting_started")` before running this function.
 #'
 #' @template checklist_structure
 #'
