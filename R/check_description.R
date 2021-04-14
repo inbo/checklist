@@ -4,10 +4,10 @@
 #' A good `DESCRIPTION` is tidy, has a meaningful version number, full
 #' author details and a clear license.
 #'
-#' #' This function ensures the `DESCRIPTION` is tidy, using `tidy_desc()`.
+#' This function ensures the `DESCRIPTION` is tidy, using `tidy_desc()`.
 #'
 #' The version number of the package must have either a `0.0` or a `0.0.0`
-#' format (see this [discussion](https://github.com/inbo/checklist/issues/1) why
+#' format (see [this discussion](https://github.com/inbo/checklist/issues/1) why
 #' we allow only these formats).
 #' The version number in every branch must be larger than the current version
 #' number in the master branch.
@@ -97,7 +97,7 @@ check_description <- function(x = ".") {
 
 #' Make your DESCRIPTION tidy
 #'
-#' A tidy `DESCRIPTION` use a strict formatting and order of key-value pairs.
+#' A tidy `DESCRIPTION` uses a strict formatting and order of key-value pairs.
 #' This function reads the current `DESCRIPTION` and overwrites is with a tidy
 #' version.
 #' @inheritParams read_checklist
@@ -169,7 +169,7 @@ unchanged_repo <- function(repo, old_status) {
 
 #' Check the license of a package
 #'
-#' Every package need a clear license.
+#' Every package needs a clear license.
 #' Without a license, the end-users have no clue under what conditions they can
 #' use the package.
 #' You must specify the license in the `DESCRIPTION` and provide a `LICENSE.md`

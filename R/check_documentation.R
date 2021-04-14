@@ -14,7 +14,7 @@
 #' Rules:
 #' - You must use [roxygen2](https://roxygen2.r-lib.org) to document the
 #'   functions.
-#' - If you use a `README.Rmd`, if should be rendered.
+#' - If you use a `README.Rmd`, it should be rendered.
 #'   You need at least a `README.md`.
 #' - Don't use a `NEWS.Rmd` but a `NEWS.md`.
 #' - `NEWS.md` must contain an entry for the current package version.
