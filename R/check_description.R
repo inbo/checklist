@@ -98,7 +98,7 @@ check_description <- function(x = ".") {
 #' Make your DESCRIPTION tidy
 #'
 #' A tidy `DESCRIPTION` uses a strict formatting and order of key-value pairs.
-#' This function reads the current `DESCRIPTION` and overwrites is with a tidy
+#' This function reads the current `DESCRIPTION` and overwrites it with a tidy
 #' version.
 #' @inheritParams read_checklist
 #' @export

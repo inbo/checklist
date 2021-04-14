@@ -7,7 +7,7 @@
 #' - a local git repository
 #' - an initial `NEWS.md` file
 #' - a template for an `README.Rmd`
-#' - set-up for automate checks and releases of the package using GitHub
+#' - set-up for automated checks and releases of the package using GitHub
 #'   Actions.
 #' - a code of conduct and contributing guidelines.
 #' - the set-up for a `pkgdown` website using the INBO corporate identity.

@@ -51,7 +51,7 @@ RStudio make things easier when you activate all diagnostic options (_Tools_ > _
 This highlights several problems by showing a squiggly line and/or a warning icon at the line number.
 Instead of learning all the rules by heart, run `check_lintr()` regularly and fix any issues that come up.
 Do this when working on every single project.
-Doing so enforces you to consistenly use the same coding style, making it easy to learn and use it.
+Doing so enforces you to consistently use the same coding style, making it easy to learn and use it.
 
 ### Rules for coding style
 
@@ -122,7 +122,7 @@ When `check_filename()` does not allow a certain file or folder name and you thi
 - Same rules except that you need to use a dash (`-`) as separator instead of an underscore (`_`).
   We need to exception because underscores cause problems in certain situations.
 
-## Bundeling your code a package
+## Bundling your code in a package
 
 Most users think of an R package a collection of generic functions that they can use to run their analysis.
 However, an R package is useful way to bundle and document a stand alone analysis too!

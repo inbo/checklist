@@ -34,7 +34,7 @@ knitr::opts_chunk$set(
 1. In the _Build pane_, select _More_ > _Configure Build Tools_.
   Click the _Configure_ button and add a tick to _Install and Restart_.
   All boxes except _Vignettes_ must be ticked.
-  Close the tow dialogue boxes by clicking the _OK_ buttons (once for each of box).
+  Close the two dialogue boxes by clicking the _OK_ buttons (once for each of box).
 1. Open the `DESCRIPTION` file.
   Add a line `URL: https://inbo.github.io/_your_package_name_` where you replace `_your_package_name_` with the actual repository name.
 1. Open the `README.Rmd` file and update the content.
