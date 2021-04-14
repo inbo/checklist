@@ -9,8 +9,8 @@
 #' The sections below describe the default rules.
 #' We allow several exceptions when the community standard is different.
 #' E.g. a package stores the function scripts in the `R` folder, while our
-#' standard we enforces lower case folder names.
-#' Use the the community standard, even if it does conform with the checklist
+#' standard enforces lower case folder names.
+#' Use the community standard, even if it does conform with the checklist
 #' rules.
 #' Most likely checklist will have an exception for the name.
 #' If not, you can file an [issue](https://github.com/inbo/checklist/issues) and
@@ -28,7 +28,7 @@
 #'   `.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
 #'
 #' @section Rules for graphical file names:
-#' - Applies to file with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
+#' - Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
 #' and "ps"
 #' - Same rules except that you need to use a dash (`-`) as separator instead of
 #'   an underscore (`_`).

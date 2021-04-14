@@ -5,8 +5,8 @@
 #' When you fixed a problem, you can speed things up by running only the related
 #' check.
 #' We still recommend to run `check_source()` before you push to GitHub.
-#' And only push when the functions indicates that there are no problems.
-#' This caches most problems before sending the code to GitHub.
+#' And only push when the functions indicate that there are no problems.
+#' This catches most problems before sending the code to GitHub.
 #'
 #' @details
 #' List of checks in order:

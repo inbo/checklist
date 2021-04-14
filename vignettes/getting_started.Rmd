@@ -153,7 +153,7 @@ _Add rule_ for _Branch name pattern_ `master` and select the following items and
 
 ### Prerequistes
 
-1. Make sure the package in using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
+1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
 You'll need to commit all changes first.
 It is OK to have Untracked files.

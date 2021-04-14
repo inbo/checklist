@@ -2,7 +2,7 @@
 #'
 #' First run `x <- checklist::check_package()` or
 #' `x <- checklist::check_source()`.
-#' These commands runs the checks and store the CheckList object in the variable
+#' These commands run the checks and store the CheckList object in the variable
 #' `x`.
 #' Next you can store the configuration with `checklist::write_checklist(x)`.
 #' This will first list any existing allowed warnings or notes.
