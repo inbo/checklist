@@ -62,6 +62,8 @@ set_tag <- function(x = ".") {
   )
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
   tag(repo, name = paste0("v", version), message = tag_message)
-  push(repo, name = paste0("v", version))
+  push(
+    repo, refspec = paste0(file.path("refs", "tags", "v", fsep = "/"), version)
+  )
   return(invisible(NULL))
 }
