@@ -1,6 +1,7 @@
 #' Check the style of file and folder names
 #'
-#' A consistent naming schema avoids problems when working together, especially when working with different OS.
+#' A consistent naming schema avoids problems when working together,
+#' especially when working with different OS.
 #' Some OS (e.g. Windows) are case-insensitive whereas others (e.g. Linux) are
 #' case-sensitive.
 #' Note that the checklist GitHub Actions will test your code on Linux,

@@ -26,7 +26,7 @@ Rules:
 \itemize{
 \item You must use \href{https://roxygen2.r-lib.org}{roxygen2} to document the
 functions.
-\item If you use a \code{README.Rmd}, if should be rendered.
+\item If you use a \code{README.Rmd}, it should be rendered.
 You need at least a \code{README.md}.
 \item Don't use a \code{NEWS.Rmd} but a \code{NEWS.md}.
 \item \code{NEWS.md} must contain an entry for the current package version.

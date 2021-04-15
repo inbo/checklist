@@ -13,7 +13,7 @@ validate_email(email)
 A logical vector.
 }
 \description{
-It only checks the format of the text, not if the email works.
+It only checks the format of the text, not if the email address exists.
 }
 \seealso{
 Other utils: 

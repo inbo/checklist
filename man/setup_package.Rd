@@ -14,8 +14,8 @@ Defaults to \code{"."}.}
 Use this function when you have an existing package and you want to use the
 checklist functionality.
 Please keep in mind that the checklist is an opinionated list of checks.
-It might require some breaking changes.
-DO READ \code{vignette("getting_started")} before you run this function.
+It might require some breaking changes in your package.
+Please DO READ \code{vignette("getting_started")} before running this function.
 }
 \details{
 What you get with a checklist setup:
@@ -26,7 +26,7 @@ guidelines with GPL-3 license.
 \item a local git repository
 \item an initial \code{NEWS.md} file
 \item a template for an \code{README.Rmd}
-\item set-up for automate checks and releases of the package using GitHub
+\item set-up for automated checks and releases of the package using GitHub
 Actions.
 \item a code of conduct and contributing guidelines.
 \item the set-up for a \code{pkgdown} website using the INBO corporate identity.

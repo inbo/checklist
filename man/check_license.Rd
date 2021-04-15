@@ -11,7 +11,7 @@ check_license(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Every package need a clear license.
+Every package needs a clear license.
 Without a license, the end-users have no clue under what conditions they can
 use the package.
 You must specify the license in the \code{DESCRIPTION} and provide a \code{LICENSE.md}

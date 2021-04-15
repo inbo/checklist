@@ -1,10 +1,12 @@
 #' Set a New Tag
 #'
-#' This function only works when run in a GitHub Action on the master branch.
+#' This function is a part of the GitHub Action.
+#' Therefore it only works when run in a GitHub Action on the master branch.
 #' Otherwise it will only return a message.
-#' It sets a new tag at the current commit using the related entry from `NEWS.md`
-#' as message.
+#' It sets a new tag at the current commit using the related entry from
+#' `NEWS.md` as message.
 #' This tag will turn into a release.
+#'
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that

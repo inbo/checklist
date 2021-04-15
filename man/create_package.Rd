@@ -22,7 +22,7 @@ If you use \code{\link[utils:person]{utils::person()}}, then you must provide \c
 \description{
 Creates a package template in a new folder.
 Use this function when you want to start a new package.
-DO READ \code{vignette("getting_started")} before you run this function.
+Please DO READ \code{vignette("getting_started")} before running this function.
 }
 \details{
 What you get with a checklist setup:
@@ -33,7 +33,7 @@ guidelines with GPL-3 license.
 \item a local git repository
 \item an initial \code{NEWS.md} file
 \item a template for an \code{README.Rmd}
-\item set-up for automate checks and releases of the package using GitHub
+\item set-up for automated checks and releases of the package using GitHub
 Actions.
 \item a code of conduct and contributing guidelines.
 \item the set-up for a \code{pkgdown} website using the INBO corporate identity.

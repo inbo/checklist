@@ -16,16 +16,17 @@ Defaults to \code{TRUE}.}
 \description{
 First run \code{x <- checklist::check_package()} or
 \code{x <- checklist::check_source()}.
-These commands runs the checks and store the CheckList object in the variable
+These commands run the checks and store the CheckList object in the variable
 \code{x}.
 Next you can store the configuration with \code{checklist::write_checklist(x)}.
 This will first list any existing allowed warnings or notes.
-For every one of them, you choose whether you want to keep it or not.
-Next, the function presents every new warning or note which can you allow.
+For every one of them, choose whether you want to keep it or not.
+Next, the function presents every new warning or note which you may allow or
+not.
 If you choose to allow a warning or note, you must provide a motivation.
 Please provide a sensible motivation.
-Keep in mind that \code{checklist.yml} stores these motivations in plain text.
-So they are visible for other users.
+Keep in mind that \code{checklist.yml} stores these motivations in plain text,
+so they are visible for other users.
 We use the \code{yesno()} function to make sure you carefully read the questions.
 }
 \seealso{

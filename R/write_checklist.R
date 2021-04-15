@@ -7,7 +7,8 @@
 #' Next you can store the configuration with `checklist::write_checklist(x)`.
 #' This will first list any existing allowed warnings or notes.
 #' For every one of them, choose whether you want to keep it or not.
-#' Next, the function presents every new warning or note which you may allow or not.
+#' Next, the function presents every new warning or note which you may allow or
+#' not.
 #' If you choose to allow a warning or note, you must provide a motivation.
 #' Please provide a sensible motivation.
 #' Keep in mind that `checklist.yml` stores these motivations in plain text,

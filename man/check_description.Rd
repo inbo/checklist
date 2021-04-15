@@ -16,10 +16,10 @@ A good \code{DESCRIPTION} is tidy, has a meaningful version number, full
 author details and a clear license.
 }
 \details{
-#' This function ensures the \code{DESCRIPTION} is tidy, using \code{tidy_desc()}.
+This function ensures the \code{DESCRIPTION} is tidy, using \code{tidy_desc()}.
 
 The version number of the package must have either a \code{0.0} or a \verb{0.0.0}
-format (see this \href{https://github.com/inbo/checklist/issues/1}{discussion} why
+format (see \href{https://github.com/inbo/checklist/issues/1}{this discussion} why
 we allow only these formats).
 The version number in every branch must be larger than the current version
 number in the master branch.

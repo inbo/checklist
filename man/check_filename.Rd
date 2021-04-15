@@ -11,19 +11,19 @@ check_filename(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-A consistent naming schema avoids problems when working together.
-Especially when working with different OS.
+A consistent naming schema avoids problems when working together,
+especially when working with different OS.
 Some OS (e.g. Windows) are case-insensitive whereas others (e.g. Linux) are
 case-sensitive.
-Note that the the checklist GitHub Actions will test your code on Linux,
+Note that the checklist GitHub Actions will test your code on Linux,
 Windows and MacOS.
 }
 \details{
 The sections below describe the default rules.
 We allow several exceptions when the community standard is different.
 E.g. a package stores the function scripts in the \code{R} folder, while our
-standard we enforces lower case folder names.
-Use the the community standard, even if it does conform with the checklist
+standard enforces lower case folder names.
+Use the community standard, even if it does conform with the checklist
 rules.
 Most likely checklist will have an exception for the name.
 If not, you can file an \href{https://github.com/inbo/checklist/issues}{issue} and
@@ -52,7 +52,7 @@ Exceptions: file extensions related to \code{R} must have an upper case \code{R}
 \section{Rules for graphical file names}{
 
 \itemize{
-\item Applies to file with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
+\item Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
 and "ps"
 \item Same rules except that you need to use a dash (\code{-}) as separator instead of
 an underscore (\verb{_}).

@@ -11,8 +11,8 @@ tidy_desc(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-A tidy \code{DESCRIPTION} use a strict formatting and order of key-value pairs.
-This function reads the current \code{DESCRIPTION} and overwrites is with a tidy
+A tidy \code{DESCRIPTION} uses a strict formatting and order of key-value pairs.
+This function reads the current \code{DESCRIPTION} and overwrites it with a tidy
 version.
 }
 \seealso{

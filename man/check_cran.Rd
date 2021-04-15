@@ -16,7 +16,7 @@ A \code{Checklist} object.
 \description{
 CRAN imposes an impressive list of tests on every package before publication.
 This suite of test is available in every R installation.
-Hence we use this full suit of tests too.
+Hence we use this full suite of tests too.
 Notice that \code{check_package()} runs several additional tests.
 }
 \seealso{

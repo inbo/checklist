@@ -3,7 +3,8 @@
 #' This functions does [static code analysis](
 #' https://en.wikipedia.org/wiki/Static_program_analysis).
 #' It relies on [lintr::lint_package()].
-#' We recommend that you activate all code diagnostics in RStudio to help meeting the requirements.
+#' We recommend that you activate all code diagnostics in RStudio to help
+#' meeting the requirements.
 #' You can find this in the menu _Tools_ > _Global options_ > _Code_ >
 #' _Diagnostics_.
 #'
