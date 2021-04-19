@@ -17,7 +17,7 @@
 #' @importFrom assertthat assert_that is.string
 #' @importFrom git2r add  init
 #' @importFrom tools toTitleCase
-#' @importFrom utils sessionInfo
+#' @importFrom utils installed.packages
 #' @family setup
 create_package <- function(
   package, path = ".", title, description, maintainer
@@ -65,7 +65,7 @@ RoxygenNote: %5$s
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
     description,
-    sessionInfo("roxygen2")$otherPkgs$roxygen2$Version
+    installed.packages()["roxygen2", "Version"]
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
   tidy_desc(path)

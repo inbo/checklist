@@ -7,9 +7,11 @@ test_that("create_package() works", {
     email = "thierry.onkelinx@inbo.be",
     comment = c(ORCID = "0000-0001-8804-4216")
   )
-  path <- tempfile("test_package")
-  package <- "junk"
+  path <- tempfile("create_package")
   dir.create(path)
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  package <- "create"
   expect_message(
     create_package(
       path = path,
@@ -59,6 +61,4 @@ test_that("create_package() works", {
     "Checklist"
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
-
-  unlink(path, recursive = TRUE)
 })
