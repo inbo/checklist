@@ -22,7 +22,7 @@ Imports:
     assertthat,
     codemetar,
     desc,
-    devtools,
+    devtools (> 2.4.0),
     git2r,
     httr,
     lintr,
@@ -41,6 +41,8 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
+Remotes:
+    r-lib/devtools
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

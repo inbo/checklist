@@ -158,7 +158,7 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
 
 ## install checklist
 COPY . /checklist/
-RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
+RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist")'
 
 COPY entrypoint_package.sh /entrypoint_package.sh
 COPY entrypoint_source.sh /entrypoint_source.sh
