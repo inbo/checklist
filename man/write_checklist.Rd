@@ -14,6 +14,13 @@ Defaults to \code{.}.}
 Defaults to \code{TRUE}.}
 }
 \description{
+Checklist stores it configuration as a \code{checklist.yml} file.
+\code{create_package()}, \code{setup_package()} and \code{setup_source()} generate a default
+file.
+If you need to allow some warnings or notes, you need to update the
+configuration.
+}
+\details{
 First run \code{x <- checklist::check_package()} or
 \code{x <- checklist::check_source()}.
 These commands run the checks and store the CheckList object in the variable

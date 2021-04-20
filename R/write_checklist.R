@@ -1,5 +1,12 @@
 #' Write a check list with allowed issues in the source code
 #'
+#' Checklist stores it configuration as a `checklist.yml` file.
+#' `create_package()`, `setup_package()` and `setup_source()` generate a default
+#' file.
+#' If you need to allow some warnings or notes, you need to update the
+#' configuration.
+#'
+#' @details
 #' First run `x <- checklist::check_package()` or
 #' `x <- checklist::check_source()`.
 #' These commands run the checks and store the CheckList object in the variable
