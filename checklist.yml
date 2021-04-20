@@ -3,9 +3,12 @@ package: yes
 allowed:
   warnings: []
   notes:
-  - motivation: Package not on CRAN
+  - motivation: Package not on CRAN and requires a development version of devtools
     value: |-
       checking CRAN incoming feasibility ... NOTE
       Maintainer: ‘Thierry Onkelinx <thierry.onkelinx@inbo.be>’
 
       New submission
+
+      Unknown, possibly mis-spelled, fields in DESCRIPTION:
+        ‘Remotes’
