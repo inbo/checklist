@@ -43,7 +43,7 @@ You can also add these checks as [GitHub actions](https://github.com/features/ac
 The most visible part of a coding style is the naming convention.
 People use many different styles of naming conventions within the R ecosystem [@Baath2012].
 Popular ones are `alllowercase`, `period.separated`, `underscore_separated`, `lowerCamelCase` and `UpperCamelCase`.
-We picked `underscore_separated` because that is the naming covention of the [`tidyverse`](https://tidyverse.org) packages.
+We picked `underscore_separated` because that is the naming convention of the [`tidyverse`](https://tidyverse.org) packages.
 It is also the default setting in the [`lintr`](https://github.com/jimhester/lintr/blob/master/README.md) package which we use to do the [static code analysis](https://en.wikipedia.org/wiki/Static_program_analysis).
 
 At first this seems a lot to memorise.
@@ -72,9 +72,9 @@ Doing so enforces you to consistently use the same coding style, making it easy 
         - assignments `<-`, `->`, `=`
         - operators like `+`, `-`,`*`, `/`, ...
     - No space before and one space after `,`
-    - One space before `(` except in `function(` (don't use `function (`)
-    - One space between `)` and `{`
     - No space after or before `(` or `[`
+        - except in constructs like `if ()`, `for ()`, `while ()`
+    - One space between `)` and `{`, e.g. `function () {`
 - Use double quotes (`"`) to define character strings.
 - No trailing whitespace
     - spaces at the end of a line
@@ -90,13 +90,14 @@ Doing so enforces you to consistently use the same coding style, making it easy 
 - Use `seq_len()` or `seq_along()` instead of `1:length(x)`, `1:nrow(x)`, ...
   Advantage: when `length(x) == 0`, `1:length(x)` yields `c(1, 0)`, whereas `seq_along(x)` would yield an empty vector.
 - Don't store code in comments.
-  If you don't want to loose code, use version control systems like [`git`](https://git-scm.com/).
+  If you don't want to lose code, use version control systems like [`git`](https://git-scm.com/).
+  If it is code that you need to run only under special circumstances, then either put the code in a separate script and run is manually or write an if-else were you run the code automatically when needed.
 - Avoid code with lots of nested loop or if statements.
   If the code is too complex, you'll get a warning that the [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) is too high.
   Tips for reducing the code complexity:
     - Use `assertthat::assert_that()` to validate object or conditions instead of `if() stop()`.
     - See if you can use `ifelse()` instead of `if()`.
-    - Split the main function of your code over a few sub functions.
+    - Split the main function of your code over sub functions.
     - Don't use else if not strictly necessary.
 
 ## File name conventions
@@ -132,8 +133,11 @@ If you have a project folder with a bunch of files, people will need to get to k
 Unless you documented everything well they (including your future self!) will have a hard time figuring out how things work.
 
 Having the analysis as a package _and_ running `check_package()` to ensure a minimal quality standard, makes things a lot easier for the user.
-Agreed, it will take more time to create the analysis, especially with the first few projects.
+Agreed, it will take a bit more time to create the analysis, especially with the first few projects.
 In the long run you save time due to a better quality of your code.
+Try to start by packaging a recurrent analysis or standardised report when you want to learn writing a package.
+Once you have some experience, it is little overhead to do it for smaller analysis.
+Keep in mind that you seldom run an analysis _exactly_ once.
 
 ### Benefits
 
@@ -152,9 +156,8 @@ In the long run you save time due to a better quality of your code.
   Having it as a function reduces the workload to fixing only the function.
 - Packages require that every object is either defined within the package or imported from another package.
   Global variables are not allowed.
-  This ensures that the functions inside your package work with only the objects defined inside the package.
-  They are not masked by objects defined by the user.
-  Something that can happen in standalone scripts.
+  The user only needs to load your package and run the function with the required arguments.
+  The results will not depend on any other packages loaded nor by user-defined objects like vectors or dataframes (unless the user passes them explicitly as arguments to a function).
 - A package gives the opportunity to add documentation to your code.
   Afterwards you can simply consult this documentation rather than having to dig into your code to find out what it is actually doing.
   Every function needs at least a title and an entry for every argument.
