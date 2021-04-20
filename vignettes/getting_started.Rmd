@@ -24,9 +24,10 @@ knitr::opts_chunk$set(
   Enter the repository name and optionally a description.
   Don't add a `README`, `.gitignore` or `LICENSE`.
 
-### Prepare local setup
+### Local setup
 
-1. Use `create_package()`.
+1. Install or update the checklist package with `remotes::install_github("inbo/checklist")`.
+1. Use `checklist::create_package()`.
   You'll need to provide the package name, title, description and maintainer.
   Please read the documentation of `create_package()` prior to running the function.
   The function creates an RStudio project with a the package template in a folder with the name of the package.
@@ -35,13 +36,11 @@ knitr::opts_chunk$set(
   Click the _Configure_ button and add a tick to _Install and Restart_.
   All boxes except _Vignettes_ must be ticked.
   Close the two dialogue boxes by clicking the _OK_ buttons (once for each of box).
-1. Open the `DESCRIPTION` file.
-  Add a line `URL: https://inbo.github.io/_your_package_name_` where you replace `_your_package_name_` with the actual repository name.
 1. Open the `README.Rmd` file and update the content.
   Knit the file and stage the `README.Rmd` and `README.md` files.
 1. Review and commit the changes into an initial commit.
-1. Add at least one function to the package
-1. _Build_ the package.
+1. Add at least one function to the package.
+1. [_Build_](https://r-pkgs.org/whole-game.html#install) the package.
 1. Run `x <- checklist::check_package()`.
   Fix any issues that arise during the checks.
   Repeat the last two steps until you end up with only a single new note about a _New submission_.
@@ -66,9 +65,10 @@ You can revoke old or compromised tokens.
 Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
-1. Run `rorcid::orcid_auth()` and sign in with your [ORCID iD](https://www.orcid.org) if requested.
+1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://www.orcid.org) if requested.
 Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
+Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
 1. Go to https://codecov.io and login with your GitHub account.
@@ -106,7 +106,8 @@ Inspect the modified files,
 especially if you are updating to a new checklist version and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_package()` and fix any issues.
-Repeat this until you have only issues that are not a problem.
+Repeat this step until you have only issues that are not a problem.
+Commit any remaining changes.
 1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
 Then it asks which warnings and notes you want to allow.
@@ -125,9 +126,10 @@ You can revoke old or compromised tokens.
 Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
-1. Run `rorcid::orcid_auth()` and sign in with your [ORCID iD](https://www.orcid.org) if requested.
+1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://www.orcid.org) if requested.
 Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
+Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
 1. Go to https://codecov.io and login with your GitHub account.
@@ -168,7 +170,8 @@ Inspect the modified files,
 especially if you are updating to a new checklist version and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_source()` and fix any issues.
-Repeat this until you have only issues that are not a problem.
+Repeat this step until you have only issues that are not a problem.
+Commit any changes.
 1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
 Then it asks which warnings and notes you want to allow.
