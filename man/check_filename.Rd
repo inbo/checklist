@@ -38,7 +38,7 @@ underscore (\verb{_}).
 }
 }
 
-\section{Rules for file names}{
+\section{Default rules for file names}{
 
 \itemize{
 \item Base names should only contain lower case letters, numbers and
@@ -49,14 +49,18 @@ Exceptions: file extensions related to \code{R} must have an upper case \code{R}
 }
 }
 
-\section{Rules for graphical file names}{
+\section{Exceptions for some file formats}{
 
-\itemize{
-\item Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
-and "ps"
-\item Same rules except that you need to use a dash (\code{-}) as separator instead of
-an underscore (\verb{_}).
-}
+Underscores (\verb{_}) causes problems for graphical files when using LaTeX to
+create pdf output.
+This is how we generate pdf output from RMarkdown.
+Therefore you need to use a dash (\code{-}) as separator instead of
+an underscores (\verb{_}).
+Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
+and "ps".
+
+We ignore files with "otf" or "ttf" extensions.
+These are fonts files which often require their own file name scheme.
 }
 
 \seealso{

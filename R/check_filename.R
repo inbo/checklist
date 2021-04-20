@@ -21,18 +21,25 @@
 #' - Folder names should only contain lower case letters, numbers and
 #'   underscore (`_`).
 #' - They can start with a single dot (`.`).
-#' @section Rules for file names:
+#' @section Default rules for file names:
 #' - Base names should only contain lower case letters, numbers and
 #'   underscore (`_`).
 #' - File extensions should only contains lower case letters and numbers.
 #'   Exceptions: file extensions related to `R` must have an upper case `R` (
 #'   `.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
 #'
-#' @section Rules for graphical file names:
-#' - Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
-#' and "ps"
-#' - Same rules except that you need to use a dash (`-`) as separator instead of
-#'   an underscore (`_`).
+#' @section Exceptions for some file formats:
+#' Underscores (`_`) causes problems for graphical files when using LaTeX to
+#' create pdf output.
+#' This is how we generate pdf output from RMarkdown.
+#' Therefore you need to use a dash (`-`) as separator instead of
+#' an underscores (`_`).
+#' Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
+#' and "ps".
+#'
+#' We ignore files with "otf" or "ttf" extensions.
+#' These are fonts files which often require their own file name scheme.
+#'
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom git2r in_repository ls_tree
