@@ -36,6 +36,25 @@ Keep in mind that \code{checklist.yml} stores these motivations in plain text,
 so they are visible for other users.
 We use the \code{yesno()} function to make sure you carefully read the questions.
 }
+\section{Caveat}{
+When you allow a warning or note, this warning or note must appear.
+Otherwise you get a "missing warning" or "missing note" error.
+So if you fix an allowed warning or note, you need to rerun
+\code{checklist::write_checklist(x)} and remove the old version.
+
+If you can solve a warning or note, then solve it rather than to allow it.
+Only allow a warning or note in case of a generic "problem" that you can't
+solve.
+The best example is the \verb{checking CRAN incoming feasibility ... NOTE New submission} which appears when checking a package not on
+\href{https://cran.r-project.org/}{CRAN}.
+That is should an allowed note as long as the package is not on CRAN.
+Or permantly when your package is not intended for CRAN.
+
+Do not allow a warning or note to fix an issue specific to your machine.
+That will result in an error when checking the package on an other machine
+(e.g. GitHub actions).
+}
+
 \seealso{
 Other both: 
 \code{\link{check_filename}()},
