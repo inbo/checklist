@@ -17,19 +17,7 @@ We recommend that you activate all code diagnostics in RStudio to help
 meeting the requirements.
 You can find this in the menu \emph{Tools} > \emph{Global options} > \emph{Code} >
 \emph{Diagnostics}.
-}
-\details{
-Your code must follow the default coding style defined by the lintr package.
-\itemize{
-\item Use underscore (\verb{_}) to separate long names.
-\item No names longer than 30 characters.
-\item No lines longer than 80 characters.
-\item Use \code{TRUE} and \code{FALSE},
-Don't use \code{T} or \code{F}.
-\item Add sufficient whitespace characters.
-But don't use whitespace when it is not relevant (end of line or file).
-\item ...
-}
+Please have a look at \code{vignette("philosophy")} for more details on the rules.
 }
 \seealso{
 Other both: 
