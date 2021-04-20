@@ -87,6 +87,13 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 ## install git2r
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
 
+## install hexSticker
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libmagick++-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
+
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
@@ -141,7 +148,7 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
 ## install R6
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
 
-## install spelling
+## install sessioninfo
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
 
 ## install spelling

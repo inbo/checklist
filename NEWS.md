@@ -3,6 +3,7 @@
 * Create a release when pushing a tag starting with `v`.
   We use a GitHub Action to create the release instead of an R function.
 * New function: `setup_source()` to setup projects with only source files.
+* Add auxiliary function `create_hexsticker()`.
 * Update `check_filename()` rules
     * Allow a `data-raw` folder
     * Allow more default GitHub file names
