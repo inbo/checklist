@@ -1,5 +1,5 @@
-The Checklist Package
-================
+
+# The Checklist Package <img src="man/figures/logo.png" align="right" alt="A hexagon with the word checklist" width="120" />
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 

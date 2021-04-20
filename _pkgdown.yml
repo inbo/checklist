@@ -1,3 +1,11 @@
+template:
+  opengraph:
+    image:
+      src: man/figures/hexsticker.png
+      alt: "A hexagon with the word checklist."
+  twitter:
+      site: "@INBOVlaanderen"
+      card: summary_large_image
 navbar:
   title: ~
   type: default
