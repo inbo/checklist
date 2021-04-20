@@ -11,17 +11,7 @@ check_documentation(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Checks if all required documentation is present and rendered.
-A common problem is that one forgets to render the documentation after
-updating it.
-You'll get an error when you forgot to update the documentation.
-But the function will render the documentation while checking it.
-So the rendered documentation is available after the check completes.
-The function relies on git to detect changes.
-Run the checks after committing all changes.
-You can amend the commit in case you forgot to render something.
-}
-\details{
+The function make sure that the documentation is up to date.
 Rules:
 \itemize{
 \item You must use \href{https://roxygen2.r-lib.org}{roxygen2} to document the
@@ -31,6 +21,21 @@ You need at least a \code{README.md}.
 \item Don't use a \code{NEWS.Rmd} but a \code{NEWS.md}.
 \item \code{NEWS.md} must contain an entry for the current package version.
 }
+}
+\details{
+The function generates the help files from the roxygen2 tag in the R code.
+Then it checks whether any of the help files changed.
+We use the same principle with the \code{README.Rmd}.
+If any file changed, the documentation does not match the code.
+Hence \code{check_documentation()} returns an error.
+
+A side effect of running \code{check_documentation()} locally, is that it
+generates all the documentation.
+So the only thing left for you to do, is to commit these changes.
+Pro tip: make sure RStudio renders the roxygen2 tags whenever you install and
+restart the package.
+We describe this in \code{vignette("getting_started")} under "Prepare local
+setup".
 }
 \section{Required format for \code{NEWS.md}}{
 \preformatted{# package_name version
