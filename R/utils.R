@@ -238,10 +238,6 @@ checklist_summarise_linter <- function(linter) {
 }
 
 rules <- function(x = "#", nl = "\n") {
-  if (missing(nl)) {
-    nl <- switch(x, "#" = "\n\n", "\n")
-  } else {
-    assert_that(is.string(nl), noNA(nl))
-  }
+  assert_that(is.string(nl), noNA(nl))
   paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")
 }
