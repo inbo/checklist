@@ -61,4 +61,9 @@ test_that("create_package() works", {
     "Checklist"
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
+
+  writeLines("dummy<-function(){F}", file.path(path, package, "R", "dummy.R")) # nolint
+  expect_is(x <- check_lintr(file.path(path, package)), "Checklist")
+  expect_length(x$.__enclos_env__$private$linter, 5)
+  expect_output(print(x), "5 linters found")
 })
