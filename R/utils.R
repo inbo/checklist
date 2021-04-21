@@ -33,8 +33,21 @@ yesno <- function(...) {
 #' @importFrom git2r status
 #' @family utils
 is_workdir_clean <- function(repo) {
-  current_status <- status(repo)
-  all(vapply(current_status, length, integer(1)) == 0)
+  identical(
+    status(repo, untracked = FALSE),
+    structure(
+      list(
+        staged = structure(list(), .Names = character(0)),
+        unstaged = structure(list(), .Names = character(0))
+      ),
+      class = "git_status"
+    )
+  )
+}
+
+#' @importFrom assertthat on_failure<-
+on_failure(is_workdir_clean) <- function(call, env) {
+  "Working directory is not clean. Please commit changes first."
 }
 
 #' Check if a vector contains valid email

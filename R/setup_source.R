@@ -17,19 +17,7 @@
 setup_source <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   repo <- repository(path)
-  assert_that(
-    identical(
-      status(repo, untracked = FALSE),
-      structure(
-        list(
-          staged = structure(list(), .Names = character(0)),
-          unstaged = structure(list(), .Names = character(0))
-        ),
-        class = "git_status"
-      )
-    ),
-    msg = "Working directory is not clean. Please commit changes first."
-  )
+  assert_that(is_workdir_clean(repo))
 
   # add checklist.yml
   writeLines(
