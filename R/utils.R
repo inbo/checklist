@@ -71,7 +71,7 @@ validate_email <- function(email) {
       "[0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a",
       "\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])"
     ),
-    email
+    tolower(email)
   )
 }
 
@@ -115,6 +115,9 @@ orcid2person <- function(orcid, email, role = c("aut", "cre")) {
     )
     email <- head(email$email, 1)
   }
+  assert_that(is.string(email))
+  assert_that(validate_email(email))
+
   person(
     given = details[[1]]$name$`given-names`$value,
     family = details[[1]]$name$`family-name`$value,
