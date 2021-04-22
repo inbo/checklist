@@ -259,19 +259,20 @@ allowed:
     file.path(path, "pkgdown", "extra.css")
   )
   add(repo = repo, file.path("pkgdown", "extra.css"))
+
   dir.create(
     file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
   )
   file.copy(
     system.file(
-      file.path("help", "figures", "logo-en.png"), package = "checklist"
+      file.path("package_template", "logo-en.png"), package = "checklist"
     ),
     file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
   )
   add(repo = repo, file.path("man", "figures", "logo-en.png"), force = TRUE)
   file.copy(
     system.file(
-      file.path("help", "figures", "background-pattern.png"),
+      file.path("package_template", "background-pattern.png"),
       package = "checklist"
     ),
     file.path(path, "man", "figures", "background-pattern.png"),

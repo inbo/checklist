@@ -23,6 +23,31 @@ test_that("create_package() works", {
     regexp = sprintf("package created at `.*%s`", package)
   )
 
+  new_files <- c(
+    "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
+    "codecov.yml", "DESCRIPTION", "LICENSE.md", "NEWS.md", "README.Rmd",
+    paste0(package, ".Rproj"),
+    file.path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
+    file.path(
+      ".github", "workflows",
+      c(
+        "check_on_branch.yml", "check_on_different_r_os.yml",
+        "check_on_master.yml", "release.yml"
+      )
+    ),
+    file.path("pkgdown", "extra.css"),
+    file.path(
+      "man", "figures",
+      c(
+        "logo-en.png", "background-pattern.png", "flanders.woff2",
+        "flanders.woff"
+      )
+    )
+  )
+  expect_true(
+    all(file.exists(file.path(path, package, new_files)))
+  )
+
   expect_is({
       x <- check_package(file.path(path, package), fail = FALSE)
     },
