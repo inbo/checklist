@@ -111,7 +111,7 @@ RoxygenNote: %5$s
   # add .gitignore
   file.copy(
     system.file(
-      file.path("generic_template", ".gitignore"), package = "checklist"
+      file.path("generic_template", "gitignore"), package = "checklist"
     ),
     file.path(path, ".gitignore")
   )

@@ -31,6 +31,27 @@ setup_package <- function(path = ".") {
   tidy_desc(path)
   add(repo = repo, "DESCRIPTION", force = TRUE)
 
+  if (!file_test("-f", file.path(path, ".gitignore"))) {
+    file.copy(
+      system.file(
+        file.path("generic_template", "gitignore"), package = "checklist"
+      ),
+      file.path(path, ".gitignore")
+    )
+  } else {
+    current <- readLines(file.path(path, ".gitignore"))
+    new <- readLines(
+      system.file(
+        file.path("generic_template", "gitignore"), package = "checklist"
+      )
+    )
+    writeLines(
+      sort(unique(c(new, current))),
+      file.path(path, ".gitignore")
+    )
+  }
+  add(repo = repo, ".gitignore", force = TRUE)
+
   if (!file_test("-f", file.path(path, ".Rbuildignore"))) {
     file.copy(
       system.file(
@@ -194,14 +215,14 @@ allowed:
   )
   file.copy(
     system.file(
-      file.path("help", "figures", "logo-en.png"), package = "checklist"
+      file.path("package_template", "logo-en.png"), package = "checklist"
     ),
     file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
   )
   add(repo = repo, file.path("man", "figures", "logo-en.png"), force = TRUE)
   file.copy(
     system.file(
-      file.path("help", "figures", "background-pattern.png"),
+      file.path("package_template", "background-pattern.png"),
       package = "checklist"
     ),
     file.path(path, "man", "figures", "background-pattern.png"),
