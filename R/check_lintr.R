@@ -10,10 +10,11 @@
 #' Please have a look at `vignette("philosophy")` for more details on the rules.
 #'
 #' @inheritParams read_checklist
+#' @inheritParams rcmdcheck::rcmdcheck
 #' @export
 #' @importFrom lintr lint_dir lint_package
 #' @family both
-check_lintr <- function(x = ".") {
+check_lintr <- function(x = ".", quiet = FALSE) {
   options(lintr.linter_file = system.file("lintr", package = "checklist"))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
   options(lintr.rstudio_source_markers = interactive())
@@ -25,7 +26,7 @@ check_lintr <- function(x = ".") {
   } else {
     linter <- lint_dir(x$get_path, pattern = "\\.R(md|nw)?")
   }
-  if (length(linter) > 0) {
+  if (!quiet && length(linter) > 0) {
     print(linter)
   }
   x$add_linter(linter = linter)

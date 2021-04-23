@@ -4,11 +4,13 @@
 \alias{check_lintr}
 \title{Check the packages for linters}
 \usage{
-check_lintr(x = ".")
+check_lintr(x = ".", quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \description{
 This functions does \href{https://en.wikipedia.org/wiki/Static_program_analysis}{static code analysis}.

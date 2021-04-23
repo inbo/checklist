@@ -142,6 +142,10 @@ checklist <- R6Class(
     #' @description Print the Checklist object.
     #' @param ... currently ignored.
     print = function(...) {
+      dots <- list(...)
+      if (!is.null(dots$quiet) && dots$quiet) {
+        return(invisible(NULL))
+      }
       checklist_print(
         path = private$path,
         warnings = private$warnings,

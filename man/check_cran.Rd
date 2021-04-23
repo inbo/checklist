@@ -4,11 +4,13 @@
 \alias{check_cran}
 \title{Run all the package checks required by CRAN}
 \usage{
-check_cran(x = ".")
+check_cran(x = ".", quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \value{
 A \code{Checklist} object.

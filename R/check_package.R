@@ -22,39 +22,40 @@
 #' @param fail Should the function return an error in case of a problem?
 #' Defaults to `TRUE` on non-interactive session and `FALSE` on an interactive
 #' session.
+#' @inheritParams rcmdcheck::rcmdcheck
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom utils file_test
 #' @export
 #' @family package
-check_package <- function(x = ".", fail = !interactive()) {
+check_package <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   assert_that(is.flag(fail))
   assert_that(noNA(fail))
 
-  x <- check_cran(x = x)
+  x <- check_cran(x = x, quiet = quiet)
 
-  cat("Checking code style\n")
-  x <- check_lintr(x)
+  quiet_cat("Checking code style\n", quiet = quiet)
+  x <- check_lintr(x, quiet = quiet)
 
-  cat("Checking filename conventions\n")
+  quiet_cat("Checking filename conventions\n", quiet = quiet)
   x <- check_filename(x)
 
-  cat("Checking description\n")
+  quiet_cat("Checking description\n", quiet = quiet)
   x <- check_description(x)
 
-  cat("Checking documentation\n")
+  quiet_cat("Checking documentation\n", quiet = quiet)
   x <- check_documentation(x)
 
-  cat("Checking code metadata\n")
+  quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)
 
-  print(x)
+  print(x, quiet = quiet)
   if (!x$fail) {
-    cat("\nNo problems found. Good job!\n\n")
+    quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)
     return(invisible(x))
   }
   if (fail) {
     stop("Checking the package revealed some problems.")
   }
-  cat("\nChecking the package revealed some problems.\n\n")
+  quiet_cat("\nChecking the package revealed some problems.\n\n", quiet = quiet)
   return(invisible(x))
 }

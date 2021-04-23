@@ -4,7 +4,7 @@
 \alias{check_package}
 \title{Run the complete set of standardised tests on a package}
 \usage{
-check_package(x = ".", fail = !interactive())
+check_package(x = ".", fail = !interactive(), quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
@@ -13,6 +13,8 @@ Defaults to \code{.}.}
 \item{fail}{Should the function return an error in case of a problem?
 Defaults to \code{TRUE} on non-interactive session and \code{FALSE} on an interactive
 session.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \description{
 A convenience function that runs all packages related tests in sequence.

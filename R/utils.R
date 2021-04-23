@@ -241,3 +241,9 @@ rules <- function(x = "#", nl = "\n") {
   assert_that(is.string(nl), noNA(nl))
   paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")
 }
+
+quiet_cat <- function(x, quiet = FALSE, ...) {
+  if (!quiet) {
+    cat(x, ...)
+  }
+}
