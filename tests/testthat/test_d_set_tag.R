@@ -24,7 +24,7 @@ test_that("set_tag() works", {
   git2r::clone(
     url = file.path(path, package),
     local_path = file.path(path, "origin"),
-    bare = TRUE
+    bare = TRUE, progress = FALSE
   )
   git2r::remote_add(repo, name = "origin", url = file.path(path, "origin"))
   git2r::commit(repo = repo, message = "Initital commit")

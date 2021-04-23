@@ -24,8 +24,8 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r branches branch_target commits lookup_commit parents
-#' repository repository_head sha when
+#' @importFrom git2r branches branch_target commits diff lookup_commit parents
+#' remotes repository repository_head sha tree when
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -41,12 +41,12 @@ check_description <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  description <- description$new(
+  this_desc <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
 
-  version <- as.character(description$get_version())
-  "Incorrect version tag format. Use `0.0`, `0.0.0`"[
+  version <- as.character(this_desc$get_version())
+  "Incorrect version tag format. Use `0.0` or `0.0.0`"[
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
 
@@ -57,12 +57,24 @@ check_description <- function(x = ".") {
     if (length(current_branch) && current_branch == "master") {
       parent_commits <- parents(lookup_commit(repository_head(repo)))
       oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
-      old_sha <- sha(parent_commits[[oldest]])
-      desc_diff <- system2(
-        "git", args = c("diff", old_sha, head_sha, "DESCRIPTION"),
-        stdout = TRUE
+      desc_diff <- diff(
+        tree(lookup_commit(repository_head(repo))),
+        tree(parent_commits[[oldest]]),
+        as_char = TRUE
       )
     } else {
+      assert_that(
+        "origin" %in% remotes(repo), msg = "no remote called `origin` available"
+      )
+      assert_that(
+        has_name(branches(repo), "origin/master"),
+        msg = "No `master` branch found in `origin`. Did you fetch `origin`?"
+      )
+      desc_diff <- diff(
+        tree(lookup_commit(repository_head(repo))),
+        tree(lookup_commit(branches(repo)$`origin/master`)),
+        as_char = TRUE
+      )
       desc_diff <- system2(
         "git", args = c("diff", "origin/master", "--", "DESCRIPTION"), # nolint
         stdout = TRUE
@@ -88,7 +100,7 @@ check_description <- function(x = ".") {
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
       !unchanged_repo(repo, status_before)
     ],
-    check_authors(description)
+    check_authors(this_desc)
   )
   x$add_error(desc_error, "DESCRIPTION")
 
@@ -200,7 +212,7 @@ check_license <- function(x = ".") {
     msg = "`check_license()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
-  description <- description$new(
+  this_desc <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
 
@@ -208,9 +220,9 @@ check_license <- function(x = ".") {
   problems <- sprintf(
     "%s license currently not allowed.
 Please send a pull request if you need support for this license.",
-    description$get_field("License")
+    this_desc$get_field("License")
   )[
-    !description$get_field("License") %in% c("GPL-3")
+    !this_desc$get_field("License") %in% c("GPL-3")
   ]
 
   # check if LICENSE.md exists
@@ -225,7 +237,7 @@ Please send a pull request if you need support for this license.",
   # check if LICENSE.md matches the official version
   current <- readLines(file.path(x$get_path, "LICENSE.md"))
   official <- switch(
-    description$get_field("License"),
+    this_desc$get_field("License"),
     "GPL-3" = system.file("generic_template", "gplv3.md", package = "checklist")
   )
   official <- readLines(official)
@@ -242,8 +254,8 @@ Please send a pull request if you need support for this license.",
   return(x)
 }
 
-check_authors <- function(description) {
-  authors <- description$get_authors()
+check_authors <- function(this_desc) {
+  authors <- this_desc$get_authors()
   authors <- lapply(authors, unlist, recursive = FALSE)
   inbo <- person(
     given = "Research Institute for Nature and Forest",
