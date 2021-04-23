@@ -21,9 +21,7 @@ set_tag <- function(x = ".") {
     message("Not on GitHub, not a push or not on master.")
     return(invisible(NULL))
   }
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`set_tag()` is only relevant for packages.

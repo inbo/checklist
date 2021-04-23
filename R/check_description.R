@@ -31,9 +31,7 @@
 #' @export
 #' @family package
 check_description <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_description()` is only relevant for packages.
@@ -117,9 +115,7 @@ check_description <- function(x = ".") {
 #' @importFrom desc description
 #' @family package
 tidy_desc <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
 
   # set locale to get a stable sorting order
   old_ctype <- Sys.getlocale(category = "LC_CTYPE")
@@ -204,9 +200,7 @@ unchanged_repo <- function(repo, old_status) {
 #' @export
 #' @family package
 check_license <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_license()` is only relevant for packages.
@@ -273,5 +267,4 @@ check_authors <- function(this_desc) {
       any(names(orcid) != "ORCID")
     ]
   )
-
 }

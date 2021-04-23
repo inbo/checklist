@@ -48,9 +48,7 @@
 #' @export
 #' @family both
 write_checklist <- function(x = ".", package = TRUE) {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- suppressMessages(read_checklist(x = x))
-  }
+  x <- suppressMessages(read_checklist(x = x))
 
   assert_that(is.flag(package))
   assert_that(noNA(package))

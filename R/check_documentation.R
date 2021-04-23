@@ -44,9 +44,7 @@
 #' @importFrom devtools build_readme document
 #' @family package
 check_documentation <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_description()` is only relevant for packages.

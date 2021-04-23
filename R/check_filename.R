@@ -45,9 +45,7 @@
 #' @importFrom git2r in_repository ls_tree
 #' @family both
 check_filename <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
 
   if (in_repository(x$get_path)) {
     repo <- repository(x$get_path)

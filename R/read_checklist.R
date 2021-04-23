@@ -16,6 +16,8 @@ read_checklist <- function(x = ".") {
   if (!inherits(x, "Checklist")) {
     assert_that(is.string(x))
     x <- checklist$new(x = x)
+  } else if ("checklist" %in% x$get_checked) {
+    return(x)
   }
 
   checklist_file <- file.path(x$get_path, "checklist.yml")
