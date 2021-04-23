@@ -1,5 +1,5 @@
-The Checklist Package
-================
+
+# The Checklist Package <img src="man/figures/logo.png" align="right" alt="A hexagon with the word checklist" width="120" />
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -10,7 +10,7 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 ![GitHub](https://img.shields.io/github/license/inbo/checklist) [![R
 build
-status](https://github.com/inbo/checklist/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/checklist/actions)
+status](https://github.com/inbo/checklist/workflows/check%20package%20on%20master/badge.svg)](https://github.com/inbo/checklist/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/inbo/checklist/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=master)
 ![GitHub code size in

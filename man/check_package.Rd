@@ -2,9 +2,9 @@
 % Please edit documentation in R/check_package.R
 \name{check_package}
 \alias{check_package}
-\title{A standardised test for R packages}
+\title{Run the complete set of standardised tests on a package}
 \usage{
-check_package(x = ".", fail = !interactive())
+check_package(x = ".", fail = !interactive(), quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
@@ -13,9 +13,28 @@ Defaults to \code{.}.}
 \item{fail}{Should the function return an error in case of a problem?
 Defaults to \code{TRUE} on non-interactive session and \code{FALSE} on an interactive
 session.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \description{
-A standardised test for R packages
+A convenience function that runs all packages related tests in sequence.
+The details section lists the relevant functions.
+After fixing a problem, you can quickly check if it is solved by running only
+the related check.
+But we still recommend to run \code{check_package()} before you push to GitHub.
+And only push when the functions indicate that there are no problems.
+This catches most problems before sending the code to GitHub.
+}
+\details{
+List of checks in order:
+\enumerate{
+\item \code{check_cran()}
+\item \code{check_lintr()}
+\item \code{check_filename()}
+\item \code{check_description()}
+\item \code{check_documentation()}
+\item \code{check_codemeta()}
+}
 }
 \seealso{
 Other package: 

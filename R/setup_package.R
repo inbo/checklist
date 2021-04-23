@@ -1,4 +1,13 @@
 #' Add or update the checklist infrastructure to an existing package
+#'
+#' Use this function when you have an existing package and you want to use the
+#' checklist functionality.
+#' Please keep in mind that the checklist is an opinionated list of checks.
+#' It might require some breaking changes in your package.
+#' Please DO READ `vignette("getting_started")` before running this function.
+#'
+#' @template checklist_structure
+#'
 #' @param path The path to the package.
 #' Defaults to `"."`.
 #' @export
@@ -16,23 +25,53 @@ setup_package <- function(path = ".") {
   package <- desc(path)$get("Package")
 
   repo <- repository(path)
-  assert_that(
-    identical(
-      status(repo, untracked = FALSE),
-      structure(
-        list(
-          staged = structure(list(), .Names = character(0)),
-          unstaged = structure(list(), .Names = character(0))
-        ),
-        class = "git_status"
-      )
-    ),
-    msg = "Working directory is not clean. Please commit changes first."
-  )
+  assert_that(is_workdir_clean(repo))
 
   # make DESCRIPTION tidy
   tidy_desc(path)
   add(repo = repo, "DESCRIPTION", force = TRUE)
+
+  if (!file_test("-f", file.path(path, ".gitignore"))) {
+    file.copy(
+      system.file(
+        file.path("generic_template", "gitignore"), package = "checklist"
+      ),
+      file.path(path, ".gitignore")
+    )
+  } else {
+    current <- readLines(file.path(path, ".gitignore"))
+    new <- readLines(
+      system.file(
+        file.path("generic_template", "gitignore"), package = "checklist"
+      )
+    )
+    writeLines(
+      sort(unique(c(new, current))),
+      file.path(path, ".gitignore")
+    )
+  }
+  add(repo = repo, ".gitignore", force = TRUE)
+
+  if (!file_test("-f", file.path(path, ".Rbuildignore"))) {
+    file.copy(
+      system.file(
+        file.path("package_template", "rbuildignore"), package = "checklist"
+      ),
+      file.path(path, ".Rbuildignore")
+    )
+  } else {
+    current <- readLines(file.path(path, ".Rbuildignore"))
+    new <- readLines(
+      system.file(
+        file.path("package_template", "rbuildignore"), package = "checklist"
+      )
+    )
+    writeLines(
+      sort(unique(c(new, current))),
+      file.path(path, ".Rbuildignore")
+    )
+  }
+  add(repo = repo, ".Rbuildignore", force = TRUE)
 
   # add checklist.yml
   writeLines(
@@ -47,7 +86,9 @@ allowed:
 
   # add codecov.yml
   file.copy(
-    system.file("package_template/codecov.yml", package = "checklist"),
+    system.file(
+      file.path("package_template", "codecov.yml"), package = "checklist"
+    ),
     file.path(path, "codecov.yml")
   )
   add(repo = repo, "codecov.yml", force = TRUE)
@@ -65,7 +106,9 @@ allowed:
   # add README.Rmd
   if (!file_test("-f", file.path(path, "README.md"))) {
     readme <- readLines(
-      system.file("package_template/README.Rmd", package = "checklist")
+      system.file(
+        file.path("package_template", "README.Rmd"), package = "checklist"
+      )
     )
     readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
     writeLines(readme, file.path(path, "README.Rmd"))
@@ -75,7 +118,9 @@ allowed:
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
     file.copy(
-      system.file("package_template/gplv3.md", package = "checklist"),
+      system.file(
+        file.path("generic_template", "gplv3.md"), package = "checklist"
+      ),
       file.path(path, "LICENSE.md")
     )
     add(repo = repo, "LICENSE.md", force = TRUE)
@@ -84,58 +129,123 @@ allowed:
   # Add code of conduct
   dir.create(file.path(path, ".github"), showWarnings = FALSE)
   file.copy(
-    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
+    system.file(
+      file.path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
+    ),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  add(repo = repo, ".github/CODE_OF_CONDUCT.md", force = TRUE)
+  add(repo = repo, file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE)
 
   # Add contributing guidelines
   file.copy(
-    system.file("package_template/CONTRIBUTING.md", package = "checklist"),
+    system.file(
+      file.path("package_template", "CONTRIBUTING.md"), package = "checklist"
+    ),
     file.path(path, ".github", "CONTRIBUTING.md")
   )
-  add(repo = repo, ".github/CONTRIBUTING.md", force = TRUE)
+  add(repo = repo, file.path(".github", "CONTRIBUTING.md"), force = TRUE)
 
   # Add GitHub actions
   dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
   file.copy(
-    system.file("package_template/check_on_branch.yml", package = "checklist"),
+    system.file(
+      file.path("package_template", "check_on_branch.yml"),
+      package = "checklist"
+    ),
     file.path(path, ".github", "workflows", "check_on_branch.yml"),
     overwrite = TRUE
   )
-  add(repo = repo, ".github/workflows/check_on_branch.yml", force = TRUE)
+  add(
+    repo = repo, force = TRUE,
+    file.path(".github", "workflows", "check_on_branch.yml")
+  )
   file.copy(
-    system.file("package_template/check_on_master.yml", package = "checklist"),
+    system.file(
+      file.path("package_template", "check_on_master.yml"),
+      package = "checklist"
+    ),
     file.path(path, ".github", "workflows", "check_on_master.yml"),
     overwrite = TRUE
   )
-  add(repo = repo, ".github/workflows/check_on_master.yml", force = TRUE)
+  add(
+    repo = repo, force = TRUE,
+    file.path(".github", "workflows", "check_on_master.yml")
+  )
   file.copy(
     system.file(
-      "package_template/check_on_different_r_os.yml",
+      file.path("package_template", "check_on_different_r_os.yml"),
       package = "checklist"
     ),
     file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
     overwrite = TRUE
   )
   add(
-    repo = repo,
-    ".github/workflows/check_on_different_r_os.yml",
-    force = TRUE
+    repo = repo, force = TRUE,
+    file.path(".github", "workflows", "check_on_different_r_os.yml")
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "release.yml"), package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "release.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, file.path(".github", "workflows", "release.yml"), force = TRUE
   )
 
   # Add pkgdown website
   file.copy(
-    system.file("package_template/_pkgdown.yml", package = "checklist"),
+    system.file(
+      file.path("package_template", "_pkgdown.yml"), package = "checklist"
+    ),
     file.path(path, "_pkgdown.yml")
   )
   add(repo = repo, "_pkgdown.yml", force = TRUE)
   dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
   file.copy(
-    system.file("package_template/pkgdown.css", package = "checklist"),
+    system.file(
+      file.path("package_template", "pkgdown.css"), package = "checklist"
+    ),
     file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
   )
-  add(repo = repo, "pkgdown/extra.css", force = TRUE)
+  add(repo = repo, file.path("pkgdown", "extra.css"), force = TRUE)
+  dir.create(
+    file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "logo-en.png"), package = "checklist"
+    ),
+    file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
+  )
+  add(repo = repo, file.path("man", "figures", "logo-en.png"), force = TRUE)
+  file.copy(
+    system.file(
+      file.path("package_template", "background-pattern.png"),
+      package = "checklist"
+    ),
+    file.path(path, "man", "figures", "background-pattern.png"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, file.path("man", "figures", "background-pattern.png"),
+    force = TRUE
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "flanders.woff2"), package = "checklist"
+    ),
+    file.path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
+  )
+  add(repo = repo, file.path("man", "figures", "flanders.woff2"), force = TRUE)
+  file.copy(
+    system.file(
+      file.path("package_template", "flanders.woff"), package = "checklist"
+    ),
+    file.path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
+  )
+  add(repo = repo, file.path("man", "figures", "flanders.woff"), force = TRUE)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))

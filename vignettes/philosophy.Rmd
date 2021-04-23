@@ -1,0 +1,168 @@
+---
+title: "Philosophy of the checklist package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Philosophy of the checklist package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- type: article-journal
+  id: Baath2012
+  author:
+  - family: Bååth
+    given: Rasmus
+  issued:
+    date-parts:
+    - - 2012
+      - 12
+  title: The State of Naming Conventions in R
+  container-title: The R Journal
+  volume: 4
+  number: 2
+  page: 74--75
+  doi: 10.32614/RJ-2012-018
+  URL: https://doi.org/10.32614/RJ-2012-018
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Everybody develops its own coding habits and style.
+Some people take a lot of effort in making their source code [readable](https://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code), while others don't bother at all.
+Working together with different people is easier when everyone uses the same standard.
+The `checklist` package defines a set of standards and provides tools to validate whether your project or R package adheres to these standards.
+You can run these tools interactively on your machine.
+You can also add these checks as [GitHub actions](https://github.com/features/actions), which runs them automatically after every [push](https://github.com/git-guides/git-push) to the repository on [GitHub](https://github.com).
+
+## Coding style
+
+The most visible part of a coding style is the naming convention.
+People use many different styles of naming conventions within the R ecosystem [@Baath2012].
+Popular ones are `alllowercase`, `period.separated`, `underscore_separated`, `lowerCamelCase` and `UpperCamelCase`.
+We picked `underscore_separated` because that is the naming convention of the [`tidyverse`](https://tidyverse.org) packages.
+It is also the default setting in the [`lintr`](https://github.com/jimhester/lintr/blob/master/README.md) package which we use to do the [static code analysis](https://en.wikipedia.org/wiki/Static_program_analysis).
+
+At first this seems a lot to memorise.
+RStudio makes things easier when you activate all diagnostic options (_Tools_ > _Global options_ > _Code_ > _Diagnostics_).
+This highlights several problems by showing a squiggly line and/or a warning icon at the line number.
+Instead of learning all the rules by heart, run `check_lintr()` regularly and fix any issues that come up.
+Do this when working on every single project.
+Doing so enforces you to consistently use the same coding style, making it easy to learn and use it.
+
+### Rules for coding style
+
+- `underscore_separated` names for functions, parameters and variables.
+- A line of code or comments must be no longer than 80 characters.
+  Pro tip: have RStudio display this margin in the editor.
+  _Tools_ > _Global options_ > _Code_ > _Display_ > _Show margin_
+- Object names must not be longer than 30 characters.
+- Start a new line
+    - after the pipe (`%>%`)
+    - never before but always after `{`
+    - before `}`
+- Use spaces instead of tabs.
+  Pro tip: make RStudio place 2 spaces when you hit the tab key.
+  _Tools_ > _Global options_ > _Code_ > _Editing_ > _Insert spaces for tabs_
+- Use spaces consistently
+    - Use exactly one space before and after
+        - assignments `<-`, `->`, `=`
+        - operators like `+`, `-`,`*`, `/`, ...
+    - No space before and one space after `,`
+    - No space after or before `(` or `[`
+        - except in constructs like `if ()`, `for ()`, `while ()`
+    - One space between `)` and `{`, e.g. `function () {`
+- Use double quotes (`"`) to define character strings.
+- No trailing whitespace
+    - spaces at the end of a line
+    - blank lines at the end of the script
+
+### Static code analysis checks
+
+- Is an object defined before you use it?
+- Do you use an object after you defined it?
+- Use `<-` or `->` to assign something.
+  Only use `=` to pass arguments to a function (e.g. `check_package(fail = TRUE)`).
+- Use `is.na(x)` instead of `x == NA`.
+- Use `seq_len()` or `seq_along()` instead of `1:length(x)`, `1:nrow(x)`, ...
+  Advantage: when `length(x) == 0`, `1:length(x)` yields `c(1, 0)`, whereas `seq_along(x)` would yield an empty vector.
+- Don't store code in comments.
+  If you don't want to lose code, use version control systems like [`git`](https://git-scm.com/).
+  If it is code that you need to run only under special circumstances, then either put the code in a separate script and run is manually or write an if-else were you run the code automatically when needed.
+- Avoid code with lots of nested loop or if statements.
+  If the code is too complex, you'll get a warning that the [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) is too high.
+  Tips for reducing the code complexity:
+    - Use `assertthat::assert_that()` to validate object or conditions instead of `if() stop()`.
+    - See if you can use `ifelse()` instead of `if()`.
+    - Split the main function of your code over sub functions.
+    - Don't use else if not strictly necessary.
+
+## File name conventions
+
+To make this easier to remember we choose the same name conventions for file names as for objects.
+We acknowledge that these rules sometimes clash with requirements from other sources (e.g. `DESCRIPTION` in an R package, `README.md` on GitHub, `.gitignore` for git, ...).
+In such case we allow the file names as required by R, git or GitHub.
+When `check_filename()` does unfairly not allow a certain file or folder name, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this should be allowed.
+
+### Rules for folder names
+
+- Folder names should only contain lower case letters, numbers and underscore (`_`).
+- They can start with a single dot (`.`).
+
+### Rules for file names
+
+- Base names should only contain lower case letters, numbers and underscore (`_`).
+- File extensions should only contains lower case letters and numbers.
+  Exceptions: file extensions related to R must have an upper case R (`.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
+
+### Rules for graphical file names
+
+- Applies to files with extensions `csl`, `eps`, `jpg`, `jpeg`, `pdf`, `png` and `ps`.
+- Same rules except that you need to use a dash (`-`) as separator instead of an underscore (`_`).
+  We need this exception because underscores cause problems in certain situations.
+
+## Bundling your code in a package
+
+Most users think of an R package as a collection of generic functions that they can use to run their analysis.
+However, an R package is a useful way to bundle and document a standalone analysis too!
+Suppose you want to pass your code to a collaborator or your future self who is working on a different computer.
+If you have a project folder with a bunch of files, people will need to get to know your project structure, find out what scripts to run and which dependencies they need.
+Unless you documented everything well they (including your future self!) will have a hard time figuring out how things work.
+
+Having the analysis as a package _and_ running `check_package()` to ensure a minimal quality standard, makes things a lot easier for the user.
+Agreed, it will take a bit more time to create the analysis, especially with the first few projects.
+In the long run you save time due to a better quality of your code.
+Try to start by packaging a recurrent analysis or standardised report when you want to learn writing a package.
+Once you have some experience, it is little overhead to do it for smaller analysis.
+Keep in mind that you seldom run an analysis _exactly_ once.
+
+### Benefits
+
+- The package itself is a way to cite (a specific version of) the analysis in a report or paper.
+- You have to list all dependencies on other R packages.
+  This makes installing your code as simple as running `remotes::install_github("inbo/packagename")`.
+- You must split your analysis in a set of functions.
+  Say goodbye to scripts with thousands lines of code.
+- Functions make it easy to re-use code.
+  Need to run the same thing with a different parameter value?
+  Add the parameter as an argument to the function and run the function once for every different parameter value.
+  This avoids the need to copy-paste large chunks of scripts and replace a few values.
+  The copy-paste work flow typically results in hard-to-read long scripts.
+  Imagine you made a mistake in the code and copy-pasted that mistake several times before you found it.
+  You have to check your entire project to fix the mistake several times.
+  Having it as a function reduces the workload to fixing only the function.
+- Packages require that every object is either defined within the package or imported from another package.
+  Global variables are not allowed.
+  The user only needs to load your package and run the function with the required arguments.
+  The results will not depend on any other packages loaded nor by user-defined objects like vectors or dataframes (unless the user passes them explicitly as arguments to a function).
+- A package gives the opportunity to add documentation to your code.
+  Afterwards you can simply consult this documentation rather than having to dig into your code to find out what it is actually doing.
+  Every function needs at least a title and an entry for every argument.
+- Most likely you would still need a short script that combines a few high level functions of your package to run the analysis.
+  The `inst` folder is an ideal place to bundle such scripts within the package.
+  You can also use it to store small (!) datasets or RMarkdown reports.
+
+## References

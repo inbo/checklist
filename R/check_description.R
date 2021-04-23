@@ -1,17 +1,37 @@
-#' Check the DESCRIPTION file
+#' Check the `DESCRIPTION` file
+#'
+#' The `DESCRIPTION` file contains the most important meta-data of the package.
+#' A good `DESCRIPTION` is tidy, has a meaningful version number, full
+#' author details and a clear license.
+#'
+#' This function ensures the `DESCRIPTION` is tidy, using `tidy_desc()`.
+#'
+#' The version number of the package must have either a `0.0` or a `0.0.0`
+#' format (see [this discussion](https://github.com/inbo/checklist/issues/1) why
+#' we allow only these formats).
+#' The version number in every branch must be larger than the current version
+#' number in the master branch.
+#' New commits in the master must have a larger version number than the previous
+#' commit.
+#' We recommend to protect the master branch and to not commit into the master.
+#'
+#' Furthermore we check the author information.
+#' - Is INBO listed as copyright holder and funder?
+#' - Has every author an ORCID?
+#'
+#' We check the license through `check_license()`.
+#'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r branches branch_target commits lookup_commit parents
-#' repository repository_head sha when
+#' @importFrom git2r branches branch_target commits diff lookup_commit parents
+#' remotes repository repository_head sha tree when
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
 #' @family package
 check_description <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_description()` is only relevant for packages.
@@ -19,12 +39,12 @@ check_description <- function(x = ".") {
   )
 
   repo <- repository(x$get_path)
-  description <- description$new(
+  this_desc <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
 
-  version <- as.character(description$get_version())
-  "Incorrect version tag format. Use `0.0`, `0.0.0`"[
+  version <- as.character(this_desc$get_version())
+  "Incorrect version tag format. Use `0.0` or `0.0.0`"[
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
 
@@ -35,14 +55,26 @@ check_description <- function(x = ".") {
     if (length(current_branch) && current_branch == "master") {
       parent_commits <- parents(lookup_commit(repository_head(repo)))
       oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
-      old_sha <- sha(parent_commits[[oldest]])
-      desc_diff <- system2(
-        "git", args = c("diff", old_sha, head_sha, "DESCRIPTION"),
-        stdout = TRUE
+      desc_diff <- diff(
+        tree(lookup_commit(repository_head(repo))),
+        tree(parent_commits[[oldest]]),
+        as_char = TRUE
       )
     } else {
+      assert_that(
+        "origin" %in% remotes(repo), msg = "no remote called `origin` available"
+      )
+      assert_that(
+        has_name(branches(repo), "origin/master"),
+        msg = "No `master` branch found in `origin`. Did you fetch `origin`?"
+      )
+      desc_diff <- diff(
+        tree(lookup_commit(repository_head(repo))),
+        tree(lookup_commit(branches(repo)$`origin/master`)),
+        as_char = TRUE
+      )
       desc_diff <- system2(
-        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"),
+        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"), # nolint
         stdout = TRUE
       )
     }
@@ -66,22 +98,24 @@ check_description <- function(x = ".") {
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
       !unchanged_repo(repo, status_before)
     ],
-    check_authors(description)
+    check_authors(this_desc)
   )
   x$add_error(desc_error, "DESCRIPTION")
 
   check_license(x = x)
 }
 
-#' Make your description tidy
+#' Make your DESCRIPTION tidy
+#'
+#' A tidy `DESCRIPTION` uses a strict formatting and order of key-value pairs.
+#' This function reads the current `DESCRIPTION` and overwrites it with a tidy
+#' version.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom desc description
 #' @family package
 tidy_desc <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
 
   # set locale to get a stable sorting order
   old_ctype <- Sys.getlocale(category = "LC_CTYPE")
@@ -141,22 +175,38 @@ unchanged_repo <- function(repo, old_status) {
     )
 }
 
-#' Check the license
+#' Check the license of a package
+#'
+#' Every package needs a clear license.
+#' Without a license, the end-users have no clue under what conditions they can
+#' use the package.
+#' You must specify the license in the `DESCRIPTION` and provide a `LICENSE.md`
+#' file.
+#'
+#' @details
+#' This functions checks if the `DESCRIPTION` mentions one of the standard
+#' licenses.
+#' The `LICENSE.md` must match this license.
+#' Use `setup_package()` to add the correct `LICENSE.md` to the package.
+#'
+#' Currently, following licenses are allowed:
+#' - GPL-3
+#'
+#' We will consider pull requests adding support for other open source licenses.
+#'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
 #' @export
 #' @family package
 check_license <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_license()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
-  description <- description$new(
+  this_desc <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
 
@@ -164,16 +214,16 @@ check_license <- function(x = ".") {
   problems <- sprintf(
     "%s license currently not allowed.
 Please send a pull request if you need support for this license.",
-    description$get_field("License")
+    this_desc$get_field("License")
   )[
-    !description$get_field("License") %in% c("GPL-3")
+    !this_desc$get_field("License") %in% c("GPL-3")
   ]
 
   # check if LICENSE.md exists
   if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
     x$add_error(
       errors = c(problems, "No LICENSE.md file"),
-      item = "License"
+      item = "license"
     )
     return(x)
   }
@@ -181,14 +231,14 @@ Please send a pull request if you need support for this license.",
   # check if LICENSE.md matches the official version
   current <- readLines(file.path(x$get_path, "LICENSE.md"))
   official <- switch(
-    description$get_field("License"),
-    "GPL-3" = system.file("package_template", "gplv3.md", package = "checklist")
+    this_desc$get_field("License"),
+    "GPL-3" = system.file("generic_template", "gplv3.md", package = "checklist")
   )
   official <- readLines(official)
   x$add_error(
     errors = c(
       problems,
-      "LICENSE.md doesn't match official version"[
+      "LICENSE.md doesn't match the version in the checklist package"[
         (length(current) != length(official)) || any(current != official)
       ]
     ),
@@ -198,8 +248,8 @@ Please send a pull request if you need support for this license.",
   return(x)
 }
 
-check_authors <- function(description) {
-  authors <- description$get_authors()
+check_authors <- function(this_desc) {
+  authors <- this_desc$get_authors()
   authors <- lapply(authors, unlist, recursive = FALSE)
   inbo <- person(
     given = "Research Institute for Nature and Forest",
@@ -217,5 +267,4 @@ check_authors <- function(description) {
       any(names(orcid) != "ORCID")
     ]
   )
-
 }

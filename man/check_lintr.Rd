@@ -4,14 +4,22 @@
 \alias{check_lintr}
 \title{Check the packages for linters}
 \usage{
-check_lintr(x = ".")
+check_lintr(x = ".", quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \description{
-Check the packages for linters
+This functions does \href{https://en.wikipedia.org/wiki/Static_program_analysis}{static code analysis}.
+It relies on \code{\link[lintr:lint_package]{lintr::lint_package()}}.
+We recommend that you activate all code diagnostics in RStudio to help
+meeting the requirements.
+You can find this in the menu \emph{Tools} > \emph{Global options} > \emph{Code} >
+\emph{Diagnostics}.
+Please have a look at \code{vignette("philosophy")} for more details on the rules.
 }
 \seealso{
 Other both: 

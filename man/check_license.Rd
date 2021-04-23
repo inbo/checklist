@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_description.R
 \name{check_license}
 \alias{check_license}
-\title{Check the license}
+\title{Check the license of a package}
 \usage{
 check_license(x = ".")
 }
@@ -11,7 +11,24 @@ check_license(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Check the license
+Every package needs a clear license.
+Without a license, the end-users have no clue under what conditions they can
+use the package.
+You must specify the license in the \code{DESCRIPTION} and provide a \code{LICENSE.md}
+file.
+}
+\details{
+This functions checks if the \code{DESCRIPTION} mentions one of the standard
+licenses.
+The \code{LICENSE.md} must match this license.
+Use \code{setup_package()} to add the correct \code{LICENSE.md} to the package.
+
+Currently, following licenses are allowed:
+\itemize{
+\item GPL-3
+}
+
+We will consider pull requests adding support for other open source licenses.
 }
 \seealso{
 Other package: 

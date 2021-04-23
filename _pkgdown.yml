@@ -1,44 +1,64 @@
+template:
+  opengraph:
+    image:
+      src: man/figures/hexsticker.png
+      alt: "A hexagon with the word checklist."
+  twitter:
+      site: "@INBOVlaanderen"
+      card: summary_large_image
 navbar:
   title: ~
   type: default
   left:
   - text: NEWS
     href: news/index.html
+  - text: Tutorials
+    href: articles/index.html
   - text: Functions
     href: reference/index.html
   - text: Contributing
     href: CONTRIBUTING.html
   right:
-  - icon: fa-twitter fa-lg
+  - icon: "fa fa-github"
+    href: https://github.com/inbo/checklist
+  - icon: "fa fa-twitter"
     href: https://twitter.com/INBOVlaanderen
-  - icon: fa-facebook fg-lg
+  - icon: "fa fa-facebook"
     href: https://www.facebook.com/pg/INBOVlaanderen
 
 reference:
-- title: Checking packages
+- title: Functions relevant for checking packages
   contents:
+  - check_package
   - has_concept("package")
-- title: Checking scripts
+- title: Functions relevant for checking scripts
   contents:
   - has_concept("source")
-- title: Checking packages or scripts
+- title: Functions relevant for checking packages and scripts
   contents:
   - has_concept("both")
-- title: Setting up a project
+- title: Setting up a project use the checklist package
   contents:
   - has_concept("setup")
-- title: R6 class
+- title: R6 class behind the checklist package
   contents:
   - has_concept("class")
 - title: Auxiliary functions
   contents:
   - has_concept("utils")
 
+articles:
+- title: Getting started
+  contents:
+  - philosophy
+  - getting_started
+
+
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"
   Research Institute for Nature and Forest:
-    href: "https://www.inbo.be/en"
-    html: "<img src='https://inbo.github.io/checklist/reference/figures/logo-en.png' height=24>"
+    href: "https://www.vlaanderen.be/inbo/en-gb"
+    html: "<img src='https://packages.inbo.be/checklist/reference/figures/logo-en.png' height=24>"
 
 url: https://inbo.github.io/checklist

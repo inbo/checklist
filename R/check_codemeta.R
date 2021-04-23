@@ -1,4 +1,6 @@
 #' Check the package metadata
+#'
+#' Use the checks from [codemetar::give_opinions()].
 #' @inheritParams read_checklist
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
@@ -7,9 +9,7 @@
 #' @export
 #' @family package
 check_codemeta <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_codemeta()` is only relevant for packages.

@@ -7,9 +7,11 @@ test_that("set_tag() works", {
     email = "thierry.onkelinx@inbo.be",
     comment = c(ORCID = "0000-0001-8804-4216")
   )
-  path <- tempfile("test_package")
-  package <- "junk"
+  path <- tempfile("settag")
   dir.create(path)
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  package <- "settag"
   create_package(
     path = path,
     package = package,
@@ -22,12 +24,12 @@ test_that("set_tag() works", {
   git2r::clone(
     url = file.path(path, package),
     local_path = file.path(path, "origin"),
-    bare = TRUE
+    bare = TRUE, progress = FALSE
   )
   git2r::remote_add(repo, name = "origin", url = file.path(path, "origin"))
   git2r::commit(repo = repo, message = "Initital commit")
   git2r::push(
-    repo, name = "origin", refspec = "refs/heads/master", set_upstream = TRUE
+    repo, name = "origin", refspec = "refs/heads/master", set_upstream = TRUE  # nolint
   )
 
   # not on GITHUB or master
@@ -45,14 +47,14 @@ test_that("set_tag() works", {
     "Not on GitHub, not a push or not on master."
   )
 
-  Sys.setenv(GITHUB_REF = "refs/heads/junk")
+  Sys.setenv(GITHUB_REF = "refs/heads/junk")  # nolint
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on master."
   )
 
   # on master, not GitHub
-  Sys.setenv(GITHUB_REF = "refs/heads/master")
+  Sys.setenv(GITHUB_REF = "refs/heads/master") # nolint
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on master."
@@ -68,6 +70,5 @@ test_that("set_tag() works", {
   # on master, GitHub, push
   Sys.setenv(GITHUB_EVENT_NAME = "push")
   expect_invisible(set_tag(file.path(path, package)))
-
-  unlink(path, recursive = TRUE)
+  expect_message(set_tag(file.path(path, package)), "tag.*already exists")
 })

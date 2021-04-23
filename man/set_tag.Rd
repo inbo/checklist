@@ -2,19 +2,21 @@
 % Please edit documentation in R/set_tag.R
 \name{set_tag}
 \alias{set_tag}
-\title{Set a New Tag and Create a Release}
+\title{Set a New Tag}
 \usage{
-set_tag(x = ".", token)
+set_tag(x = ".")
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
-
-\item{token}{The GitHub access token}
 }
 \description{
-This function only works when run in a GitHub Action on the master branch.
+This function is a part of the GitHub Action.
+Therefore it only works when run in a GitHub Action on the master branch.
 Otherwise it will only return a message.
+It sets a new tag at the current commit using the related entry from
+\code{NEWS.md} as message.
+This tag will turn into a release.
 }
 \seealso{
 Other package: 

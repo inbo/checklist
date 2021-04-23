@@ -1,25 +1,27 @@
-#' Set a New Tag and Create a Release
+#' Set a New Tag
 #'
-#' This function only works when run in a GitHub Action on the master branch.
+#' This function is a part of the GitHub Action.
+#' Therefore it only works when run in a GitHub Action on the master branch.
 #' Otherwise it will only return a message.
-#' @export
+#' It sets a new tag at the current commit using the related entry from
+#' `NEWS.md` as message.
+#' This tag will turn into a release.
+#'
 #' @inheritParams read_checklist
-#' @param token The GitHub access token
+#' @export
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config is_detached repository tag tags
+#' @importFrom git2r config is_detached push repository tag tags
 #' @family package
-set_tag <- function(x = ".", token) {
+set_tag <- function(x = ".") {
   if (
     !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
-      Sys.getenv("GITHUB_REF") != "refs/heads/master" ||
+      Sys.getenv("GITHUB_REF") != "refs/heads/master" || # nolint
       Sys.getenv("GITHUB_EVENT_NAME") != "push"
   ) {
     message("Not on GitHub, not a push or not on master.")
     return(invisible(NULL))
   }
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`set_tag()` is only relevant for packages.
@@ -35,7 +37,7 @@ set_tag <- function(x = ".", token) {
   )
   version <- as.character(description$get_version())
   news <- readLines(file.path(x$get_path, "NEWS.md"))
-  regex <- paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9]+)")
+  regex <- paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9]+)") # nolint
   start <- grep(regex, news)
   end <- c(tail(start, -1) - 1, length(news))
   current <- grepl(paste("#", description$get("Package"), version), news[start])
@@ -60,50 +62,8 @@ set_tag <- function(x = ".", token) {
   )
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
   tag(repo, name = paste0("v", version), message = tag_message)
-  cmd <- sprintf(
-    "cd %s; git push origin; git push origin v%s", repo$path, version
-  )
-  system(cmd)
-
-  create_release(
-    repo = repo, version = version, tag_message = tag_message, token = token
+  push(
+    repo, refspec = paste0(file.path("refs", "tags", "v", fsep = "/"), version)
   )
   return(invisible(NULL))
-}
-
-#' @importFrom httr add_headers POST
-#' @importFrom git2r remote_url
-create_release <- function(repo, version, tag_message, token) {
-  url <- remote_url(repo, "origin")
-  if (!grepl("github.com", url)) {
-    warning("no `origin` or `origin` not on GitHub.")
-    return(invisible(NULL))
-  }
-  owner <- tolower(gsub(".*github.com:(.*?)/(.*?)\\.git", "\\1", url))
-  repo <- gsub(".*github.com:(.*?)/(.*?)\\.git", "\\2", url)
-  url <- sprintf("https://api.github.com/repos/%s/%s/releases", owner, repo)
-  body <- c(
-    tag_name = paste0("\"v", version, "\""),
-    name = paste("\"Version", version, "\""),
-    body = paste0("\"", tag_message, "\""),
-    draft = "false",
-    prerelease = "false"
-  )
-  body <- sprintf(
-    "{\n%s\n}",
-    paste(
-      sprintf("  \"%s\" : %s", names(body), body),
-      collapse = ",\n"
-    )
-  )
-  POST(
-    url = url,
-    config = add_headers(
-      # "User-Agent" = "inbo/checklist package",
-      Authorization = paste("Bearer", token),
-      accept = "application/vnd.github.v3+json"
-    ),
-    body = body,
-    encode = "raw"
-  )
 }

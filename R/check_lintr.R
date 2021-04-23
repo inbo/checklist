@@ -1,24 +1,32 @@
 #' Check the packages for linters
 #'
+#' This functions does [static code analysis](
+#' https://en.wikipedia.org/wiki/Static_program_analysis).
+#' It relies on [lintr::lint_package()].
+#' We recommend that you activate all code diagnostics in RStudio to help
+#' meeting the requirements.
+#' You can find this in the menu _Tools_ > _Global options_ > _Code_ >
+#' _Diagnostics_.
+#' Please have a look at `vignette("philosophy")` for more details on the rules.
+#'
 #' @inheritParams read_checklist
+#' @inheritParams rcmdcheck::rcmdcheck
 #' @export
 #' @importFrom lintr lint_dir lint_package
 #' @family both
-check_lintr <- function(x = ".") {
+check_lintr <- function(x = ".", quiet = FALSE) {
+  options(lintr.linter_file = system.file("lintr", package = "checklist"))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
-  options(lintr.rstudio_source_markers = FALSE)
+  options(lintr.rstudio_source_markers = interactive())
   on.exit(options(lintr.rstudio_source_markers = old_lint_option), add = TRUE)
-
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+  x <- read_checklist(x = x)
 
   if (x$package) {
     linter <- lint_package(path = x$get_path)
   } else {
     linter <- lint_dir(x$get_path, pattern = "\\.R(md|nw)?")
   }
-  if (length(linter) > 0) {
+  if (!quiet && length(linter) > 0) {
     print(linter)
   }
   x$add_linter(linter = linter)

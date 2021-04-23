@@ -1,15 +1,19 @@
-#' Run the package checks required by CRAN
+#' Run all the package checks required by CRAN
+#'
+#' CRAN imposes an impressive list of tests on every package before publication.
+#' This suite of test is available in every R installation.
+#' Hence we use this full suite of tests too.
+#' Notice that `check_package()` runs several additional tests.
 #' @inheritParams read_checklist
+#' @inheritParams rcmdcheck::rcmdcheck
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom httr HEAD
 #' @importFrom rcmdcheck rcmdcheck
 #' @export
 #' @family package
-check_cran <- function(x = ".") {
-  if (!inherits(x, "Checklist") || !"checklist" %in% x$get_checked) {
-    x <- read_checklist(x = x)
-  }
+check_cran <- function(x = ".", quiet = FALSE) {
+  x <- read_checklist(x = x)
   assert_that(
     x$package,
     msg = "`check_cran()` is only relevant for packages.
@@ -22,9 +26,8 @@ check_cran <- function(x = ".") {
   }
 
   check_output <- rcmdcheck(
-    path = x$get_path,
-    args = c("--timings", "--as-cran", "--no-manual"),
-    error_on = "never"
+    path = x$get_path, args = c("--timings", "--as-cran", "--no-manual"),
+    error_on = "never", quiet = quiet
   )
   x$add_rcmdcheck(
     errors = check_output$errors,

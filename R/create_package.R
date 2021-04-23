@@ -1,15 +1,45 @@
 #' Create an R package according to INBO requirements
+#'
+#' Creates a package template in a new folder.
+#' Use this function when you want to start a new package.
+#' Please DO READ `vignette("getting_started")` before running this function.
+#'
+#' @template checklist_structure
+#'
 #' @param package Name of the new package.
 #' @param path Where to create the package directory.
 #' @param title A single sentence with the title of the package.
 #' @param description A single paragraph describing the package.
-#' @param maintainer The output of `orcid2person()`.
+#' @param maintainer The output of [utils::person()] or [`orcid2person()`].
+#'   If you use [utils::person()], then you must provide `given`, `family`,
+#'   `role`, `email` and  `comment` with valid `ORCID`.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom git2r add  init
 #' @importFrom tools toTitleCase
-#' @importFrom utils sessionInfo
+#' @importFrom utils installed.packages
 #' @family setup
+#' @examples
+#' # maintainer in `utils::person()` format
+#' maintainer <- person(
+#'   given = "Thierry",
+#'   family = "Onkelinx",
+#'   role = c("aut", "cre"),
+#'   email = "thierry.onkelinx@inbo.be",
+#'   comment = c(ORCID = "0000-0001-8804-4216")
+#' )
+#' # maintainer with `orcid2person()`
+#' \dontrun{
+#' maintainer <- orcid2person("0000-0001-8804-4216")
+#' }
+#'
+#' # creating the package
+#' path <- tempfile()
+#' dir.create(path)
+#' create_package(
+#'   path = path, package = "packagename", title = "package title",
+#'   description = "A short description.", maintainer = maintainer
+#' )
 create_package <- function(
   package, path = ".", title, description, maintainer
 ) {
@@ -36,25 +66,27 @@ create_package <- function(
   # create DESCRIPTION
   description <- sprintf(
 "Type: Package
-Package: %s
-Title: %s
+Package: %1$s
+Title: %2$s
 Version: 0.0.0
 Authors@R:
-  c(%s,
+  c(%3$s,
     person(given = \"Research Institute for Nature and Forest\",
            role = c(\"cph\", \"fnd\"),
            email = \"info@inbo.be\"))
-Description: %s
+Description: %4$s
 License: GPL-3
+URL: https://github.com/inbo/%1$s
+BugReports: https://github.com/inbo/%1$s/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: %s
+RoxygenNote: %5$s
 ",
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
     description,
-    sessionInfo("roxygen2")$otherPkgs$roxygen2$Version
+    installed.packages()["roxygen2", "Version"]
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
   tidy_desc(path)
@@ -69,28 +101,36 @@ RoxygenNote: %s
 
   # create RStudio project
   file.copy(
-    system.file("package_template/rproj.template", package = "checklist"),
+    system.file(
+      file.path("package_template", "rproj.template"), package = "checklist"
+    ),
     file.path(path, paste0(package, ".Rproj"))
   )
   add(repo = repo, paste0(package, ".Rproj"))
 
   # add .gitignore
   file.copy(
-    system.file("package_template/.gitignore", package = "checklist"),
+    system.file(
+      file.path("generic_template", "gitignore"), package = "checklist"
+    ),
     file.path(path, ".gitignore")
   )
   add(repo = repo, ".gitignore")
 
   # add .Rbuildignore
   file.copy(
-    system.file("package_template/rbuildignore", package = "checklist"),
+    system.file(
+      file.path("package_template", "rbuildignore"), package = "checklist"
+    ),
     file.path(path, ".Rbuildignore")
   )
   add(repo = repo, ".Rbuildignore")
 
   # add codecov.yml
   file.copy(
-    system.file("package_template/codecov.yml", package = "checklist"),
+    system.file(
+      file.path("package_template", "codecov.yml"), package = "checklist"
+    ),
     file.path(path, "codecov.yml")
   )
   add(repo = repo, "codecov.yml")
@@ -105,7 +145,9 @@ RoxygenNote: %s
 
   # add README.Rmd
   readme <- readLines(
-    system.file("package_template/README.Rmd", package = "checklist")
+    system.file(
+      file.path("package_template", "README.Rmd"), package = "checklist"
+    )
   )
   readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
   writeLines(readme, file.path(path, "README.Rmd"))
@@ -113,7 +155,10 @@ RoxygenNote: %s
 
   # add LICENSE.md
   file.copy(
-    system.file("package_template/gplv3.md", package = "checklist"),
+    system.file(
+      file.path("generic_template", "gplv3.md"),
+      package = "checklist"
+    ),
     file.path(path, "LICENSE.md")
   )
   add(repo = repo, "LICENSE.md")
@@ -132,31 +177,125 @@ allowed:
   # Add code of conduct
   dir.create(file.path(path, ".github"))
   file.copy(
-    system.file("package_template/CODE_OF_CONDUCT.md", package = "checklist"),
+    system.file(
+      file.path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
+    ),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  add(repo = repo, ".github/CODE_OF_CONDUCT.md")
+  add(repo = repo, file.path(".github", "CODE_OF_CONDUCT.md"))
 
   # Add contributing guidelines
   file.copy(
-    system.file("package_template/CONTRIBUTING.md", package = "checklist"),
+    system.file(
+      file.path("package_template", "CONTRIBUTING.md"), package = "checklist"
+    ),
     file.path(path, ".github", "CONTRIBUTING.md")
   )
-  add(repo = repo, ".github/CONTRIBUTING.md")
+  add(repo = repo, file.path(".github", "CONTRIBUTING.md"))
+
+  # Add GitHub actions
+  dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
+  file.copy(
+    system.file(
+      file.path("package_template", "check_on_branch.yml"),
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "check_on_branch.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, force = TRUE,
+    file.path(".github", "workflows", "check_on_branch.yml")
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "check_on_master.yml"),
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "check_on_master.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, force = TRUE,
+    file.path(".github", "workflows", "check_on_master.yml")
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "check_on_different_r_os.yml"),
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, force = TRUE,
+    file.path(".github", "workflows", "check_on_different_r_os.yml")
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "release.yml"), package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "release.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, file.path(".github", "workflows", "release.yml"), force = TRUE
+  )
 
   # prepare pkgdown
   file.copy(
-    system.file("package_template/_pkgdown.yml", package = "checklist"),
+    system.file(
+      file.path("package_template", "_pkgdown.yml"), package = "checklist"
+    ),
     file.path(path, "_pkgdown.yml")
   )
   add(repo = repo, "_pkgdown.yml")
 
   dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
   file.copy(
-    system.file("package_template/pkgdown.css", package = "checklist"),
+    system.file(
+      file.path("package_template", "pkgdown.css"), package = "checklist"
+    ),
     file.path(path, "pkgdown", "extra.css")
   )
-  add(repo = repo, "pkgdown/extra.css")
+  add(repo = repo, file.path("pkgdown", "extra.css"))
+
+  dir.create(
+    file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "logo-en.png"), package = "checklist"
+    ),
+    file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
+  )
+  add(repo = repo, file.path("man", "figures", "logo-en.png"), force = TRUE)
+  file.copy(
+    system.file(
+      file.path("package_template", "background-pattern.png"),
+      package = "checklist"
+    ),
+    file.path(path, "man", "figures", "background-pattern.png"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, force = TRUE,
+    file.path("man", "figures", "background-pattern.png")
+  )
+  file.copy(
+    system.file(
+      file.path("package_template", "flanders.woff2"), package = "checklist"
+    ),
+    file.path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
+  )
+  add(repo = repo, file.path("man", "figures", "flanders.woff2"), force = TRUE)
+  file.copy(
+    system.file(
+      file.path("package_template", "flanders.woff"), package = "checklist"
+    ),
+    file.path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
+  )
+  add(repo = repo, file.path("man", "figures", "flanders.woff"), force = TRUE)
 
   message("package created at `", path, "`")
   return(invisible(NULL))

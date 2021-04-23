@@ -24,6 +24,8 @@ yesno <- function(...) {
 }
 
 #' Check if the current workdir of a repo is clean
+#'
+#' A clean working directory has no staged, unstaged or untracked files.
 #' @param repo Either a `git2r::repository()` or path to the repository.
 #' @return `TRUE` when there are no staged, unstaged or untracked files.
 #' Otherwise `FALSE`
@@ -31,11 +33,26 @@ yesno <- function(...) {
 #' @importFrom git2r status
 #' @family utils
 is_workdir_clean <- function(repo) {
-  current_status <- status(repo)
-  all(vapply(current_status, length, integer(1)) == 0)
+  identical(
+    status(repo, untracked = FALSE),
+    structure(
+      list(
+        staged = structure(list(), .Names = character(0)),
+        unstaged = structure(list(), .Names = character(0))
+      ),
+      class = "git_status"
+    )
+  )
+}
+
+#' @importFrom assertthat on_failure<-
+on_failure(is_workdir_clean) <- function(call, env) {
+  "Working directory is not clean. Please commit changes first."
 }
 
 #' Check if a vector contains valid email
+#'
+#' It only checks the format of the text, not if the email address exists.
 #' @param email A vector with email addresses.
 #' @return A logical vector.
 #' @export
@@ -54,7 +71,7 @@ validate_email <- function(email) {
       "[0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a",
       "\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])"
     ),
-    email
+    tolower(email)
   )
 }
 
@@ -98,6 +115,9 @@ orcid2person <- function(orcid, email, role = c("aut", "cre")) {
     )
     email <- head(email$email, 1)
   }
+  assert_that(is.string(email))
+  assert_that(validate_email(email))
+
   person(
     given = details[[1]]$name$`given-names`$value,
     family = details[[1]]$name$`family-name`$value,
@@ -218,10 +238,12 @@ checklist_summarise_linter <- function(linter) {
 }
 
 rules <- function(x = "#", nl = "\n") {
-  if (missing(nl)) {
-    nl <- switch(x, "#" = "\n\n", "\n")
-  } else {
-    assert_that(is.string(nl), noNA(nl))
-  }
+  assert_that(is.string(nl), noNA(nl))
   paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")
+}
+
+quiet_cat <- function(x, quiet = FALSE, ...) {
+  if (!quiet) {
+    cat(x, ...)
+  }
 }

@@ -13,10 +13,11 @@ validate_email(email)
 A logical vector.
 }
 \description{
-Check if a vector contains valid email
+It only checks the format of the text, not if the email address exists.
 }
 \seealso{
 Other utils: 
+\code{\link{create_hexsticker}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{orcid2person}()},
 \code{\link{yesno}()}

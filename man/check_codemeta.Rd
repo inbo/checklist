@@ -14,7 +14,7 @@ Defaults to \code{.}.}
 A \code{Checklist} object.
 }
 \description{
-Check the package metadata
+Use the checks from \code{\link[codemetar:give_opinions]{codemetar::give_opinions()}}.
 }
 \seealso{
 Other package: 

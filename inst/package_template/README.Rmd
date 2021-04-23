@@ -8,7 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
+  fig.path = file.path("man", "figures", "README-"),
   out.width = "100%"
 )
 ```
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 ![GitHub](https://img.shields.io/github/license/inbo/{{{ Package }}})
-[![R build status](https://github.com/inbo/{{{ Package }}}/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/{{{ Package }}}/actions)
+[![R build status](https://github.com/inbo/{{{ Package }}}/workflows/check%20package%20on%20master/badge.svg)](https://github.com/inbo/{{{ Package }}}/actions)
 [![Codecov test coverage](https://codecov.io/gh/inbo/{{{ Package }}}/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/{{{ Package }}}?branch=master)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/{{{ Package }}}.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/inbo/{{{ Package }}}.svg)

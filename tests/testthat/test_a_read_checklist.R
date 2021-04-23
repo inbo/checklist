@@ -10,5 +10,5 @@ test_that("read_checklist works", {
   expect_is(x$.__enclos_env__$private$allowed_warnings, "list")
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
   expect_length(x$.__enclos_env__$private$allowed_warnings, 0)
-  file.remove(target)
+  unlink(target, recursive = TRUE)
 })

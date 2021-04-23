@@ -15,13 +15,55 @@ create_package(package, path = ".", title, description, maintainer)
 
 \item{description}{A single paragraph describing the package.}
 
-\item{maintainer}{The output of \code{orcid2person()}.}
+\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{\link[=orcid2person]{orcid2person()}}.
+If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
+\code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.}
 }
 \description{
-Create an R package according to INBO requirements
+Creates a package template in a new folder.
+Use this function when you want to start a new package.
+Please DO READ \code{vignette("getting_started")} before running this function.
+}
+\details{
+What you get with a checklist setup:
+\itemize{
+\item minimal folder structure and files required for an R package using INBO
+guidelines with GPL-3 license.
+\item an RStudio project file
+\item a local git repository
+\item an initial \code{NEWS.md} file
+\item a template for an \code{README.Rmd}
+\item set-up for automated checks and releases of the package using GitHub
+Actions.
+\item a code of conduct and contributing guidelines.
+\item the set-up for a \code{pkgdown} website using the INBO corporate identity.
+}
+}
+\examples{
+# maintainer in `utils::person()` format
+maintainer <- person(
+  given = "Thierry",
+  family = "Onkelinx",
+  role = c("aut", "cre"),
+  email = "thierry.onkelinx@inbo.be",
+  comment = c(ORCID = "0000-0001-8804-4216")
+)
+# maintainer with `orcid2person()`
+\dontrun{
+maintainer <- orcid2person("0000-0001-8804-4216")
+}
+
+# creating the package
+path <- tempfile()
+dir.create(path)
+create_package(
+  path = path, package = "packagename", title = "package title",
+  description = "A short description.", maintainer = maintainer
+)
 }
 \seealso{
 Other setup: 
-\code{\link{setup_package}()}
+\code{\link{setup_package}()},
+\code{\link{setup_source}()}
 }
 \concept{setup}

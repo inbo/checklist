@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_description.R
 \name{tidy_desc}
 \alias{tidy_desc}
-\title{Make your description tidy}
+\title{Make your DESCRIPTION tidy}
 \usage{
 tidy_desc(x = ".")
 }
@@ -11,7 +11,9 @@ tidy_desc(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Make your description tidy
+A tidy \code{DESCRIPTION} uses a strict formatting and order of key-value pairs.
+This function reads the current \code{DESCRIPTION} and overwrites it with a tidy
+version.
 }
 \seealso{
 Other package: 
