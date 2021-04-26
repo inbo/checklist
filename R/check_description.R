@@ -58,7 +58,7 @@ check_description <- function(x = ".") {
       desc_diff <- diff(
         tree(lookup_commit(repository_head(repo))),
         tree(parent_commits[[oldest]]),
-        as_char = TRUE
+        as_char = TRUE, path = "DESCRIPTION"
       )
     } else {
       assert_that(
@@ -71,11 +71,7 @@ check_description <- function(x = ".") {
       desc_diff <- diff(
         tree(lookup_commit(repository_head(repo))),
         tree(lookup_commit(branches(repo)$`origin/master`)),
-        as_char = TRUE
-      )
-      desc_diff <- system2(
-        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"), # nolint
-        stdout = TRUE
+        as_char = TRUE, path = "DESCRIPTION"
       )
     }
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
