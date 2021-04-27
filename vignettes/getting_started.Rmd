@@ -50,7 +50,7 @@ knitr::opts_chunk$set(
   Repeat the last four steps until you get _No problems found_ at the end of the checklist output.
 1. Commit any remaining changes.
 1. Run in the git terminal the command `git remote add origin git@github.com:inbo/_your_package_name_.git` where you replace `_your_package_name_` with the actual repository name.
-1. Run in the terminal the command `git push -u origin master`.
+1. Run in the terminal the command `git push -u origin main`.
   This will run the checklist test on GitHub for the first time.
   An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
 
@@ -77,7 +77,7 @@ Copy the token.
 Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
 1. Wait for all tests to finish (either green thick or red cross).
 1. Go in your package GitHub repository to _Settings_ > _Branches_.
-_Add rule_ for _Branch name pattern_ `master` and select the following items and _Save changes_.
+_Add rule_ for _Branch name pattern_ `main` and select the following items and _Save changes_.
     - `Require status checks to pass before merging`
     - `Require branches to be up to date before merging`
     - _Status checks found in the last week for this repository_
@@ -141,7 +141,7 @@ This will start the checks on GitHub.
 An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
 Wait for all tests to finish (either green thick or red cross).
 1. Go in your package GitHub repository to _Settings_ > _Branches_.
-_Add rule_ for _Branch name pattern_ `master` and select the following items and _Save changes_.
+_Add rule_ for _Branch name pattern_ `main` and select the following items and _Save changes_.
     - `Require status checks to pass before merging`
     - `Require branches to be up to date before merging`
     - _Status checks found in the last week for this repository_
@@ -186,7 +186,7 @@ This will start the checks on GitHub.
 An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
 Wait for all tests to finish (either green thick or red cross).
 1. Go in your package GitHub repository to _Settings_ > _Branches_.
-_Add rule_ for _Branch name pattern_ `master` and select the following items and _Save changes_.
+_Add rule_ for _Branch name pattern_ `main` and select the following items and _Save changes_.
     - `Require status checks to pass before merging`
     - `Require branches to be up to date before merging`
     - _Status checks found in the last week for this repository_

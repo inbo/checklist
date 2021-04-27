@@ -22,10 +22,11 @@ The version number of the package must have either a \code{0.0} or a \verb{0.0.0
 format (see \href{https://github.com/inbo/checklist/issues/1}{this discussion} why
 we allow only these formats).
 The version number in every branch must be larger than the current version
-number in the master branch.
-New commits in the master must have a larger version number than the previous
-commit.
-We recommend to protect the master branch and to not commit into the master.
+number in the main or master branch.
+New commits in the main or master must have a larger version number than the
+previous commit.
+We recommend to protect the main or master branch and to not commit into the
+main or master.
 
 Furthermore we check the author information.
 \itemize{

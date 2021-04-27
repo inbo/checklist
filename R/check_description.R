@@ -10,10 +10,11 @@
 #' format (see [this discussion](https://github.com/inbo/checklist/issues/1) why
 #' we allow only these formats).
 #' The version number in every branch must be larger than the current version
-#' number in the master branch.
-#' New commits in the master must have a larger version number than the previous
-#' commit.
-#' We recommend to protect the master branch and to not commit into the master.
+#' number in the main or master branch.
+#' New commits in the main or master must have a larger version number than the
+#' previous commit.
+#' We recommend to protect the main or master branch and to not commit into the
+#' main or master.
 #'
 #' Furthermore we check the author information.
 #' - Is INBO listed as copyright holder and funder?
@@ -47,37 +48,48 @@ check_description <- function(x = ".") {
   "Incorrect version tag format. Use `0.0` or `0.0.0`"[
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
-
+  notes <- character(0)
   if (length(commits(repo)) > 1) {
     branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
     head_sha <- sha(repository_head(repo))
     current_branch <- head(names(which(branch_sha == head_sha)), 1)
-    if (length(current_branch) && current_branch == "master") {
+    if (length(current_branch) && current_branch %in% c("main", "master")) {
+"Branch master detected. From Oct. 1, 2020, any new repositories you create uses
+main as the default branch, instead of master. You can rename the default branch
+from the web. More info on https://github.com/github/renaming"[
+  current_branch == "master"
+] -> notes
       parent_commits <- parents(lookup_commit(repository_head(repo)))
       oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
       desc_diff <- diff(
-        tree(lookup_commit(repository_head(repo))),
         tree(parent_commits[[oldest]]),
-        as_char = TRUE
+        as_char = TRUE, path = "DESCRIPTION"
       )
     } else {
       assert_that(
         "origin" %in% remotes(repo), msg = "no remote called `origin` available"
       )
       assert_that(
-        has_name(branches(repo), "origin/master"),
-        msg = "No `master` branch found in `origin`. Did you fetch `origin`?"
+        has_name(branches(repo), "origin/main") ||
+          has_name(branches(repo), "origin/master"),
+        msg =
+      "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
       )
+      ref_branch <- ifelse(
+        has_name(branches(repo), "origin/main"), "origin/main", "origin/master"
+      )
+"Branch master detected. From Oct. 1, 2020, any new repositories you create uses
+main as the default branch, instead of master. You can rename the default branch
+from the web. More info on https://github.com/github/renaming"[
+  !has_name(branches(repo), "origin/main")
+] -> notes
       desc_diff <- diff(
+        tree(lookup_commit(branches(repo)[[ref_branch]])),
         tree(lookup_commit(repository_head(repo))),
-        tree(lookup_commit(branches(repo)$`origin/master`)),
-        as_char = TRUE
-      )
-      desc_diff <- system2(
-        "git", args = c("diff", "origin/master", "--", "DESCRIPTION"), # nolint
-        stdout = TRUE
+        as_char = TRUE, path = "DESCRIPTION"
       )
     }
+    desc_diff <- strsplit(desc_diff, "\n")[[1]]
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
     old_version <- gsub("-Version: ", "", old_version)
     version_bump <- ifelse(
@@ -101,6 +113,7 @@ check_description <- function(x = ".") {
     check_authors(this_desc)
   )
   x$add_error(desc_error, "DESCRIPTION")
+  x$add_notes(notes)
 
   check_license(x = x)
 }

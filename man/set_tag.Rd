@@ -12,7 +12,8 @@ Defaults to \code{.}.}
 }
 \description{
 This function is a part of the GitHub Action.
-Therefore it only works when run in a GitHub Action on the master branch.
+Therefore it only works when run in a GitHub Action on the main or master
+branch.
 Otherwise it will only return a message.
 It sets a new tag at the current commit using the related entry from
 \code{NEWS.md} as message.

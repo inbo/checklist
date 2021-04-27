@@ -10,7 +10,7 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 ![GitHub](https://img.shields.io/github/license/inbo/checklist) [![R
 build
-status](https://github.com/inbo/checklist/workflows/check%20package%20on%20master/badge.svg)](https://github.com/inbo/checklist/actions)
+status](https://github.com/inbo/checklist/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/checklist/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/inbo/checklist/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=master)
 ![GitHub code size in

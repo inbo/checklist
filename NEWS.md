@@ -1,3 +1,23 @@
+# checklist 0.1.9
+
+## User visible changes
+
+* Many communities, both on GitHub and in the wider Git community, are
+  considering renaming the default branch name of their repository from
+  `master`.
+  GitHub is gradually renaming the default branch of our own repositories from
+  `master` to `main`.
+  Therefore `checklist` now allows both a `main` or `master` branch as default.
+  In case both are present, `checklist` uses `main`.
+  Using only a `master` branch yields a note.
+  Hence you must either which to a `main` branch or allow the note with
+  `write_checklist()` (#44).
+
+## Bugfixes
+
+* Convert fancy single quotes to neutral single quotes (#42).
+* Fix `check_description()`.
+
 # checklist 0.1.8
 
 * Create a release when pushing a tag starting with `v`.

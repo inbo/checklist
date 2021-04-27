@@ -32,7 +32,7 @@ test_that("set_tag() works", {
     repo, name = "origin", refspec = "refs/heads/master", set_upstream = TRUE  # nolint
   )
 
-  # not on GITHUB or master
+  # not on GITHUB or main
   current_ref <- Sys.getenv("GITHUB_REF")
   on.exit(Sys.setenv(GITHUB_REF = current_ref), add = TRUE)
   Sys.setenv(GITHUB_REF = "")
@@ -44,31 +44,42 @@ test_that("set_tag() works", {
   Sys.setenv(GITHUB_EVENT_NAME = "")
   expect_message(
     set_tag(file.path(path, package)),
-    "Not on GitHub, not a push or not on master."
+    "Not on GitHub, not a push or not on main or master."
   )
 
   Sys.setenv(GITHUB_REF = "refs/heads/junk")  # nolint
   expect_message(
     set_tag(file.path(path, package)),
-    "Not on GitHub, not a push or not on master."
+    "Not on GitHub, not a push or not on main or master."
   )
 
   # on master, not GitHub
   Sys.setenv(GITHUB_REF = "refs/heads/master") # nolint
   expect_message(
     set_tag(file.path(path, package)),
-    "Not on GitHub, not a push or not on master."
+    "Not on GitHub, not a push or not on main or master."
+  )
+  Sys.setenv(GITHUB_REF = "refs/heads/main") # nolint
+  expect_message(
+    set_tag(file.path(path, package)),
+    "Not on GitHub, not a push or not on main or master."
   )
 
   # on master, GitHub, not push
   Sys.setenv(GITHUB_ACTIONS = "true")
   expect_message(
     set_tag(file.path(path, package)),
-    "Not on GitHub, not a push or not on master."
+    "Not on GitHub, not a push or not on main or master."
+  )
+  Sys.setenv(GITHUB_REF = "refs/heads/master") # nolint
+  expect_message(
+    set_tag(file.path(path, package)),
+    "Not on GitHub, not a push or not on main or master."
   )
 
   # on master, GitHub, push
   Sys.setenv(GITHUB_EVENT_NAME = "push")
   expect_invisible(set_tag(file.path(path, package)))
+  Sys.setenv(GITHUB_REF = "refs/heads/main") # nolint
   expect_message(set_tag(file.path(path, package)), "tag.*already exists")
 })

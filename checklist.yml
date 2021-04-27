@@ -3,12 +3,17 @@ package: yes
 allowed:
   warnings: []
   notes:
+  - motivation: We plan to move master to main in a next version
+    value: |-
+      Branch master detected. From Oct. 1, 2020, any new repositories you create uses
+      main as the default branch, instead of master. You can rename the default branch
+      from the web. More info on https://github.com/github/renaming
   - motivation: Package not on CRAN and requires a development version of devtools
     value: |-
       checking CRAN incoming feasibility ... NOTE
-      Maintainer: ‘Thierry Onkelinx <thierry.onkelinx@inbo.be>’
+      Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
 
       Unknown, possibly mis-spelled, fields in DESCRIPTION:
-        ‘Remotes’
+        'Remotes'
