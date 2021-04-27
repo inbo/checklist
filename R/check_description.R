@@ -48,12 +48,17 @@ check_description <- function(x = ".") {
   "Incorrect version tag format. Use `0.0` or `0.0.0`"[
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
-
+  notes <- character(0)
   if (length(commits(repo)) > 1) {
     branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
     head_sha <- sha(repository_head(repo))
     current_branch <- head(names(which(branch_sha == head_sha)), 1)
     if (length(current_branch) && current_branch %in% c("main", "master")) {
+"Branch master detected. From Oct. 1, 2020, any new repositories you create uses
+main as the default branch, instead of master. You can rename the default branch
+from the web. More info on https://github.com/github/renaming"[
+  current_branch == "master"
+] -> notes
       parent_commits <- parents(lookup_commit(repository_head(repo)))
       oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
       desc_diff <- diff(
@@ -73,6 +78,11 @@ check_description <- function(x = ".") {
       ref_branch <- ifelse(
         has_name(branches(repo), "origin/main"), "origin/main", "origin/master"
       )
+"Branch master detected. From Oct. 1, 2020, any new repositories you create uses
+main as the default branch, instead of master. You can rename the default branch
+from the web. More info on https://github.com/github/renaming"[
+  !has_name(branches(repo), "origin/main")
+] -> notes
       desc_diff <- diff(
         tree(lookup_commit(branches(repo)[[ref_branch]])),
         tree(lookup_commit(repository_head(repo))),
@@ -103,6 +113,7 @@ check_description <- function(x = ".") {
     check_authors(this_desc)
   )
   x$add_error(desc_error, "DESCRIPTION")
+  x$add_notes(notes)
 
   check_license(x = x)
 }
