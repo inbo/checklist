@@ -68,7 +68,7 @@ checklist <- R6Class(
     #' @param notes A vector with notes.
     add_notes = function(notes) {
       assert_that(is.character(notes), noNA(notes))
-      private$notes <- unique(c(private$notes, notes))
+      private$notes <- unique(c(private$notes, remove_fancy_quotes(notes)))
       invisible(self)
     },
 
@@ -78,8 +78,8 @@ checklist <- R6Class(
     #' @param notes A vector with notes.
     add_rcmdcheck = function(errors, warnings, notes) {
       self$add_error(errors, "R CMD check")
-      self$add_warnings(warnings)
-      self$add_notes(notes)
+      self$add_warnings(remove_fancy_quotes(warnings))
+      self$add_notes(remove_fancy_quotes(notes))
       invisible(self)
     },
 
@@ -87,7 +87,9 @@ checklist <- R6Class(
     #' @param warnings A vector with warnings.
     add_warnings = function(warnings) {
       assert_that(is.character(warnings), noNA(warnings))
-      private$warnings <- unique(c(private$warnings, warnings))
+      private$warnings <- unique(
+        c(private$warnings, remove_fancy_quotes(warnings))
+      )
       invisible(self)
     },
 
@@ -104,8 +106,8 @@ checklist <- R6Class(
     ) {
       assert_that(inherits(warnings, "list"))
       assert_that(inherits(notes, "list"))
-      private$allowed_warnings <- warnings
-      private$allowed_notes <- notes
+      private$allowed_warnings <- remove_fancy_quotes(warnings)
+      private$allowed_notes <- remove_fancy_quotes(notes)
       private$checked <- sort(unique(c(private$checked, "checklist")))
       invisible(self)
     },
@@ -218,3 +220,14 @@ Please contact the maintainer of the checklist package."
     linter = structure(list(), class = "lints", path = ".")
   )
 )
+
+remove_fancy_quotes <- function(x) {
+  single_quotation <- "(\u2018|\u2019)"
+  if (inherits(x, "character")) {
+    return(gsub(single_quotation, "'", x))
+  }
+  for (i in seq_along(x)) {
+    x[[i]][["value"]] <- gsub(single_quotation, "'", x[[i]][["value"]])
+  }
+  return(x)
+}
