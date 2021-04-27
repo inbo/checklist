@@ -74,11 +74,12 @@ check_description <- function(x = ".") {
         has_name(branches(repo), "origin/main"), "origin/main", "origin/master"
       )
       desc_diff <- diff(
-        tree(lookup_commit(repository_head(repo))),
         tree(lookup_commit(branches(repo)[[ref_branch]])),
+        tree(lookup_commit(repository_head(repo))),
         as_char = TRUE, path = "DESCRIPTION"
       )
     }
+    desc_diff <- strsplit(desc_diff, "\n")[[1]]
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
     old_version <- gsub("-Version: ", "", old_version)
     version_bump <- ifelse(
