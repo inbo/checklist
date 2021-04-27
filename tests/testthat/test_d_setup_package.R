@@ -27,7 +27,7 @@ test_that("setup_package() works", {
       ".github", "workflows",
       c(
         "check_on_branch.yml", "check_on_different_r_os.yml",
-        "check_on_master.yml", "release.yml"
+        "check_on_main.yml", "release.yml"
       )
     ),
     file.path("pkgdown", "extra.css"),

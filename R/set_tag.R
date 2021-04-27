@@ -1,7 +1,8 @@
 #' Set a New Tag
 #'
 #' This function is a part of the GitHub Action.
-#' Therefore it only works when run in a GitHub Action on the master branch.
+#' Therefore it only works when run in a GitHub Action on the main or master
+#' branch.
 #' Otherwise it will only return a message.
 #' It sets a new tag at the current commit using the related entry from
 #' `NEWS.md` as message.
@@ -15,10 +16,10 @@
 set_tag <- function(x = ".") {
   if (
     !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
-      Sys.getenv("GITHUB_REF") != "refs/heads/master" || # nolint
+    !Sys.getenv("GITHUB_REF") %in% c("refs/heads/main", "refs/heads/master") || # nolint
       Sys.getenv("GITHUB_EVENT_NAME") != "push"
   ) {
-    message("Not on GitHub, not a push or not on master.")
+    message("Not on GitHub, not a push or not on main or master.")
     return(invisible(NULL))
   }
   x <- read_checklist(x = x)

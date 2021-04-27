@@ -10,10 +10,11 @@
 #' format (see [this discussion](https://github.com/inbo/checklist/issues/1) why
 #' we allow only these formats).
 #' The version number in every branch must be larger than the current version
-#' number in the master branch.
-#' New commits in the master must have a larger version number than the previous
-#' commit.
-#' We recommend to protect the master branch and to not commit into the master.
+#' number in the main or master branch.
+#' New commits in the main or master must have a larger version number than the
+#' previous commit.
+#' We recommend to protect the main or master branch and to not commit into the
+#' main or master.
 #'
 #' Furthermore we check the author information.
 #' - Is INBO listed as copyright holder and funder?
@@ -52,11 +53,10 @@ check_description <- function(x = ".") {
     branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
     head_sha <- sha(repository_head(repo))
     current_branch <- head(names(which(branch_sha == head_sha)), 1)
-    if (length(current_branch) && current_branch == "master") {
+    if (length(current_branch) && current_branch %in% c("main", "master")) {
       parent_commits <- parents(lookup_commit(repository_head(repo)))
       oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
       desc_diff <- diff(
-        tree(lookup_commit(repository_head(repo))),
         tree(parent_commits[[oldest]]),
         as_char = TRUE, path = "DESCRIPTION"
       )
@@ -65,12 +65,17 @@ check_description <- function(x = ".") {
         "origin" %in% remotes(repo), msg = "no remote called `origin` available"
       )
       assert_that(
-        has_name(branches(repo), "origin/master"),
-        msg = "No `master` branch found in `origin`. Did you fetch `origin`?"
+        has_name(branches(repo), "origin/main") ||
+          has_name(branches(repo), "origin/master"),
+        msg =
+      "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
+      )
+      ref_branch <- ifelse(
+        has_name(branches(repo), "origin/main"), "origin/main", "origin/master"
       )
       desc_diff <- diff(
         tree(lookup_commit(repository_head(repo))),
-        tree(lookup_commit(branches(repo)$`origin/master`)),
+        tree(lookup_commit(branches(repo)[[ref_branch]])),
         as_char = TRUE, path = "DESCRIPTION"
       )
     }

@@ -209,15 +209,15 @@ allowed:
   )
   file.copy(
     system.file(
-      file.path("package_template", "check_on_master.yml"),
+      file.path("package_template", "check_on_main.yml"),
       package = "checklist"
     ),
-    file.path(path, ".github", "workflows", "check_on_master.yml"),
+    file.path(path, ".github", "workflows", "check_on_main.yml"),
     overwrite = TRUE
   )
   add(
     repo = repo, force = TRUE,
-    file.path(".github", "workflows", "check_on_master.yml")
+    file.path(".github", "workflows", "check_on_main.yml")
   )
   file.copy(
     system.file(
