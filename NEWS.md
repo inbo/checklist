@@ -1,3 +1,7 @@
+# checklist 0.1.10
+
+* Minor bugfix in entrypoint_package.sh
+
 # checklist 0.1.9
 
 ## User visible changes
