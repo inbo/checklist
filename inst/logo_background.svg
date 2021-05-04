@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="600" width="520">
+  <g id="background">
+    <polygon points="260,600 0.2,450 0.2,150 260,0 519.8,150 519.8,450" style="fill:#C04384;" />
+    <polygon points="260,585 13.2,442.5 13.2,157.5 260,15 506.8,157.5 506.8 442.5" style="fill:white;" />
+    <polygon points="260,30 26.2,165 26.2,300 493.8,300 493.8,165" style="fill:#C04384;" />
+  </g>
+</svg>

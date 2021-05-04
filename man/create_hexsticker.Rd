@@ -4,12 +4,29 @@
 \alias{create_hexsticker}
 \title{Make hexagonal logo for package}
 \usage{
-create_hexsticker(package_name, filename = "man/figures/hexsticker.png")
+create_hexsticker(
+  package_name,
+  filename = file.path("man", "figures", "logo.svg"),
+  icon,
+  x = 0,
+  y = 0,
+  scale = 1
+)
 }
 \arguments{
 \item{package_name}{package name that should be mentioned on the hexsticker}
 
-\item{filename}{filename to save the sticker (default saved in man/figures)}
+\item{filename}{filename to save the sticker}
+
+\item{icon}{optional filename to an svg file with an icon}
+
+\item{x}{number of pixels to move the icon to the right.
+Use negative numbers to move the icon to the left.}
+
+\item{y}{number of pixels to move the icon to the bottom.
+Use negative numbers to move the icon to the top.}
+
+\item{scale}{Scales the \code{icon}.}
 }
 \value{
 A figure is saved in the working directory or provided path
@@ -17,11 +34,10 @@ A figure is saved in the working directory or provided path
 \description{
 This function makes a hexsticker in INBO style for the provided
 package name.
-It requires the package hexSticker to be installed.
 }
 \examples{
 # make tempfile to save logo (or just use (path and) filename)
-output <- tempfile(pattern = "hexsticker", fileext = ".png")
+output <- tempfile(pattern = "hexsticker", fileext = ".svg")
 create_hexsticker("checklist", filename = output)
 }
 \seealso{

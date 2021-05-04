@@ -7,6 +7,7 @@
 ^\.zenodo\.json$
 ^checklist.yml$
 ^codecov\.yml$
+^data-raw$
 ^Dockerfile$
 ^docs$
 ^entrypoint_package.sh$
