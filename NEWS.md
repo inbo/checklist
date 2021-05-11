@@ -1,3 +1,9 @@
+# checklist 0.1.10
+
+## Bugfixes
+
+* Avoid false positive lintr when `.Rproj` file is put under version control
+
 # checklist 0.1.9
 
 ## User visible changes
