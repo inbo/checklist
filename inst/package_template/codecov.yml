@@ -14,4 +14,4 @@ coverage:
       default:
         target: auto
         threshold: 0%
-        informational: false
+        informational: true
