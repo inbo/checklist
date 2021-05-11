@@ -44,38 +44,82 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   origin_main_commit <- lookup_commit(origin_main)
 
   # fix local branches
-  for (local_branch in all_branches) {
-    if (!is_local(local_branch)) {
-      next
-    }
-    upstream_branch <- branch_get_upstream(local_branch)
-    local_commit <- lookup_commit(local_branch)
-    if (is.null(upstream_branch)) {
-      delta_main <- ahead_behind(local_commit, origin_main_commit)
-      if (delta_main[2] >= 0) {
-        if (delta_main[1] > 0) {
-          warning(
-            "`", local_branch$name, "` diverged from the main origin branch."
-          )
-          next
-        }
-        branch_delete(local_branch)
-      }
-      next
-    }
-    upstream_commit <- lookup_commit(upstream_branch)
-    delta_upstream <- ahead_behind(local_commit, upstream_commit)
-    if (delta_upstream[2] > 0) {
-      if (delta_upstream[1] > 0) {
-        warning("`", local_branch$name, "` diverged from the origin branch.")
-        next
-      }
-      checkout(repo, branch = local_branch$name)
+  local_branches <- all_branches[vapply(all_branches, is_local, logical(1))]
+  head_commits <- vapply(
+    all_branches,
+    function(x) {
+      list(lookup_commit(x))
+    },
+    vector("list", 1)
+  )
+  upstream_branches <- vapply(
+    local_branches,
+    function(x) {
+      list(branch_get_upstream(x))
+    },
+    vector("list", 1)
+  )
+
+  # local branches without upstream
+  no_upstream <- vapply(upstream_branches, is.null, logical(1))
+  no_upstream_ab <- vapply(
+    head_commits[names(local_branches)[no_upstream]], FUN = ahead_behind,
+    FUN.VALUE = integer(2), upstream = origin_main_commit
+  )
+  # warn for diverging branches
+  diverged <- no_upstream_ab[2, ] > 0 & no_upstream_ab[1, ] > 0
+  vapply(
+    names(local_branches)[no_upstream][diverged],
+    function(x) {
+      warning("`", x, "` diverged from the main origin branch.")
+      return(list())
+    },
+    list()
+  )
+  # remote full merged branches
+  delete_local <- no_upstream_ab[2, ] >= 0 & no_upstream_ab[1, ] == 0
+  vapply(
+    local_branches[no_upstream][delete_local],
+    function(x) {
+      branch_delete(x)
+      return(list())
+    },
+    list()
+  )
+
+  # local branches with upstream
+  local_branches <- local_branches[!no_upstream]
+  upstream_ab <- vapply(
+    names(local_branches),
+    function(x) {
+      ahead_behind(head_commits[[x]], head_commits[[paste0("origin/", x)]])
+    },
+    integer(2)
+  )
+  # warn for diverging branches
+  diverged <- upstream_ab[2, ] > 0 & upstream_ab[1, ] > 0
+  vapply(
+    names(local_branches)[diverged],
+    function(x) {
+      warning("`", x, "` diverged from the origin branch.")
+      return(list())
+    },
+    list()
+  )
+  # bring branches up-to-date
+  update_local <- upstream_ab[2, ] >= 0 & upstream_ab[1, ] == 0
+  vapply(
+    local_branches[update_local],
+    function(x) {
+      checkout(repo, branch = x$name)
       pull(repo)
-    }
-  }
+      return(list())
+    },
+    list()
+  )
 
   # which back to original branch if it still exists
+  # otherwise select the main branch
   all_branches <- branches(repo)
   if (
     is.null(current_branch) || !current_branch$name %in% names(all_branches)
