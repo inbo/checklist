@@ -149,7 +149,7 @@ Fails: `%s`",
   )
 
   graphics_file <- extension %in% c(
-    "csl", "eps", "jpg", "jpeg", "pdf", "png", "ps"
+    "csl", "eps", "jpg", "jpeg", "pdf", "png", "ps", "svg"
   )
   warnings <- c(
     sprintf(
