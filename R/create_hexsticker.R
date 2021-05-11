@@ -27,7 +27,7 @@ create_hexsticker <- function(
   package_name, filename = file.path("man", "figures", "logo.svg"), icon,
   x = 0, y = 0, scale = 1
 ) {
-  base <- readLines(system.file("logo_background.svg", package = "checklist"))
+  base <- readLines(system.file("logo-background.svg", package = "checklist"))
   svg_name <- string2svg(package_name)
   text_size <- c(max(svg_name$x), max(svg_name$y))
   text_max_size <- c(454.6, 122)
