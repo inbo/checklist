@@ -57,7 +57,7 @@ create_hexsticker <- function(
     writeLines(c(head(base, -1), svg_name, tail(base, 1)), filename)
     return(browseURL(filename))
   }
-  assert_that(is.number(scale), scale > 0, scale < 1)
+  assert_that(is.number(scale), scale > 0, scale <= 1)
   icon_svg <- prepare_icon(icon)
   viewbox <- sprintf(
     "<svg viewBox=\"0 0 %s %s\" x=\"%.1f\" y=\"%.1f\" width=\"%.1f%%\">",
@@ -67,7 +67,8 @@ create_hexsticker <- function(
     c(head(base, -1), svg_name, viewbox, icon_svg$svg, "</svg>", tail(base, 1)),
     filename
   )
-  return(browseURL(filename))
+  if (interactive()) browseURL(filename) # nolint
+  return(invisible(filename))
 }
 
 #' @importFrom assertthat assert_that is.string
