@@ -36,9 +36,11 @@ This function makes a hexsticker in INBO style for the provided
 package name.
 }
 \examples{
+\dontrun{
 # make tempfile to save logo (or just use (path and) filename)
-output <- tempfile(pattern = "hexsticker", fileext = ".svg")
+#' output <- tempfile(pattern = "hexsticker", fileext = ".svg")
 create_hexsticker("checklist", filename = output)
+}
 }
 \seealso{
 Other utils: 

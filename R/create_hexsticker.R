@@ -18,15 +18,21 @@
 #' @family utils
 #'
 #' @examples
+#' \dontrun{
 #' # make tempfile to save logo (or just use (path and) filename)
-#' output <- tempfile(pattern = "hexsticker", fileext = ".svg")
+#' #' output <- tempfile(pattern = "hexsticker", fileext = ".svg")
 #' create_hexsticker("checklist", filename = output)
+#' }
 #' @importFrom assertthat assert_that is.number
 #' @importFrom utils browseURL
 create_hexsticker <- function(
   package_name, filename = file.path("man", "figures", "logo.svg"), icon,
   x = 0, y = 0, scale = 1
 ) {
+  assert_that(
+    tolower(Sys.info()[["sysname"]]) != "darwin",
+    msg = "svg() not available on macOS"
+  )
   base <- readLines(system.file("logo-background.svg", package = "checklist"))
   svg_name <- string2svg(package_name)
   text_size <- c(max(svg_name$x), max(svg_name$y))
