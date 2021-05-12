@@ -28,6 +28,9 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   # fetch the remote
   fetch(repo, "origin", verbose = verbose)
   # remove remote branches deleted at the remote
+  old_wd <- getwd()
+  on.exit(setwd(old_wd), add = TRUE)
+  setwd(repo$path)
   system("git remote prune origin")
   # determine main branch
   all_branches <- branches(repo)
@@ -109,10 +112,10 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   # bring branches up-to-date
   update_local <- upstream_ab[2, ] >= 0 & upstream_ab[1, ] == 0
   vapply(
-    local_branches[update_local],
+    names(local_branches[update_local]),
     function(x) {
-      checkout(repo, branch = x$name)
-      pull(repo)
+      checkout(repo, branch = x)
+      pull(repo = repo)
       return(list())
     },
     list()
