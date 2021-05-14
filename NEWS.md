@@ -1,9 +1,21 @@
 # checklist 0.1.10
 
+## User visible changes
+
+* Add `clean_git()` to bring a local git repo up-to-date.
+    * Bring local branches up-to-date when there are behind the origin.
+    * Remove remote branches when removed from the origin.
+    * Remove local branches when fully merged into the main branch.
+    * Warn for diverging branches.
+* `create_hexsticker()` yields an svg file instead of png.
+  The user can optionally specify an svg icon file to add to the hexsticker.
+* Keep failed build artefacts only 14 days (https://github.com/inbo/tutorials/issues/251).
+
 ## Bugfixes
 
-* Avoid false positive lintr when `.Rproj` file is put under version control
-* Minor bugfix in entrypoint_package.sh
+* Avoid false positive lintr when `.Rproj` file is put under version control.
+* `check_files()` considers files with svg extensions as graphical files.
+* Minor bugfix in `entrypoint_package.sh`.
 
 # checklist 0.1.9
 
