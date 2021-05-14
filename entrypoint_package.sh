@@ -49,11 +49,11 @@ if [ "$GITHUB_ACTIONS" != "true" ]; then
   echo '\nNot updating tag, because not a GitHub action.';
 elif [ "$GITHUB_EVENT_NAME" != "push" ]; then
   echo '\nNot updating tag, because not a push event.';
-elif [ "$GITHUB_REF" != "refs/heads/main" && "$GITHUB_REF" != "refs/heads/master" ]; then
+elif [ "$GITHUB_REF" != "refs/heads/main" ] && [ "$GITHUB_REF" != "refs/heads/master" ]; then
   echo '\nNot updating tag, because not on main or master.';
 else
   echo '\nUpdating tag...\n';
-  Rscript --no-save --no-restore -e 'checklist::set_tag(token = "$2")';
+  Rscript --no-save --no-restore -e 'checklist::set_tag()';
 
   echo '\nPush pkgdown website...\n'
   cp -R docs ../docs

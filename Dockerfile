@@ -75,11 +75,7 @@ RUN apt-get update \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
 ## install codemetar
-RUN apt-get update \
-  && apt-get install  -y --no-install-recommends \
-    libgit2-dev \
-  && apt-get clean \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
 
 ## install desc
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'

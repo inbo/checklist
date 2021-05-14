@@ -6,6 +6,7 @@
 ^\.zenodo\.json$
 ^checklist.yml$
 ^codecov\.yml$
+^data-raw$
 ^docs$
 ^LICENSE.md$
 ^man-roxygen$
