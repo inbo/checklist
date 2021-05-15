@@ -75,7 +75,7 @@ RUN apt-get update \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
 ## install codemetar
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_github("ropensci/codemetar")'
 
 ## install desc
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
@@ -161,7 +161,7 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
 
 ## install checklist
 COPY . /checklist/
-RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
 
 COPY entrypoint_package.sh /entrypoint_package.sh
 COPY entrypoint_source.sh /entrypoint_source.sh
