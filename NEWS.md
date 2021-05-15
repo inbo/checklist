@@ -1,3 +1,10 @@
+# checklist 0.1.11
+
+* GitHub Actions bash script for packages checks out the main branch before
+  setting tags.
+* Install `codemetar` from GitHub because is it not available from CRAN.
+* Install `devtools` from CRAN as the relevant version in available on CRAN.
+
 # checklist 0.1.10
 
 ## User visible changes
