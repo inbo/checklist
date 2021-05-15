@@ -23,3 +23,12 @@ the main branch.
 \item remove local copies of origin branches deleted at the origin.
 }
 }
+\seealso{
+Other utils: 
+\code{\link{create_hexsticker}()},
+\code{\link{is_workdir_clean}()},
+\code{\link{orcid2person}()},
+\code{\link{validate_email}()},
+\code{\link{yesno}()}
+}
+\concept{utils}

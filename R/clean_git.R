@@ -14,6 +14,7 @@
 #' checkout lookup_commit
 #' fetch is_local lookup pull repository_head
 #' @export
+#' @family utils
 clean_git <- function(path =  ".", verbose = TRUE) {
   if (inherits(path, "git_repository")) {
     repo <- path
