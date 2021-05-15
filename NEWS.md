@@ -1,5 +1,6 @@
 # checklist 0.1.11
 
+* Exclude `renv` and `packrat` folders from `check_lintr()`.
 * GitHub Actions bash script for packages checks out the main branch before
   setting tags.
 * Install `codemetar` from GitHub because is it not available from CRAN.

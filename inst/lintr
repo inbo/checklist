@@ -26,3 +26,4 @@ linters: list(
     trailing_blank_lines_linter,
     trailing_whitespace_linter
   )
+exclusions: list("renv", "packrat")
