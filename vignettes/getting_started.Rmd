@@ -71,7 +71,7 @@ Copy the alphanumeric UUID, without the `Bearer` prefix.
 Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
-1. Go to https://codecov.io and login with your GitHub account.
+1. Go to https://about.codecov.io and login with your GitHub account.
 Search for your package repository in the INBO organisation.
 Copy the token.
 Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
@@ -132,7 +132,7 @@ Copy the alphanumeric UUID, without the `Bearer` prefix.
 Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
-1. Go to https://codecov.io and login with your GitHub account.
+1. Go to https://about.codecov.io and login with your GitHub account.
 Search for your package repository in the INBO organisation.
 Copy the token.
 Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.

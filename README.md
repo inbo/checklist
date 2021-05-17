@@ -7,7 +7,7 @@
 has not yet been a stable, usable release suitable for the
 public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental-1)
 ![GitHub](https://img.shields.io/github/license/inbo/checklist) [![R
 build
 status](https://github.com/inbo/checklist/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/checklist/actions)
