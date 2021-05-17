@@ -1,3 +1,10 @@
+# checklist 0.1.11
+
+## Bugfixes
+
+* Exclude `*.Rproj` filename from the check for filenames (avoids a warning when
+  a hyphen is used in the repositories name)
+
 # checklist 0.1.10
 
 ## User visible changes
