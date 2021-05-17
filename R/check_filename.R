@@ -99,7 +99,7 @@ Failing folder: `%s`",
   )
 
   # ignore git and RStudio files
-  files <- files[!grepl("\\.(git|Rproj.user)/.*", files)]
+  files <- files[!grepl("(\\.(git|Rproj.user)/.*)|(\\.Rproj$)", files)]
   # ignore some standardised files
   re <- sprintf(
     "^(%s)$",
