@@ -81,6 +81,7 @@ clean_git <- function(path =  ".", verbose = TRUE) {
     list()
   )
   # remote full merged branches
+  checkout(repo, branch = main_branch)
   delete_local <- no_upstream_ab[2, ] >= 0 & no_upstream_ab[1, ] == 0
   vapply(
     local_branches[no_upstream][delete_local],
