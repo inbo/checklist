@@ -5,6 +5,15 @@
   setting tags.
 * Install `codemetar` from GitHub because is it not available from CRAN.
 * Install `devtools` from CRAN as the relevant version in available on CRAN.
+* Add GitHub Action to automatically remove artefacts.
+  This is required to keep the [used storage](https://github.com/inbo/tutorials/issues/251) to a minimum.
+* Checks on different OS's only halt on errors.
+  Because importing `codemetar` from GitHub results in a warning.
+* Don't install dependencies automatically in the `Dockerfile`.
+  This triggers an error when a dependency is not listed in the `Dockerfile`.
+* `pkgdown` ensures that the reference page lists all exported functions.
+* New `pkgdown` cascading style sheet.
+* Bugfix in `clean_git()`.
 
 # checklist 0.1.10
 
