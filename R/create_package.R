@@ -241,6 +241,17 @@ allowed:
   add(
     repo = repo, file.path(".github", "workflows", "release.yml"), force = TRUE
   )
+  file.copy(
+    system.file(
+      file.path("package_template", "remove_old_artifacts.yml"),
+      package = "checklist"
+    ),
+    file.path(path, ".github", "workflows", "remove_old_artifacts.yml"),
+    overwrite = TRUE
+  )
+  add(
+    repo = repo, file.path(".github", "workflows", "release.yml"), force = TRUE
+  )
 
   # prepare pkgdown
   file.copy(
