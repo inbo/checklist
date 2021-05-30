@@ -65,13 +65,13 @@ You can revoke old or compromised tokens.
 Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
-1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://www.orcid.org) if requested.
+1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://orcid.org) if requested.
 Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
 Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
-1. Go to https://codecov.io and login with your GitHub account.
+1. Go to https://about.codecov.io and login with your GitHub account.
 Search for your package repository in the INBO organisation.
 Copy the token.
 Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
@@ -126,13 +126,13 @@ You can revoke old or compromised tokens.
 Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
-1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://www.orcid.org) if requested.
+1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://orcid.org) if requested.
 Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
 Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
 Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
-1. Go to https://codecov.io and login with your GitHub account.
+1. Go to https://about.codecov.io and login with your GitHub account.
 Search for your package repository in the INBO organisation.
 Copy the token.
 Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.

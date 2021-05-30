@@ -12,6 +12,7 @@ git checkout $GITHUB_SHA
 cd $3
 export CODECOV_TOKEN=$4
 export ORCID_TOKEN=$5
+export CI=TRUE
 
 if [ ! -z "$6" ]; then
   apt-get update
@@ -53,6 +54,11 @@ elif [ "$GITHUB_REF" != "refs/heads/main" ] && [ "$GITHUB_REF" != "refs/heads/ma
   echo '\nNot updating tag, because not on main or master.';
 else
   echo '\nUpdating tag...\n';
+  if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+    git checkout main
+  else
+    git checkout master
+  fi
   Rscript --no-save --no-restore -e 'checklist::set_tag()';
 
   echo '\nPush pkgdown website...\n'

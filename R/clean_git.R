@@ -11,9 +11,9 @@
 #' @inheritParams git2r::fetch
 #' @importFrom assertthat assert_that
 #' @importFrom git2r ahead_behind branches branch_delete branch_get_upstream
-#' checkout lookup_commit
-#' fetch is_local lookup pull repository_head
+#' checkout fetch is_local lookup_commit pull repository_head
 #' @export
+#' @family utils
 clean_git <- function(path =  ".", verbose = TRUE) {
   if (inherits(path, "git_repository")) {
     repo <- path
@@ -49,7 +49,7 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   # fix local branches
   local_branches <- all_branches[vapply(all_branches, is_local, logical(1))]
   head_commits <- vapply(
-    all_branches,
+    all_branches[names(all_branches) != "origin/HEAD"],
     function(x) {
       list(lookup_commit(x))
     },
@@ -80,6 +80,7 @@ clean_git <- function(path =  ".", verbose = TRUE) {
     list()
   )
   # remote full merged branches
+  checkout(repo, branch = main_branch)
   delete_local <- no_upstream_ab[2, ] >= 0 & no_upstream_ab[1, ] == 0
   vapply(
     local_branches[no_upstream][delete_local],
@@ -93,9 +94,11 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   # local branches with upstream
   local_branches <- local_branches[!no_upstream]
   upstream_ab <- vapply(
-    names(local_branches),
+    local_branches,
     function(x) {
-      ahead_behind(head_commits[[x]], head_commits[[paste0("origin/", x)]])
+      ahead_behind(
+        head_commits[[x$name]], head_commits[[paste0("origin/", x$name)]]
+      )
     },
     integer(2)
   )

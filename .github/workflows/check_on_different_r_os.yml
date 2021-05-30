@@ -83,7 +83,7 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: true
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
 
       - name: Show testthat output
@@ -97,4 +97,3 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
-          retention-days: 14

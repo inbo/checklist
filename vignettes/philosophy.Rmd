@@ -43,7 +43,7 @@ You can also add these checks as [GitHub actions](https://github.com/features/ac
 The most visible part of a coding style is the naming convention.
 People use many different styles of naming conventions within the R ecosystem [@Baath2012].
 Popular ones are `alllowercase`, `period.separated`, `underscore_separated`, `lowerCamelCase` and `UpperCamelCase`.
-We picked `underscore_separated` because that is the naming convention of the [`tidyverse`](https://tidyverse.org) packages.
+We picked `underscore_separated` because that is the naming convention of the [`tidyverse`](https://www.tidyverse.org) packages.
 It is also the default setting in the [`lintr`](https://github.com/jimhester/lintr/blob/master/README.md) package which we use to do the [static code analysis](https://en.wikipedia.org/wiki/Static_program_analysis).
 
 At first this seems a lot to memorise.
