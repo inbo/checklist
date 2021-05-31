@@ -9,6 +9,7 @@
 ^codecov\.yml$
 ^data-raw$
 ^Dockerfile$
+^docker-compose-test.yml$
 ^docs$
 ^entrypoint_package.sh$
 ^entrypoint_source.sh$
