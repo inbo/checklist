@@ -110,7 +110,7 @@ Failing folder: `%s`",
         "README\\.R?md", "NEWS\\.md", # nolint
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md", "SUPPORT.md",
         "SECURITY.md", "FUNDING.yml",
-        "Dockerfile",
+        "Dockerfile", "docker-compose.*.yml",
         ".*-package\\.Rd", "cran-comments.md", "WORDLIST"
       ),
       collapse = "|"
