@@ -1,3 +1,7 @@
+# checklist 0.1.12
+
+* Add Docker build tests
+
 # checklist 0.1.11
 
 * Exclude `renv` and `packrat` folders from `check_lintr()`.
