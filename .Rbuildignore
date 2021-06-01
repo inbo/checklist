@@ -9,7 +9,7 @@
 ^codecov\.yml$
 ^data-raw$
 ^Dockerfile$
-^docker-compose-test.yml$
+^docker-compose.test.yml$
 ^docs$
 ^entrypoint_package.sh$
 ^entrypoint_source.sh$
@@ -17,3 +17,4 @@
 ^man-roxygen$
 ^pkgdown$
 ^README\.Rmd$
+^test_docker.sh$
