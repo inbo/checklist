@@ -74,7 +74,7 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   vapply(
     names(local_branches)[no_upstream][diverged],
     function(x) {
-      warning("`", x, "` diverged from the main origin branch.")
+      warning("`", x, "` diverged from the main origin branch.", call. = FALSE)
       return(list())
     },
     list()
@@ -107,7 +107,7 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   vapply(
     names(local_branches)[diverged],
     function(x) {
-      warning("`", x, "` diverged from the origin branch.")
+      warning("`", x, "` diverged from the origin branch.", call. = FALSE)
       return(list())
     },
     list()
