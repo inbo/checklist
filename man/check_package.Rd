@@ -4,7 +4,12 @@
 \alias{check_package}
 \title{Run the complete set of standardised tests on a package}
 \usage{
-check_package(x = ".", fail = !interactive(), quiet = FALSE)
+check_package(
+  x = ".",
+  fail = !interactive(),
+  pkgdown = interactive(),
+  quiet = FALSE
+)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.

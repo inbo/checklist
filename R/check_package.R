@@ -24,10 +24,13 @@
 #' session.
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom pkgdown build_site
 #' @importFrom utils file_test
 #' @export
 #' @family package
-check_package <- function(x = ".", fail = !interactive(), quiet = FALSE) {
+check_package <- function
+(x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
+) {
   assert_that(is.flag(fail))
   assert_that(noNA(fail))
 
@@ -57,5 +60,16 @@ check_package <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     stop("Checking the package revealed some problems.")
   }
   quiet_cat("\nChecking the package revealed some problems.\n\n", quiet = quiet)
+  old_ci <- Sys.getenv("CI")
+  on.exit({
+      if (old_ci != "") {
+        Sys.setenv(CI = old_ci)
+      } else {
+        Sys.unsetenv("CI")
+      }
+    }, add = TRUE
+  )
+  Sys.setenv(CI = TRUE)
+  build_site(x$get_path)
   return(invisible(x))
 }
