@@ -31,8 +31,8 @@
 check_package <- function
 (x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
 ) {
-  assert_that(is.flag(fail))
-  assert_that(noNA(fail))
+  assert_that(is.flag(fail), noNA(fail))
+  assert_that(is.flag(pkgdown), noNA(pkgdown))
 
   x <- check_cran(x = x, quiet = quiet)
 
@@ -51,6 +51,20 @@ check_package <- function
   quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)
 
+  if (pkgdown) {
+    old_ci <- Sys.getenv("CI")
+    on.exit({
+      if (old_ci != "") {
+        Sys.setenv(CI = old_ci)
+      } else {
+        Sys.unsetenv("CI")
+      }
+    }, add = TRUE
+    )
+    Sys.setenv(CI = TRUE)
+    build_site(x$get_path)
+  }
+
   print(x, quiet = quiet)
   if (!x$fail) {
     quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)
@@ -60,16 +74,6 @@ check_package <- function
     stop("Checking the package revealed some problems.")
   }
   quiet_cat("\nChecking the package revealed some problems.\n\n", quiet = quiet)
-  old_ci <- Sys.getenv("CI")
-  on.exit({
-      if (old_ci != "") {
-        Sys.setenv(CI = old_ci)
-      } else {
-        Sys.unsetenv("CI")
-      }
-    }, add = TRUE
-  )
-  Sys.setenv(CI = TRUE)
-  build_site(x$get_path)
+
   return(invisible(x))
 }
