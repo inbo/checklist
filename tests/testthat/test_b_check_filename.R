@@ -12,6 +12,9 @@ test_that("check_filename() works", {
 
   # fail on upper case in folder names
   repo <- init(path)
+  git2r::config(
+    repo = repo, user.name = "junk", user.email = "junk@inbo.be"
+  )
   dir.create(file.path(path, "UPPERCASE"))
   expect_true(suppressMessages(check_filename(path)$fail))
   unlink(file.path(path, "UPPERCASE"))
