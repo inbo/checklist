@@ -20,7 +20,10 @@
 #'
 #' @inheritParams read_checklist
 #' @param fail Should the function return an error in case of a problem?
-#' Defaults to `TRUE` on non-interactive session and `FALSE` on an interactive
+#' Defaults to `TRUE` on a non-interactive session and `FALSE` on an interactive
+#' session.
+#' @param pkgdown Test pkgdown website.
+#' Defaults to `TRUE` on an interactive session and `FALSE` on a non-interactive
 #' session.
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @importFrom assertthat assert_that is.flag is.string noNA
