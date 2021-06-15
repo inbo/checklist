@@ -47,16 +47,13 @@
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
 
-  if (in_repository(x$get_path)) {
+  if (
+    in_repository(x$get_path) && length(commits(repository(x$get_path))) > 0
+  ) {
     repo <- repository(x$get_path)
-    files <- unlist(status(repo, untracked = FALSE))
-    if (length(files) == 0) {
-      files <- ls_tree(repo = repo)
-      dirs <- unique(files$path)
-      files <- paste0(files$path, files$name)
-    } else {
-      dirs <- unique(dirname(files))
-    }
+    files <- ls_tree(repo = repo, recursive = TRUE)
+    dirs <- unique(files$path)
+    files <- paste0(files$path, files$name)
   } else {
     dirs <- list.dirs(x$get_path, recursive = TRUE, full.names = FALSE)
     files <- list.files(x$get_path, recursive = TRUE, all.files = TRUE)
