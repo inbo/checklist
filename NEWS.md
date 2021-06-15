@@ -1,6 +1,23 @@
 # checklist 0.1.12
 
-* Add Docker build tests
+## User visible changes
+
+* New `new_branch()` function to start a new branch from the most recent version
+  of the main branch.
+  This function will run `clean_git()` before creating the new branch.
+* `check_package()` runs the `pkgdown::build_site()` by default in interactive
+  sessions.
+  The function gains a `pkgdown` argument to turn of this behaviour.
+
+## Bugfixes
+
+* `check_filename()` handles git repositories without commits.
+* `clean_git()` yields cleaner warnings.
+
+## Package management
+
+* Add Docker build tests.
+* `check_filename()` ignores `docker-compose` files.
 
 # checklist 0.1.11
 
