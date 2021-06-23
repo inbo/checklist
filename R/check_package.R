@@ -57,15 +57,14 @@ check_package <- function
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")
     on.exit({
+      Sys.unsetenv("CI")
       if (old_ci != "") {
         Sys.setenv(CI = old_ci)
-      } else {
-        Sys.unsetenv("CI")
       }
     }, add = TRUE
     )
     Sys.setenv(CI = TRUE)
-    build_site(x$get_path)
+    build_site(x$get_path, preview = !quiet)
   }
 
   print(x, quiet = quiet)
@@ -73,9 +72,8 @@ check_package <- function
     quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)
     return(invisible(x))
   }
-  if (fail) {
-    stop("Checking the package revealed some problems.")
-  }
+  assert_that(!fail, msg = "Checking the package revealed some problems.")
+
   quiet_cat("\nChecking the package revealed some problems.\n\n", quiet = quiet)
 
   return(invisible(x))

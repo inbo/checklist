@@ -54,6 +54,12 @@ test_that("create_package() works", {
     "Checklist"
   )
 
+  expect_error({
+    check_package(
+      file.path(path, package), fail = TRUE, quiet = TRUE, pkgdown = TRUE
+    )
+  })
+
   stub(x$add_motivation, "yesno", TRUE, depth = 2)
   stub(x$add_motivation, "readline", "junk", depth = 2)
   expect_is(
