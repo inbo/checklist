@@ -8,7 +8,8 @@
 #' @inheritParams git2r::fetch
 #' @inheritParams git2r::branch_create
 #' @importFrom assertthat assert_that is.string
-#' @importFrom git2r branch_create checkout lookup_commit push repository
+#' @importFrom git2r branch_create checkout lookup_commit push remote_url
+#' repository
 #' @export
 #' @family utils
 new_branch <- function(branch, path =  ".", verbose = TRUE, force = FALSE) {
@@ -19,6 +20,11 @@ new_branch <- function(branch, path =  ".", verbose = TRUE, force = FALSE) {
     repo <- repository(path)
   }
   clean_git(path = repo, verbose = verbose)
+
+  assert_that(
+    !grepl("^http", remote_url(repo, "origin")),
+    msg = "new_branch() does not handle remotes with http URL"
+  )
 
   # determine main branch
   all_branches <- branches(repo)
