@@ -3,8 +3,7 @@ package: yes
 allowed:
   warnings: []
   notes:
-  - motivation: Package not intedend for CRAN and codemetar currently not available
-      on CRAN.
+  - motivation: Package not intended for CRAN.
     value: |-
       checking CRAN incoming feasibility ... NOTE
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
