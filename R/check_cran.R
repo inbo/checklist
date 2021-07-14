@@ -20,6 +20,12 @@ check_cran <- function(x = ".", quiet = FALSE) {
 `checklist.yml` indicates this is not a package."
   )
 
+  # don't use fancy Quotes when checking
+  old_options <- options()
+  on.exit(options(old_options), add = TRUE)
+  options(useFancyQuotes = FALSE)
+
+  # test if the worlds clock is available
   clock_status <- HEAD("http://worldclockapi.com/api/json/utc/now")$status_code
   if (clock_status != 200) {
     Sys.setenv("_R_CHECK_SYSTEM_CLOCK_" = 0)
