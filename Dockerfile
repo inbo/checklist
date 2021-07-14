@@ -1,4 +1,4 @@
-FROM rocker/r-ubuntu:20.04
+FROM rocker/verse
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -16,55 +16,15 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
-## Configure default locale, see https://github.com/rocker-org/rocker/issues/19
-RUN apt-get update \
-  && apt-get install -y  --no-install-recommends \
-    locales \
-  && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
-  && locale-gen en_US.utf8 \
-  && /usr/sbin/update-locale LANG=en_US.UTF-8
-
-## Install wget
+## Install nano
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    wget
+    nano
 
-## install tinytex
-RUN  apt-get update \
-  && apt-get install -y --no-install-recommends \
-    qpdf \
-  && Rscript --no-save --no-restore -e 'install.packages("tinytex")' \
-  && Rscript -e 'tinytex::install_tinytex()' \
-  && Rscript -e 'tinytex::tlmgr_install(c("inconsolata", "times", "tex", "helvetic", "dvips"))'
-ENV PATH="/root/bin:${PATH}"
-
-## Install pandoc
-RUN wget https://github.com/jgm/pandoc/releases/download/2.7.3/pandoc-2.7.3-1-amd64.deb \
-  && dpkg -i pandoc-2.7.3-1-amd64.deb \
-  && rm pandoc-2.7.3-1-amd64.deb
-
-## install git
-RUN  apt-get update \
-  && apt-get install -y --no-install-recommends \
-    git
+COPY docker/.Rprofile $R_HOME/etc/Rprofile.site
 
 ## install INLA
-RUN Rscript --no-save --no-restore -e 'install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"))'
-
-## install remotes package
-RUN Rscript --no-save --no-restore -e 'install.packages("remotes")'
-
-## install devtools
-RUN  apt-get update \
-  && apt-get install -y --no-install-recommends \
-    libcurl4-openssl-dev \
-    libgit2-dev \
-    libssl-dev \
-    libxml2-dev \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
-
-## install assertthat
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("INLA", type = "source")'
 
 ## install covr
 RUN apt-get update \
@@ -76,9 +36,6 @@ RUN apt-get update \
 
 ## install codemetar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
-
-## install desc
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 
 ## install git2r
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
@@ -92,9 +49,6 @@ RUN apt-get update \
 
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
-
-## install httr
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("httr")'
 
 ## install lintr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
@@ -115,18 +69,6 @@ RUN  apt-get update \
        libtiff5-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
-## install pillar
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("pillar")'
-
-## install Rcpp
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("Rcpp")'
-
-## install rcmdcheck
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
-
-## install rlang
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rlang")'
-
 ## install rgdal
 RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
@@ -138,31 +80,13 @@ RUN apt-get update \
 ## install rorcid
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
-## install roxygen2
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
-
-## install R6
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
-
-## install sessioninfo
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
-
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("spelling")'
-
-## install tibble
-RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("tibble")'
-
-## install tidyverse
-RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("tidyverse")'
-
-## install yaml
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
 
 ## install checklist
 COPY . /checklist/
 RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
 
-COPY entrypoint_package.sh /entrypoint_package.sh
-COPY entrypoint_source.sh /entrypoint_source.sh
+COPY docker/entrypoint_package.sh /entrypoint_package.sh
+COPY docker/entrypoint_source.sh /entrypoint_source.sh
 ENTRYPOINT ["/entrypoint_package.sh"]
