@@ -1,7 +1,6 @@
 
-# The Checklist Package <img src="man/figures/logo.svg" align="right" alt="A hexagon with the word checklist" width="120" />
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
 
 [![Project Status: WIP – Initial development is in progress, but there
 has not yet been a stable, usable release suitable for the
@@ -11,21 +10,39 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 ![GitHub](https://img.shields.io/github/license/inbo/checklist) [![R
 build
 status](https://github.com/inbo/checklist/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/checklist/actions)
-[![Codecov test
-coverage](https://codecov.io/gh/inbo/checklist/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=master)
+![r-universe](https://inbo.r-universe.dev/badges/checklist) [![Codecov
+test
+coverage](https://codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=main)
 ![GitHub code size in
 bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo
 size](https://img.shields.io/github/repo-size/inbo/checklist.svg)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4028303.svg)](https://doi.org/10.5281/zenodo.4028303)
+<!-- badges: end -->
+
+# The Checklist Package <img src="man/figures/logo.svg" align="right" alt="A hexagon with the word checklist" width="120" />
 
 The goal of `checklist` is to provide an elaborate and strict set of
 checks for R packages and R code.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the package from the [INBO
+universe](https://inbo.r-universe.dev/ui#builds) via
+
+``` r
+# Enable the INBO universe
+options(
+  repos = c(
+    inbo = "https://inbo.r-universe.dev", CRAN = "https://cloud.r-project.org"
+  )
+)
+# Install the packages
+install.packages("checklist")
+```
+
+If that doesn’t work, you can install the version from
+[GitHub](https://github.com/inbo/checklist/) with:
 
 ``` r
 # install.packages("remotes")
