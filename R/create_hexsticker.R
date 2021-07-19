@@ -55,7 +55,8 @@ create_hexsticker <- function(
   )
   if (missing(icon)) {
     writeLines(c(head(base, -1), svg_name, tail(base, 1)), filename)
-    return(browseURL(filename))
+    if (interactive()) browseURL(filename) # nolint
+    return(invisible(filename))
   }
   assert_that(is.number(scale), scale > 0, scale <= 1)
   icon_svg <- prepare_icon(icon)
@@ -63,6 +64,7 @@ create_hexsticker <- function(
     "<svg viewBox=\"0 0 %s %s\" x=\"%.1f\" y=\"%.1f\" width=\"%.1f%%\">",
     icon_svg$width, icon_svg$height, x, y, 100 * scale
   )
+  dir.create(dirname(filename), recursive = TRUE, showWarnings = FALSE)
   writeLines(
     c(head(base, -1), svg_name, viewbox, icon_svg$svg, "</svg>", tail(base, 1)),
     filename

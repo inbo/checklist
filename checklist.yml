@@ -1,18 +1,11 @@
 description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
-  warnings:
-  - motivation: Package not intedend for CRAN and codemetar currently not available
-      on CRAN.
+  warnings: []
+  notes:
+  - motivation: Package not intended for CRAN.
     value: |-
-      checking CRAN incoming feasibility ... WARNING
+      checking CRAN incoming feasibility ... NOTE
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
-
-      Unknown, possibly mis-spelled, fields in DESCRIPTION:
-        'Remotes'
-
-      Strong dependencies not in mainstream repositories:
-        codemetar
-  notes: []

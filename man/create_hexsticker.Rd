@@ -46,6 +46,7 @@ create_hexsticker("checklist", filename = output)
 Other utils: 
 \code{\link{clean_git}()},
 \code{\link{is_workdir_clean}()},
+\code{\link{new_branch}()},
 \code{\link{orcid2person}()},
 \code{\link{validate_email}()},
 \code{\link{yesno}()}

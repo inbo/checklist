@@ -20,16 +20,22 @@
 #'
 #' @inheritParams read_checklist
 #' @param fail Should the function return an error in case of a problem?
-#' Defaults to `TRUE` on non-interactive session and `FALSE` on an interactive
+#' Defaults to `TRUE` on a non-interactive session and `FALSE` on an interactive
+#' session.
+#' @param pkgdown Test pkgdown website.
+#' Defaults to `TRUE` on an interactive session and `FALSE` on a non-interactive
 #' session.
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom pkgdown build_site
 #' @importFrom utils file_test
 #' @export
 #' @family package
-check_package <- function(x = ".", fail = !interactive(), quiet = FALSE) {
-  assert_that(is.flag(fail))
-  assert_that(noNA(fail))
+check_package <- function
+(x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
+) {
+  assert_that(is.flag(fail), noNA(fail))
+  assert_that(is.flag(pkgdown), noNA(pkgdown))
 
   x <- check_cran(x = x, quiet = quiet)
 
@@ -48,14 +54,27 @@ check_package <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)
 
+  if (pkgdown) {
+    old_ci <- Sys.getenv("CI")
+    on.exit({
+      Sys.unsetenv("CI")
+      if (old_ci != "") {
+        Sys.setenv(CI = old_ci)
+      }
+    }, add = TRUE
+    )
+    Sys.setenv(CI = TRUE)
+    build_site(x$get_path, preview = !quiet)
+  }
+
   print(x, quiet = quiet)
   if (!x$fail) {
     quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)
     return(invisible(x))
   }
-  if (fail) {
-    stop("Checking the package revealed some problems.")
-  }
+  assert_that(!fail, msg = "Checking the package revealed some problems.")
+
   quiet_cat("\nChecking the package revealed some problems.\n\n", quiet = quiet)
+
   return(invisible(x))
 }

@@ -61,7 +61,7 @@ create_package <- function(
 
   dir.create(path, showWarnings = FALSE)
   repo <- init(path)
-  dir.create(file.path(path, "R"))
+  dir.create(file.path(path, "R"), showWarnings = FALSE)
 
   # create DESCRIPTION
   description <- sprintf(

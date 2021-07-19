@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.1.11
+Version: 0.1.12
 Authors@R: 
     c(person(given = "Thierry",
              family = "Onkelinx",
@@ -31,6 +31,7 @@ Imports:
     git2r,
     httr,
     lintr,
+    pkgdown,
     rcmdcheck,
     rorcid,
     sessioninfo,
@@ -40,7 +41,6 @@ Suggests:
     covr,
     knitr,
     mockery,
-    pkgdown,
     rmarkdown,
     roxygen2,
     showtext,
@@ -48,8 +48,6 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
-Remotes:
-    ropensci/codemetar
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

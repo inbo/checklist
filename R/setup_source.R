@@ -3,7 +3,7 @@
 #' This adds the required GitHub workflows to run `check_source()` automatically
 #' whenever you push commits to GitHub.
 #' It also adds a
-#' [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license file,
+#' [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) license file,
 #' a [CODE_OF_CONDUCT.md](https://inbo.github.io/checklist/CODE_OF_CONDUCT.html)
 #' and the checklist configuration file (`checklist.yml`).
 #' @param path The path to the project.
@@ -34,7 +34,7 @@ allowed:
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
     file.copy(
       system.file(
-        file.path("generic_template", "cc_by_sa_4_0.md"), package = "checklist"
+        file.path("generic_template", "cc_by_4_0.md"), package = "checklist"
       ),
       file.path(path, "LICENSE.md")
     )

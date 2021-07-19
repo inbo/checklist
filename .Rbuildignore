@@ -8,11 +8,12 @@
 ^checklist.yml$
 ^codecov\.yml$
 ^data-raw$
+^docker$
 ^Dockerfile$
+^docker-compose.test.yml$
 ^docs$
-^entrypoint_package.sh$
-^entrypoint_source.sh$
 ^LICENSE.md$
 ^man-roxygen$
 ^pkgdown$
 ^README\.Rmd$
+^test_docker.sh$

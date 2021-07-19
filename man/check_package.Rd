@@ -4,14 +4,23 @@
 \alias{check_package}
 \title{Run the complete set of standardised tests on a package}
 \usage{
-check_package(x = ".", fail = !interactive(), quiet = FALSE)
+check_package(
+  x = ".",
+  fail = !interactive(),
+  pkgdown = interactive(),
+  quiet = FALSE
+)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{fail}{Should the function return an error in case of a problem?
-Defaults to \code{TRUE} on non-interactive session and \code{FALSE} on an interactive
+Defaults to \code{TRUE} on a non-interactive session and \code{FALSE} on an interactive
+session.}
+
+\item{pkgdown}{Test pkgdown website.
+Defaults to \code{TRUE} on an interactive session and \code{FALSE} on a non-interactive
 session.}
 
 \item{quiet}{Whether to print check output during checking.}

@@ -63,38 +63,11 @@ clean_git <- function(path =  ".", verbose = TRUE) {
     vector("list", 1)
   )
 
-  # local branches without upstream
-  no_upstream <- vapply(upstream_branches, is.null, logical(1))
-  no_upstream_ab <- vapply(
-    head_commits[names(local_branches)[no_upstream]], FUN = ahead_behind,
-    FUN.VALUE = integer(2), upstream = origin_main_commit
-  )
-  # warn for diverging branches
-  diverged <- no_upstream_ab[2, ] > 0 & no_upstream_ab[1, ] > 0
-  vapply(
-    names(local_branches)[no_upstream][diverged],
-    function(x) {
-      warning("`", x, "` diverged from the main origin branch.")
-      return(list())
-    },
-    list()
-  )
-  # remote full merged branches
-  checkout(repo, branch = main_branch)
-  delete_local <- no_upstream_ab[2, ] >= 0 & no_upstream_ab[1, ] == 0
-  vapply(
-    local_branches[no_upstream][delete_local],
-    function(x) {
-      branch_delete(x)
-      return(list())
-    },
-    list()
-  )
-
   # local branches with upstream
-  local_branches <- local_branches[!no_upstream]
+  upstream <- !vapply(upstream_branches, is.null, logical(1))
+  local_branches_upstream <- local_branches[upstream]
   upstream_ab <- vapply(
-    local_branches,
+    local_branches_upstream,
     function(x) {
       ahead_behind(
         head_commits[[x$name]], head_commits[[paste0("origin/", x$name)]]
@@ -104,10 +77,11 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   )
   # warn for diverging branches
   diverged <- upstream_ab[2, ] > 0 & upstream_ab[1, ] > 0
+  diverged <- diverged[names(diverged) != "gh-pages"]
   vapply(
-    names(local_branches)[diverged],
+    names(local_branches_upstream)[diverged],
     function(x) {
-      warning("`", x, "` diverged from the origin branch.")
+      warning("`", x, "` diverged from the origin branch.", call. = FALSE)
       return(list())
     },
     list()
@@ -115,10 +89,39 @@ clean_git <- function(path =  ".", verbose = TRUE) {
   # bring branches up-to-date
   update_local <- upstream_ab[2, ] >= 0 & upstream_ab[1, ] == 0
   vapply(
-    names(local_branches[update_local]),
+    names(local_branches_upstream[update_local]),
     function(x) {
       checkout(repo, branch = x)
       pull(repo = repo)
+      return(list())
+    },
+    list()
+  )
+
+  # local branches without upstream
+  local_branches_noup <- local_branches[!upstream]
+  no_upstream_ab <- vapply(
+    head_commits[names(local_branches_noup)], FUN = ahead_behind,
+    FUN.VALUE = integer(2), upstream = origin_main_commit
+  )
+  # warn for diverging branches
+  diverged <- no_upstream_ab[2, ] > 0 & no_upstream_ab[1, ] > 0
+  diverged <- diverged[names(diverged) != "gh-pages"]
+  vapply(
+    names(local_branches_noup)[diverged],
+    function(x) {
+      warning("`", x, "` diverged from the main origin branch.", call. = FALSE)
+      return(list())
+    },
+    list()
+  )
+  # remote full merged branches
+  checkout(repo, branch = main_branch)
+  delete_local <- no_upstream_ab[2, ] >= 0 & no_upstream_ab[1, ] == 0
+  vapply(
+    local_branches_noup[delete_local],
+    function(x) {
+      branch_delete(x)
       return(list())
     },
     list()

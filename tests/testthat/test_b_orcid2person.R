@@ -1,4 +1,5 @@
 test_that("orcid2person() works", {
+  skip_if(Sys.getenv("ORCID_TOKEN") == "")
   expect_error(orcid2person(orcid = "zzzz-0000-0000-0000"), class = "http_404")
   expect_error(orcid2person(orcid = "0000-0001-8804-4216"), "No public email")
   expect_identical(

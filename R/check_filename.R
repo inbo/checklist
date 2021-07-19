@@ -26,7 +26,7 @@
 #'   underscore (`_`).
 #' - File extensions should only contains lower case letters and numbers.
 #'   Exceptions: file extensions related to `R` must have an upper case `R` (
-#'   `.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
+#'   `.R`, `.Rd`, `.Rda`, `.Rnw`, `.Rmd`, `.Rproj`).
 #'
 #' @section Exceptions for some file formats:
 #' Underscores (`_`) causes problems for graphical files when using LaTeX to
@@ -47,16 +47,13 @@
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
 
-  if (in_repository(x$get_path)) {
+  if (
+    in_repository(x$get_path) && length(commits(repository(x$get_path))) > 0
+  ) {
     repo <- repository(x$get_path)
-    files <- unlist(status(repo, untracked = FALSE))
-    if (length(files) == 0) {
-      files <- ls_tree(repo = repo)
-      dirs <- unique(files$path)
-      files <- paste0(files$path, files$name)
-    } else {
-      dirs <- unique(dirname(files))
-    }
+    files <- ls_tree(repo = repo, recursive = TRUE)
+    dirs <- unique(files$path)
+    files <- paste0(files$path, files$name)
   } else {
     dirs <- list.dirs(x$get_path, recursive = TRUE, full.names = FALSE)
     files <- list.files(x$get_path, recursive = TRUE, all.files = TRUE)
@@ -110,7 +107,7 @@ Failing folder: `%s`",
         "README\\.R?md", "NEWS\\.md", # nolint
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md", "SUPPORT.md",
         "SECURITY.md", "FUNDING.yml",
-        "Dockerfile",
+        "Dockerfile", "docker-compose.*.yml",
         ".*-package\\.Rd", "cran-comments.md", "WORDLIST"
       ),
       collapse = "|"
@@ -118,6 +115,7 @@ Failing folder: `%s`",
   )
   files <- files[!grepl(re, basename(files))]
   files <- files[!grepl("\\.(otf|ttf)$", basename(files))] # ignore fonts files
+  files <- files[!grepl("man\\/[a-z0-9_\\-\\.]+\\.Rd", files)] # ignore Rd files
   base <- gsub("(.*)\\.(.*)?", "\\1", basename(files))
   problems <- c(
     problems,
@@ -130,7 +128,7 @@ Fails: `%s`",
 
   extension <- gsub("(.*)\\.(.*)?", "\\2", basename(files))
   # extension exceptions
-  exception <- grepl("^R(proj|d|md|nw)?$", extension) |
+  exception <- grepl("^R(d|da|nw|md|proj)?$", extension) |
     grepl("^([a-z0-9])*?$", extension)
   problems <- c(
     problems,
@@ -139,12 +137,12 @@ Fails: `%s`",
       files[!exception]
     )
   )
-  # R related requires upper case R
+  # R related files requires upper case R
   problems <- c(
     problems,
     sprintf(
       "R file requires extension with upper case R.\nFails: `%s`",
-      files[grepl("^r(proj|d|md|nw)?$", extension)]
+      files[grepl("^r(proj|d|da|md|nw)?$", extension)]
     )
   )
 
