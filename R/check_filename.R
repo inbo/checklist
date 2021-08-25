@@ -115,7 +115,7 @@ Failing folder: `%s`",
   )
   files <- files[!grepl(re, basename(files))]
   files <- files[!grepl("\\.(otf|ttf)$", basename(files))] # ignore fonts files
-  files <- files[!grepl("man\\/[a-z0-9_\\-\\.]+\\.Rd", files)] # ignore Rd files
+  files <- files[!grepl("man\\/.*\\.Rd", files)] # ignore Rd files
   base <- gsub("(.*)\\.(.*)?", "\\1", basename(files))
   problems <- c(
     problems,
