@@ -27,6 +27,7 @@
 #' - File extensions should only contains lower case letters and numbers.
 #'   Exceptions: file extensions related to `R` must have an upper case `R` (
 #'   `.R`, `.Rd`, `.Rda`, `.Rnw`, `.Rmd`, `.Rproj`).
+#'   Exception to these exceptions: `R/sysdata.rda`.
 #'
 #' @section Exceptions for some file formats:
 #' Underscores (`_`) causes problems for graphical files when using LaTeX to
@@ -116,6 +117,7 @@ Failing folder: `%s`",
   files <- files[!grepl(re, basename(files))]
   files <- files[!grepl("\\.(otf|ttf)$", basename(files))] # ignore fonts files
   files <- files[!grepl("man\\/.*\\.Rd", files)] # ignore Rd files
+  files <- files[!grepl("R\\/sysdata.rda", files)] # ignore sysdata.rda
   base <- gsub("(.*)\\.(.*)?", "\\1", basename(files))
   problems <- c(
     problems,

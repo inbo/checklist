@@ -4,6 +4,7 @@
   warning rather than an error. 
   This implies that you can motivate to ignore it via `write_checklist()`. (#33)
 * Ignore all `.Rd` files when running `check_filename()`. (#59)
+* `check_filename()` allows `R/sysdata.rda`. (#62)
 
 # checklist 0.1.12
 
