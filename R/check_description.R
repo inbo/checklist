@@ -109,11 +109,11 @@ from the web. More info on https://github.com/github/renaming"[
     desc_error,
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
       !unchanged_repo(repo, status_before)
-    ],
-    check_authors(this_desc)
+    ]
   )
   x$add_error(desc_error, "DESCRIPTION")
   x$add_notes(notes)
+  x$add_warnings(check_authors(this_desc))
 
   check_license(x = x)
 }
