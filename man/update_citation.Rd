@@ -4,7 +4,7 @@
 \alias{update_citation}
 \title{Create or update the CITATION file}
 \usage{
-update_citation(x = ".", roles = c("aut", "cre"))
+update_citation(x = ".", roles)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.

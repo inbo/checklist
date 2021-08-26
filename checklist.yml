@@ -14,3 +14,6 @@ allowed:
       Availability using Additional_repositories specification:
         codemetar   yes   https://ropensci.r-universe.dev
   notes: []
+citation_roles:
+- aut
+- cre

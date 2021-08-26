@@ -31,6 +31,10 @@ See `?write_checklist` to generate a `checklist.yml`.")
 
   # read existing check list file
   allowed <- read_yaml(checklist_file)
+  if (has_name(allowed, "citation_roles")) {
+    x$set_roles(allowed$citation_roles)
+  }
+
   assert_that(has_name(allowed, "description"))
   assert_that(has_name(allowed, "package"))
   assert_that(has_name(allowed, "allowed"))
@@ -78,5 +82,6 @@ See `?write_checklist` to generate a `checklist.yml`.")
   )
   x <- x$allowed(warnings = allowed$warnings, notes = allowed$notes)
   x$package <- package
+
   return(x)
 }

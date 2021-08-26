@@ -157,6 +157,14 @@ checklist <- R6Class(
         linter = private$linter,
         errors = private$errors
       )
+    },
+
+    #' @description set roles
+    #' @param roles A vector with roles.
+    set_roles = function(roles) {
+      assert_that(is.character(roles), noNA(roles))
+      private$roles <- sort(unique(roles))
+      invisible(self)
     }
   ),
 
@@ -170,6 +178,11 @@ checklist <- R6Class(
     #' @field get_path The path to the package.
     get_path = function() {
       return(private$path)
+    },
+
+    #' @field get_roles The roles to select contributors for the CITATION.
+    get_roles = function() {
+      return(private$roles)
     },
 
     #' @field fail A logical indicating if all checks passed.
@@ -204,7 +217,8 @@ Please contact the maintainer of the checklist package."
         allowed = list(
           warnings = private$allowed_warnings,
           notes = private$allowed_notes
-        )
+        ),
+        citation_roles = private$roles
       )
     }
   ),
@@ -217,7 +231,8 @@ Please contact the maintainer of the checklist package."
     warnings = character(0),
     allowed_notes = list(),
     notes = character(0),
-    linter = structure(list(), class = "lints", path = ".")
+    linter = structure(list(), class = "lints", path = "."),
+    roles = c("aut", "cre")
   )
 )
 

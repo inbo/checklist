@@ -20,8 +20,11 @@
 #' @importFrom desc description
 #' @importFrom utils file_test
 #' @family package
-update_citation <- function(x = ".", roles = c("aut", "cre")) {
+update_citation <- function(x = ".", roles) {
   x <- read_checklist(x = x)
+  if (!missing(roles)) {
+    x$set_roles(roles = roles)
+  }
   assert_that(
     x$package,
     msg = "`check_description()` is only relevant for packages.
@@ -69,8 +72,8 @@ update_citation <- function(x = ".", roles = c("aut", "cre")) {
   authors <- eval(parse(text = this_desc$get_field("Authors@R")))
   relevant <- vapply(
     authors,
-    function(x) {
-      any(x$role %in% roles)
+    function(z) {
+      any(z$role %in% x$get_roles)
     },
     logical(1)
   )
