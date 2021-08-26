@@ -1,0 +1,13 @@
+citHeader("To cite `checklist` in publications please use:")
+# begin checklist entry
+citEntry(
+  entry = "Manual",
+  title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.1.13",
+  author = c("Thierry {Onkelinx}"),
+  year = 2021,
+  url = "https://inbo.github.io/checklist/",
+  doi = "10.5281/zenodo.4028303",
+  abstract = "An opinated set of rules for R packages and R source code projects.",
+  textVersion = "Onkelinx, Thierry (2021) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.1.13. https://inbo.github.io/checklist/, https://github.com/inbo/checklist, https://doi.org/10.5281/zenodo.4028303",
+)
+# end checklist entry

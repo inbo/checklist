@@ -1,5 +1,7 @@
 # checklist 0.1.13
 
+* A new function `update_citation()` creates or updates a default citation in
+  `inst/CITATION`.
 * When INBO is not listed as copyright holder, `check_description()` returns a
   warning rather than an error. 
   This implies that you can motivate to ignore it via `write_checklist()`. (#33)
