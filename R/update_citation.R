@@ -18,6 +18,7 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
+#' @importFrom git2r repository status
 #' @importFrom utils file_test
 #' @family package
 update_citation <- function(x = ".", roles) {
@@ -37,11 +38,13 @@ update_citation <- function(x = ".", roles) {
   if (file_test("-f", file.path(x$get_path, "inst", "CITATION"))) {
     cit <- readLines(file.path(x$get_path, "inst", "CITATION"))
   } else {
-    cit <- sprintf(
-      "citHeader(\"To cite `%s` in publications please use:\")
-# begin checklist entry
-# end checklist entry",
-      this_desc$get_field("Package")
+    dir.create(file.path(x$get_path, "inst"), showWarnings = FALSE)
+    cit <- c(
+      sprintf(
+        "citHeader(\"To cite `%s` in publications please use:\")",
+        this_desc$get_field("Package")
+      ),
+      "# begin checklist entry", "# end checklist entry"
     )
   }
   start <- grep("^# begin checklist entry", cit)
@@ -117,6 +120,14 @@ update_citation <- function(x = ".", roles) {
   writeLines(
     c(head(cit, start), "citEntry(", package_citation, ")", tail(cit, 1 - end)),
     file.path(x$get_path, "inst", "CITATION")
+  )
+  repo <- repository(x$get_path)
+  current <- unlist(status(repo, ignored = TRUE))
+  x$add_error(
+  "CITATION file needs an update."[
+    file.path("inst", "CITATION") %in% current
+  ],
+    "CITATION"
   )
   return(x)
 }

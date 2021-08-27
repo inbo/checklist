@@ -190,14 +190,15 @@ checklist <- R6Class(
       required_checks <- list(
         always = c("checklist", "filename conventions", "lintr"),
         package = c(
-          "DESCRIPTION", "documentation", "R CMD check", "codemeta", "license"
+          "CITATION", "DESCRIPTION", "documentation", "R CMD check", "codemeta",
+          "license"
         )
       )
       required_checks <- unlist(required_checks[c(TRUE, self$package)])
       assert_that(
         all(private$checked %in% required_checks),
-        msg = "Something went wrong while checking the package.
-Please contact the maintainer of the checklist package."
+        msg = "Something went wrong while checking your package.
+Please contact the maintainer of the `checklist` package."
       )
       errors <- vapply(private$errors, length, integer(1))
       any(!required_checks %in% private$checked) ||
