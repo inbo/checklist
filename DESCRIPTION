@@ -33,15 +33,16 @@ Imports:
     lintr,
     pkgdown,
     rcmdcheck,
+    rmarkdown,
     rorcid,
     sessioninfo,
     utils,
+    withr,
     yaml
 Suggests: 
     covr,
     knitr,
     mockery,
-    rmarkdown,
     roxygen2,
     showtext,
     sysfonts,

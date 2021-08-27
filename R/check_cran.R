@@ -9,7 +9,9 @@
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom httr HEAD
+#' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
+#' @importFrom withr with_path
 #' @export
 #' @family package
 check_cran <- function(x = ".", quiet = FALSE) {
@@ -31,9 +33,12 @@ check_cran <- function(x = ".", quiet = FALSE) {
     Sys.setenv("_R_CHECK_SYSTEM_CLOCK_" = 0)
   }
 
-  check_output <- rcmdcheck(
-    path = x$get_path, args = c("--timings", "--as-cran", "--no-manual"),
-    error_on = "never", quiet = quiet
+  check_output <- with_path(
+    dirname(pandoc_exec()),
+    rcmdcheck(
+      path = x$get_path, args = c("--timings", "--as-cran", "--no-manual"),
+      error_on = "never", quiet = quiet
+    )
   )
   x$add_rcmdcheck(
     errors = check_output$errors,
