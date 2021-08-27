@@ -85,11 +85,15 @@ update_citation <- function(x = ".", roles) {
     authors, include = c("family", "given"),
     braces = list(family = c("", ","))
   )
+
   authors_bibtex <- format(
     authors, include = c("given", "family"),
-    braces = list(family = c("{", "}"))
+    braces = list(
+      given = c("person(given = \"", "\","),
+      family = c("family = \"", "\")")
+    )
   )
-  authors_bibtex <- paste0("\"", authors_bibtex, "\"", collapse = ", ")
+  authors_bibtex <- paste0(authors_bibtex, collapse = ", ")
   package_citation <- c(
     entry = "\"Manual\"",
     title = sprintf(

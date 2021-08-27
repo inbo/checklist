@@ -3,7 +3,7 @@ citHeader("To cite `checklist` in publications please use:")
 citEntry(
   entry = "Manual",
   title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.1.13",
-  author = c("Thierry {Onkelinx}"),
+  author = c(person(given = "Thierry", family = "Onkelinx")),
   year = 2021,
   url = "https://inbo.github.io/checklist/",
   abstract = "An opinated set of rules for R packages and R source code projects.",
