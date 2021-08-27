@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.1.12
+Version: 0.1.13
 Authors@R: 
     c(person(given = "Thierry",
              family = "Onkelinx",
@@ -33,21 +33,23 @@ Imports:
     lintr,
     pkgdown,
     rcmdcheck,
+    rmarkdown,
     rorcid,
     sessioninfo,
     utils,
+    withr,
     yaml
 Suggests: 
     covr,
     knitr,
     mockery,
-    rmarkdown,
     roxygen2,
     showtext,
     sysfonts,
     testthat
 VignetteBuilder: 
     knitr
+Additional_repositories: https://ropensci.r-universe.dev
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

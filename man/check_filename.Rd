@@ -46,6 +46,7 @@ underscore (\verb{_}).
 \item File extensions should only contains lower case letters and numbers.
 Exceptions: file extensions related to \code{R} must have an upper case \code{R} (
 \code{.R}, \code{.Rd}, \code{.Rda}, \code{.Rnw}, \code{.Rmd}, \code{.Rproj}).
+Exception to these exceptions: \code{R/sysdata.rda}.
 }
 }
 

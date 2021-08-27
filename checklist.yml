@@ -1,11 +1,19 @@
 description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
-  warnings: []
-  notes:
-  - motivation: Package not intended for CRAN.
+  warnings:
+  - motivation: Package not intended for CRAN. codemetar no longer on CRAN.
     value: |-
-      checking CRAN incoming feasibility ... NOTE
+      checking CRAN incoming feasibility ... WARNING
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
+
+      Strong dependencies not in mainstream repositories:
+        codemetar
+      Availability using Additional_repositories specification:
+        codemetar   yes   https://ropensci.r-universe.dev
+  notes: []
+citation_roles:
+- aut
+- cre

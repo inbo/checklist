@@ -83,9 +83,12 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("spelling")'
 
+## install spelling
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("withr")'
+
 ## install checklist
 COPY . /checklist/
-RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", dependencies = FALSE)'
+RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgrade = "always")'
 
 COPY docker/entrypoint_package.sh /entrypoint_package.sh
 COPY docker/entrypoint_source.sh /entrypoint_source.sh

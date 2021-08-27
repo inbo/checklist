@@ -38,6 +38,7 @@ Other package:
 \code{\link{check_documentation}()},
 \code{\link{check_package}()},
 \code{\link{set_tag}()},
-\code{\link{tidy_desc}()}
+\code{\link{tidy_desc}()},
+\code{\link{update_citation}()}
 }
 \concept{package}

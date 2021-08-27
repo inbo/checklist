@@ -22,6 +22,8 @@ package.}
 
 \item{\code{get_path}}{The path to the package.}
 
+\item{\code{get_roles}}{The roles to select contributors for the CITATION.}
+
 \item{\code{fail}}{A logical indicating if all checks passed.}
 
 \item{\code{template}}{A list for a check list template.}
@@ -41,6 +43,7 @@ package.}
 \item \href{#method-confirm_motivation}{\code{checklist$confirm_motivation()}}
 \item \href{#method-new}{\code{checklist$new()}}
 \item \href{#method-print}{\code{checklist$print()}}
+\item \href{#method-set_roles}{\code{checklist$set_roles()}}
 \item \href{#method-clone}{\code{checklist$clone()}}
 }
 }
@@ -226,6 +229,23 @@ Print the Checklist object.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{currently ignored.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_roles"></a>}}
+\if{latex}{\out{\hypertarget{method-set_roles}{}}}
+\subsection{Method \code{set_roles()}}{
+set roles
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$set_roles(roles)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{roles}}{A vector with roles.}
 }
 \if{html}{\out{</div>}}
 }

@@ -11,7 +11,7 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config is_detached push repository tag tags
+#' @importFrom git2r config is_detached repository tag tags
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -63,8 +63,5 @@ set_tag <- function(x = ".") {
   )
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
   tag(repo, name = paste0("v", version), message = tag_message)
-  push(
-    repo, refspec = paste0(file.path("refs", "tags", "v", fsep = "/"), version)
-  )
   return(invisible(NULL))
 }
