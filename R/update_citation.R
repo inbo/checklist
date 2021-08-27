@@ -99,11 +99,6 @@ update_citation <- function(x = ".", roles) {
     author = sprintf("c(%s)", authors_bibtex),
     year = gsub("-.*", "", Sys.Date()),
     url = paste0("\"", gsub(",.*", "", this_desc$get_field("URL")), "\""),
-    doi = paste0(
-      "\"",
-      gsub(".*https://doi.org/(.*) ?,?.*", "\\1", this_desc$get_field("URL")),
-      "\""
-    ),
     abstract = paste0("\"", this_desc$get_field("Description"), "\""),
     textVersion = sprintf(
       "\"%s (%s) %s: %s. Version %s. %s\"",
@@ -112,6 +107,14 @@ update_citation <- function(x = ".", roles) {
       this_desc$get_field("Version"), this_desc$get_field("URL")
     )
   )
+  doi <- this_desc$get_field("URL")
+  if (any(grepl("https:\\/\\/doi.org/", doi))) {
+    doi <- gsub(".*?https:\\/\\/doi.org/(.*)", "\\1", doi)
+    package_citation <- c(
+      package_citation, doi = paste0("\"", gsub("(.*),.*", "\\1", doi), "\"")
+    )
+  }
+
   package_citation <- gsub("\n", " ", package_citation)
   package_citation <- gsub("[ ]{2, }", " ", package_citation)
   package_citation <- sprintf(
