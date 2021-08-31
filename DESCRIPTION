@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.1.13
+Version: 0.1.14
 Authors@R: 
     c(person(given = "Thierry",
              family = "Onkelinx",

@@ -131,9 +131,13 @@ update_citation <- function(x = ".", roles) {
   repo <- repository(x$get_path)
   current <- unlist(status(repo, ignored = TRUE))
   x$add_error(
-  "CITATION file needs an update."[
-    file.path("inst", "CITATION") %in% current
-  ],
+    paste(
+      "CITATION file needs an update.",
+      "Run `update_citation()` or `check_package()` locally.",
+      "Then commit `inst/CITATION`."
+    )[
+      file.path("inst", "CITATION") %in% current
+    ],
     "CITATION"
   )
   return(x)

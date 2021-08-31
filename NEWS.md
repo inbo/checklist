@@ -1,3 +1,7 @@
+# checklist 0.1.14
+
+* Improve error message when changes in `CITATION` need to be commit. (#64)
+
 # checklist 0.1.13
 
 * A new function `update_citation()` creates or updates a default citation in
