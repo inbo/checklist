@@ -1,0 +1,90 @@
+---
+title: "Communicating with GitHub via SSH protocol"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Setting up checklist}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Creating public-private SSH-key pairs
+
+The `checklist` package assumes for functions that communicate with GitHub that
+the SSH protocol is used.
+Below we describe the steps you need to run in order to make SSH-keys.
+The SSH protocol is, next to the HTTPS-protocol, a way to safely interact with 
+GitHub.
+A private key, that is specific to your computer, and a matching public key that
+is stored on your GitHub account are needed.
+The provided instructions are for Windows and are taken from
+https://happygitwithr.com/ssh-keys.html.
+The same source may be consulted for other operating systems.
+
+1. Open RStudio: _Tools > Global Options…> Git/SVN > Create RSA Key..._ You can
+optionally use a passphrase for extra protection of the key.
+Click create and apply.
+
+2. In RStudio, open a Rproject with Git version control and navigate to the Git
+pane.
+Open the Git Shell (_More > Shell_).
+First we check if the SSH agent works with the following command
+(The first $ is the prompt and you should not copy it. To paste in the shell
+click the right mouse button.):
+
+    ```
+    $ eval $(ssh-agent -s)
+    # which should give something like this:
+    Agent pid 59566
+    ```
+
+    If that works, we need to add the SSH key (if you provided a passphrase, you
+    will need it here.):
+
+    ```
+    $ ssh-add ~/.ssh/id_rsa
+    ```
+
+3. Restart RStudio. Next _Tools > Global Options…> Git/SVN_ and click
+_View public key_ in the SSH-RSA section.
+Copy to the clipboard.
+
+4. Open your personal GitHub account _https://github.com/<githubusername>_
+(you may need to login). 
+Click your profile-icon in the upperright corner and go to
+_Settings > SSH and GPG keys_.
+Click _New SSH key_.
+Paste the public key in the field and provide an informative title
+(e.g. <year>-<computername>).
+Click _Add SSH Key_.
+
+5. By default communication with GitHub is via the HTTPS-protocol.
+To use the SSH protocol, you need to set the remote of your repository correctly.
+The following command is useful to found out which protocol your repository uses
+(_Git pane > More > Shell_) (open the Shell from within the RStudio project
+with Git version control which you want to switch to SSH):
+
+    ```
+    $ git remote -v
+    ```
+You will either see https://github.com/<OWNER>/<REPO>.git or
+git@github.com:<OWNER>/<REPO>.git.
+The first one is the HTTPS-protocol, the latter one the SSH-protocol.
+Switching between protocols is possible at any time.
+To switch from HTTPS-protocol to SSH-protocol, type:
+
+    ```
+    $ git remote set-url origin git@github.com:USERNAME/REPOSITORY.git
+    ```
+
+    Check if the remote is set correctly with `git remote -v`.
+
+
+
+
