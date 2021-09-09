@@ -1,3 +1,8 @@
+# checklist 0.1.14
+
+* Added a vignette which explains how to enable SSH-protocol for communication
+  with GitHub
+
 # checklist 0.1.13
 
 * A new function `update_citation()` creates or updates a default citation in
