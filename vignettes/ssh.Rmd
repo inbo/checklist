@@ -2,7 +2,7 @@
 title: "Communicating with GitHub via SSH protocol"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Setting up checklist}
+  %\VignetteIndexEntry{Communicating with GitHub via SSH protocol}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
