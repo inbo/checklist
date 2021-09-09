@@ -1,6 +1,8 @@
 # checklist 0.1.14
 
 * Improve error message when changes in `CITATION` need to be commit. (#64)
+* `create_packages()` can use maintainer information stored in the options.
+  See `usethis::use_description()` on how to set the option.
 
 # checklist 0.1.13
 

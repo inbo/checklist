@@ -13,6 +13,8 @@
 #' @param maintainer The output of [utils::person()] or [`orcid2person()`].
 #'   If you use [utils::person()], then you must provide `given`, `family`,
 #'   `role`, `email` and  `comment` with valid `ORCID`.
+#'   When missing, the functions looks for `usethis.description` in the options.
+#'   See [usethis::use_description()] for more information.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom git2r add  init
@@ -48,6 +50,17 @@ create_package <- function(
     msg =
       "Please install the `roxygen2` package. `install.packages(\"roxygen2\")`"
   )
+  if (missing(maintainer)) {
+    utd <- getOption("usethis.description")
+    assert_that(
+      has_name(utd, "Authors@R"),
+      msg = paste(
+        "maintainer not provided and no usethis::use_description defaults",
+        "available."
+      )
+    )
+    maintainer <- head(eval(parse(text = utd$"Authors@R")), 1)
+  }
   assert_that(inherits(maintainer, "person"))
   assert_that(dir.exists(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))

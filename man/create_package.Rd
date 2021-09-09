@@ -17,7 +17,9 @@ create_package(package, path = ".", title, description, maintainer)
 
 \item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{\link[=orcid2person]{orcid2person()}}.
 If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
-\code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.}
+\code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.
+When missing, the functions looks for \code{usethis.description} in the options.
+See \code{\link[usethis:use_description]{usethis::use_description()}} for more information.}
 }
 \description{
 Creates a package template in a new folder.
