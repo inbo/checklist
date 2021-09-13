@@ -1,3 +1,7 @@
+# checklist 0.2.0
+
+* Migrate from git2r to gert to communicate with Git and GitHub
+
 # checklist 0.1.13
 
 * A new function `update_citation()` creates or updates a default citation in
