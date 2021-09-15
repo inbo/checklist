@@ -12,7 +12,7 @@ test_that("check_description() works", {
 
   package <- "checkdescription"
   suppressMessages(
-    create_package(
+    checklist::create_package(
       path = path,
       package = package,
       title = "testing the ability of checklist to create a minimal package",
@@ -20,18 +20,20 @@ test_that("check_description() works", {
       maintainer = maintainer
     )
   )
-  repo <- repository(file.path(path, package))
-  git2r::config(repo = repo, user.name = "junk", user.email = "junk@inbo.be")
-  git2r::commit(repo, "initial commit")
+  repo <- file.path(path, package)
+  gert::git_init(path = repo)
+  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  gert::git_commit_all(message = "initial commit", repo = repo)
 
-  this_desc <- description$new(
+  this_desc <- desc::description$new(
     file = file.path(path, package, "DESCRIPTION")
   )
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
-  add(repo, "DESCRIPTION")
-  git2r::commit(repo, "add remotes")
-  expect_is(x <- check_description(file.path(path, package)), "Checklist")
+  gert::git_add(files = "DESCRIPTION", repo = repo)
+  gert::git_commit(message = "add remotes", repo = repo)
+  expect_is(x <- check_description(repo), "Checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION,
     c(
@@ -39,15 +41,19 @@ test_that("check_description() works", {
       "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"
     )
   )
-  git2r::clone(
+  gert::git_clone(
     url = file.path(path, package),
-    local_path = file.path(path, "origin"),
-    bare = TRUE, progress = FALSE
+    path = file.path(path, "origin"),
+    bare = TRUE, verbose = FALSE
   )
-  git2r::remote_add(repo, name = "origin", url = file.path(path, "origin"))
-  git2r::fetch(repo, "origin", verbose = FALSE)
-  git2r::branch_create(git2r::last_commit(repo), name = "junk")
-  git2r::checkout(repo, "junk")
+  gert::git_remote_add(url = file.path(path, "origin"),
+                       name = "origin", repo = repo)
+  gert::git_fetch(remote = "origin", repo = repo, verbose = FALSE)
+  gert::git_branch_create(branch = "junk",
+                          ref = "HEAD",
+                          checkout = TRUE,
+                          repo = repo)
+
   expect_is(x <- check_description(file.path(path, package)), "Checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION, "Package version not updated"
