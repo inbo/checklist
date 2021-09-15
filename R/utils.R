@@ -30,18 +30,17 @@ yesno <- function(...) {
 #' @return `TRUE` when there are no staged, unstaged or untracked files.
 #' Otherwise `FALSE`
 #' @export
-#' @importFrom git2r status
+#' @importFrom gert git_status
 #' @family utils
 is_workdir_clean <- function(repo) {
+  status <- git_status(repo = repo)
+  status <- status[status$status != "new",]
+  status <- as.data.frame(status)
   identical(
-    status(repo, untracked = FALSE),
-    structure(
-      list(
-        staged = structure(list(), .Names = character(0)),
-        unstaged = structure(list(), .Names = character(0))
-      ),
-      class = "git_status"
-    )
+    status,
+    data.frame(file = character(0),
+               status = character(0),
+               staged = logical(0))
   )
 }
 
