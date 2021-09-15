@@ -40,7 +40,7 @@ check_description <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
 
-  repo <- repository(x$get_path)
+  repo <- x$get_path
   this_desc <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
@@ -50,10 +50,10 @@ check_description <- function(x = ".") {
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
   notes <- character(0)
-  if (length(commits(repo)) > 1) {
-    branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
-    head_sha <- sha(repository_head(repo))
-    current_branch <- head(names(which(branch_sha == head_sha)), 1)
+  if (length(gert::git_log(repo = repo)) > 1) {
+    branch_info <- gert::git_branch_list(repo = repo)
+    head_sha <- gert::git_commit_id(repo = repo)
+    current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
     if (length(current_branch) && current_branch %in% c("main", "master")) {
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
 main as the default branch, instead of master. You can rename the default branch
@@ -68,21 +68,25 @@ from the web. More info on https://github.com/github/renaming"[
       )
     } else {
       assert_that(
-        "origin" %in% remotes(repo), msg = "no remote called `origin` available"
+        all(
+          grepl("origin", branch_info$name[!branch_info$local])
+          ),
+        msg = "no remote called `origin` available"
       )
       assert_that(
-        has_name(branches(repo), "origin/main") ||
-          has_name(branches(repo), "origin/master"),
+        any(branch_info$name %in%
+          c("origin/main", "origin/master")),
         msg =
       "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
       )
       ref_branch <- ifelse(
-        has_name(branches(repo), "origin/main"), "origin/main", "origin/master"
+        any(branch_info$name == "origin/main"),
+            "origin/main", "origin/master"
       )
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
 main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
-  !has_name(branches(repo), "origin/main")
+  !any(branch_info$name == "origin/main")
 ] -> notes
       desc_diff <- diff(
         tree(lookup_commit(branches(repo)[[ref_branch]])),
