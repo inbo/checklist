@@ -25,8 +25,9 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r branches branch_target commits diff lookup_commit parents
-#' remotes repository repository_head sha tree when
+#' @importFrom git2r diff tree
+#' @importFrom gert git_branch_list git_commit_id git_log git_stat_files
+#' git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -103,7 +104,7 @@ from the web. More info on https://github.com/github/renaming"[
     )
     desc_error <- c(desc_error, na.omit(version_bump))
   }
-  status_before <- status(repo)
+  status_before <- git_status(repo = repo)
   tidy_desc(x)
   desc_error <- c(
     desc_error,
@@ -173,19 +174,11 @@ tidy_desc <- function(x = ".") {
 }
 
 unchanged_repo <- function(repo, old_status) {
-  current_status <- status(repo)
+  current_status <- git_status(repo)
   identical(
-    current_status$staged,
-    old_status$staged
-  ) &&
-    identical(
-      current_status$unstaged,
-      old_status$unstaged
-    ) &&
-    identical(
-      current_status$untracked,
-      old_status$untracked
-    )
+    current_status,
+    old_status
+  )
 }
 
 #' Check the license of a package
