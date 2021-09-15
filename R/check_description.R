@@ -60,12 +60,9 @@ main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
   current_branch == "master"
 ] -> notes
-      parent_commits <- parents(lookup_commit(repository_head(repo)))
-      oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
-      desc_diff <- diff(
-        tree(parent_commits[[oldest]]),
-        as_char = TRUE, path = "DESCRIPTION"
-      )
+      descr_stats <- gert::git_stat_files("DESCRIPTION", repo = repo)
+      desc_diff <- gert::git_commit_info(
+        ref = descr_stats$head, repo = repo)$diff
     } else {
       assert_that(
         all(
