@@ -26,8 +26,8 @@
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
 #' @importFrom git2r diff tree
-#' @importFrom gert git_branch_list git_commit_id git_diff_patch git_log
-#' git_stat_files git_status
+#' @importFrom gert git_branch git_branch_list git_commit_id git_diff_patch
+#' git_log git_stat_files git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -50,7 +50,8 @@ check_description <- function(x = ".") {
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
   notes <- character(0)
-  if (length(gert::git_log(repo = repo)) > 1) {
+  if (length(gert::git_log(ref = gert::git_branch(repo = repo),
+                           repo = repo)) > 1) {
     branch_info <- gert::git_branch_list(repo = repo)
     head_sha <- gert::git_commit_id(repo = repo)
     current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
