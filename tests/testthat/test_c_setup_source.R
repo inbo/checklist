@@ -8,7 +8,9 @@ test_that("setup_source() works", {
     setup_source(path = path),
     "The 'path' is not in a git repository"
   )
-  repo <- init(path)
+  gert::git_init(path = path)
+  gert::git_config_set(name = "user.name", value = "junk", repo = path)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
   expect_message({
       junk <- setup_source(path = path)
@@ -25,6 +27,8 @@ test_that("setup_source() works", {
   expect_true(
     all(file.exists(file.path(path, new_files)))
   )
+
+  gert::git_commit_all(message = "initial commit", repo = path)
 
   expect_is({
       x <- check_source(path, fail = FALSE)
