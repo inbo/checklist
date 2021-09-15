@@ -23,6 +23,13 @@ test_that("create_package() works", {
     regexp = sprintf("package created at `.*%s`", package)
   )
 
+  repo <- file.path(path, package)
+  gert::git_init(path = repo)
+  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  gert::git_commit_all(message = "initial commit", repo = repo)
+
+
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
     "codecov.yml", "DESCRIPTION", "LICENSE.md", "NEWS.md", "README.Rmd",
