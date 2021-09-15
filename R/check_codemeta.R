@@ -5,7 +5,7 @@
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom codemetar give_opinions
-#' @importFrom git2r repository status
+#' @importFrom gert git_status
 #' @export
 #' @family package
 check_codemeta <- function(x = ".") {
@@ -16,8 +16,8 @@ check_codemeta <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
 
-  repo <- repository(x$get_path)
-  status_before <- status(repo)
+  repo <- x$get_path
+  status_before <- git_status(repo = repo)
   old_wd <- getwd()
   on.exit(setwd(old_wd), add = TRUE)
   setwd(x$get_path)
