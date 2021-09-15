@@ -26,8 +26,8 @@
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
 #' @importFrom git2r diff tree
-#' @importFrom gert git_branch_list git_commit_id git_log git_stat_files
-#' git_status
+#' @importFrom gert git_branch_list git_commit_id git_diff_patch git_log
+#' git_stat_files git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -61,8 +61,7 @@ from the web. More info on https://github.com/github/renaming"[
   current_branch == "master"
 ] -> notes
       descr_stats <- gert::git_stat_files("DESCRIPTION", repo = repo)
-      desc_diff <- gert::git_commit_info(
-        ref = descr_stats$head, repo = repo)$diff
+      desc_diff <- gert::git_diff_patch(descr_stats$head, repo = repo)
     } else {
       assert_that(
         all(
@@ -175,7 +174,7 @@ tidy_desc <- function(x = ".") {
 }
 
 unchanged_repo <- function(repo, old_status) {
-  current_status <- git_status(repo)
+  current_status <- git_status(repo = repo)
   identical(
     current_status,
     old_status
