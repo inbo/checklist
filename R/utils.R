@@ -34,7 +34,7 @@ yesno <- function(...) {
 #' @family utils
 is_workdir_clean <- function(repo) {
   status <- git_status(repo = repo)
-  status <- status[status$status != "new",]
+  status <- status[status$status != "new", ]
   status <- as.data.frame(status)
   identical(
     status,
