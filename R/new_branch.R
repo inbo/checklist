@@ -4,6 +4,7 @@
 #' Then it creates the new branch from the (updated) main branch.
 #'
 #' @inheritParams gert::git_branch_create
+#' @inheritParams gert::git_push
 #' @importFrom assertthat assert_that is.string
 #' @importFrom gert git_branch_list git_branch_create git_push
 #' @export

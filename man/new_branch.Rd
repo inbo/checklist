@@ -9,6 +9,8 @@ new_branch(branch, verbose = TRUE, checkout = TRUE, repo = ".")
 \arguments{
 \item{branch}{name of branch to check out}
 
+\item{verbose}{display some progress info while downloading}
+
 \item{checkout}{move HEAD to the newly created branch}
 
 \item{repo}{The path to the git repository. If the directory is not a
