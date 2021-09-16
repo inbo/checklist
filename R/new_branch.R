@@ -1,41 +1,31 @@
 #' Create a new branch after cleaning the repo
 #'
-#' First run `clean_git()`.
-#' Then create the new branch from the (updated) main branch.
+#' This functions first runs `clean_git()`.
+#' Then it creates the new branch from the (updated) main branch.
 #'
-#' @param branch Name of the new branch
-#' @inheritParams git2r::repository
-#' @inheritParams git2r::fetch
-#' @inheritParams git2r::branch_create
+#' @inheritParams gert::git_branch_create
 #' @importFrom assertthat assert_that is.string
-#' @importFrom git2r branch_create checkout lookup_commit push remote_url
-#' repository
+#' @importFrom gert git_branch_list git_branch_create git_push
 #' @export
 #' @family utils
-new_branch <- function(branch, path =  ".", verbose = TRUE, force = FALSE) {
+new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
   assert_that(is.string(branch))
-  if (inherits(path, "git_repository")) {
-    repo <- path
-  } else {
-    repo <- repository(path)
-  }
-  clean_git(path = repo, verbose = verbose)
 
-  assert_that(
-    !grepl("^http", remote_url(repo, "origin")),
-    msg = "new_branch() does not handle remotes with http URL"
-  )
+  clean_git(repo = repo, verbose = verbose)
 
   # determine main branch
-  all_branches <- branches(repo)
+  all_branches <- git_branch_list(repo = repo)
   main_branch <- ifelse(
-    "origin/main" %in% names(all_branches), "main",
-    ifelse("origin/master" %in% names(all_branches), "master", "unknown")
+    "origin/main" %in% all_branches$name, "main",
+    ifelse("origin/master" %in% all_branches$name, "master", "unknown")
   )
-  new_branch <- branch_create(
-    lookup_commit(all_branches[[main_branch]]), name = branch, force = force
-  )
-  checkout(repo, branch)
-  push(repo, "origin", sprintf("refs/heads/%s", branch), set_upstream = TRUE)
+  git_branch_create(
+    branch = branch,
+    ref = all_branches$commit[all_branches$name == main_branch],
+    checkout = checkout,
+    repo = repo
+    )
+  git_push(remote = "origin", refspec = sprintf("refs/heads/%s", branch),
+           set_upstream = TRUE, verbose = verbose, repo = repo)
   return(invisible(NULL))
 }

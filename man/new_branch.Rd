@@ -4,21 +4,22 @@
 \alias{new_branch}
 \title{Create a new branch after cleaning the repo}
 \usage{
-new_branch(branch, path = ".", verbose = TRUE, force = FALSE)
+new_branch(branch, verbose = TRUE, checkout = TRUE, repo = ".")
 }
 \arguments{
-\item{branch}{Name of the new branch}
+\item{branch}{name of branch to check out}
 
-\item{path}{A path to an existing local git repository.}
+\item{checkout}{move HEAD to the newly created branch}
 
-\item{verbose}{Print information each time a reference is updated
-locally. Default is \code{TRUE}.}
-
-\item{force}{Overwrite existing branch. Default = FALSE}
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \link[gert]{git_find}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
+parameter, always explicitly call by name (i.e. \verb{repo = }) because future
+versions of gert may have additional parameters.}
 }
 \description{
-First run \code{clean_git()}.
-Then create the new branch from the (updated) main branch.
+This functions first runs \code{clean_git()}.
+Then it creates the new branch from the (updated) main branch.
 }
 \seealso{
 Other utils: 
