@@ -25,7 +25,7 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r diff tree
+#' @importFrom git2r diff tree lookup_commit branches repository repository_head
 #' @importFrom gert git_branch git_branch_list git_commit_id git_diff_patch
 #' git_log git_stat_files git_status
 #' @importFrom stats na.omit
