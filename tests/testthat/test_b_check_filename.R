@@ -11,10 +11,6 @@ test_that("check_filename() works", {
   unlink(file.path(path, "with space"))
 
   # fail on upper case in folder names
-  gert::git_init(path = path)
-  gert::git_config_set(name = "user.name", value = "junk", repo = path)
-  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
-
   dir.create(file.path(path, "UPPERCASE"))
   expect_true(suppressMessages(check_filename(path)$fail))
   unlink(file.path(path, "UPPERCASE"))
@@ -22,6 +18,9 @@ test_that("check_filename() works", {
   # fail on dash in folder names
   dir.create(file.path(path, "source"))
   writeLines("sessionInfo()", file.path(path, "source", "correct.R"))
+  gert::git_init(path = path)
+  gert::git_config_set(name = "user.name", value = "junk", repo = path)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
   gert::git_add(file.path("source", "correct.R"), repo = path)
   gert::git_commit("initial commit", repo = path)
   dir.create(file.path(path, "dash-separated"))
