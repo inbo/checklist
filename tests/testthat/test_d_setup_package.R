@@ -18,7 +18,7 @@ test_that("setup_package() works", {
     description = "A dummy package.",
     maintainer = maintainer
   )
-  repo <- repository(file.path(path, package))
+  repo <- file.path(path, package)
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
     "codecov.yml", "LICENSE.md", "NEWS.md", "README.Rmd",
@@ -40,9 +40,10 @@ test_that("setup_package() works", {
     )
   )
   file.remove(file.path(path, package, new_files))
-  add(repo, new_files)
-  git2r::config(repo = repo, user.name = "junk", user.email = "junk@inbo.be")
-  git2r::commit(repo, "initial commit")
+  gert::git_add(files = new_files, repo = repo)
+  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  gert::git_commit("initial commit", repo = repo)
 
   expect_message(
     setup_package(file.path(path, package)),
