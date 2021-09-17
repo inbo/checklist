@@ -6,7 +6,7 @@ test_that("setup_source() works", {
 
   expect_error(
     setup_source(path = path),
-    "The 'path' is not in a git repository"
+    regexp = "could not find repository from"
   )
   gert::git_init(path = path)
   gert::git_config_set(name = "user.name", value = "junk", repo = path)
