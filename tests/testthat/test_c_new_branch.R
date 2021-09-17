@@ -7,26 +7,28 @@ test_that("new_branch() creates a branch from the main branch", {
   dir.create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
 
-  origin_repo <- init(origin_path, bare = TRUE)
-  repo <- git2r::clone(origin_path, path, progress = FALSE)
+  origin_repo <- gert::git_init(path = origin_path, bare = TRUE)
+  repo <- gert::git_clone(url = origin_path, path = path, verbose = FALSE)
 
-  git2r::config(
-    repo = repo, user.name = "junk", user.email = "junk@inbo.be"
-  )
+  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+
 
   writeLines("foo", file.path(path, "junk.txt"))
-  add(repo, "junk.txt")
-  initial <- git2r::commit(repo = repo, message = "Initial commit")
-  git2r::push(repo, "origin", "refs/heads/master", set_upstream = TRUE)
-  checkout(repo, "branch", create = TRUE)
+  gert::git_add("junk.txt", repo = repo)
+  initial <- gert::git_commit(message = "Initial commit", repo = repo)
+  gert::git_push(remote = "origin", refspec = "refs/heads/main",
+                 set_upstream = TRUE, repo = repo)
+  gert::git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
   writeLines("foo", file.path(path, "junk2.txt"))
-  add(repo, "junk2.txt")
-  junk <- git2r::commit(repo = repo, message = "branch commit")
-  git2r::push(repo, "origin", "refs/heads/branch", set_upstream = TRUE)
-  expect_invisible(new_branch("new", path))
-  expect_identical(repository_head(repo)$name, "new")
-  expect_identical(git2r::last_commit(repo), initial)
-  expect_invisible(new_branch("new2", repo))
-  expect_identical(repository_head(repo)$name, "new2")
-  expect_identical(git2r::last_commit(repo), initial)
+  gert::git_add("junk2.txt", repo = repo)
+  junk <- gert::git_commit(message = "branch commit", repo = repo)
+  gert::git_push(remote = "origin", refspec = "refs/heads/branch",
+                 set_upstream = TRUE, repo = repo)
+  expect_invisible(new_branch("new", checkout = TRUE, repo = path))
+  expect_identical(gert::git_branch(repo = repo), "new")
+  expect_identical(gert::git_commit_id(repo = repo), initial)
+  expect_invisible(new_branch(branch = "new2", checkout = TRUE, repo = repo))
+  expect_identical(gert::git_branch(repo = repo), "new2")
+  expect_identical(gert::git_commit_id(repo = repo), initial)
 })
