@@ -26,7 +26,7 @@ yesno <- function(...) {
 #' Check if the current workdir of a repo is clean
 #'
 #' A clean working directory has no staged, unstaged or untracked files.
-#' @param repo Either a `git2r::repository()` or path to the repository.
+#' @inheritParams gert::git_status
 #' @return `TRUE` when there are no staged, unstaged or untracked files.
 #' Otherwise `FALSE`
 #' @export
@@ -34,7 +34,7 @@ yesno <- function(...) {
 #' @family utils
 is_workdir_clean <- function(repo) {
   status <- git_status(repo = repo)
-  status <- status[status$status != "new", ]
+  status <- status[!(status$status == "new" & !status$staged), ]
   status <- as.data.frame(status)
   identical(
     status,
@@ -46,7 +46,7 @@ is_workdir_clean <- function(repo) {
 
 #' @importFrom assertthat on_failure<-
 on_failure(is_workdir_clean) <- function(call, env) {
-  "Working directory is not clean. Please commit changes first."
+  "Working directory is not clean. Please commit or stash changes first."
 }
 
 #' Check if a vector contains valid email
