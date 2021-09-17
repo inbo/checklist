@@ -17,7 +17,13 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   assert_that(is_workdir_clean(repo))
 
   current_branch <- gert::git_branch(repo = repo)
+
+  # fetch the remote
+  git_fetch(remote = "origin", verbose = verbose, repo = repo)
+
   branch_info <- gert::git_branch_list(repo = repo)
+
+  # this assertion can probably be removed (git_fetch will have errorred)?
   assert_that(
     all(
       grepl("origin", branch_info$name[!branch_info$local])
@@ -25,8 +31,6 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
     msg = "no remote called `origin` found"
   )
 
-  # fetch the remote
-  git_fetch(remote = "origin", verbose = verbose, repo = repo)
   # remove remote branches deleted at the remote
   old_wd <- getwd()
   on.exit(setwd(old_wd), add = TRUE)
@@ -46,83 +50,91 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
     branch_info$name == paste("origin", main_branch, sep = "/")]
 
   # fix local branches
+  if (!all(!branch_info$local)) {
+    # local branches with upstream
+    upstream_df <- branch_info[!is.na(branch_info$upstream), ]
 
-  # local branches with upstream
-  upstream_df <- branch_info[!is.na(branch_info$upstream), ]
+    if (nrow(upstream_df) > 0) {
+      # warn for diverging branches
+      upstream_ab <- mapply(gert::git_ahead_behind,
+                            upstream = upstream_df$upstream,
+                            ref = upstream_df$ref,
+                            repo = repo,
+                            SIMPLIFY = FALSE,
+                            USE.NAMES = FALSE)
+      names(upstream_ab) <- upstream_df$name
 
-  # warn for diverging branches
-  upstream_ab <- mapply(gert::git_ahead_behind,
-         upstream = upstream_df$upstream,
-         ref = upstream_df$ref,
-         repo = repo,
-         SIMPLIFY = FALSE,
-         USE.NAMES = FALSE)
-  names(upstream_ab) <- upstream_df$name
+      diverged <- lapply(upstream_ab, function(x) {
+        x$ahead > 0 & x$behind > 0})
+      diverged <- diverged[names(diverged) != "gh-pages"]
+      vapply(
+        names(diverged)[unlist(diverged)],
+        function(x) {
+          warning("`", x, "` diverged from the origin branch.", call. = FALSE)
+          return(list())
+        },
+        list()
+      )
+      # bring branches up-to-date
+      update_local <- lapply(upstream_ab,
+                             function(x) {
+                               x$behind >= 0 & x$ahead == 0})
+      vapply(
+        names(update_local)[unlist(update_local)],
+        function(x) {
+          gert::git_branch_checkout(branch = x, repo = repo)
+          gert::git_pull(repo = repo)
+          return(list())
+        },
+        list()
+      )
+    }
 
-  diverged <- lapply(upstream_ab, function(x) {
-    x$ahead > 0 & x$behind > 0})
-  diverged <- diverged[names(diverged) != "gh-pages"]
-  vapply(
-    names(diverged)[diverged],
-    function(x) {
-      warning("`", x, "` diverged from the origin branch.", call. = FALSE)
-      return(list())
-    },
-    list()
-  )
-  # bring branches up-to-date
-  update_local <- lapply(upstream_ab,
-                         function(x) {
-                           x$behind >= 0 & x$ahead == 0})
-  vapply(
-    names(update_local)[update_local],
-    function(x) {
-      gert::git_branch_checkout(branch = x, repo = repo)
-      gert::git_pull(repo = repo)
-      return(list())
-    },
-    list()
-  )
+    # local branches without upstream
+    local_branches_noup <-
+      branch_info[is.na(branch_info$upstream) & branch_info$local, ]
 
-  # local branches without upstream
-  local_branches_noup <-
-    branch_info[is.na(branch_info$upstream) & branch_info$local, ]
-  no_upstream_ab <- mapply(
-    gert::git_ahead_behind,
-    upstream = branch_info$name[
-      branch_info$name == paste("origin", main_branch, sep = "/")],
-    ref = local_branches_noup$ref,
-    repo = repo,
-    SIMPLIFY = FALSE,
-    USE.NAMES = FALSE)
-  names(no_upstream_ab) <- local_branches_noup$name
+    if (nrow(local_branches_noup) > 0) {
+      no_upstream_ab <- mapply(
+        gert::git_ahead_behind,
+        upstream = branch_info$name[
+          branch_info$name == paste("origin", main_branch, sep = "/")],
+        ref = local_branches_noup$ref,
+        repo = repo,
+        SIMPLIFY = FALSE,
+        USE.NAMES = FALSE)
+      names(no_upstream_ab) <- local_branches_noup$name
 
 
-  # warn for diverging branches
-  diverged <- lapply(no_upstream_ab, function(x) {
-    x$ahead > 0 & x$behind > 0})
-  diverged <- diverged[names(diverged) != "gh-pages"]
-  vapply(
-    names(diverged)[diverged],
-    function(x) {
-      warning("`", x, "` diverged from the main origin branch.", call. = FALSE)
-      return(list())
-    },
-    list()
-  )
-  # remote full merged branches
-  git_branch_checkout(branch = main_branch, repo = repo)
-  delete_local <- lapply(
-    no_upstream_ab, function(x) {
-      x$behind >= 0 & x$ahead == 0})
-  vapply(
-    names(delete_local)[delete_local],
-    function(x) {
-      git_branch_delete(x, repo = repo)
-      return(list())
-    },
-    list()
-  )
+      # warn for diverging branches
+      diverged <- lapply(no_upstream_ab, function(x) {
+        x$ahead > 0 & x$behind > 0})
+      diverged <- diverged[names(diverged) != "gh-pages"]
+      vapply(
+        names(diverged)[unlist(diverged)],
+        function(x) {
+          warning("`", x, "` diverged from the main origin branch.",
+                  call. = FALSE)
+          return(list())
+        },
+        list()
+      )
+
+      # remote full merged branches
+      git_branch_checkout(branch = main_branch, repo = repo)
+      delete_local <- lapply(
+        no_upstream_ab, function(x) {
+          x$behind >= 0 & x$ahead == 0})
+      vapply(
+        names(delete_local)[unlist(delete_local)],
+        function(x) {
+          git_branch_delete(x, repo = repo)
+          return(list())
+        },
+        list()
+      )
+    }
+  }
 
   # switch back to original branch if it still exists
   # otherwise select the main branch
@@ -130,7 +142,11 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   if (
     is.null(current_branch) || !current_branch %in% all_branches$name
   ) {
-    git_branch_create(main_branch, checkout = TRUE, repo = repo)
+    git_branch_create(
+      branch = main_branch,
+      ref = paste("refs/remotes/origin", main_branch, sep = "/"),
+      checkout = TRUE,
+      repo = repo)
   } else {
     git_branch_checkout(branch = current_branch, repo = repo)
   }
