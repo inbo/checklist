@@ -18,7 +18,7 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r repository status
+#' @importFrom gert git_status
 #' @importFrom utils file_test
 #' @family package
 update_citation <- function(x = ".", roles) {
@@ -128,11 +128,11 @@ update_citation <- function(x = ".", roles) {
     c(head(cit, start), "citEntry(", package_citation, ")", tail(cit, 1 - end)),
     file.path(x$get_path, "inst", "CITATION")
   )
-  repo <- repository(x$get_path)
-  current <- unlist(status(repo, ignored = TRUE))
+  repo <- x$get_path
+  current <- gert::git_status(repo = repo)
   x$add_error(
   "CITATION file needs an update."[
-    file.path("inst", "CITATION") %in% current
+    file.path("inst", "CITATION") %in% current$file
   ],
     "CITATION"
   )
