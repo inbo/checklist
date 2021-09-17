@@ -25,12 +25,13 @@ test_that("set_tag() works", {
   gert::git_clone(
     url = file.path(path, package),
     path = file.path(path, "origin"),
+    bare = TRUE,
     verbose = FALSE
   )
   gert::git_remote_add(name = "origin", url = file.path(path, "origin"),
                        repo = repo)
   gert::git_commit(message = "Initital commit", repo = repo)
-  gert::git_push(remote = "origin", refspec = "refs/heads/master",
+  gert::git_push(remote = "origin", refspec = "refs/heads/main",
                  set_upstream = TRUE, repo = repo)
 
   # not on GITHUB or main
