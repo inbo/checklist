@@ -27,7 +27,7 @@ allowed:
   notes: []",
     file.path(path, "checklist.yml")
   )
-  gert::git_add("checklist.yml", force = TRUE, repo = path)
+  git_add("checklist.yml", force = TRUE, repo = path)
 
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
@@ -37,7 +37,7 @@ allowed:
       ),
       file.path(path, "LICENSE.md")
     )
-    gert::git_add("LICENSE.md", force = TRUE, repo = path)
+    git_add("LICENSE.md", force = TRUE, repo = path)
   }
 
   # Add code of conduct
@@ -49,7 +49,7 @@ allowed:
     ),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  gert::git_add(file.path(".github", "CODE_OF_CONDUCT.md"),
+  git_add(file.path(".github", "CODE_OF_CONDUCT.md"),
                 force = TRUE, repo = path)
 
   # Add GitHub actions
@@ -60,7 +60,7 @@ allowed:
     file.path(path, ".github", "workflows", "check_source.yml"),
     overwrite = TRUE
   )
-  gert::git_add(
+  git_add(
     file.path(".github", "workflows", "check_source.yml"),
     force = TRUE, repo = path
   )

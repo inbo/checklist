@@ -3,16 +3,16 @@ test_that("is_workdir_clean", {
   dir.create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
 
-  gert::git_init(path = path)
-  gert::git_config_set(name = "user.name", value = "junk", repo = path)
-  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
+  git_init(path = path)
+  git_config_set(name = "user.name", value = "junk", repo = path)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
   # ignore untracked files
   writeLines("foo", file.path(path, "junk.txt"))
   expect_true(is_workdir_clean(repo = path))
 
   # staged file
-  gert::git_add("junk.txt", repo = path)
+  git_add("junk.txt", repo = path)
   expect_false(is_workdir_clean(repo = path))
   expect_error(
     assert_that(is_workdir_clean(repo = path)),

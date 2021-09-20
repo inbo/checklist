@@ -8,9 +8,9 @@ test_that("setup_source() works", {
     setup_source(path = path),
     regexp = "could not find repository from"
   )
-  gert::git_init(path = path)
-  gert::git_config_set(name = "user.name", value = "junk", repo = path)
-  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
+  git_init(path = path)
+  git_config_set(name = "user.name", value = "junk", repo = path)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
   expect_message({
       junk <- setup_source(path = path)

@@ -129,7 +129,7 @@ update_citation <- function(x = ".", roles) {
     file.path(x$get_path, "inst", "CITATION")
   )
   repo <- x$get_path
-  current <- gert::git_status(repo = repo)
+  current <- git_status(repo = repo)
   x$add_error(
   "CITATION file needs an update."[
     file.path("inst", "CITATION") %in% current$file

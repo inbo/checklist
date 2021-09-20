@@ -31,7 +31,7 @@ set_tag <- function(x = ".") {
   )
   repo <- x$get_path
   assert_that(
-    gert::git_info(repo = repo)$shorthand != "HEAD",
+    git_info(repo = repo)$shorthand != "HEAD",
     msg = "`set_tag()` doesn't work on a repository with detached HEAD."
   )
   description <- description$new(
@@ -44,36 +44,36 @@ set_tag <- function(x = ".") {
   end <- c(tail(start, -1) - 1, length(news))
   current <- grepl(paste("#", description$get("Package"), version), news[start])
   assert_that(any(current), msg = "Current version not found in NEWS.md")
-  if (paste0("v", version) %in% gert::git_tag_list(repo = repo)$name) {
+  if (paste0("v", version) %in% git_tag_list(repo = repo)$name) {
     message("tag v", version, " already exists.")
     return(invisible(NULL))
   }
-  old_config <- gert::git_config(repo = repo)
+  old_config <- git_config(repo = repo)
   on.exit(
-    gert::git_config_set(
+    git_config_set(
       "user.name",
       old_config$value[old_config$name == "user.name"],
       repo = repo),
     add = TRUE
   )
   on.exit(
-    gert::git_config_set(
+    git_config_set(
       "user.email",
       old_config$value[old_config$name == "user.email"],
       repo = repo),
     add = TRUE
   )
-  gert::git_config_set(
+  git_config_set(
     "user.name", "Checklist bot",
     repo = repo
   )
-  gert::git_config_set(
+  git_config_set(
     "user.email", "checklist@inbo.be",
     repo = repo
   )
 
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
-  gert::git_tag_create(
+  git_tag_create(
     name = paste0("v", version),
     message = tag_message,
     repo = repo)

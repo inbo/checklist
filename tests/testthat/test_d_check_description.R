@@ -21,9 +21,9 @@ test_that("check_description() works", {
     )
   )
   repo <- file.path(path, package)
-  gert::git_init(path = repo)
-  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
-  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  git_init(path = repo)
+  git_config_set(name = "user.name", value = "junk", repo = repo)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit_all(message = "initial commit", repo = repo)
 
   this_desc <- desc::description$new(
@@ -31,7 +31,7 @@ test_that("check_description() works", {
   )
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
-  gert::git_add(files = "DESCRIPTION", repo = repo)
+  git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "add remotes", repo = repo)
   expect_is(x <- check_description(repo), "Checklist")
   expect_identical(
@@ -48,8 +48,8 @@ test_that("check_description() works", {
   )
   gert::git_remote_add(url = file.path(path, "origin"),
                        name = "origin", repo = repo)
-  gert::git_fetch(remote = "origin", repo = repo, verbose = FALSE)
-  gert::git_branch_create(branch = "junk",
+  git_fetch(remote = "origin", repo = repo, verbose = FALSE)
+  git_branch_create(branch = "junk",
                           ref = "HEAD",
                           checkout = TRUE,
                           repo = repo)

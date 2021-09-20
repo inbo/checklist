@@ -10,18 +10,18 @@
 #' @inheritParams gert::git_fetch
 #' @importFrom assertthat assert_that
 #' @importFrom gert git_ahead_behind git_branch git_branch_checkout
-#' git_branch_create git_branch_delete git_branch_list git_fetch
+#' git_branch_create git_branch_delete git_branch_list git_fetch git_pull
 #' @export
 #' @family utils
 clean_git <- function(repo =  ".", verbose = TRUE) {
   assert_that(is_workdir_clean(repo))
 
-  current_branch <- gert::git_branch(repo = repo)
+  current_branch <- git_branch(repo = repo)
 
   # fetch the remote
   git_fetch(remote = "origin", verbose = verbose, repo = repo)
 
-  branch_info <- gert::git_branch_list(repo = repo)
+  branch_info <- git_branch_list(repo = repo)
 
   # this assertion can probably be removed (git_fetch will have errorred)?
   assert_that(
@@ -56,7 +56,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
 
     if (nrow(upstream_df) > 0) {
       # warn for diverging branches
-      upstream_ab <- mapply(gert::git_ahead_behind,
+      upstream_ab <- mapply(git_ahead_behind,
                             upstream = upstream_df$upstream,
                             ref = upstream_df$ref,
                             repo = repo,
@@ -82,8 +82,8 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       vapply(
         names(update_local)[unlist(update_local)],
         function(x) {
-          gert::git_branch_checkout(branch = x, repo = repo)
-          gert::git_pull(repo = repo)
+          git_branch_checkout(branch = x, repo = repo)
+          git_pull(repo = repo)
           return(list())
         },
         list()
@@ -96,7 +96,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
 
     if (nrow(local_branches_noup) > 0) {
       no_upstream_ab <- mapply(
-        gert::git_ahead_behind,
+        git_ahead_behind,
         upstream = branch_info$name[
           branch_info$name == paste("origin", main_branch, sep = "/")],
         ref = local_branches_noup$ref,

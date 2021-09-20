@@ -40,9 +40,9 @@ test_that("setup_package() works", {
     )
   )
   file.remove(file.path(path, package, new_files))
-  gert::git_add(files = new_files, repo = repo)
-  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
-  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  git_add(files = new_files, repo = repo)
+  git_config_set(name = "user.name", value = "junk", repo = repo)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
   expect_message(

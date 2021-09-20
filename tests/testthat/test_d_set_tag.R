@@ -19,9 +19,9 @@ test_that("set_tag() works", {
     description = "A dummy package.",
     maintainer = maintainer
   )
-  repo <- gert::git_init(file.path(path, package))
-  gert::git_config_set(name = "user.name", value = "junk", repo = repo)
-  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  repo <- git_init(file.path(path, package))
+  git_config_set(name = "user.name", value = "junk", repo = repo)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_clone(
     url = file.path(path, package),
     path = file.path(path, "origin"),
@@ -31,7 +31,7 @@ test_that("set_tag() works", {
   gert::git_remote_add(name = "origin", url = file.path(path, "origin"),
                        repo = repo)
   gert::git_commit(message = "Initital commit", repo = repo)
-  gert::git_push(remote = "origin", refspec = "refs/heads/main",
+  git_push(remote = "origin", refspec = "refs/heads/main",
                  set_upstream = TRUE, repo = repo)
 
   # not on GITHUB or main

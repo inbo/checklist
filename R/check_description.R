@@ -50,10 +50,10 @@ check_description <- function(x = ".") {
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
   notes <- character(0)
-  if (length(gert::git_log(ref = gert::git_branch(repo = repo),
+  if (length(git_log(ref = git_branch(repo = repo),
                            repo = repo)) > 1) {
-    branch_info <- gert::git_branch_list(repo = repo)
-    head_sha <- gert::git_commit_id(repo = repo)
+    branch_info <- git_branch_list(repo = repo)
+    head_sha <- git_commit_id(repo = repo)
     current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
     if (length(current_branch) && current_branch %in% c("main", "master")) {
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
@@ -61,8 +61,8 @@ main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
   current_branch == "master"
 ] -> notes
-      descr_stats <- gert::git_stat_files("DESCRIPTION", repo = repo)
-      desc_diff <- gert::git_diff_patch(descr_stats$head, repo = repo)
+      descr_stats <- git_stat_files("DESCRIPTION", repo = repo)
+      desc_diff <- git_diff_patch(descr_stats$head, repo = repo)
     } else {
       assert_that(
         all(

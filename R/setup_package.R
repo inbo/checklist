@@ -28,7 +28,7 @@ setup_package <- function(path = ".") {
 
   # make DESCRIPTION tidy
   tidy_desc(path)
-  gert::git_add(files = "DESCRIPTION", force = TRUE, repo = path)
+  git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
   if (!file_test("-f", file.path(path, ".gitignore"))) {
     file.copy(
@@ -49,7 +49,7 @@ setup_package <- function(path = ".") {
       file.path(path, ".gitignore")
     )
   }
-  gert::git_add(".gitignore", force = TRUE, repo = path)
+  git_add(".gitignore", force = TRUE, repo = path)
 
   if (!file_test("-f", file.path(path, ".Rbuildignore"))) {
     file.copy(
@@ -70,7 +70,7 @@ setup_package <- function(path = ".") {
       file.path(path, ".Rbuildignore")
     )
   }
-  gert::git_add(".Rbuildignore", force = TRUE, repo = path)
+  git_add(".Rbuildignore", force = TRUE, repo = path)
 
   # add checklist.yml
   writeLines(
@@ -81,7 +81,7 @@ allowed:
   notes: []",
     file.path(path, "checklist.yml")
   )
-  gert::git_add("checklist.yml", force = TRUE, repo = path)
+  git_add("checklist.yml", force = TRUE, repo = path)
 
   # add codecov.yml
   file.copy(
@@ -90,7 +90,7 @@ allowed:
     ),
     file.path(path, "codecov.yml")
   )
-  gert::git_add("codecov.yml", force = TRUE, repo = path)
+  git_add("codecov.yml", force = TRUE, repo = path)
 
   # add NEWS.md
   if (!file_test("-f", file.path(path, "NEWS.md"))) {
@@ -99,7 +99,7 @@ allowed:
       package
     )
     writeLines(news, file.path(path, "NEWS.md"))
-    gert::git_add("NEWS.md", force = TRUE, repo = path)
+    git_add("NEWS.md", force = TRUE, repo = path)
   }
 
   # add README.Rmd
@@ -111,7 +111,7 @@ allowed:
     )
     readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
     writeLines(readme, file.path(path, "README.Rmd"))
-    gert::git_add("README.Rmd", force = TRUE, repo = path)
+    git_add("README.Rmd", force = TRUE, repo = path)
   }
 
   # add LICENSE.md
@@ -122,7 +122,7 @@ allowed:
       ),
       file.path(path, "LICENSE.md")
     )
-    gert::git_add("LICENSE.md", force = TRUE, repo = path)
+    git_add("LICENSE.md", force = TRUE, repo = path)
   }
 
   # Add code of conduct
@@ -133,7 +133,7 @@ allowed:
     ),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  gert::git_add(file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE,
+  git_add(file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE,
                 repo = path)
 
   # Add contributing guidelines
@@ -143,7 +143,7 @@ allowed:
     ),
     file.path(path, ".github", "CONTRIBUTING.md")
   )
-  gert::git_add(file.path(".github", "CONTRIBUTING.md"), force = TRUE,
+  git_add(file.path(".github", "CONTRIBUTING.md"), force = TRUE,
                 repo = path)
 
   # Add GitHub actions
@@ -156,7 +156,7 @@ allowed:
     file.path(path, ".github", "workflows", "check_on_branch.yml"),
     overwrite = TRUE
   )
-  gert::git_add(file.path(".github", "workflows", "check_on_branch.yml"),
+  git_add(file.path(".github", "workflows", "check_on_branch.yml"),
     force = TRUE, repo = path
   )
   unlink(file.path(path, ".github", "workflows", "check_on_master.yml"))
@@ -168,7 +168,7 @@ allowed:
     file.path(path, ".github", "workflows", "check_on_main.yml"),
     overwrite = TRUE
   )
-  gert::git_add(file.path(".github", "workflows", "check_on_main.yml"),
+  git_add(file.path(".github", "workflows", "check_on_main.yml"),
                 force = TRUE, repo = path)
   file.copy(
     system.file(
@@ -178,7 +178,7 @@ allowed:
     file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
     overwrite = TRUE
   )
-  gert::git_add(
+  git_add(
     file.path(".github", "workflows", "check_on_different_r_os.yml"),
     force = TRUE, repo = path)
   file.copy(
@@ -188,7 +188,7 @@ allowed:
     file.path(path, ".github", "workflows", "release.yml"),
     overwrite = TRUE
   )
-  gert::git_add(
+  git_add(
     file.path(".github", "workflows", "release.yml"),
     force = TRUE, repo = path)
   file.copy(
@@ -199,7 +199,7 @@ allowed:
     file.path(path, ".github", "workflows", "remove_old_artifacts.yml"),
     overwrite = TRUE
   )
-  gert::git_add(
+  git_add(
     file.path(".github", "workflows", "release.yml"), force = TRUE, repo = path)
 
   # Add pkgdown website
@@ -209,7 +209,7 @@ allowed:
     ),
     file.path(path, "_pkgdown.yml")
   )
-  gert::git_add("_pkgdown.yml", force = TRUE, repo = path)
+  git_add("_pkgdown.yml", force = TRUE, repo = path)
   dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
   file.copy(
     system.file(
@@ -217,7 +217,7 @@ allowed:
     ),
     file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
   )
-  gert::git_add(file.path("pkgdown", "extra.css"), force = TRUE, repo = path)
+  git_add(file.path("pkgdown", "extra.css"), force = TRUE, repo = path)
   dir.create(
     file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
   )
@@ -227,7 +227,7 @@ allowed:
     ),
     file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
   )
-  gert::git_add(file.path("man", "figures", "logo-en.png"), force = TRUE,
+  git_add(file.path("man", "figures", "logo-en.png"), force = TRUE,
                 repo = path)
   file.copy(
     system.file(
@@ -237,7 +237,7 @@ allowed:
     file.path(path, "man", "figures", "background-pattern.png"),
     overwrite = TRUE
   )
-  gert::git_add(file.path("man", "figures", "background-pattern.png"),
+  git_add(file.path("man", "figures", "background-pattern.png"),
     force = TRUE, repo = path)
   file.copy(
     system.file(
@@ -245,7 +245,7 @@ allowed:
     ),
     file.path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
   )
-  gert::git_add(file.path("man", "figures", "flanders.woff2"),
+  git_add(file.path("man", "figures", "flanders.woff2"),
                 force = TRUE, repo = path)
   file.copy(
     system.file(
@@ -253,7 +253,7 @@ allowed:
     ),
     file.path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
   )
-  gert::git_add(file.path("man", "figures", "flanders.woff"),
+  git_add(file.path("man", "figures", "flanders.woff"),
                 force = TRUE, repo = path)
 
   message("package prepared for checklist::check_package()")
