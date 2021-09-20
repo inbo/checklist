@@ -11,8 +11,6 @@ test_that("set_tag() works", {
   dir.create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
 
-  gert::git_config_global_set(name = "init.defaultBranch", value = "main")
-
   package <- "settag"
   create_package(
     path = path,

@@ -11,8 +11,6 @@ test_that("clean_git with `main` as main branch", {
   dir.create(path2)
   on.exit(unlink(path2, recursive = TRUE), add = TRUE)
 
-  gert::git_config_global_set(name = "init.defaultBranch", value = "main")
-
   origin_repo <- git_init(origin_path, bare = TRUE)
   repo <- gert::git_clone(url = origin_path, path = path, verbose = FALSE)
   repo2 <- gert::git_clone(url = origin_path, path = path2, verbose = FALSE)
