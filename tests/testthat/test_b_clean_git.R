@@ -26,8 +26,10 @@ test_that("clean_git with `main` as main branch", {
   writeLines("foo", file.path(repo, "junk.txt"))
   git_add("junk.txt", repo = repo)
   junk <- gert::git_commit(message = "Initial commit", repo = repo)
+  branch_info <- git_branch_list(repo = repo)
+  refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
   git_push(remote = "origin",
-                 refspec =  "refs/heads/main",
+                 refspec =  refspec,
                  set_upstream = TRUE,
                  repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)

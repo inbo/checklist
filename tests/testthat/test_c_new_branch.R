@@ -19,7 +19,9 @@ test_that("new_branch() creates a branch from the main branch", {
   writeLines("foo", file.path(path, "junk.txt"))
   git_add("junk.txt", repo = repo)
   initial <- gert::git_commit(message = "Initial commit", repo = repo)
-  git_push(remote = "origin", refspec = "refs/heads/main",
+  branch_info <- git_branch_list(repo = repo)
+  refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
+  git_push(remote = "origin", refspec = refspec,
                  set_upstream = TRUE, repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
   writeLines("foo", file.path(path, "junk2.txt"))
