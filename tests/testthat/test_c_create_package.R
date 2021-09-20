@@ -24,11 +24,6 @@ test_that("create_package() works", {
   )
 
   repo <- file.path(path, package)
-  git_init(path = repo)
-  git_config_set(name = "user.name", value = "junk", repo = repo)
-  git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
-  gert::git_commit_all(message = "initial commit", repo = repo)
-
 
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",

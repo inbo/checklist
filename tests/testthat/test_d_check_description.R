@@ -12,7 +12,7 @@ test_that("check_description() works", {
 
   package <- "checkdescription"
   suppressMessages(
-    checklist::create_package(
+    create_package(
       path = path,
       package = package,
       title = "testing the ability of checklist to create a minimal package",
@@ -21,10 +21,9 @@ test_that("check_description() works", {
     )
   )
   repo <- file.path(path, package)
-  git_init(path = repo)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
-  gert::git_commit_all(message = "initial commit", repo = repo)
+  gert::git_commit("initial commit", repo = repo)
 
   this_desc <- desc::description$new(
     file = file.path(path, package, "DESCRIPTION")
