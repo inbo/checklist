@@ -43,14 +43,13 @@
 #'
 #' @inheritParams read_checklist
 #' @export
-#' @importFrom git2r in_repository
-#' @importFrom gert git_log git_ls
+#' @importFrom gert git_ls
 #' @family both
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
 
   if (
-    in_repository(x$get_path) && nrow(git_log(repo = x$get_path)) > 0
+    is_repository(x$get_path) && nrow(git_ls(repo = x$get_path)) > 0
   ) {
     repo <- x$get_path
     files <- git_ls(repo = repo)
