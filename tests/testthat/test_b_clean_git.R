@@ -137,7 +137,9 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # remove local branches fully merged into the main branch
-  git_branch_checkout("main", repo = repo)
+  branch_info <- git_branch_list(repo = repo)
+  mainbranch <- branch_info$name[branch_info$name %in% c("main", "master")]
+  git_branch_checkout(mainbranch, repo = repo)
   branch_info_repo <- git_branch_list(repo = repo)
   gert::git_merge(ref = "branch",
                   commit = TRUE,
@@ -148,8 +150,9 @@ test_that("clean_git with `main` as main branch", {
   git_branch_delete(branch = "branch", repo = origin_repo)
   expect_invisible(clean_git(path, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
-  expect_identical(branch_info_repo$name, c("main", "origin/main"))
-  expect_identical(git_branch(repo = repo), "main")
+  expect_identical(branch_info_repo$name,
+                   c(mainbranch, paste0("origin/", mainbranch)))
+  expect_identical(git_branch(repo = repo), mainbranch)
 
   # keep diverging local branches without tracking remote
   expect_warning(
@@ -157,10 +160,11 @@ test_that("clean_git with `main` as main branch", {
     "diverged from the main origin branch"
   )
   branch_info_repo2 <- git_branch_list(repo = repo2)
-  expect_identical(branch_info_repo2$name, c("branch", "main", "origin/main"))
+  expect_identical(branch_info_repo2$name,
+                   c("branch", mainbranch, paste0("origin/", mainbranch)))
 
   ab <- git_ahead_behind(
-    upstream = "origin/main",
+    upstream = paste0("origin/", mainbranch),
     ref = "branch",
     repo = repo2)
 
