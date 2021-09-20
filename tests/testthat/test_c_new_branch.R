@@ -7,6 +7,8 @@ test_that("new_branch() creates a branch from the main branch", {
   dir.create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
 
+  gert::git_config_global_set(name = "init.defaultBranch", value = "main")
+
   origin_repo <- gert::git_init(path = origin_path, bare = TRUE)
   repo <- gert::git_clone(url = origin_path, path = path, verbose = FALSE)
 
