@@ -174,7 +174,7 @@ tidy_desc <- function(x = ".") {
 
 unchanged_repo <- function(repo, old_status) {
   current_status <- status(repo)
-  identical(
+  ok <- identical(
     current_status$staged,
     old_status$staged
   ) &&
@@ -186,6 +186,15 @@ unchanged_repo <- function(repo, old_status) {
       current_status$untracked,
       old_status$untracked
     )
+  new_files <- unlist(current_status)
+  old_files <- unlist(old_status)
+  changes <- c(
+    new_files[!new_files %in% old_files], old_files[!old_files %in% new_files]
+  )
+  attr(ok, "files") <- sprintf(
+    "changed files:\n%s", paste(changes, collapse = "\n")
+  )
+  return(ok)
 }
 
 #' Check the license of a package

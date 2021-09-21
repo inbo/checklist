@@ -66,11 +66,15 @@ check_documentation <- function(x = ".") {
   repo <- repository(x$get_path)
   status_before <- status(repo)
   document(x$get_path)
+  detect_changes <- unchanged_repo(repo, status_before)
+  si <- session_info(pkgs = "roxygen2")
   doc_error <- c(
     doc_error,
-    "Missing documentation. Run `devtools::document()`"[
-      !unchanged_repo(repo, status_before)
-    ]
+    sprintf(
+      "Running `devtools::document()` with roxygen2 %s %s",
+      si$packages$loadedversion[si$packages$package == "roxygen2"],
+      attr(detect_changes, "files")
+    )[!detect_changes]
   )
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
