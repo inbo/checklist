@@ -273,6 +273,7 @@ is_repository <- function(path = ".") {
 #' The system command to be invoked, as a string.
 #' Multiple commands can be combined in this single string, e.g. with a
 #' multiline string.
+#' @param path The path from where the commandstring needs to be executed
 #' @param ... Other arguments passed to \code{\link[base]{system}} or
 #' \code{\link[base]{shell}}.
 #'
@@ -280,7 +281,11 @@ is_repository <- function(path = ".") {
 #'
 #' @keywords internal
 #'
-execshell <- function(commandstring, intern = FALSE, ...) {
+execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
+  old_wd <- getwd()
+  on.exit(setwd(old_wd), add = TRUE)
+  setwd(path)
+
   if (.Platform$OS.type == "windows") {
     res <- shell(commandstring, intern = TRUE, ...)# nolint
   } else {

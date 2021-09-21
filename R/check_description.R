@@ -88,7 +88,8 @@ from the web. More info on https://github.com/github/renaming"[
       commit2 <- git_commit_id(ref = "HEAD", repo = repo)
       desc_diff <- execshell(
         paste0("git diff ", commit1, "..", commit2, " -- ./DESCRIPTION"),
-        intern = TRUE)
+        intern = TRUE,
+        path = repo)
     }
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
     old_version <- gsub("-Version: ", "", old_version)
