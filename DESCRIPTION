@@ -29,7 +29,6 @@ Imports:
     desc,
     devtools (> 2.4.0),
     gert,
-    git2r,
     httr,
     lintr,
     pkgdown,
