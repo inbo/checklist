@@ -25,8 +25,7 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r diff tree lookup_commit branches repository_head
-#' @importFrom gert git_branch_list git_commit_id git_diff_patch git_info
+#' @importFrom gert git_branch_list git_commit_id git_diff git_info
 #' git_log git_stat_files git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
@@ -61,7 +60,8 @@ from the web. More info on https://github.com/github/renaming"[
   current_branch == "master"
 ] -> notes
       descr_stats <- git_stat_files("DESCRIPTION", repo = repo)
-      desc_diff <- git_diff_patch(descr_stats$head, repo = repo)
+      desc_diff <- git_diff(descr_stats$head, repo = repo)
+      desc_diff <- desc_diff$patch[desc_diff$old == "DESCRIPTION"]
     } else {
       assert_that(
         all(
@@ -84,13 +84,12 @@ main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
   !any(branch_info$name == "origin/main")
 ] -> notes
-      desc_diff <- diff(
-        tree(lookup_commit(branches(repo)[[ref_branch]])),
-        tree(lookup_commit(repository_head(repo))),
-        as_char = TRUE, path = "DESCRIPTION"
-      )
+      commit1 <- git_commit_id(ref = ref_branch, repo = repo)
+      commit2 <- git_commit_id(ref = "HEAD", repo = repo)
+      desc_diff <- execshell(
+        paste0("git diff ", commit1, "..", commit2, " -- ./DESCRIPTION"),
+        intern = TRUE)
     }
-    desc_diff <- strsplit(desc_diff, "\n")[[1]]
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
     old_version <- gsub("-Version: ", "", old_version)
     version_bump <- ifelse(
