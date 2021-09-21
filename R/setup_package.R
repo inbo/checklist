@@ -203,16 +203,18 @@ allowed:
     overwrite = TRUE
   )
   add(
-    repo = repo, file.path(".github", "workflows", "release.yml"), force = TRUE
+    repo = repo, file.path(".github", "workflows", "remove_old_artifacts.yml"),
+    force = TRUE
   )
 
   # Add pkgdown website
-  file.copy(
+  pkgd <- readLines(
     system.file(
       file.path("package_template", "_pkgdown.yml"), package = "checklist"
-    ),
-    file.path(path, "_pkgdown.yml")
+    )
   )
+  pkgd <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, pkgd)
+  writeLines(pkgd, file.path(path, "_pkgdown.yml"))
   add(repo = repo, "_pkgdown.yml", force = TRUE)
   dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
   file.copy(
