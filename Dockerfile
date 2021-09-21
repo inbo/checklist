@@ -37,8 +37,8 @@ RUN apt-get update \
 ## install codemetar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
 
-## install git2r
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
+## install gert
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("gert")'
 
 ## install hexSticker
 RUN apt-get update \
