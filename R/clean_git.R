@@ -32,10 +32,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   )
 
   # remove remote branches deleted at the remote
-  old_wd <- getwd()
-  on.exit(setwd(old_wd), add = TRUE)
-  setwd(repo)
-  system("git remote prune origin")
+  execshell("git remote prune origin", intern = FALSE, path = repo)
   # determine main branch
   main_branch <- ifelse(
     any(branch_info$name == "origin/main"), "main",
@@ -46,7 +43,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
     msg = "no branch `origin/main` or `origin/master` found."
   )
 
-  origin_main_commit <- branch_info$commit[
+  origin_main_branch <- branch_info$name[
     branch_info$name == paste("origin", main_branch, sep = "/")]
 
   # fix local branches
@@ -97,8 +94,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
     if (nrow(local_branches_noup) > 0) {
       no_upstream_ab <- mapply(
         git_ahead_behind,
-        upstream = branch_info$name[
-          branch_info$name == paste("origin", main_branch, sep = "/")],
+        upstream = origin_main_branch,
         ref = local_branches_noup$ref,
         repo = repo,
         SIMPLIFY = FALSE,
