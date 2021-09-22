@@ -282,9 +282,8 @@ is_repository <- function(path = ".") {
 #' @keywords internal
 #'
 execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
-  old_wd <- getwd()
+  old_wd <- setwd(path)
   on.exit(setwd(old_wd), add = TRUE)
-  setwd(path)
 
   if (.Platform$OS.type == "windows") {
     res <- shell(commandstring, intern = TRUE, ...)# nolint
