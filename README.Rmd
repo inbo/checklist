@@ -10,7 +10,7 @@ output: github_document
 ![GitHub](https://img.shields.io/github/license/inbo/checklist)
 [![R build status](https://github.com/inbo/checklist/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/checklist/actions)
 ![r-universe](https://inbo.r-universe.dev/badges/checklist)
-[![Codecov test coverage](https://codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=main)
+[![Codecov test coverage](https://app.codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://app.codecov.io/gh/inbo/checklist?branch=main)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/inbo/checklist.svg)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4028303.svg)](https://doi.org/10.5281/zenodo.4028303)

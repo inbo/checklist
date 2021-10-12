@@ -12,7 +12,7 @@ build
 status](https://github.com/inbo/checklist/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/checklist/actions)
 ![r-universe](https://inbo.r-universe.dev/badges/checklist) [![Codecov
 test
-coverage](https://codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=main)
+coverage](https://app.codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://app.codecov.io/gh/inbo/checklist?branch=main)
 ![GitHub code size in
 bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo
