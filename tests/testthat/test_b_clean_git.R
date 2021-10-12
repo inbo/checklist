@@ -146,7 +146,7 @@ test_that("clean_git with `main` as main branch", {
   git_push(repo = repo)
   branch_info_origin_repo <- git_branch_list(repo = origin_repo)
   git_branch_delete(branch = "branch", repo = origin_repo)
-  expect_invisible(clean_git(path, verbose = FALSE))
+  expect_invisible(clean_git(repo = repo, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
   expect_identical(branch_info_repo$name,
                    c(mainbranch, paste0("origin/", mainbranch)))
