@@ -2,20 +2,13 @@ Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
 Version: 0.2.0
-Authors@R: 
-    c(person(given = "Thierry",
-             family = "Onkelinx",
-             role = c("aut", "cre"),
-             email = "thierry.onkelinx@inbo.be",
-             comment = c(ORCID = "0000-0001-8804-4216")),
-      person(given = "Els",
-             family = "Lommelen",
-             role = "ctb",
-             email = "els.lommelen@inbo.be",
-             comment = c(ORCID = "0000-0002-3481-5684")),
-      person(given = "Research Institute for Nature and Forest",
-             role = c("cph", "fnd"),
-             email = "info@inbo.be"))
+Authors@R: c(
+    person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8804-4216")),
+    person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0002-3481-5684")),
+    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+  )
 Description: An opinated set of rules for R packages and R source code
     projects.
 License: GPL-3
