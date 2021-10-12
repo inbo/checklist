@@ -1,19 +1,13 @@
 test_that("clean_git with `main` as main branch", {
-  origin_path <- tempfile("clean_git_origin")
-  dir.create(origin_path)
-  on.exit(unlink(origin_path, recursive = TRUE), add = TRUE)
+  origin_repo <- git_init(tempfile("clean_git_origin"), bare = TRUE)
+  on.exit(unlink(origin_repo, recursive = TRUE), add = TRUE)
+  repo <- gert::git_clone(url = origin_repo,
+                          path = tempfile("clean_git"), verbose = FALSE)
+  on.exit(unlink(repo, recursive = TRUE), add = TRUE)
+  repo2 <- gert::git_clone(url = origin_repo, path = tempfile("clean_git2"),
+                           verbose = FALSE)
+  on.exit(unlink(repo2, recursive = TRUE), add = TRUE)
 
-  path <- tempfile("clean_git")
-  dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
-
-  path2 <- tempfile("clean_git2")
-  dir.create(path2)
-  on.exit(unlink(path2, recursive = TRUE), add = TRUE)
-
-  origin_repo <- git_init(origin_path, bare = TRUE)
-  repo <- gert::git_clone(url = origin_path, path = path, verbose = FALSE)
-  repo2 <- gert::git_clone(url = origin_path, path = path2, verbose = FALSE)
 
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
@@ -52,7 +46,7 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # update local branches that are behind
-  writeLines("bar", file.path(path, "junk2.txt"))
+  writeLines("bar", file.path(repo, "junk2.txt"))
   git_add("junk2.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)
@@ -81,7 +75,7 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # don't push local changes ahead
-  writeLines("junk", file.path(path2, "junk2.txt"))
+  writeLines("junk", file.path(repo2, "junk2.txt"))
   git_add("junk2.txt", repo = repo2)
   junk <- gert::git_commit(message = "branch commit", repo = repo2)
 
@@ -115,7 +109,7 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # issue warnings when branch is ahead and behind
-  writeLines("bar", file.path(path, "junk.txt"))
+  writeLines("bar", file.path(repo, "junk.txt"))
   git_add("junk.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)
@@ -154,7 +148,7 @@ test_that("clean_git with `main` as main branch", {
 
   # keep diverging local branches without tracking remote
   expect_warning(
-    clean_git(path2, verbose = FALSE),
+    clean_git(repo = repo2, verbose = FALSE),
     "diverged from the main origin branch"
   )
   branch_info_repo2 <- git_branch_list(repo = repo2)
