@@ -3,6 +3,7 @@
 * Improve error message when changes in `CITATION` need to be commit. (#64)
 * `create_package()` can use maintainer information stored in the options.
   See `usethis::use_description()` on how to set the option.
+* Add R universe badges to README.
 
 ## Bugfix
 
