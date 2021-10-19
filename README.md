@@ -1,5 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start -->
 
 [![Project Status: WIP – Initial development is in progress, but there
@@ -15,7 +16,7 @@ name](https://inbo.r-universe.dev/badges/:name?color=c04384)
 ![r-universe
 package](https://inbo.r-universe.dev/badges/checklist?color=c04384)
 [![Codecov test
-coverage](https://codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://codecov.io/gh/inbo/checklist?branch=main)
+coverage](https://codecov.io/gh/inbo/checklist/branch/main/graph/badge.svg)](https://app.codecov.io/gh/inbo/checklist?branch=main)
 ![GitHub code size in
 bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo

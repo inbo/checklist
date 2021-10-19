@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 [![R build status](https://github.com/inbo/{{{ Package }}}/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/{{{ Package }}}/actions)
 ![r-universe name](https://inbo.r-universe.dev/badges/:name?color=c04384)
 ![r-universe package](https://inbo.r-universe.dev/badges/{{{ Package }}}?color=c04384)
-[![Codecov test coverage](https://codecov.io/gh/inbo/{{{ Package }}}/branch/main/graph/badge.svg)](https://codecov.io/gh/inbo/{{{ Package }}}?branch=main)
+[![Codecov test coverage](https://codecov.io/gh/inbo/{{{ Package }}}/branch/main/graph/badge.svg)](https://app.codecov.io/gh/inbo/{{{ Package }}}?branch=main)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/{{{ Package }}}.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/inbo/{{{ Package }}}.svg)
 <!-- badges: end -->
