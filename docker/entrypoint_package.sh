@@ -1,7 +1,10 @@
 #!/bin/sh -l
 
+export CI=TRUE
+
+
 echo '\nGetting the code...\n'
-git clone https://$2@github.com/$1 check
+git clone https://$GITHUB_PAT@github.com/$GITHUB_REPOSITORY check
 cd check
 
 git config user.name "Checklist bot"
@@ -9,14 +12,11 @@ git config user.email "checklist@inbo.be"
 git config advice.detachedHead false
 git checkout $GITHUB_SHA
 
-cd $3
-export CODECOV_TOKEN=$4
-export ORCID_TOKEN=$5
-export CI=TRUE
+cd $INPUT_PATH
 
-if [ ! -z "$6" ]; then
+if [ ! -z "$INPUT_APTGET" ]; then
   apt-get update
-  apt-get install -y --no-install-recommends $6
+  apt-get install -y --no-install-recommends $INPUT_APTGET
 fi
 
 echo '\nTrying to install the package...\n'

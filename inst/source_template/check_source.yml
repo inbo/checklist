@@ -12,4 +12,4 @@ jobs:
     steps:
       - uses: inbo/actions/check_src@master
         with:
-          token: ${{ secrets.pat }}
+          token: ${{ secrets.GITHUB_TOKEN }}
