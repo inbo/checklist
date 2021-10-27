@@ -28,6 +28,7 @@ Other package:
 \code{\link{check_license}()},
 \code{\link{check_package}()},
 \code{\link{tidy_desc}()},
-\code{\link{update_citation}()}
+\code{\link{update_citation}()},
+\code{\link{write_zenodo_json}()}
 }
 \concept{package}

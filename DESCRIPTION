@@ -23,6 +23,7 @@ Imports:
     devtools (> 2.4.0),
     git2r,
     httr,
+    jsonlite,
     lintr,
     pkgdown,
     rcmdcheck,

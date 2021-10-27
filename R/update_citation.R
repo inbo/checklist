@@ -28,7 +28,7 @@ update_citation <- function(x = ".", roles) {
   }
   assert_that(
     x$package,
-    msg = "`check_description()` is only relevant for packages.
+    msg = "`update_citation()` is only relevant for packages.
   `checklist.yml` indicates this is not a package."
   )
 
@@ -134,11 +134,13 @@ update_citation <- function(x = ".", roles) {
     paste(
       "CITATION file needs an update.",
       "Run `update_citation()` or `check_package()` locally.",
-      "Then commit `inst/CITATION`."
+      "Then commit\n`inst/CITATION`."
     )[
       file.path("inst", "CITATION") %in% current
     ],
     "CITATION"
   )
+
+  write_zenodo_json(x = x)
   return(x)
 }

@@ -1,5 +1,6 @@
 ^_pkgdown.yml$
 ^.*\.Rproj$
+^.*\.zenodo.json$
 ^.dockerignore$
 ^\.github$
 ^\.httr-oauth$
@@ -7,10 +8,11 @@
 ^\.zenodo\.json$
 ^checklist.yml$
 ^codecov\.yml$
+^codemeta\.json$
 ^data-raw$
+^docker-compose.test.yml$
 ^docker$
 ^Dockerfile$
-^docker-compose.test.yml$
 ^docs$
 ^LICENSE.md$
 ^man-roxygen$
