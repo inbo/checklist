@@ -78,12 +78,12 @@ check_documentation <- function(x = ".") {
   )
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
-    status_before <- status(repo)
     build_readme(x$get_path, encoding = "UTF-8")
+    current <- unlist(status(repo, ignored = TRUE))
     doc_error <- c(
       doc_error,
       "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"[
-        !unchanged_repo(repo, status_before)
+        "README.md" %in% current
       ]
     )
   }
