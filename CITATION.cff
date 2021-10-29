@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+authors:
+- family-names: Onkelinx
+  given-names: Thierry
+  orcid: https://orcid.org/0000-0001-8804-4216
+contact:
+- email: thierry.onkelinx@inbo.be
+  family-names: Onkelinx
+  given-names: Thierry
+- email: info@inbo.be
+  name: Research Institute for Nature and Forest
+title: 'checklist: A Thorough and Strict Set of Checks for R Packages and Source Code'
+version: 0.1.14
+abstract: An opinated set of rules for R packages and R source code projects.
+license: GPL-3.0
+type: software
+doi: 10.5281/zenodo.4028303
+repository-code: https://github.com/inbo/checklist
+identifiers:
+- type: url
+  value: https://inbo.github.io/checklist/

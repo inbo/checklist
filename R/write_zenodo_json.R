@@ -14,7 +14,7 @@ write_zenodo_json <- function(x = ".") {
   x <- read_checklist(x = x)
   assert_that(
     x$package,
-    msg = "`write_zenodo_josn()` currently only handles packages.
+    msg = "`write_zenodo_json()` currently only handles packages.
   `checklist.yml` indicates this is not a package."
   )
   this_desc <- description$new(
@@ -102,7 +102,7 @@ write_zenodo_json <- function(x = ".") {
   x$add_error(
     paste(
       ".zenodo.json file needs an update.",
-      "Run `write_zenodo_json()` or `check_package()` locally.",
+      "Run `update_citation()` or `check_package()` locally.",
       "Then\ncommit `.zenodo.json`."
     )[
       ".zenodo.json" %in% current

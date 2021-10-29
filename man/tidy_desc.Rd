@@ -25,6 +25,7 @@ Other package:
 \code{\link{check_package}()},
 \code{\link{set_tag}()},
 \code{\link{update_citation}()},
+\code{\link{write_citation_cff}()},
 \code{\link{write_zenodo_json}()}
 }
 \concept{package}
