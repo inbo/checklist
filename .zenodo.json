@@ -16,7 +16,7 @@
   ],
   "upload_type": ["software"],
   "access_rights": ["open"],
-  "license": ["GPL-3"],
+  "license": ["GPL-3.0"],
   "communities": {
     "identifier": ["inbo"]
   }

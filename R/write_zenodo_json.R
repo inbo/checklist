@@ -69,11 +69,13 @@ write_zenodo_json <- function(x = ".") {
   )
 
   description <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
+  license <- this_desc$get("License")
+  license <- ifelse(license == "GPL-3", "GPL-3.0", license)
   zenodo <- list(
     title = sprintf("%s: %s", this_desc$get("Package"), this_desc$get("Title")),
     version = as.character(this_desc$get_version()), description = description,
     creators = creators, contributors = contributors, upload_type = "software",
-    access_rights = "open", license = this_desc$get("License"),
+    access_rights = "open", license = license,
     communities = list(identifier = "inbo")
   )
   if (!is.na(this_desc$get("Language"))) {
@@ -95,7 +97,7 @@ write_zenodo_json <- function(x = ".") {
     )
   }
 
-  writeLines(toJSON(zenodo, pretty = TRUE), ".zenodo.json")
+  writeLines(toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE), ".zenodo.json")
 
   repo <- repository(x$get_path)
   current <- unlist(status(repo, ignored = TRUE))
