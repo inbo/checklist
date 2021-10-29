@@ -4,6 +4,8 @@
 * `create_package()` can use maintainer information stored in the options.
   See `usethis::use_description()` on how to set the option.
 * Add R universe badges to README.
+* Add `write_zenodo_json()` and `write_citation_cff()`.
+* Improve the checklist Github Actions.
 
 ## Bugfix
 
