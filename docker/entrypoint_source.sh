@@ -1,11 +1,11 @@
 #!/bin/sh -l
 
 echo '\nGetting the code...\n'
-git clone https://$2@github.com/$1 check
+git clone https://$INPUT_TOKEN@github.com/$INPUT_REPOSITORY check
 cd check
 git config advice.detachedHead false
 git checkout $GITHUB_SHA
-cd $3
+cd $INPUT_PATH
 
 Rscript --no-save --no-restore -e 'checklist::check_source()'
 if [ $? -ne 0 ]; then

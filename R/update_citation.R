@@ -28,7 +28,7 @@ update_citation <- function(x = ".", roles) {
   }
   assert_that(
     x$package,
-    msg = "`check_description()` is only relevant for packages.
+    msg = "`update_citation()` is only relevant for packages.
   `checklist.yml` indicates this is not a package."
   )
 
@@ -101,19 +101,19 @@ update_citation <- function(x = ".", roles) {
       this_desc$get_field("Title"), this_desc$get_field("Version")
     ),
     author = sprintf("c(%s)", authors_bibtex),
-    year = gsub("-.*", "", Sys.Date()),
+    year = format(Sys.Date(), "%Y"),
     url = paste0("\"", gsub(",.*", "", this_desc$get_field("URL")), "\""),
     abstract = paste0("\"", this_desc$get_field("Description"), "\""),
     textVersion = sprintf(
       "\"%s (%s) %s: %s. Version %s. %s\"",
-      paste(authors_plain, collapse = "; "), gsub("-.*", "", Sys.Date()),
+      paste(authors_plain, collapse = "; "), format(Sys.Date(), "%Y"),
       this_desc$get_field("Package"), this_desc$get_field("Title"),
       this_desc$get_field("Version"), this_desc$get_field("URL")
     )
   )
   doi <- this_desc$get_field("URL")
   if (any(grepl("https:\\/\\/doi.org/", doi))) {
-    doi <- gsub(".*?https:\\/\\/doi.org/(.*)", "\\1", doi)
+    doi <- gsub(".*?https:\\/\\/doi.org/(.*)(, .*)?", "\\1", doi)
     package_citation <- c(
       package_citation, doi = paste0("\"", gsub("(.*),.*", "\\1", doi), "\"")
     )
@@ -131,10 +131,17 @@ update_citation <- function(x = ".", roles) {
   repo <- repository(x$get_path)
   current <- unlist(status(repo, ignored = TRUE))
   x$add_error(
-  "CITATION file needs an update."[
-    file.path("inst", "CITATION") %in% current
-  ],
+    paste(
+      "CITATION file needs an update.",
+      "Run `update_citation()` or `check_package()` locally.",
+      "Then commit\n`inst/CITATION`."
+    )[
+      file.path("inst", "CITATION") %in% current
+    ],
     "CITATION"
   )
+
+  write_zenodo_json(x = x)
+  write_citation_cff(x = x, roles = roles)
   return(x)
 }
