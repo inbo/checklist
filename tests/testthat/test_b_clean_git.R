@@ -21,17 +21,17 @@ test_that("clean_git with `main` as main branch", {
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
   git_push(remote = "origin",
-                 refspec =  refspec,
-                 set_upstream = TRUE,
-                 repo = repo)
+           refspec =  refspec,
+           set_upstream = TRUE,
+           repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
   writeLines("foo", file.path(repo, "junk2.txt"))
   git_add("junk2.txt", repo = repo)
   junk2 <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(remote = "origin",
-                 refspec = "refs/heads/branch",
-                 set_upstream = TRUE,
-                 repo = repo)
+           refspec = "refs/heads/branch",
+           set_upstream = TRUE,
+           repo = repo)
 
   # checkout main when no local branches
   branch_info_repo <- git_branch_list(repo = repo)
