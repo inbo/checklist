@@ -2,6 +2,20 @@
 
 * Migrate from git2r to gert to communicate with Git and GitHub
 
+# checklist 0.1.14
+
+* Improve error message when changes in `CITATION` need to be commit. (#64)
+* `create_package()` can use maintainer information stored in the options.
+  See `usethis::use_description()` on how to set the option.
+* Add R universe badges to README.
+* Add `write_zenodo_json()` and `write_citation_cff()`.
+* Improve the checklist Github Actions.
+
+## Bugfix
+
+* `create_package()` replaces package name place holder with actual package name
+  in `_pkgdown.yml`.
+
 # checklist 0.1.13
 
 * A new function `update_citation()` creates or updates a default citation in

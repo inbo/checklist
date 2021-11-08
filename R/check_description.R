@@ -175,10 +175,19 @@ tidy_desc <- function(x = ".") {
 
 unchanged_repo <- function(repo, old_status) {
   current_status <- git_status(repo = repo)
-  identical(
+  ok <- identical(
     current_status,
     old_status
   )
+  new_files <- current_status$file
+  old_files <- old_status$file
+  changes <- c(
+    new_files[!new_files %in% old_files], old_files[!old_files %in% new_files]
+  )
+  attr(ok, "files") <- sprintf(
+    "changed files:\n%s", paste(changes, collapse = "\n")
+  )
+  return(ok)
 }
 
 #' Check the license of a package

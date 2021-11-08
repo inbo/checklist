@@ -104,7 +104,7 @@ Failing folder: `%s`",
     paste(
       c(
         "\\.[a-zA-Z]+ignore", "\\.Rprofile", "\\.[a-zA-Z]+\\.(json|yml)",
-        "CITATION", "DESCRIPTION", "NAMESPACE",
+        "CITATION", "DESCRIPTION", "NAMESPACE", "CITATION.cff",
         "README\\.R?md", "NEWS\\.md", # nolint
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md", "SUPPORT.md",
         "SECURITY.md", "FUNDING.yml",

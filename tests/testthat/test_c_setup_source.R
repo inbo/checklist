@@ -35,4 +35,15 @@ test_that("setup_source() works", {
     },
     "Checklist"
   )
+
+  writeLines("sessionInfo()", file.path(path, "junk.r"))
+  expect_error(
+    check_source(path, fail = TRUE),
+    "Checking the source code revealed some problems"
+  )
+  expect_is({
+    x <- check_source(path, fail = FALSE)
+  },
+  "Checklist"
+  )
 })

@@ -13,6 +13,8 @@
 #' @param maintainer The output of [utils::person()] or [`orcid2person()`].
 #'   If you use [utils::person()], then you must provide `given`, `family`,
 #'   `role`, `email` and  `comment` with valid `ORCID`.
+#'   When missing, the functions looks for `usethis.description` in the options.
+#'   See [usethis::use_description()] for more information.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom gert git_add git_init
@@ -48,6 +50,17 @@ create_package <- function(
     msg =
       "Please install the `roxygen2` package. `install.packages(\"roxygen2\")`"
   )
+  if (missing(maintainer)) {
+    utd <- getOption("usethis.description")
+    assert_that(
+      has_name(utd, "Authors@R"),
+      msg = paste(
+        "maintainer not provided and no usethis::use_description defaults",
+        "available."
+      )
+    )
+    maintainer <- head(eval(parse(text = utd$"Authors@R")), 1)
+  }
   assert_that(inherits(maintainer, "person"))
   assert_that(dir.exists(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
@@ -242,26 +255,15 @@ allowed:
     file.path(".github", "workflows", "release.yml"),
     force = TRUE, repo = repo
   )
-  file.copy(
-    system.file(
-      file.path("package_template", "remove_old_artifacts.yml"),
-      package = "checklist"
-    ),
-    file.path(path, ".github", "workflows", "remove_old_artifacts.yml"),
-    overwrite = TRUE
-  )
-  git_add(
-    file.path(".github", "workflows", "release.yml"),
-    force = TRUE, repo = repo
-  )
 
   # prepare pkgdown
-  file.copy(
+  pkgd <- readLines(
     system.file(
       file.path("package_template", "_pkgdown.yml"), package = "checklist"
-    ),
-    file.path(path, "_pkgdown.yml")
+    )
   )
+  pkgd <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, pkgd)
+  writeLines(pkgd, file.path(path, "_pkgdown.yml"))
   git_add("_pkgdown.yml", repo = repo)
 
   dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
