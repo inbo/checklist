@@ -49,7 +49,7 @@ check_documentation <- function(x = ".") {
   x <- read_checklist(x = x)
   assert_that(
     x$package,
-    msg = "`check_description()` is only relevant for packages.
+    msg = "`check_documentation()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
 
@@ -81,11 +81,10 @@ check_documentation <- function(x = ".") {
 
   if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
     build_readme(x$get_path, encoding = "UTF-8")
-    current <- unlist(status(repo, ignored = TRUE))
     doc_error <- c(
       doc_error,
-      "`README.Rmd` need to be rendered. Run `devtools::build_readme()`"[
-        "README.md" %in% current
+      "`README.Rmd` needs to be rendered. Run `devtools::build_readme()`"[
+        !is_tracked_not_modified("README.md", repo = repo)
       ]
     )
   }

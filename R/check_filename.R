@@ -52,6 +52,7 @@ check_filename <- function(x = ".") {
     is_repository(x$get_path) && nrow(git_ls(repo = x$get_path)) > 0
   ) {
     repo <- x$get_path
+    # if a git repository: only check tracked files
     files <- git_ls(repo = repo)
     files <- files$path
     dirs <- unique(dirname(files))

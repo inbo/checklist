@@ -116,15 +116,14 @@ write_citation_cff <- function(x = ".", roles) {
     )
   }
 
-  repo <- repository(x$get_path)
-  current <- unlist(status(repo, ignored = TRUE))
+  repo <- x$get_path
   x$add_error(
     paste(
       "CITATION.cff file needs an update.",
       "Run `update_citation()` or `check_package()` locally.",
       "Then\ncommit `CITATION.cff`."
     )[
-      "CITATION.cff" %in% current
+      !is_tracked_not_modified(file = "CITATION.cff", repo = repo)
     ],
     "CITATION"
   )

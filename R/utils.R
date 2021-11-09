@@ -294,3 +294,26 @@ execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
     if (length(res) > 0) cat(res, sep = "\n") else return(invisible())
   } else return(res)
 }
+
+
+#' Check if a file is tracked and not modified
+#'
+#' @param file path relative to the git root directory.
+#' @param repo path to the repository
+#'
+#' @importFrom gert git_status git_ls
+#' @importFrom assertthat assert_that
+#'
+#' @keywords internal
+is_tracked_not_modified <- function(
+  file,
+  repo = "."
+) {
+  assert_that(!missing(file))
+  assert_that(is.character(file))
+  tracked <- git_ls(repo = repo)
+  is_tracked <- file %in% tracked$path
+  status <- git_status(repo = repo)
+  is_not_modified <- !file %in% status$file[status$status == "modified"]
+  return(is_tracked & is_not_modified)
+}
