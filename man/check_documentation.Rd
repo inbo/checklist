@@ -9,6 +9,8 @@ check_documentation(x = ".", quiet = FALSE)
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{if \code{TRUE} suppresses output from this function.}
 }
 \description{
 The function make sure that the documentation is up to date.

@@ -40,6 +40,7 @@
 #' * You can use second level headings when you want to add more structure.
 #' ```
 #' @inheritParams read_checklist
+#' @inheritParams devtools::document
 #' @export
 #' @importFrom devtools build_readme document
 #' @importFrom gert git_status
