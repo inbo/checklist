@@ -2,6 +2,10 @@
 
 * Migrate from git2r to gert to communicate with Git and GitHub
 
+## Bugfix
+
+* `update_package()` escapes double quotes in the abstract of `inst/CITATION`.
+
 # checklist 0.1.14
 
 * Improve error message when changes in `CITATION` need to be commit. (#64)

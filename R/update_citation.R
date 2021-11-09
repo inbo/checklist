@@ -94,6 +94,8 @@ update_citation <- function(x = ".", roles) {
     )
   )
   authors_bibtex <- paste0(authors_bibtex, collapse = ", ")
+  abstract <- this_desc$get_field("Description")
+  abstract <- gsub("\"", "\\\\\"", abstract)
   package_citation <- c(
     entry = "\"Manual\"",
     title = sprintf(
@@ -103,7 +105,7 @@ update_citation <- function(x = ".", roles) {
     author = sprintf("c(%s)", authors_bibtex),
     year = format(Sys.Date(), "%Y"),
     url = paste0("\"", gsub(",.*", "", this_desc$get_field("URL")), "\""),
-    abstract = paste0("\"", this_desc$get_field("Description"), "\""),
+    abstract = paste0("\"", abstract, "\""),
     textVersion = sprintf(
       "\"%s (%s) %s: %s. Version %s. %s\"",
       paste(authors_plain, collapse = "; "), format(Sys.Date(), "%Y"),
