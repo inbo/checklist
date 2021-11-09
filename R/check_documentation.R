@@ -45,7 +45,8 @@
 #' @importFrom gert git_status
 #'
 #' @family package
-check_documentation <- function(x = ".") {
+check_documentation <- function(x = ".", quiet = FALSE) {
+  assert_that(is.flag(quiet), noNA(quiet))
   x <- read_checklist(x = x)
   assert_that(
     x$package,
@@ -67,7 +68,7 @@ check_documentation <- function(x = ".") {
 
   repo <- x$get_path
   status_before <- git_status(repo = repo)
-  document(x$get_path)
+  document(x$get_path, quiet = quiet)
   detect_changes <- unchanged_repo(repo, status_before)
   si <- session_info(pkgs = "roxygen2")
   doc_error <- c(

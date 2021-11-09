@@ -36,6 +36,7 @@ check_package <- function
 ) {
   assert_that(is.flag(fail), noNA(fail))
   assert_that(is.flag(pkgdown), noNA(pkgdown))
+  assert_that(is.flag(quiet), noNA(quiet))
 
   x <- check_cran(x = x, quiet = quiet)
 
@@ -52,7 +53,7 @@ check_package <- function
   x <- update_citation(x)
 
   quiet_cat("Checking documentation\n", quiet = quiet)
-  x <- check_documentation(x)
+  x <- check_documentation(x, quiet = quiet)
 
   quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)
@@ -67,7 +68,15 @@ check_package <- function
     }, add = TRUE
     )
     Sys.setenv(CI = TRUE)
-    build_site(x$get_path, preview = !quiet)
+    if (quiet) {
+      junk <- tempfile(fileext = ".txt")
+      on.exit(file.remove(junk), add = TRUE, after = TRUE)
+      sink(junk)
+      hide_output <- build_site(x$get_path, preview = FALSE)
+      sink()
+    } else {
+      build_site(x$get_path)
+    }
   }
 
   print(x, quiet = quiet)
