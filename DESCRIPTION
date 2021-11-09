@@ -7,6 +7,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-8804-4216")),
     person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
            comment = c(ORCID = "0000-0002-3481-5684")),
+    person("Hans", "Van Calster", , "hans.vancalster@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0001-8595-8426")),
     person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: An opinated set of rules for R packages and R source code

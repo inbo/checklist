@@ -12,6 +12,10 @@
     {
       "name": ["Lommelen, Els"],
       "orcid": ["https://orcid.org/0000-0002-3481-5684"]
+    },
+    {
+      "name": ["Van Calster, Hans"],
+      "orcid": ["https://orcid.org/0000-0001-8595-8426"]
     }
   ],
   "upload_type": ["software"],
