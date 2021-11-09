@@ -55,6 +55,8 @@ test_that("create_package() works", {
     },
     "Checklist"
   )
+  expect_true(file_test("-f", file.path(path, package, ".zenodo.json")))
+  expect_true(file_test("-f", file.path(path, package, "CITATION.cff")))
 
   expect_error({
     check_package(

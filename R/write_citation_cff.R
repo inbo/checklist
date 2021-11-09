@@ -99,7 +99,10 @@ write_citation_cff <- function(x = ".", roles) {
     }
   )
 
-  write_yaml(x = citation, file = "CITATION.cff", fileEncoding = "UTF-8")
+  write_yaml(
+    x = citation, file = file.path(x$get_path, "CITATION.cff"),
+    fileEncoding = "UTF-8"
+  )
 
   if (!file_test("-f", file.path(x$get_path, ".Rbuildignore"))) {
     file.copy(

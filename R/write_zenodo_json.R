@@ -98,7 +98,10 @@ write_zenodo_json <- function(x = ".") {
     )
   }
 
-  writeLines(toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE), ".zenodo.json")
+  writeLines(
+    toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE),
+    file.path(x$get_path, ".zenodo.json")
+  )
 
   # check if file is tracked and not modified
   repo <- x$get_path
