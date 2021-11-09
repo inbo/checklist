@@ -11,6 +11,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom gert git_ahead_behind git_branch git_branch_checkout
 #' git_branch_create git_branch_delete git_branch_list git_fetch git_pull
+#' git_remote_list
 #' @export
 #' @family utils
 clean_git <- function(repo =  ".", verbose = TRUE) {
@@ -19,21 +20,17 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   current_branch <- git_branch(repo = repo)
 
   # fetch the remote
-  git_fetch(remote = "origin", verbose = verbose, repo = repo)
-
-  branch_info <- git_branch_list(repo = repo)
-
-  # this assertion can probably be removed (git_fetch will have errorred)?
   assert_that(
-    all(
-      grepl("origin", branch_info$name[!branch_info$local])
-    ),
+    "origin" %in% git_remote_list(repo)$name,
     msg = "no remote called `origin` found"
   )
+  git_fetch(remote = "origin", verbose = verbose, repo = repo)
 
   # remove remote branches deleted at the remote
   execshell("git remote prune origin", intern = FALSE, path = repo)
+
   # determine main branch
+  branch_info <- git_branch_list(repo = repo)
   main_branch <- ifelse(
     any(branch_info$name == "origin/main"), "main",
     ifelse(any(branch_info$name == "origin/master"), "master", "unknown")
