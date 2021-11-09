@@ -37,6 +37,7 @@ test_that("setup_source() works", {
   )
 
   writeLines("sessionInfo()", file.path(path, "junk.r"))
+  git_add(files = "junk.r", repo = path)
   expect_error(
     check_source(path, fail = TRUE),
     "Checking the source code revealed some problems"
