@@ -72,7 +72,7 @@ check_package <- function
       junk <- tempfile(fileext = ".txt")
       on.exit(file.remove(junk), add = TRUE, after = TRUE)
       sink(junk)
-      hide_output <- build_site(x$get_path, preview = FALSE) # nolint
+      build_site(x$get_path, preview = FALSE)
       sink()
     } else {
       build_site(x$get_path)

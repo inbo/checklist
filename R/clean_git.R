@@ -88,9 +88,17 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       )
       vapply(
         names(update_local)[unlist(update_local)],
-        function(x) {
-          git_branch_checkout(branch = x, repo = repo)
-          git_pull(repo = repo)
+        function(z) {
+          git_branch_checkout(branch = z, repo = repo)
+          if (verbose) {
+            git_pull(repo = repo, verbose = TRUE)
+          } else {
+            hide_output <- tempfile(fileext = ".txt")
+            on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+            sink(hide_output)
+            git_pull(repo = repo, verbose = FALSE)
+            sink()
+          }
           return(list())
         },
         list()

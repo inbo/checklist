@@ -31,7 +31,12 @@ test_that("setup_source() works", {
   gert::git_commit_all(message = "initial commit", repo = path)
 
   expect_is({
+      hide_output <- tempfile(fileext = ".txt")
+      on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+      sink(hide_output)
       x <- check_source(path, fail = FALSE)
+      sink()
+      x
     },
     "Checklist"
   )
@@ -43,7 +48,12 @@ test_that("setup_source() works", {
     "Checking the source code revealed some problems"
   )
   expect_is({
+    hide_output2 <- tempfile(fileext = ".txt")
+    on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+    sink(hide_output2)
     x <- check_source(path, fail = FALSE)
+    sink()
+    x
   },
   "Checklist"
   )

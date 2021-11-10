@@ -1,3 +1,4 @@
+^_pkgdown.yml$
 ^.*\.Rproj$
 ^.*\.zenodo.json$
 ^.dockerignore$
@@ -5,7 +6,6 @@
 ^\.httr-oauth$
 ^\.Rproj\.user$
 ^\.zenodo\.json$
-^_pkgdown.yml$
 ^checklist.yml$
 ^CITATION\.cff$
 ^codecov\.yml$

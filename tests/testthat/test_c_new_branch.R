@@ -19,18 +19,26 @@ test_that("new_branch() creates a branch from the main branch", {
   initial <- gert::git_commit(message = "Initial commit", repo = repo)
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
-  git_push(remote = "origin", refspec = refspec,
-                 set_upstream = TRUE, repo = repo)
+  git_push(
+    remote = "origin", refspec = refspec, set_upstream = TRUE, repo = repo,
+    verbose = FALSE
+  )
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
   writeLines("foo", file.path(path, "junk2.txt"))
   git_add("junk2.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
-  git_push(remote = "origin", refspec = "refs/heads/branch",
-                 set_upstream = TRUE, repo = repo)
-  expect_invisible(new_branch("new", checkout = TRUE, repo = path))
+  git_push(
+    remote = "origin", refspec = "refs/heads/branch", set_upstream = TRUE,
+    repo = repo, verbose = FALSE
+  )
+  expect_invisible(
+    new_branch("new", checkout = TRUE, repo = path, verbose = FALSE)
+  )
   expect_identical(git_branch(repo = repo), "new")
   expect_identical(git_commit_id(repo = repo), initial)
-  expect_invisible(new_branch(branch = "new2", checkout = TRUE, repo = repo))
+  expect_invisible(
+    new_branch(branch = "new2", checkout = TRUE, repo = repo, verbose = FALSE)
+  )
   expect_identical(git_branch(repo = repo), "new2")
   expect_identical(git_commit_id(repo = repo), initial)
 })
