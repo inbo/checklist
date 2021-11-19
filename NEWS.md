@@ -1,10 +1,12 @@
 # checklist 0.2.0
 
-* Migrate from git2r to gert to communicate with Git and GitHub
+* Migrate from ['git2r'](https://docs.ropensci.org/git2r/) to [`gert`](https://docs.ropensci.org/gert/) to communicate with Git and GitHub
 
 ## Bugfix
 
 * `update_package()` escapes double quotes in the abstract of `inst/CITATION`.
+* Docker image uses the development version of [`lintr`](https://github.com/jimhester/lintr)
+* `check_source()` handles projects with [`renv`](https://rstudio.github.io/renv/) on GitHub Actions.
 
 # checklist 0.1.14
 
