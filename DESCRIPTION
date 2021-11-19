@@ -26,7 +26,7 @@ Imports:
     gert,
     httr,
     jsonlite,
-    lintr,
+    lintr (>= 2.0.1.9000),
     pkgdown,
     rcmdcheck,
     rmarkdown,
@@ -45,6 +45,8 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
+Remotes: 
+    jimhester/lintr
 Additional_repositories: https://ropensci.r-universe.dev
 Encoding: UTF-8
 LazyData: true
