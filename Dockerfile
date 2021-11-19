@@ -51,7 +51,7 @@ RUN apt-get update \
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
 ## install lintr
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_github("jimhester/lintr")'
 
 ## install microbenchmark
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
