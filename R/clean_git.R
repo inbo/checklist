@@ -61,12 +61,19 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       )
       names(upstream_ab) <- upstream_df$name
 
-      diverged <- vapply(
-        upstream_ab, FUN.VALUE = logical(1),
+      ahead <- vapply(
+        upstream_ab, FUN.VALUE = integer(1),
         FUN = function(x) {
-          x$ahead > 0 & x$behind > 0
+          x$ahead
         }
       )
+      behind <- vapply(
+        upstream_ab, FUN.VALUE = integer(1),
+        FUN = function(x) {
+          x$behind
+        }
+      )
+      diverged <- ahead > 0 & behind > 0
       diverged <- diverged[names(diverged) != "gh-pages"]
       vapply(
         names(diverged)[unlist(diverged)],
@@ -76,13 +83,17 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
         },
         list()
       )
-      # bring branches up-to-date
-      update_local <- vapply(
-        upstream_ab, FUN.VALUE = logical(1),
-        FUN = function(x) {
-          x$behind >= 0 & x$ahead == 0
-        }
+      diverged <- ahead > 0 & behind == 0
+      vapply(
+        names(diverged)[unlist(diverged)],
+        function(x) {
+          warning("`", x, "` ahead of the origin branch.", call. = FALSE)
+          return(list())
+        },
+        list()
       )
+      # bring branches up-to-date
+      update_local <- behind >= 0 & ahead == 0
       vapply(
         names(update_local)[unlist(update_local)],
         function(z) {
