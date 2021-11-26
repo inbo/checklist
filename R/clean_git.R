@@ -24,10 +24,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
     "origin" %in% git_remote_list(repo)$name,
     msg = "no remote called `origin` found"
   )
-  git_fetch(remote = "origin", verbose = verbose, repo = repo)
-
-  # remove remote branches deleted at the remote
-  execshell("git remote prune origin", intern = FALSE, path = repo)
+  git_fetch(remote = "origin", verbose = verbose, repo = repo, prune = TRUE)
 
   # determine main branch
   branch_info <- git_branch_list(repo = repo)
