@@ -26,28 +26,27 @@ yesno <- function(...) {
 #' Check if the current workdir of a repo is clean
 #'
 #' A clean working directory has no staged, unstaged or untracked files.
-#' @param repo Either a `git2r::repository()` or path to the repository.
+#' @inheritParams gert::git_status
 #' @return `TRUE` when there are no staged, unstaged or untracked files.
 #' Otherwise `FALSE`
 #' @export
-#' @importFrom git2r status
+#' @importFrom gert git_status
 #' @family utils
 is_workdir_clean <- function(repo) {
+  status <- git_status(repo = repo)
+  status <- status[!(status$status == "new" & !status$staged), ]
+  status <- as.data.frame(status)
   identical(
-    status(repo, untracked = FALSE),
-    structure(
-      list(
-        staged = structure(list(), .Names = character(0)),
-        unstaged = structure(list(), .Names = character(0))
-      ),
-      class = "git_status"
-    )
+    status,
+    data.frame(file = character(0),
+               status = character(0),
+               staged = logical(0))
   )
 }
 
 #' @importFrom assertthat on_failure<-
 on_failure(is_workdir_clean) <- function(call, env) {
-  "Working directory is not clean. Please commit changes first."
+  "Working directory is not clean. Please commit or stash changes first."
 }
 
 #' Check if a vector contains valid email
@@ -246,4 +245,75 @@ quiet_cat <- function(x, quiet = FALSE, ...) {
   if (!quiet) {
     cat(x, ...)
   }
+}
+
+#' Determine if a directory is in a git repository
+#'
+#' The path arguments specifies the directory at which to start the search for
+#' a git repository.
+#' If it is not a git repository itself, then its parent directory is consulted,
+#' then the parent's parent, and so on.
+#' @inheritParams gert::git_find
+#' @importFrom gert git_find
+#' @return TRUE if directory is in a git repository else FALSE
+#' @export
+is_repository <- function(path = ".") {
+  out <- tryCatch(git_find(path = path), error = function(e) e)
+  !any(class(out) == "error")
+}
+
+
+#' Pass command lines to a shell
+#'
+#' Cross-platform function to pass a command to the shell, using either
+#' \code{\link[base]{system}} or
+#' (Windows-only) \code{\link[base]{shell}}, depending on the operating system.
+#'
+#' @param commandstring
+#' The system command to be invoked, as a string.
+#' Multiple commands can be combined in this single string, e.g. with a
+#' multiline string.
+#' @param path The path from where the commandstring needs to be executed
+#' @param ... Other arguments passed to \code{\link[base]{system}} or
+#' \code{\link[base]{shell}}.
+#'
+#' @inheritParams base::system
+#'
+#' @keywords internal
+#'
+execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
+  old_wd <- setwd(path)
+  on.exit(setwd(old_wd), add = TRUE)
+
+  if (.Platform$OS.type == "windows") {
+    res <- shell(commandstring, intern = TRUE, ...)# nolint
+  } else {
+    res <- system(commandstring, intern = TRUE, ...)
+  }
+  if (!intern) {
+    if (length(res) > 0) cat(res, sep = "\n") else return(invisible())
+  } else return(res)
+}
+
+
+#' Check if a file is tracked and not modified
+#'
+#' @param file path relative to the git root directory.
+#' @param repo path to the repository
+#'
+#' @importFrom gert git_status git_ls
+#' @importFrom assertthat assert_that
+#'
+#' @keywords internal
+is_tracked_not_modified <- function(
+  file,
+  repo = "."
+) {
+  assert_that(!missing(file))
+  assert_that(is.character(file))
+  tracked <- git_ls(repo = repo)
+  is_tracked <- file %in% tracked$path
+  status <- git_status(repo = repo)
+  is_not_modified <- !file %in% status$file[status$status == "modified"]
+  return(is_tracked & is_not_modified)
 }

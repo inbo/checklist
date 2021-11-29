@@ -9,6 +9,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
 #' @importFrom jsonlite toJSON
+#' @importFrom gert git_status
 #' @family package
 write_zenodo_json <- function(x = ".") {
   x <- read_checklist(x = x)
@@ -97,17 +98,20 @@ write_zenodo_json <- function(x = ".") {
     )
   }
 
-  writeLines(toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE), ".zenodo.json")
+  writeLines(
+    toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE),
+    file.path(x$get_path, ".zenodo.json")
+  )
 
-  repo <- repository(x$get_path)
-  current <- unlist(status(repo, ignored = TRUE))
+  # check if file is tracked and not modified
+  repo <- x$get_path
   x$add_error(
     paste(
       ".zenodo.json file needs an update.",
       "Run `update_citation()` or `check_package()` locally.",
       "Then\ncommit `.zenodo.json`."
     )[
-      ".zenodo.json" %in% current
+      !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
     ],
     "CITATION"
   )

@@ -11,13 +11,12 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
-#' @importFrom git2r add repository
+#' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
 setup_source <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
-  repo <- repository(path)
-  assert_that(is_workdir_clean(repo))
+  assert_that(is_workdir_clean(repo = path))
 
   # add checklist.yml
   writeLines(
@@ -28,7 +27,7 @@ allowed:
   notes: []",
     file.path(path, "checklist.yml")
   )
-  add(repo = repo, "checklist.yml", force = TRUE)
+  git_add("checklist.yml", force = TRUE, repo = path)
 
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
@@ -38,7 +37,7 @@ allowed:
       ),
       file.path(path, "LICENSE.md")
     )
-    add(repo = repo, "LICENSE.md", force = TRUE)
+    git_add("LICENSE.md", force = TRUE, repo = path)
   }
 
   # Add code of conduct
@@ -50,7 +49,8 @@ allowed:
     ),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  add(repo = repo, file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE)
+  git_add(file.path(".github", "CODE_OF_CONDUCT.md"),
+                force = TRUE, repo = path)
 
   # Add GitHub actions
   dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
@@ -60,9 +60,9 @@ allowed:
     file.path(path, ".github", "workflows", "check_source.yml"),
     overwrite = TRUE
   )
-  add(
-    repo = repo, file.path(".github", "workflows", "check_source.yml"),
-    force = TRUE
+  git_add(
+    file.path(".github", "workflows", "check_source.yml"),
+    force = TRUE, repo = path
   )
 
   message("project prepared for checklist::check_source()")

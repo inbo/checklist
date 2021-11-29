@@ -4,11 +4,13 @@
 \alias{check_documentation}
 \title{Check the documentation}
 \usage{
-check_documentation(x = ".")
+check_documentation(x = ".", quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \description{
 The function make sure that the documentation is up to date.

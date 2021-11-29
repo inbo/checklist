@@ -37,8 +37,8 @@ RUN apt-get update \
 ## install codemetar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
 
-## install git2r
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("git2r")'
+## install gert
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("gert")'
 
 ## install hexSticker
 RUN apt-get update \
@@ -51,7 +51,7 @@ RUN apt-get update \
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
 ## install lintr
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_github("jimhester/lintr")'
 
 ## install microbenchmark
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'

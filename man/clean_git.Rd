@@ -4,13 +4,16 @@
 \alias{clean_git}
 \title{Clean the git repository}
 \usage{
-clean_git(path = ".", verbose = TRUE)
+clean_git(repo = ".", verbose = TRUE)
 }
 \arguments{
-\item{path}{A path to an existing local git repository.}
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \link[gert]{git_find}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
+parameter, always explicitly call by name (i.e. \verb{repo = }) because future
+versions of gert may have additional parameters.}
 
-\item{verbose}{Print information each time a reference is updated
-locally. Default is \code{TRUE}.}
+\item{verbose}{display some progress info while downloading}
 }
 \description{
 \itemize{

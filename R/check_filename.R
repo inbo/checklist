@@ -43,18 +43,19 @@
 #'
 #' @inheritParams read_checklist
 #' @export
-#' @importFrom git2r in_repository ls_tree
+#' @importFrom gert git_ls
 #' @family both
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
 
   if (
-    in_repository(x$get_path) && length(commits(repository(x$get_path))) > 0
+    is_repository(x$get_path) && nrow(git_ls(repo = x$get_path)) > 0
   ) {
-    repo <- repository(x$get_path)
-    files <- ls_tree(repo = repo, recursive = TRUE)
-    dirs <- unique(files$path)
-    files <- paste0(files$path, files$name)
+    repo <- x$get_path
+    # if a git repository: only check tracked files
+    files <- git_ls(repo = repo)
+    files <- files$path
+    dirs <- unique(dirname(files))
   } else {
     dirs <- list.dirs(x$get_path, recursive = TRUE, full.names = FALSE)
     files <- list.files(x$get_path, recursive = TRUE, all.files = TRUE)

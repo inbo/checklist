@@ -25,8 +25,8 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom git2r branches branch_target commits diff lookup_commit parents
-#' remotes repository repository_head sha tree when
+#' @importFrom gert git_branch_list git_commit_id git_diff git_info
+#' git_log git_stat_files git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -39,7 +39,7 @@ check_description <- function(x = ".") {
 `checklist.yml` indicates this is not a package."
   )
 
-  repo <- repository(x$get_path)
+  repo <- x$get_path
   this_desc <- description$new(
     file = file.path(x$get_path, "DESCRIPTION")
   )
@@ -49,47 +49,48 @@ check_description <- function(x = ".") {
     !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
   ] -> desc_error
   notes <- character(0)
-  if (length(commits(repo)) > 1) {
-    branch_sha <- vapply(branches(repo, "all"), branch_target, character(1))
-    head_sha <- sha(repository_head(repo))
-    current_branch <- head(names(which(branch_sha == head_sha)), 1)
+  if (!is.na(git_info(repo = repo)$head) && nrow(git_log(repo = repo)) > 1) {
+    branch_info <- git_branch_list(repo = repo)
+    head_sha <- git_commit_id(repo = repo)
+    current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
     if (length(current_branch) && current_branch %in% c("main", "master")) {
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
 main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
   current_branch == "master"
 ] -> notes
-      parent_commits <- parents(lookup_commit(repository_head(repo)))
-      oldest <- head(order(vapply(parent_commits, when, character(1))), 1)
-      desc_diff <- diff(
-        tree(parent_commits[[oldest]]),
-        as_char = TRUE, path = "DESCRIPTION"
-      )
+      descr_stats <- git_stat_files("DESCRIPTION", repo = repo)
+      desc_diff <- git_diff(descr_stats$head, repo = repo)
+      desc_diff <- desc_diff$patch[desc_diff$old == "DESCRIPTION"]
     } else {
       assert_that(
-        "origin" %in% remotes(repo), msg = "no remote called `origin` available"
+        all(
+          grepl("origin", branch_info$name[!branch_info$local])
+          ),
+        msg = "no remote called `origin` available"
       )
       assert_that(
-        has_name(branches(repo), "origin/main") ||
-          has_name(branches(repo), "origin/master"),
+        any(branch_info$name %in%
+          c("origin/main", "origin/master")),
         msg =
       "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
       )
       ref_branch <- ifelse(
-        has_name(branches(repo), "origin/main"), "origin/main", "origin/master"
+        any(branch_info$name == "origin/main"),
+            "origin/main", "origin/master"
       )
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
 main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
-  !has_name(branches(repo), "origin/main")
+  !any(branch_info$name == "origin/main")
 ] -> notes
-      desc_diff <- diff(
-        tree(lookup_commit(branches(repo)[[ref_branch]])),
-        tree(lookup_commit(repository_head(repo))),
-        as_char = TRUE, path = "DESCRIPTION"
-      )
+      commit1 <- git_commit_id(ref = ref_branch, repo = repo)
+      commit2 <- git_commit_id(ref = "HEAD", repo = repo)
+      desc_diff <- execshell(
+        paste0("git diff ", commit1, "..", commit2, " -- ./DESCRIPTION"),
+        intern = TRUE,
+        path = repo)
     }
-    desc_diff <- strsplit(desc_diff, "\n")[[1]]
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
     old_version <- gsub("-Version: ", "", old_version)
     version_bump <- ifelse(
@@ -103,7 +104,7 @@ from the web. More info on https://github.com/github/renaming"[
     )
     desc_error <- c(desc_error, na.omit(version_bump))
   }
-  status_before <- status(repo)
+  status_before <- git_status(repo = repo)
   tidy_desc(x)
   desc_error <- c(
     desc_error,
@@ -173,21 +174,13 @@ tidy_desc <- function(x = ".") {
 }
 
 unchanged_repo <- function(repo, old_status) {
-  current_status <- status(repo)
+  current_status <- git_status(repo = repo)
   ok <- identical(
-    current_status$staged,
-    old_status$staged
-  ) &&
-    identical(
-      current_status$unstaged,
-      old_status$unstaged
-    ) &&
-    identical(
-      current_status$untracked,
-      old_status$untracked
-    )
-  new_files <- unlist(current_status)
-  old_files <- unlist(old_status)
+    current_status,
+    old_status
+  )
+  new_files <- current_status$file
+  old_files <- old_status$file
   changes <- c(
     new_files[!new_files %in% old_files], old_files[!old_files %in% new_files]
   )

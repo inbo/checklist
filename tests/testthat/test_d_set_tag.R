@@ -19,18 +19,22 @@ test_that("set_tag() works", {
     description = "A dummy package.",
     maintainer = maintainer
   )
-  repo <- git2r::repository(file.path(path, package))
-  git2r::config(repo = repo, user.name = "junk", user.email = "junk@inbo.be")
-  git2r::clone(
+  repo <- git_init(file.path(path, package))
+  git_config_set(name = "user.name", value = "junk", repo = repo)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
+  gert::git_clone(
     url = file.path(path, package),
-    local_path = file.path(path, "origin"),
-    bare = TRUE, progress = FALSE
+    path = file.path(path, "origin"),
+    bare = TRUE,
+    verbose = FALSE
   )
-  git2r::remote_add(repo, name = "origin", url = file.path(path, "origin"))
-  git2r::commit(repo = repo, message = "Initital commit")
-  git2r::push(
-    repo, name = "origin", refspec = "refs/heads/master", set_upstream = TRUE  # nolint
-  )
+  gert::git_remote_add(name = "origin", url = file.path(path, "origin"),
+                       repo = repo)
+  gert::git_commit(message = "Initital commit", repo = repo)
+  branch_info <- git_branch_list(repo = repo)
+  refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
+  git_push(remote = "origin", refspec = refspec,
+                 set_upstream = TRUE, repo = repo)
 
   # not on GITHUB or main
   current_ref <- Sys.getenv("GITHUB_REF")

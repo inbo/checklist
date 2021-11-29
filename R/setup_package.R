@@ -13,7 +13,7 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
-#' @importFrom git2r add repository
+#' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
 setup_package <- function(path = ".") {
@@ -24,12 +24,11 @@ setup_package <- function(path = ".") {
   )
   package <- desc(path)$get("Package")
 
-  repo <- repository(path)
-  assert_that(is_workdir_clean(repo))
+  assert_that(is_workdir_clean(repo = path))
 
   # make DESCRIPTION tidy
   tidy_desc(path)
-  add(repo = repo, "DESCRIPTION", force = TRUE)
+  git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
   if (!file_test("-f", file.path(path, ".gitignore"))) {
     file.copy(
@@ -50,7 +49,7 @@ setup_package <- function(path = ".") {
       file.path(path, ".gitignore")
     )
   }
-  add(repo = repo, ".gitignore", force = TRUE)
+  git_add(".gitignore", force = TRUE, repo = path)
 
   if (!file_test("-f", file.path(path, ".Rbuildignore"))) {
     file.copy(
@@ -71,7 +70,7 @@ setup_package <- function(path = ".") {
       file.path(path, ".Rbuildignore")
     )
   }
-  add(repo = repo, ".Rbuildignore", force = TRUE)
+  git_add(".Rbuildignore", force = TRUE, repo = path)
 
   # add checklist.yml
   writeLines(
@@ -82,7 +81,7 @@ allowed:
   notes: []",
     file.path(path, "checklist.yml")
   )
-  add(repo = repo, "checklist.yml", force = TRUE)
+  git_add("checklist.yml", force = TRUE, repo = path)
 
   # add codecov.yml
   file.copy(
@@ -91,7 +90,7 @@ allowed:
     ),
     file.path(path, "codecov.yml")
   )
-  add(repo = repo, "codecov.yml", force = TRUE)
+  git_add("codecov.yml", force = TRUE, repo = path)
 
   # add NEWS.md
   if (!file_test("-f", file.path(path, "NEWS.md"))) {
@@ -100,7 +99,7 @@ allowed:
       package
     )
     writeLines(news, file.path(path, "NEWS.md"))
-    add(repo = repo, "NEWS.md", force = TRUE)
+    git_add("NEWS.md", force = TRUE, repo = path)
   }
 
   # add README.Rmd
@@ -112,7 +111,7 @@ allowed:
     )
     readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
     writeLines(readme, file.path(path, "README.Rmd"))
-    add(repo = repo, "README.Rmd", force = TRUE)
+    git_add("README.Rmd", force = TRUE, repo = path)
   }
 
   # add LICENSE.md
@@ -123,7 +122,7 @@ allowed:
       ),
       file.path(path, "LICENSE.md")
     )
-    add(repo = repo, "LICENSE.md", force = TRUE)
+    git_add("LICENSE.md", force = TRUE, repo = path)
   }
 
   # Add code of conduct
@@ -134,7 +133,8 @@ allowed:
     ),
     file.path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  add(repo = repo, file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE)
+  git_add(file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE,
+                repo = path)
 
   # Add contributing guidelines
   file.copy(
@@ -143,7 +143,8 @@ allowed:
     ),
     file.path(path, ".github", "CONTRIBUTING.md")
   )
-  add(repo = repo, file.path(".github", "CONTRIBUTING.md"), force = TRUE)
+  git_add(file.path(".github", "CONTRIBUTING.md"), force = TRUE,
+                repo = path)
 
   # Add GitHub actions
   dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
@@ -155,9 +156,8 @@ allowed:
     file.path(path, ".github", "workflows", "check_on_branch.yml"),
     overwrite = TRUE
   )
-  add(
-    repo = repo, force = TRUE,
-    file.path(".github", "workflows", "check_on_branch.yml")
+  git_add(file.path(".github", "workflows", "check_on_branch.yml"),
+    force = TRUE, repo = path
   )
   unlink(file.path(path, ".github", "workflows", "check_on_master.yml"))
   file.copy(
@@ -168,10 +168,8 @@ allowed:
     file.path(path, ".github", "workflows", "check_on_main.yml"),
     overwrite = TRUE
   )
-  add(
-    repo = repo, force = TRUE,
-    file.path(".github", "workflows", "check_on_main.yml")
-  )
+  git_add(file.path(".github", "workflows", "check_on_main.yml"),
+                force = TRUE, repo = path)
   file.copy(
     system.file(
       file.path("package_template", "check_on_different_r_os.yml"),
@@ -180,10 +178,9 @@ allowed:
     file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
     overwrite = TRUE
   )
-  add(
-    repo = repo, force = TRUE,
-    file.path(".github", "workflows", "check_on_different_r_os.yml")
-  )
+  git_add(
+    file.path(".github", "workflows", "check_on_different_r_os.yml"),
+    force = TRUE, repo = path)
   file.copy(
     system.file(
       file.path("package_template", "release.yml"), package = "checklist"
@@ -191,9 +188,9 @@ allowed:
     file.path(path, ".github", "workflows", "release.yml"),
     overwrite = TRUE
   )
-  add(
-    repo = repo, file.path(".github", "workflows", "release.yml"), force = TRUE
-  )
+  git_add(
+    file.path(".github", "workflows", "release.yml"),
+    force = TRUE, repo = path)
 
   # Add pkgdown website
   pkgd <- readLines(
@@ -203,7 +200,7 @@ allowed:
   )
   pkgd <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, pkgd)
   writeLines(pkgd, file.path(path, "_pkgdown.yml"))
-  add(repo = repo, "_pkgdown.yml", force = TRUE)
+  git_add("_pkgdown.yml", force = TRUE, repo = path)
   dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
   file.copy(
     system.file(
@@ -211,7 +208,7 @@ allowed:
     ),
     file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
   )
-  add(repo = repo, file.path("pkgdown", "extra.css"), force = TRUE)
+  git_add(file.path("pkgdown", "extra.css"), force = TRUE, repo = path)
   dir.create(
     file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
   )
@@ -221,7 +218,8 @@ allowed:
     ),
     file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
   )
-  add(repo = repo, file.path("man", "figures", "logo-en.png"), force = TRUE)
+  git_add(file.path("man", "figures", "logo-en.png"), force = TRUE,
+                repo = path)
   file.copy(
     system.file(
       file.path("package_template", "background-pattern.png"),
@@ -230,24 +228,24 @@ allowed:
     file.path(path, "man", "figures", "background-pattern.png"),
     overwrite = TRUE
   )
-  add(
-    repo = repo, file.path("man", "figures", "background-pattern.png"),
-    force = TRUE
-  )
+  git_add(file.path("man", "figures", "background-pattern.png"),
+    force = TRUE, repo = path)
   file.copy(
     system.file(
       file.path("package_template", "flanders.woff2"), package = "checklist"
     ),
     file.path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
   )
-  add(repo = repo, file.path("man", "figures", "flanders.woff2"), force = TRUE)
+  git_add(file.path("man", "figures", "flanders.woff2"),
+                force = TRUE, repo = path)
   file.copy(
     system.file(
       file.path("package_template", "flanders.woff"), package = "checklist"
     ),
     file.path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
   )
-  add(repo = repo, file.path("man", "figures", "flanders.woff"), force = TRUE)
+  git_add(file.path("man", "figures", "flanders.woff"),
+                force = TRUE, repo = path)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))

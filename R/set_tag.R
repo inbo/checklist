@@ -11,7 +11,8 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom git2r config is_detached repository tag tags
+#' @importFrom gert git_config git_config_set git_info git_tag_create
+#' git_tag_list
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -28,9 +29,9 @@ set_tag <- function(x = ".") {
     msg = "`set_tag()` is only relevant for packages.
 `checklist.yml` indicates this is not a package."
   )
-  repo <- repository(x$get_path)
+  repo <- x$get_path
   assert_that(
-    !is_detached(repo),
+    git_info(repo = repo)$shorthand != "HEAD",
     msg = "`set_tag()` doesn't work on a repository with detached HEAD."
   )
   description <- description$new(
@@ -43,25 +44,38 @@ set_tag <- function(x = ".") {
   end <- c(tail(start, -1) - 1, length(news))
   current <- grepl(paste("#", description$get("Package"), version), news[start])
   assert_that(any(current), msg = "Current version not found in NEWS.md")
-  if (paste0("v", version) %in% names(tags(repo))) {
+  if (paste0("v", version) %in% git_tag_list(repo = repo)$name) {
     message("tag v", version, " already exists.")
     return(invisible(NULL))
   }
-  old_config <- config(repo)
+  old_config <- git_config(repo = repo)
   on.exit(
-    config(
-      repo,
-      user.name = old_config$local$user.name,
-      user.email = old_config$local$user.email
-    ),
+    git_config_set(
+      "user.name",
+      old_config$value[old_config$name == "user.name"],
+      repo = repo),
     add = TRUE
   )
-  config(
-    repo = repo,
-    user.name = "Checklist bot",
-    user.email = "checklist@inbo.be"
+  on.exit(
+    git_config_set(
+      "user.email",
+      old_config$value[old_config$name == "user.email"],
+      repo = repo),
+    add = TRUE
   )
+  git_config_set(
+    "user.name", "Checklist bot",
+    repo = repo
+  )
+  git_config_set(
+    "user.email", "checklist@inbo.be",
+    repo = repo
+  )
+
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
-  tag(repo, name = paste0("v", version), message = tag_message)
+  git_tag_create(
+    name = paste0("v", version),
+    message = tag_message,
+    repo = repo)
   return(invisible(NULL))
 }

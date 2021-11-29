@@ -23,6 +23,8 @@ test_that("create_package() works", {
     regexp = sprintf("package created at `.*%s`", package)
   )
 
+  repo <- file.path(path, package)
+
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
     "codecov.yml", "DESCRIPTION", "LICENSE.md", "NEWS.md", "README.Rmd",
@@ -53,6 +55,8 @@ test_that("create_package() works", {
     },
     "Checklist"
   )
+  expect_true(file_test("-f", file.path(path, package, ".zenodo.json")))
+  expect_true(file_test("-f", file.path(path, package, "CITATION.cff")))
 
   expect_error({
     check_package(

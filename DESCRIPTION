@@ -1,12 +1,14 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.1.14
+Version: 0.2.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216")),
     person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
            comment = c(ORCID = "0000-0002-3481-5684")),
+    person("Hans", "Van Calster", , "hans.vancalster@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0001-8595-8426")),
     person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: An opinated set of rules for R packages and R source code
@@ -21,10 +23,10 @@ Imports:
     codemetar,
     desc,
     devtools (> 2.4.0),
-    git2r,
+    gert,
     httr,
     jsonlite,
-    lintr,
+    lintr (>= 2.0.1.9000),
     pkgdown,
     rcmdcheck,
     rmarkdown,
@@ -43,6 +45,8 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
+Remotes: 
+    jimhester/lintr
 Additional_repositories: https://ropensci.r-universe.dev
 Encoding: UTF-8
 LazyData: true

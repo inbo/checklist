@@ -7,7 +7,11 @@
 is_workdir_clean(repo)
 }
 \arguments{
-\item{repo}{Either a \code{git2r::repository()} or path to the repository.}
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \link[gert]{git_find}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
+parameter, always explicitly call by name (i.e. \verb{repo = }) because future
+versions of gert may have additional parameters.}
 }
 \value{
 \code{TRUE} when there are no staged, unstaged or untracked files.

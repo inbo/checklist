@@ -6,9 +6,11 @@ test_that("setup_source() works", {
 
   expect_error(
     setup_source(path = path),
-    "The 'path' is not in a git repository"
+    regexp = "could not find repository from"
   )
-  repo <- init(path)
+  git_init(path = path)
+  git_config_set(name = "user.name", value = "junk", repo = path)
+  git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
   expect_message({
       junk <- setup_source(path = path)
@@ -26,19 +28,32 @@ test_that("setup_source() works", {
     all(file.exists(file.path(path, new_files)))
   )
 
+  gert::git_commit_all(message = "initial commit", repo = path)
+
   expect_is({
+      hide_output <- tempfile(fileext = ".txt")
+      on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+      sink(hide_output)
       x <- check_source(path, fail = FALSE)
+      sink()
+      x
     },
     "Checklist"
   )
 
   writeLines("sessionInfo()", file.path(path, "junk.r"))
+  git_add(files = "junk.r", repo = path)
   expect_error(
     check_source(path, fail = TRUE),
     "Checking the source code revealed some problems"
   )
   expect_is({
+    hide_output2 <- tempfile(fileext = ".txt")
+    on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+    sink(hide_output2)
     x <- check_source(path, fail = FALSE)
+    sink()
+    x
   },
   "Checklist"
   )
