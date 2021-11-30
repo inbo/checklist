@@ -1,3 +1,9 @@
+# checklist 0.2.2
+
+## Bugfix
+
+* Update URLS to [`lintr`](https://github.com/r-lib/lintr).
+
 # checklist 0.2.1
 
 ## Bugfix
