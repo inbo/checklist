@@ -12,7 +12,7 @@
 ## Bugfix
 
 * `update_package()` escapes double quotes in the abstract of `inst/CITATION`.
-* Docker image uses the development version of [`lintr`](https://github.com/jimhester/lintr)
+* Docker image uses the development version of [`lintr`](https://github.com/r-lib/lintr)
 * `check_source()` handles projects with [`renv`](https://rstudio.github.io/renv/) on GitHub Actions.
 
 # checklist 0.1.14
