@@ -40,9 +40,7 @@ check_description <- function(x = ".") {
   )
 
   repo <- x$get_path
-  this_desc <- description$new(
-    file = file.path(x$get_path, "DESCRIPTION")
-  )
+  this_desc <- description$new(file = file.path(x$get_path, "DESCRIPTION"))
 
   version <- as.character(this_desc$get_version())
   "Incorrect version tag format. Use `0.0` or `0.0.0`"[
@@ -62,6 +60,7 @@ from the web. More info on https://github.com/github/renaming"[
       descr_stats <- git_stat_files("DESCRIPTION", repo = repo)
       desc_diff <- git_diff(descr_stats$head, repo = repo)
       desc_diff <- desc_diff$patch[desc_diff$old == "DESCRIPTION"]
+      desc_diff <- strsplit(desc_diff, "\n", fixed = TRUE)[[1]]
     } else {
       assert_that(
         all(

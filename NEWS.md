@@ -1,3 +1,10 @@
+# checklist 0.2.1
+
+## Bugfix
+
+* Fixed git diff used by `check_description()` when checking for changes in 
+  version number.
+
 # checklist 0.2.0
 
 * Migrate from ['git2r'](https://docs.ropensci.org/git2r/) to [`gert`](https://docs.ropensci.org/gert/) to communicate with Git and GitHub
