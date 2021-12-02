@@ -99,7 +99,7 @@ write_zenodo_json <- function(x = ".") {
   }
 
   writeLines(
-    toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE),
+    toJSON(zenodo, pretty = TRUE, auto_unbox = TRUE),
     file.path(x$get_path, ".zenodo.json")
   )
 
