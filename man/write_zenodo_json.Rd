@@ -10,6 +10,9 @@ write_zenodo_json(x = ".")
 \item{x}{Either a \code{Checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
+\value{
+An invisible \code{Checklist} object.
+}
 \description{
 Zenodo uses the .zenodo.json file to define the citation information.
 See

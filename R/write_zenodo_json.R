@@ -4,6 +4,8 @@
 #' See
 #' https://developers.zenodo.org/#add-metadata-to-your-github-repository-release
 #' for more information.
+#'
+#' @return An invisible `Checklist` object.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
@@ -113,8 +115,8 @@ write_zenodo_json <- function(x = ".") {
     )[
       !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
     ],
-    "CITATION"
+    ".zenodo.json"
   )
 
-  return(invisible(NULL))
+  return(invisible(x))
 }

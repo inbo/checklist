@@ -13,6 +13,9 @@ Defaults to \code{.}.}
 \item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
 Defaults to \code{c("aut", "cre")}.}
 }
+\value{
+An invisible \code{Checklist} object.
+}
 \description{
 This file format contains the citation information.
 It is supported by GitHub, Zenodo and Zotero.

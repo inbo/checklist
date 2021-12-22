@@ -12,6 +12,7 @@
 #' Note that this will result in a warning, which you can allow via
 #' `write_checklist()`.
 #'
+#' @return An invisible `Checklist` object.
 #' @inheritParams read_checklist
 #' @param roles Roles to select the persons for the `DESCRIPTION`.
 #' Defaults to `c("aut", "cre")`.
@@ -138,12 +139,12 @@ update_citation <- function(x = ".", roles) {
       "Run `update_citation()` or `check_package()` locally.",
       "Then commit\n`inst/CITATION`."
     )[
-      file.path("inst", "CITATION") %in% current
+      file.path("inst", "CITATION") %in% current$file
     ],
     "CITATION"
   )
 
-  write_zenodo_json(x = x)
-  write_citation_cff(x = x, roles = roles)
-  return(x)
+  x <- write_zenodo_json(x = x)
+  x <- write_citation_cff(x = x, roles = roles)
+  return(invisible(x))
 }

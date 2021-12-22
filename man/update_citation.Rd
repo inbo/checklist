@@ -13,6 +13,9 @@ Defaults to \code{.}.}
 \item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
 Defaults to \code{c("aut", "cre")}.}
 }
+\value{
+An invisible \code{Checklist} object.
+}
 \description{
 The function creates the file \code{inst/CITATION} is case is doesn't exist.
 Otherwise it will update the citation information indicated between
