@@ -257,6 +257,7 @@ quiet_cat <- function(x, quiet = FALSE, ...) {
 #' @importFrom gert git_find
 #' @return TRUE if directory is in a git repository else FALSE
 #' @export
+#' @family utils
 is_repository <- function(path = ".") {
   out <- tryCatch(git_find(path = path), error = function(e) e)
   !any(class(out) == "error")
