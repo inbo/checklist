@@ -83,7 +83,10 @@ string2svg <- function(string) {
   sysfonts::font_add(
     family = "Flanders Art Sans",
     regular =
-      system.file("fonts/flanders_art_sans_medium.ttf", package = "checklist")
+      system.file(
+        file.path("fonts", "flanders_art_sans_medium.ttf"),
+        package = "checklist"
+      )
   )
   showtext::showtext_auto()
   tmp <- tempfile(fileext = ".svg")

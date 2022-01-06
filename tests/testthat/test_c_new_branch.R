@@ -28,7 +28,7 @@ test_that("new_branch() creates a branch from the main branch", {
   git_add("junk2.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(
-    remote = "origin", refspec = "refs/heads/branch", set_upstream = TRUE,
+    remote = "origin", refspec = "refs/heads/branch", set_upstream = TRUE, # nolint: nonportable_path_linter
     repo = repo, verbose = FALSE
   )
   expect_invisible(

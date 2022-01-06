@@ -94,7 +94,7 @@ write_zenodo_json <- function(x = ".") {
     )
   } else {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
-    new <- "^\\.zenodo\\.json$"
+    new <- "^\\.zenodo\\.json$" # nolint: nonportable_path_linter
     writeLines(
       sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )

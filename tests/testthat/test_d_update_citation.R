@@ -45,8 +45,12 @@ test_that("update_citation() works", {
   expect_identical(
     x$.__enclos_env__$private$warnings,
     c(
-      "No `# begin checklist entry` found in `inst/CITATION`",
-      "No `# end checklist entry` found in `inst/CITATION`"
+      paste(
+        "No `# begin checklist entry` found in `inst", "CITATION`", sep = "/"
+      ),
+      paste(
+        "No `# end checklist entry` found in `inst", "CITATION`", sep = "/"
+      )
     )
   )
   writeLines(old_citation, file.path(path, package, "inst", "CITATION"))
