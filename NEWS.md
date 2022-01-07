@@ -1,3 +1,12 @@
+# checklist 0.2.3
+
+## Bugfix
+
+* Fix problem in `write_zenodo_json()` which produced a `.zenodo.json` which
+  failed to parse on https://zenodo.org.
+* `write_zenodo_json()` and `write_citation_cff()` return the checklist object
+  and pass it to `update_citation()`.
+
 # checklist 0.2.2
 
 ## Bugfix
