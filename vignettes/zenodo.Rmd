@@ -31,7 +31,7 @@ Publishing the package code through Zenodo has several benefits.
 - The code is archived free of charge.
 - The code remains publicly available, even if the GitHub repository is removed.
 - The code gets a DOI, making it easier to cite the code and track the citations.
-  Every release gets is own release and there is an dedicated DOI which always points to the latest release.
+  Every release gets its own release and there is a dedicated DOI which always points to the latest release.
   This gives the user a choice between citing the code in general or a specific version.
 
 ## What is [ORCID](https://orcid.org)?
@@ -46,14 +46,14 @@ Researchers can identify themselves with this ORCID iD in their publications.
 This solves potential ambiguity dues to several persons with the same name or different spellings of a researchers name.
 
 ORCID provides researchers an easy way to publish a list of publication on their ORCID profile.
-The researcher can add manulay add publications to this profile.
+The researcher can manually add publications to this profile.
 ORCID has links with several data providers (e.g. publishers, Zenodo).
 The researchers can setup ORCID to add new publications automatically to their profile.
 This makes it easier to maintain an updated list of publications.
 
 ## Why integrate Zenodo and ORCID with GitHub?
 
-Setting up the integration has the benefit that a new package version automatically get a unique DOI and is added to your ORCID profile.
+Setting up the integration has the benefit that a new package version automatically gets a unique DOI and is added to your ORCID profile.
 
 ### Setup ORCID
 
@@ -80,13 +80,13 @@ Setting up the integration has the benefit that a new package version automatica
 
 ### What happens next?
 
-1. Make sure that you've set-up your code an package with `checklist` support.
+1. Make sure that you've set-up your code as a package with `checklist` support.
   See `vignette("getting_started", package = "checklist")` on how to do that.
 1. Add the ORCID of all contributors to the `DESCRIPTION`.
 1. Pushing new commits to GitHub triggers a GitHub action that runs `check_package()`.
   This makes sure that the citation information in `CITATION`, `CITATION.cff` and `.zenodo.json` are up to date.
   Zenodo uses the latter as meta data for the new DOI.
-1. Merging a pull request to the main branch will trigger a GitHub Action workflow that add a new tag with the version number.
+1. Merging a pull request to the main branch will trigger a GitHub Action workflow that adds a new tag with the version number.
   This makes that version of the package installable with `remotes::install_github("organisation/package@tag")` (replace _organisation_, _package_ and _tag_ with the appropriate values).
   The tag is "v" followed by the version number (e.g. `v0.5.2`).
 1. Adding the tag triggers another GitHub Action workflow that creates a new release.
