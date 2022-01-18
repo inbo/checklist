@@ -31,7 +31,7 @@ Publishing the package code through Zenodo has several benefits.
 - The code is archived free of charge.
 - The code remains publicly available, even if the GitHub repository is removed.
 - The code gets a DOI, making it easier to cite the code and track the citations.
-  Every release gets its own release and there is a dedicated DOI which always points to the latest release.
+  Every release gets its own release and there is a dedicated DOI which always points at the latest release.
   This gives the user a choice between citing the code in general or a specific version.
 
 ## What is [ORCID](https://orcid.org)?
@@ -60,18 +60,19 @@ Setting up the integration has the benefit that a new package version automatica
 #### Once
 
 1. Create an account at https://orcid.org
-1. Active [DataCite](https://support.datacite.org/docs/how-to-activate-orcid-auto-update) automatic updates.
+1. Go to [DataCite](https://profiles.datacite.org/sign_in) and select "Sign in".
+1. Select "Sign in with Globus", then "Sign in with ORCID iD".
+1. Authorise access to Globus Auth.
 
 ### Setup Zenodo 
 
 #### Once
 
 1. Create an account using your ORCID at https://zenodo.org/signup/
-1. Link your GitHub to your Zenodo profile.
 
 #### Once per repository
 
-1. Log-in to Zendo.
+1. Log-in to [Zenodo](https://www.zenodo.org).
 1. Go the to dropdown box associated to your account (top right) and choose GitHub.
 1. Find the repository in the list of repositories.
   Use the "Sync now" button if you can't find the repository.
