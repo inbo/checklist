@@ -34,7 +34,7 @@ write_zenodo_json <- function(x = ".") {
   )
   authors_orcid[!grepl("orcid.org", authors_orcid)] <- ""
   authors_orcid <- gsub(
-    ".*orcid.org/(([0-9]{4}-){3}[0-9]{4}).*", "https://orcid.org/\\1", # nolint
+    ".*orcid.org/(([0-9]{4}-){3}[0-9]{3}[0-9X]).*", "https://orcid.org/\\1", # nolint: nonportable_path_linter, line_length_linter.
     authors_orcid
   )
 
