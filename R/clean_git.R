@@ -29,12 +29,12 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   # determine main branch
   branch_info <- git_branch_list(repo = repo)
   main_branch <- ifelse(
-    any(branch_info$name == "origin/main"), "main",
-    ifelse(any(branch_info$name == "origin/master"), "master", "unknown")
+    any(branch_info$name == "origin/main"), "main", #nolint: nonportable_path_linter, line_length_linter.
+    ifelse(any(branch_info$name == "origin/master"), "master", "unknown") #nolint: nonportable_path_linter, line_length_linter.
   )
   assert_that(
     main_branch %in% c("main", "master"),
-    msg = "no branch `origin/main` or `origin/master` found."
+    msg = "no branch `origin/main` or `origin/master` found." #nolint: nonportable_path_linter, line_length_linter.
   )
 
   origin_main_branch <- branch_info$name[
@@ -179,7 +179,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   ) {
     git_branch_create(
       branch = main_branch, checkout = TRUE, repo = repo,
-      ref = paste("refs/remotes/origin", main_branch, sep = "/")
+      ref = paste("refs", "remotes", "origin", main_branch, sep = "/")
     )
   } else {
     git_branch_checkout(branch = current_branch, repo = repo)

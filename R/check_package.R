@@ -31,8 +31,8 @@
 #' @importFrom utils file_test
 #' @export
 #' @family package
-check_package <- function
-(x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
+check_package <- function(
+    x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
 ) {
   assert_that(is.flag(fail), noNA(fail))
   assert_that(is.flag(pkgdown), noNA(pkgdown))
@@ -57,6 +57,8 @@ check_package <- function
 
   quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)
+
+  x <- check_environment(x)
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")

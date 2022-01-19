@@ -12,6 +12,7 @@
 #' Note that this will result in a warning, which you can allow via
 #' `write_checklist()`.
 #'
+#' @return An invisible `Checklist` object.
 #' @inheritParams read_checklist
 #' @param roles Roles to select the persons for the `DESCRIPTION`.
 #' Defaults to `c("aut", "cre")`.
@@ -50,21 +51,21 @@ update_citation <- function(x = ".", roles) {
   start <- grep("^# begin checklist entry", cit)
   end <- grep("^# end checklist entry", cit)
   problems <- c(
-    "No `# begin checklist entry` found in `inst/CITATION`"[length(start) == 0],
-    "No `# end checklist entry` found in `inst/CITATION`"[length(end) == 0]
+    "No `# begin checklist entry` found in `inst/CITATION`"[length(start) == 0], # nolint: nonportable_path_linter, line_length_linter.
+    "No `# end checklist entry` found in `inst/CITATION`"[length(end) == 0] # nolint: nonportable_path_linter, line_length_linter.
   )
   if (length(problems)) {
     x$add_warnings(problems)
     return(x)
   }
   problems <- c(
-    "Multiple `# begin checklist entry` found in `inst/CITATION`"[
+    "Multiple `# begin checklist entry` found in `inst/CITATION`"[ # nolint: nonportable_path_linter, line_length_linter.
       length(start) > 1
     ],
-    "Multiple `# end checklist entry` found in `inst/CITATION`"[
+    "Multiple `# end checklist entry` found in `inst/CITATION`"[ # nolint: nonportable_path_linter, line_length_linter.
       length(end) > 1
     ],
-  "`# end checklist entry` gefore `# begin checklist entry` in `inst/CITATION`"[
+  "`# end checklist entry` gefore `# begin checklist entry` in `inst/CITATION`"[ # nolint: nonportable_path_linter, line_length_linter.
       start >= end
     ]
   )
@@ -138,12 +139,12 @@ update_citation <- function(x = ".", roles) {
       "Run `update_citation()` or `check_package()` locally.",
       "Then commit\n`inst/CITATION`."
     )[
-      file.path("inst", "CITATION") %in% current
+      file.path("inst", "CITATION") %in% current$file
     ],
     "CITATION"
   )
 
-  write_zenodo_json(x = x)
-  write_citation_cff(x = x, roles = roles)
-  return(x)
+  x <- write_zenodo_json(x = x)
+  x <- write_citation_cff(x = x, roles = roles)
+  return(invisible(x))
 }

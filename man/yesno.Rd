@@ -19,6 +19,7 @@ A function that asks a yes or no question to the user
 Other utils: 
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
+\code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},
 \code{\link{orcid2person}()},

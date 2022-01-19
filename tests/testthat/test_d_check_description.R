@@ -28,7 +28,7 @@ test_that("check_description() works", {
   this_desc <- desc::description$new(
     file = file.path(path, package, "DESCRIPTION")
   )
-  this_desc$add_remotes("inbo/INBOmd")
+  this_desc$add_remotes("inbo/INBOmd") # nolint: nonportable_path_linter.
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "add remotes", repo = repo)
@@ -63,7 +63,7 @@ test_that("check_description() works", {
   this_desc <- desc::description$new(
     file = file.path(path, package, "DESCRIPTION")
   )
-  this_desc$del_remotes("inbo/INBOmd")
+  this_desc$del_remotes("inbo/INBOmd") # nolint: nonportable_path_linter.
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "remove remotes", repo = repo)

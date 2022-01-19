@@ -2,6 +2,8 @@
 #'
 #' This file format contains the citation information.
 #' It is supported by GitHub, Zenodo and Zotero.
+#'
+#' @return An invisible `Checklist` object.
 #' @inheritParams read_checklist
 #' @inheritParams update_citation
 #' @export
@@ -113,7 +115,7 @@ write_citation_cff <- function(x = ".", roles) {
     )
   } else {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
-    new <- "^CITATION\\.cff$"
+    new <- "^CITATION\\.cff$" # nolint: nonportable_path_linter.
     writeLines(
       sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )
@@ -128,8 +130,8 @@ write_citation_cff <- function(x = ".", roles) {
     )[
       !is_tracked_not_modified(file = "CITATION.cff", repo = repo)
     ],
-    "CITATION"
+    "CITATION.cff"
   )
 
-  return(invisible(NULL))
+  return(invisible(x))
 }

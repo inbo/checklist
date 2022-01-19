@@ -13,6 +13,9 @@ Defaults to \code{.}.}
 \item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
 Defaults to \code{c("aut", "cre")}.}
 }
+\value{
+An invisible \code{Checklist} object.
+}
 \description{
 This file format contains the citation information.
 It is supported by GitHub, Zenodo and Zotero.
@@ -23,6 +26,7 @@ Other package:
 \code{\link{check_cran}()},
 \code{\link{check_description}()},
 \code{\link{check_documentation}()},
+\code{\link{check_environment}()},
 \code{\link{check_license}()},
 \code{\link{check_package}()},
 \code{\link{set_tag}()},

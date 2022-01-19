@@ -4,6 +4,8 @@
 #' See
 #' https://developers.zenodo.org/#add-metadata-to-your-github-repository-release
 #' for more information.
+#'
+#' @return An invisible `Checklist` object.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
@@ -32,7 +34,7 @@ write_zenodo_json <- function(x = ".") {
   )
   authors_orcid[!grepl("orcid.org", authors_orcid)] <- ""
   authors_orcid <- gsub(
-    ".*orcid.org/(([0-9]{4}-){3}[0-9]{4}).*", "https://orcid.org/\\1", # nolint
+    ".*orcid.org/(([0-9]{4}-){3}[0-9]{3}[0-9X]).*", "https://orcid.org/\\1", # nolint: nonportable_path_linter, line_length_linter.
     authors_orcid
   )
 
@@ -52,6 +54,7 @@ write_zenodo_json <- function(x = ".") {
       }
     }
   )
+  # add contributors
   relevant <- vapply(
     authors, FUN.VALUE = logical(1),
     FUN = function(z) {
@@ -61,13 +64,47 @@ write_zenodo_json <- function(x = ".") {
   contributors <- vapply(
     which(relevant), FUN.VALUE = vector("list", 1),
     FUN = function(i) {
-      if (authors_orcid[[i]] == "") {
-        list(list(name = authors_plain[[i]]))
-      } else {
-        list(list(name = authors_plain[[i]], orcid = authors_orcid[[i]]))
+      z <- list(list(name = authors_plain[[i]], type = "ProjectMember"))
+      if (authors_orcid[[i]] != "") {
+        z[[1]][["orcid"]] <-  authors_orcid[[i]]
       }
+      return(z)
     }
   )
+  # add copyright holder
+  relevant <- vapply(
+    authors, FUN.VALUE = logical(1),
+    FUN = function(z) {
+      any(z$role %in% "cph")
+    }
+  )
+  contributors <- c(contributors, vapply(
+    which(relevant), FUN.VALUE = vector("list", 1),
+    FUN = function(i) {
+      z <- list(list(name = authors_plain[[i]], type = "RightsHolder"))
+      if (authors_orcid[[i]] != "") {
+        z[[1]][["orcid"]] <-  authors_orcid[[i]]
+      }
+      return(z)
+    }
+  ))
+  # add contact person
+  relevant <- vapply(
+    authors, FUN.VALUE = logical(1),
+    FUN = function(z) {
+      any(z$role %in% "cre")
+    }
+  )
+  contributors <- c(contributors, vapply(
+    which(relevant), FUN.VALUE = vector("list", 1),
+    FUN = function(i) {
+      z <- list(list(name = authors_plain[[i]], type = "ContactPerson"))
+      if (authors_orcid[[i]] != "") {
+        z[[1]][["orcid"]] <-  authors_orcid[[i]]
+      }
+      return(z)
+    }
+  ))
 
   description <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
   license <- this_desc$get("License")
@@ -75,10 +112,13 @@ write_zenodo_json <- function(x = ".") {
   zenodo <- list(
     title = sprintf("%s: %s", this_desc$get("Package"), this_desc$get("Title")),
     version = as.character(this_desc$get_version()), description = description,
-    creators = creators, contributors = contributors, upload_type = "software",
-    access_rights = "open", license = license,
-    communities = list(identifier = "inbo")
+    creators = creators, upload_type = "software",
+    access_right = "open", license = license,
+    communities = list(list(identifier = "inbo"))
   )
+  if (length(contributors) > 0) {
+    zenodo$contributors <- contributors
+  }
   if (!is.na(this_desc$get("Language"))) {
     zenodo$language <- gsub("(-.*)", "", this_desc$get("Language"))
   }
@@ -92,14 +132,14 @@ write_zenodo_json <- function(x = ".") {
     )
   } else {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
-    new <- "^\\.zenodo\\.json$"
+    new <- "^\\.zenodo\\.json$" # nolint: nonportable_path_linter.
     writeLines(
       sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )
   }
 
   writeLines(
-    toJSON(zenodo, pretty = TRUE, auto_unbox = FALSE),
+    toJSON(zenodo, pretty = TRUE, auto_unbox = TRUE),
     file.path(x$get_path, ".zenodo.json")
   )
 
@@ -113,8 +153,8 @@ write_zenodo_json <- function(x = ".") {
     )[
       !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
     ],
-    "CITATION"
+    ".zenodo.json"
   )
 
-  return(invisible(NULL))
+  return(invisible(x))
 }

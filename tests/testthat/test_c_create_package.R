@@ -97,7 +97,7 @@ test_that("create_package() works", {
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
 
-  writeLines("dummy<-function(){F}", file.path(path, package, "R", "dummy.R")) # nolint
+  writeLines("dummy<-function(){F}", file.path(path, package, "R", "dummy.R"))
   expect_is(
     x <- check_lintr(file.path(path, package), quiet = TRUE), "Checklist"
   )

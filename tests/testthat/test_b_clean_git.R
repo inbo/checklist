@@ -28,8 +28,8 @@ test_that("clean_git with `main` as main branch", {
   git_add("junk2.txt", repo = repo)
   junk2 <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(
-    remote = "origin", refspec = "refs/heads/branch", set_upstream = TRUE,
-    repo = repo
+    remote = "origin", set_upstream = TRUE, repo = repo,
+    refspec = "refs/heads/branch" # nolint: nonportable_path_linter.
   )
 
   # checkout main when no local branches
@@ -41,7 +41,7 @@ test_that("clean_git with `main` as main branch", {
   branch_info_repo2 <- git_branch_list(repo = repo2)
   expect_identical(
     branch_info_repo$commit[branch_info_repo$name == "branch"],
-    branch_info_repo2$commit[branch_info_repo2$name == "origin/branch"]
+    branch_info_repo2$commit[branch_info_repo2$name == "origin/branch"] # nolint: nonportable_path_linter, line_length_linter.
   )
 
   # update local branches that are behind
@@ -50,17 +50,20 @@ test_that("clean_git with `main` as main branch", {
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo2)
-  gert::git_branch_set_upstream(upstream = "origin/branch", repo = repo2)
+  gert::git_branch_set_upstream(
+    upstream = "origin/branch", repo = repo2 # nolint: nonportable_path_linter.
+  )
   expect_invisible(clean_git(repo = repo2, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
   branch_info_repo2 <- git_branch_list(repo = repo2)
   expect_identical(
     branch_info_repo$commit[branch_info_repo$name == "branch"],
-    branch_info_repo2$commit[branch_info_repo2$name == "origin/branch"]
+    branch_info_repo2$commit[branch_info_repo2$name == "origin/branch"] # nolint: nonportable_path_linter, line_length_linter.
   )
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch", # nolint: nonportable_path_linter.
+    ref = "branch", repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(0L, 0L))
@@ -75,14 +78,16 @@ test_that("clean_git with `main` as main branch", {
   junk <- gert::git_commit(message = "branch commit", repo = repo2)
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch", # nolint: nonportable_path_linter.
+    ref = "branch", repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 0L))
   expect_invisible(clean_git(repo = repo2, verbose = FALSE))
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch", # nolint: nonportable_path_linter.
+    ref = "branch", repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 0L))
@@ -105,7 +110,8 @@ test_that("clean_git with `main` as main branch", {
   )
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch", # nolint: nonportable_path_linter.
+    ref = "branch", repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 1L))

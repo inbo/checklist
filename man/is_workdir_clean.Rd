@@ -24,6 +24,7 @@ A clean working directory has no staged, unstaged or untracked files.
 Other utils: 
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
+\code{\link{is_repository}()},
 \code{\link{new_branch}()},
 \code{\link{orcid2person}()},
 \code{\link{validate_email}()},

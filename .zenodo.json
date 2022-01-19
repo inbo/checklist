@@ -1,27 +1,40 @@
 {
-  "title": ["checklist: A Thorough and Strict Set of Checks for R Packages and Source Code"],
-  "version": ["0.2.2"],
-  "description": ["An opinated set of rules for R packages and R source code projects."],
+  "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
+  "version": "0.2.3",
+  "description": "An opinated set of rules for R packages and R source code projects.",
   "creators": [
     {
-      "name": ["Onkelinx, Thierry"],
-      "orcid": ["https://orcid.org/0000-0001-8804-4216"]
+      "name": "Onkelinx, Thierry",
+      "orcid": "https://orcid.org/0000-0001-8804-4216"
+    }
+  ],
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "GPL-3.0",
+  "communities": [
+    {
+      "identifier": "inbo"
     }
   ],
   "contributors": [
     {
-      "name": ["Lommelen, Els"],
-      "orcid": ["https://orcid.org/0000-0002-3481-5684"]
+      "name": "Lommelen, Els",
+      "type": "ProjectMember",
+      "orcid": "https://orcid.org/0000-0002-3481-5684"
     },
     {
-      "name": ["Van Calster, Hans"],
-      "orcid": ["https://orcid.org/0000-0001-8595-8426"]
+      "name": "Van Calster, Hans",
+      "type": "ProjectMember",
+      "orcid": "https://orcid.org/0000-0001-8595-8426"
+    },
+    {
+      "name": "Research Institute for Nature and Forest",
+      "type": "RightsHolder"
+    },
+    {
+      "name": "Onkelinx, Thierry",
+      "type": "ContactPerson",
+      "orcid": "https://orcid.org/0000-0001-8804-4216"
     }
-  ],
-  "upload_type": ["software"],
-  "access_rights": ["open"],
-  "license": ["GPL-3.0"],
-  "communities": {
-    "identifier": ["inbo"]
-  }
+  ]
 }
