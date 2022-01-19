@@ -1,5 +1,12 @@
 # checklist 0.2.3
 
+* Add `vignette("zenodo")` on how to set up the integration with [Zenodo](https://www.zenodo.org) and
+  [ORCID](https://orcid.org)
+* `check_environment()` makes sure that the required repository secrets are set.
+  `check_package()` performs this check when it runs in a GitHub Action.
+  A missing repository secret results in an error.
+  It points to `vignette("getting_started")` which indicates how to solve it.
+
 ## Bugfix
 
 * Fix problem in `write_zenodo_json()` which produced a `.zenodo.json` which
