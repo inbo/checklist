@@ -9,6 +9,7 @@
 check_environment <- function(x = ".") {
   x <- read_checklist(x = x)
   if (!isTRUE(as.logical(Sys.getenv("GITHUB_ACTIONS", "FALSE")))) {
+    x$add_error(character(0), "repository secret")
     return(invisible(x))
   }
   problems <- c(
@@ -17,6 +18,7 @@ check_environment <- function(x = ".") {
     "CODECOV_TOKEN"[Sys.getenv("CODECOV_TOKEN") == ""]
   )
   if (length(problems) == 0) {
+    x$add_error(character(0), "repository secret")
     return(invisible(x))
   }
   fmt <- paste(

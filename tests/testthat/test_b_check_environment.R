@@ -3,17 +3,15 @@ test_that("check_environment() works", {
   dir.create(tmp_dir)
   on.exit(file.remove(tmp_dir), add = TRUE)
   old_gha <- Sys.getenv("GITHUB_ACTIONS")
-  on.exit(Sys.setenv(GITHUB_ACTIONS = old_gha), add = TRUE)
   old_input <- Sys.getenv("INPUT_TOKEN")
-  on.exit(Sys.setenv(INPUT_TOKEN = old_input), add = TRUE)
   old_orcid <- Sys.getenv("ORCID_TOKEN")
-  on.exit(Sys.setenv(ORCID_TOKEN = old_orcid), add = TRUE)
   old_codecov <- Sys.getenv("CODECOV_TOKEN")
-  on.exit(Sys.setenv(CODECOV_TOKEN = old_codecov), add = TRUE)
 
   Sys.setenv(GITHUB_ACTIONS = "")
   expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
-  expect_identical(x$.__enclos_env__$private$errors, list())
+  expect_identical(
+    x$.__enclos_env__$private$errors, list(`repository secret` = character(0))
+  )
 
   Sys.setenv(GITHUB_ACTIONS = "true")
   Sys.setenv(INPUT_TOKEN = "")
@@ -62,7 +60,9 @@ test_that("check_environment() works", {
 
   Sys.setenv(CODECOV_TOKEN = "bla")
   expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
-  expect_identical(x$.__enclos_env__$private$errors, list())
+  expect_identical(
+    x$.__enclos_env__$private$errors, list(`repository secret` = character(0))
+  )
 
   Sys.setenv(ORCID_TOKEN = "")
   expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
@@ -119,4 +119,10 @@ test_that("check_environment() works", {
       )
     )
   )
+
+  Sys.setenv(GITHUB_ACTIONS = old_gha)
+  Sys.setenv(INPUT_TOKEN = old_input)
+  Sys.setenv(ORCID_TOKEN = old_orcid)
+  Sys.setenv(CODECOV_TOKEN = old_codecov)
+
 })
