@@ -5,6 +5,7 @@
 #' @return An invisible `Checklist` object.
 #' @inheritParams read_checklist
 #' @export
+#' @family package
 check_environment <- function(x = ".") {
   x <- read_checklist(x = x)
   if (!isTRUE(as.logical(Sys.getenv("GITHUB_ACTIONS", "FALSE")))) {

@@ -17,3 +17,18 @@ An invisible \code{Checklist} object.
 Some actions will fail when these environment variables are not set.
 This function does only work on GitHub.
 }
+\seealso{
+Other package: 
+\code{\link{check_codemeta}()},
+\code{\link{check_cran}()},
+\code{\link{check_description}()},
+\code{\link{check_documentation}()},
+\code{\link{check_license}()},
+\code{\link{check_package}()},
+\code{\link{set_tag}()},
+\code{\link{tidy_desc}()},
+\code{\link{update_citation}()},
+\code{\link{write_citation_cff}()},
+\code{\link{write_zenodo_json}()}
+}
+\concept{package}

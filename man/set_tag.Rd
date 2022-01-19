@@ -25,6 +25,7 @@ Other package:
 \code{\link{check_cran}()},
 \code{\link{check_description}()},
 \code{\link{check_documentation}()},
+\code{\link{check_environment}()},
 \code{\link{check_license}()},
 \code{\link{check_package}()},
 \code{\link{tidy_desc}()},
