@@ -191,7 +191,7 @@ checklist <- R6Class(
         always = c("checklist", "filename conventions", "lintr"),
         package = c(
           "CITATION", "DESCRIPTION", "documentation", "R CMD check", "codemeta",
-          "license", "CITATION.cff", ".zenodo.json"
+          "license", "CITATION.cff", ".zenodo.json", "repository secret"
         )
       )
       required_checks <- unlist(required_checks[c(TRUE, self$package)])
