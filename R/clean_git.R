@@ -29,12 +29,12 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   # determine main branch
   branch_info <- git_branch_list(repo = repo)
   main_branch <- ifelse(
-    any(branch_info$name == "origin/main"), "main", #nolint: nonportable_path_linter
-    ifelse(any(branch_info$name == "origin/master"), "master", "unknown") #nolint: nonportable_path_linter
+    any(branch_info$name == "origin/main"), "main", #nolint: nonportable_path_linter, line_length_linter.
+    ifelse(any(branch_info$name == "origin/master"), "master", "unknown") #nolint: nonportable_path_linter, line_length_linter.
   )
   assert_that(
     main_branch %in% c("main", "master"),
-    msg = "no branch `origin/main` or `origin/master` found." #nolint: nonportable_path_linter
+    msg = "no branch `origin/main` or `origin/master` found." #nolint: nonportable_path_linter, line_length_linter.
   )
 
   origin_main_branch <- branch_info$name[

@@ -17,8 +17,8 @@ new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
   # determine main branch
   all_branches <- git_branch_list(repo = repo)
   main_branch <- ifelse(
-    "origin/main" %in% all_branches$name, "main", # nolint: nonportable_path_linter
-    ifelse("origin/master" %in% all_branches$name, "master", "unknown") # nolint: nonportable_path_linter
+    "origin/main" %in% all_branches$name, "main", # nolint: nonportable_path_linter, line_length_linter.
+    ifelse("origin/master" %in% all_branches$name, "master", "unknown") # nolint: nonportable_path_linter, line_length_linter.
   )
   git_branch_create(
     branch = branch,
@@ -26,7 +26,7 @@ new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
     checkout = checkout,
     repo = repo
     )
-  git_push(remote = "origin", refspec = sprintf("refs/heads/%s", branch), # nolint: nonportable_path_linter
+  git_push(remote = "origin", refspec = sprintf("refs/heads/%s", branch), # nolint: nonportable_path_linter, line_length_linter.
            set_upstream = TRUE, verbose = verbose, repo = repo)
   return(invisible(NULL))
 }

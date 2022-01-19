@@ -167,14 +167,14 @@ See the details in ?pkgdown::build_news for the required format."
   doc_error <- c(
     doc_error,
     "NEWS.md should only contain a single blank line before or after a heading"[
-      any(news_file == "" | grepl("^\\w+$", news_file)) # nolint
+      any(news_file == "" | grepl("^\\w+$", news_file)) # nolint: nonportable_path_linter, line_length_linter.
     ],
     "NEWS.md has a line longer than 80 characters (excluding URLs)."[
       any(nchar(news_file) > 80)
     ],
     "Item starts with `* ` or `    * `. Multiline items start with `  `.
     "[
-      !all(grepl("^((( ){4})?\\*| ) \\S", news_file)) # nolint
+      !all(grepl("^((( ){4})?\\*| ) \\S", news_file)) # nolint: nonportable_path_linter, line_length_linter.
     ]
   )
 

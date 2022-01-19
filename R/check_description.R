@@ -70,23 +70,23 @@ from the web. More info on https://github.com/github/renaming"[
       )
       assert_that(
         any(branch_info$name %in%
-          c("origin/main", "origin/master")), #nolint: nonportable_path_linter
+          c("origin/main", "origin/master")), #nolint: nonportable_path_linter.
         msg =
       "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
       )
       ref_branch <- ifelse(
-        any(branch_info$name == "origin/main"), #nolint: nonportable_path_linter
-        "origin/main", "origin/master" #nolint: nonportable_path_linter
+        any(branch_info$name == "origin/main"), #nolint: nonportable_path_linter, line_length_linter.
+        "origin/main", "origin/master" #nolint: nonportable_path_linter, line_length_linter.
       )
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
 main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
-  !any(branch_info$name == "origin/main") #nolint: nonportable_path_linter
+  !any(branch_info$name == "origin/main") #nolint: nonportable_path_linter.
 ] -> notes
       commit1 <- git_commit_id(ref = ref_branch, repo = repo)
       commit2 <- git_commit_id(ref = "HEAD", repo = repo)
       desc_diff <- execshell(
-        sprintf("git diff %s..%s -- ./DESCRIPTION", commit1, commit2), #nolint: nonportable_path_linter
+        sprintf("git diff %s..%s -- ./DESCRIPTION", commit1, commit2), #nolint: nonportable_path_linter, line_length_linter.
         intern = TRUE,
         path = repo)
     }
