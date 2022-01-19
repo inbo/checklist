@@ -83,7 +83,7 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
     - _Status checks found in the last week for this repository_
         - `check package`
         - `macOS-latest (release)`
-        - `ubuntu-18.04 (oldrel)`
+        - `ubuntu-20.04 (oldrel)`
         - `ubuntu-20.04 (devel)`
         - `windows-latest (release)`
 
@@ -147,7 +147,7 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
     - _Status checks found in the last week for this repository_
         - `check package`
         - `macOS-latest (release)`
-        - `ubuntu-18.04 (oldrel)`
+        - `ubuntu-20.04 (oldrel)`
         - `ubuntu-20.04 (devel)`
         - `windows-latest (release)`
 
@@ -192,6 +192,6 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
     - _Status checks found in the last week for this repository_
         - `check package`
         - `macOS-latest (release)`
-        - `ubuntu-18.04 (oldrel)`
+        - `ubuntu-20.04 (oldrel)`
         - `ubuntu-20.04 (devel)`
         - `windows-latest (release)`
