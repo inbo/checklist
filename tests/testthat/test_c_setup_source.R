@@ -43,8 +43,14 @@ test_that("setup_source() works", {
 
   writeLines("sessionInfo()", file.path(path, "junk.r"))
   git_add(files = "junk.r", repo = path)
-  expect_error(
-    check_source(path, fail = TRUE),
+  expect_error({
+      hide_output2 <- tempfile(fileext = ".txt")
+      on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+      sink(hide_output2)
+      x <- check_source(path, fail = TRUE)
+      sink()
+      x
+    },
     "Checking the source code revealed some problems"
   )
   expect_is({

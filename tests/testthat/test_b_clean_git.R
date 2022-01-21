@@ -83,7 +83,7 @@ test_that("clean_git with `main` as main branch", {
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 0L))
-  expect_invisible(clean_git(repo = repo2, verbose = FALSE))
+  expect_invisible(suppressWarnings(clean_git(repo = repo2, verbose = FALSE)))
 
   ab <- git_ahead_behind(
     upstream = "origin/branch", # nolint: nonportable_path_linter.
