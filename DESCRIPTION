@@ -47,7 +47,6 @@ VignetteBuilder:
     knitr
 Remotes: 
     r-lib/lintr
-Additional_repositories: https://ropensci.r-universe.dev
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
