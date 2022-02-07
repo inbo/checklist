@@ -16,7 +16,7 @@ An invisible \code{Checklist} object.
 \description{
 Zenodo uses the .zenodo.json file to define the citation information.
 See
-https://developers.zenodo.org/#add-metadata-to-your-github-repository-release
+\url{https://developers.zenodo.org/#add-metadata-to-your-github-repository-release}
 for more information.
 }
 \seealso{
