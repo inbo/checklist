@@ -12,9 +12,6 @@ allowed:
 
       Unknown, possibly mis-spelled, fields in DESCRIPTION:
         'Remotes'
-
-      Availability using Additional_repositories specification:
-        ?   ?   https://ropensci.r-universe.dev
 citation_roles:
 - aut
 - cre
