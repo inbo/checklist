@@ -1,8 +1,8 @@
 #' Write a .zenodo.json file
 #'
 #' Zenodo uses the .zenodo.json file to define the citation information.
-#' See
-#' <https://developers.zenodo.org/#add-metadata-to-your-github-repository-release>
+#' See the [Zenodo developers website](
+#'https://developers.zenodo.org/#add-metadata-to-your-github-repository-release)
 #' for more information.
 #'
 #' @return An invisible `Checklist` object.
