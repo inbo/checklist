@@ -115,8 +115,10 @@ update_citation <- function(x = ".", roles) {
     )
   )
   doi <- this_desc$get_field("URL")
-  if (any(grepl("https:\\/\\/doi.org/", doi))) {
-    doi <- gsub(".*?https:\\/\\/doi.org/(.*)(, .*)?", "\\1", doi)
+  doi <- strsplit(doi, ",")[[1]]
+  doi <- doi[grepl("https:\\/\\/doi.org/", doi)]
+  if (length(doi) > 0) {
+    doi <- gsub(".*https:\\/\\/doi.org\\/(.*)", "\\1", doi)
     package_citation <- c(
       package_citation, doi = paste0("\"", gsub("(.*),.*", "\\1", doi), "\"")
     )
