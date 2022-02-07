@@ -1,3 +1,8 @@
+# checklist 0.2.4
+
+* Improver the extraction of the DOI from the URL field.
+* Allow `.rda` files in the `inst` folder of a package.
+
 # checklist 0.2.3
 
 * Add `vignette("zenodo")` on how to set up the integration with [Zenodo](https://www.zenodo.org) and
