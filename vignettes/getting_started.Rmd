@@ -172,7 +172,7 @@ especially if you are updating to a new checklist version and made some tweaks i
 1. Run `x <- checklist::check_source()` and fix any issues.
 Repeat this step until you have only issues that are not a problem.
 Commit any changes.
-1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
+1. Update the `checklist.yml` with `checklist::write_checklist(x, package = FALSE)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
 Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
