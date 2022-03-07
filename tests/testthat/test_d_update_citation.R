@@ -15,7 +15,7 @@ test_that("update_citation() works", {
     package = package,
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.",
-    maintainer = maintainer
+    maintainer = maintainer, language = "eng"
   )
 
   expect_is({

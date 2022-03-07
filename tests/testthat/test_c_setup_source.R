@@ -54,9 +54,9 @@ test_that("setup_source() works", {
     "Checking the source code revealed some problems"
   )
   expect_is({
-    hide_output2 <- tempfile(fileext = ".txt")
-    on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
-    sink(hide_output2)
+    hide_output3 <- tempfile(fileext = ".txt")
+    on.exit(file.remove(hide_output3), add = TRUE, after = TRUE)
+    sink(hide_output3)
     x <- check_source(path, fail = FALSE)
     sink()
     x

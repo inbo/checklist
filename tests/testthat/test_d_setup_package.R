@@ -16,7 +16,7 @@ test_that("setup_package() works", {
     package = package,
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.",
-    maintainer = maintainer
+    maintainer = maintainer, language = "eng"
   )
   repo <- file.path(path, package)
   new_files <- c(
