@@ -34,6 +34,9 @@ See `?write_checklist` to generate a `checklist.yml`.")
   if (has_name(allowed, "citation_roles")) {
     x$set_roles(allowed$citation_roles)
   }
+  if (has_name(allowed, "keywords")) {
+    x$update_keywords(allowed$keywords)
+  }
 
   assert_that(has_name(allowed, "description"))
   assert_that(has_name(allowed, "package"))

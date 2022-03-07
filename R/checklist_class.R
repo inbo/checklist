@@ -165,6 +165,15 @@ checklist <- R6Class(
       assert_that(is.character(roles), noNA(roles))
       private$roles <- sort(unique(roles))
       invisible(self)
+    },
+
+    #' @description Update the keywords.
+    #' @param keywords a character vector with the new keywords.
+    #' The default empty vector (`character(0)`) will erase the keywords.
+    update_keywords = function(keywords = character(0)) {
+      assert_that(inherits(keywords, "character"))
+      private$keywords <- sort(keywords)
+      invisible(self)
     }
   ),
 
@@ -212,28 +221,25 @@ Please contact the maintainer of the `checklist` package."
 
     #' @field template A list for a check list template.
     template = function() {
-      list(
-        description = "Configuration file for checklist::check_pkg()",
-        package = self$package,
-        allowed = list(
-          warnings = private$allowed_warnings,
-          notes = private$allowed_notes
-        ),
-        citation_roles = private$roles
+      checklist_template(
+        package = self$package, warnings = private$allowed_warnings,
+        notes = private$allowed_notes, citation_roles = private$roles,
+        keywords = private$keywords
       )
     }
   ),
 
   private = list(
-    path = character(0),
+    allowed_notes = list(),
+    allowed_warnings = list(),
     checked = character(0),
     errors = list(),
-    allowed_warnings = list(),
-    warnings = character(0),
-    allowed_notes = list(),
-    notes = character(0),
+    keywords = character(0),
     linter = structure(list(), class = "lints", path = "."),
-    roles = c("aut", "cre")
+    notes = character(0),
+    path = character(0),
+    roles = c("aut", "cre"),
+    warnings = character(0)
   )
 )
 

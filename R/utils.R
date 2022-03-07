@@ -236,6 +236,22 @@ checklist_summarise_linter <- function(linter) {
   )
 }
 
+checklist_template <- function(
+    package, warnings, notes, citation_roles, keywords
+) {
+  template <- list(
+    description = "Configuration file for checklist::check_pkg()",
+    package = package,
+    allowed = list(warnings = warnings, notes = notes),
+    citation_roles = citation_roles
+  )
+  if (length(keywords) == 0) {
+    return(template)
+  }
+  template$keywords <- keywords
+  return(template)
+}
+
 rules <- function(x = "#", nl = "\n") {
   assert_that(is.string(nl), noNA(nl))
   paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")

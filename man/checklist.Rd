@@ -44,6 +44,7 @@ package.}
 \item \href{#method-new}{\code{checklist$new()}}
 \item \href{#method-print}{\code{checklist$print()}}
 \item \href{#method-set_roles}{\code{checklist$set_roles()}}
+\item \href{#method-update_keywords}{\code{checklist$update_keywords()}}
 \item \href{#method-clone}{\code{checklist$clone()}}
 }
 }
@@ -246,6 +247,24 @@ set roles
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{roles}}{A vector with roles.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-update_keywords"></a>}}
+\if{latex}{\out{\hypertarget{method-update_keywords}{}}}
+\subsection{Method \code{update_keywords()}}{
+Update the keywords.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$update_keywords(keywords = character(0))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{keywords}}{a character vector with the new keywords.
+The default empty vector (\code{character(0)}) will erase the keywords.}
 }
 \if{html}{\out{</div>}}
 }

@@ -114,6 +114,9 @@ Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_package()`.
 This should run without returning an error.
+1. Use `x$update_keywords()` if you want to define a set of keywords.
+  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
+  The functions add the keyword "R package" automatically to the citation files.
 
 ### Online setup
 
@@ -178,6 +181,9 @@ Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_source()`.
 This should run without returning an error.
+1. Use `x$update_keywords()` if you want to define a set of keywords.
+  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
+  The functions add the keyword "R package" automatically to the citation files.
 
 ### Online setup
 
