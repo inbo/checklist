@@ -1,5 +1,9 @@
 # checklist 0.2.4
 
+* `check_description()` enforces a `Language` field with a valid
+  [ISO 639-9 code] (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Languages/List_of_ISO_639-3_language_codes_(2019)).
+* `create_package()` gains a required `language` argument.
+  This adds the required `Language` field to the `DESCRIPTION`.
 * Improver the extraction of the DOI from the URL field.
 * Allow `.rda` files in the `inst` folder of a package.
 
