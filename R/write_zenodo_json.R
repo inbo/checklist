@@ -120,7 +120,7 @@ write_zenodo_json <- function(x = ".") {
     zenodo$contributors <- contributors
   }
   if (!is.na(this_desc$get("Language"))) {
-    zenodo$language <- gsub("(-.*)", "", this_desc$get("Language"))
+    zenodo$language <- this_desc$get("Language")
   }
 
   if (!file_test("-f", file.path(x$get_path, ".Rbuildignore"))) {
@@ -146,15 +146,21 @@ write_zenodo_json <- function(x = ".") {
   # check if file is tracked and not modified
   repo <- x$get_path
   x$add_error(
-    paste(
-      ".zenodo.json file needs an update.",
-      "Run `update_citation()` or `check_package()` locally.",
-      "Then\ncommit `.zenodo.json`."
-    )[
-      !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
-    ],
+    c(
+      paste(
+        ".zenodo.json file needs an update.",
+        "Run `update_citation()` or `check_package()` locally.",
+        "Then\ncommit `.zenodo.json`."
+      )[
+        !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
+      ],
+      "Language field in DESCRIPTION must be valid ISO 639-3 3 letter code."[
+        !is.na(this_desc$get("Language")) &&
+          !this_desc$get("Language") %in% iso_639_3
+      ]
+    ),
     ".zenodo.json"
   )
 
-  return(invisible(x))
+  return(x)
 }
