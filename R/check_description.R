@@ -111,6 +111,16 @@ from the web. More info on https://github.com/github/renaming"[
       !unchanged_repo(repo, status_before)
     ]
   )
+
+  # check if the language is set and valid
+  desc_error <- c(
+    desc_error,
+    "Language field not set."[is.na(this_desc$get("Language"))],
+    "Language must be valid ISO 639-3 3 letter code."[
+      !this_desc$get("Language") %in% iso_639_3
+    ]
+  )
+
   x$add_error(desc_error, "DESCRIPTION")
   x$add_notes(notes)
   x$add_warnings(check_authors(this_desc))
