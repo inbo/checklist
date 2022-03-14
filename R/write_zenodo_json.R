@@ -106,12 +106,12 @@ write_zenodo_json <- function(x = ".") {
     }
   ))
 
-  description <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
+  cit_desc <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
   license <- this_desc$get("License")
   license <- ifelse(license == "GPL-3", "GPL-3.0", license)
   zenodo <- list(
     title = sprintf("%s: %s", this_desc$get("Package"), this_desc$get("Title")),
-    version = as.character(this_desc$get_version()), description = description,
+    version = as.character(this_desc$get_version()), description = cit_desc,
     creators = creators, upload_type = "software",
     access_right = "open", license = license,
     communities = list(list(identifier = "inbo"))
@@ -121,6 +121,9 @@ write_zenodo_json <- function(x = ".") {
   }
   if (!is.na(this_desc$get("Language"))) {
     zenodo$language <- this_desc$get("Language")
+  }
+  if (length(x$get_keywords) > 0) {
+    zenodo$keywords <- x$get_keywords
   }
 
   if (!file_test("-f", file.path(x$get_path, ".Rbuildignore"))) {

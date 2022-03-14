@@ -114,6 +114,9 @@ update_citation <- function(x = ".", roles) {
       this_desc$get_field("Version"), this_desc$get_field("URL")
     )
   )
+  if (length(x$get_keywords) > 0) {
+    package_citation["keywords"] <- paste(x$get_keywords, collapse = ", ")
+  }
   doi <- this_desc$get_field("URL")
   doi <- strsplit(doi, ",")[[1]]
   doi <- doi[grepl("https:\\/\\/doi.org/", doi)]

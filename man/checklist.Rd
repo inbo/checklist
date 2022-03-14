@@ -20,6 +20,8 @@ package.}
 \describe{
 \item{\code{get_checked}}{A vector with checked topics.}
 
+\item{\code{get_keywords}}{A vector with keywords.}
+
 \item{\code{get_path}}{The path to the package.}
 
 \item{\code{get_roles}}{The roles to select contributors for the CITATION.}

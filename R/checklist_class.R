@@ -184,6 +184,11 @@ checklist <- R6Class(
       return(private$checked)
     },
 
+    #' @field get_keywords A vector with keywords.
+    get_keywords = function() {
+      return(private$keywords)
+    },
+
     #' @field get_path The path to the package.
     get_path = function() {
       return(private$path)
