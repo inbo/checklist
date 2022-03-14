@@ -115,7 +115,9 @@ update_citation <- function(x = ".", roles) {
     )
   )
   if (length(x$get_keywords) > 0) {
-    package_citation["keywords"] <- paste(x$get_keywords, collapse = ", ")
+    package_citation["keywords"] <- paste0(
+      "\"", paste(x$get_keywords, collapse = ", "), "\""
+    )
   }
   doi <- this_desc$get_field("URL")
   doi <- strsplit(doi, ",")[[1]]
