@@ -4,7 +4,14 @@
   [ISO 639-9 code] (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Languages/List_of_ISO_639-3_language_codes_(2019)).
 * `create_package()` gains a required `language` argument.
   This adds the required `Language` field to the `DESCRIPTION`.
-* Improver the extraction of the DOI from the URL field.
+* `checklist` objects gain an `update_keywords` method.
+  This is currently only relevant for packages.
+  Usage: check your package with `x <- check_package()`.
+  Add keywords with `x$update_keywords(c("keyword 1", "keyword 2")`.
+  The method adds the keyword `"R package"` automatically.
+  Store the keywords with `write_checklist(x)`.
+  Run `update_citation()` to update the citation files with the keywords.
+* Improve the extraction of the DOI from the URL field.
 * Allow `.rda` files in the `inst` folder of a package.
 
 # checklist 0.2.3
