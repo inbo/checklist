@@ -44,6 +44,9 @@ knitr::opts_chunk$set(
 1. Run `x <- checklist::check_package()`.
   Fix any issues that arise during the checks.
   Repeat the last two steps until you end up with only a single new note about a _New submission_.
+1. Use `x$update_keywords()` if you want to define a set of keywords.
+  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
+  The functions add the keyword "R package" automatically to the citation files.
 1. Run `checklist::write_checklist(x)`.
   This functions can convert some 'new' warnings and notes into 'allowed' warnings and notes.
 1. Run `x <- checklist::check_package()` again to check that only 'allowed' warnings and notes remain.
@@ -108,15 +111,15 @@ especially if you are updating to a new checklist version and made some tweaks i
 1. Run `x <- checklist::check_package()` and fix any issues.
 Repeat this step until you have only issues that are not a problem.
 Commit any remaining changes.
+1. Use `x$update_keywords()` if you want to define a set of keywords.
+  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
+  The functions add the keyword "R package" automatically to the citation files.
 1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
 Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_package()`.
 This should run without returning an error.
-1. Use `x$update_keywords()` if you want to define a set of keywords.
-  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
-  The functions add the keyword "R package" automatically to the citation files.
 
 ### Online setup
 
@@ -181,9 +184,6 @@ Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.
 1. Run `x <- checklist::check_source()`.
 This should run without returning an error.
-1. Use `x$update_keywords()` if you want to define a set of keywords.
-  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
-  The functions add the keyword "R package" automatically to the citation files.
 
 ### Online setup
 
