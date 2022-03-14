@@ -53,6 +53,9 @@ write_checklist <- function(x = ".", package = TRUE) {
   assert_that(is.flag(package))
   assert_that(noNA(package))
   x$package <- package
+  if (!"r package" %in% tolower(x$get_keywords)) {
+    x$update_keywords(c(x$get_keywords, "R package"))
+  }
 
   if (package && !"R CMD check" %in% x$get_checked) {
     x <- check_cran(x)
