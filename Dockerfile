@@ -77,6 +77,9 @@ RUN apt-get update \
   && apt-get clean \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("rgdal")'
 
+## install rmarkdown
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rmarkdown")'
+
 ## install rorcid
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 

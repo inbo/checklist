@@ -8,7 +8,7 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
-#' @importFrom gert git_info
+#' @importFrom gert git_ahead_behind
 #' @importFrom httr HEAD
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
@@ -41,14 +41,22 @@ check_cran <- function(x = ".", quiet = FALSE) {
       error_on = "never", quiet = quiet
     )
   )
-  repo <- try(git_info(x$get_path), silent = TRUE)
+  main_branch <- tryCatch(
+    ifelse(gert::git_branch_exists("main", repo = x$get_path), "main", "master"),
+    error = function(e) {
+      return("none")
+    }
+  )
   if (
-    !inherits(repo, "try-error") && repo$shorthand %in% c("main", "master") &&
+    main_branch != "none" &&
+    git_ahead_behind(upstream = main_branch, repo = x$get_path)$upstream ==
+      git_ahead_behind(upstream = main_branch, repo = x$get_path)$local &&
     any(grepl("Insufficient package version", check_output$warnings))
   ) {
-    incoming <- grepl("Insufficient package version", check_output$warnings)
-    gsub(
-  "
+    incoming <- grepl(
+      "checking CRAN incoming feasibility", check_output$warnings
+    )
+    gsub("
 
 Insufficient package version \\(submitted: .*, existing: .*\\)
 
@@ -59,8 +67,7 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
     }
   }
   x$add_rcmdcheck(
-    errors = check_output$errors,
-    warnings = check_output$warnings,
+    errors = check_output$errors, warnings = check_output$warnings,
     notes = check_output$notes
   )
   return(x)
