@@ -8,6 +8,7 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
+#' @importFrom gert git_info
 #' @importFrom httr HEAD
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
@@ -40,6 +41,23 @@ check_cran <- function(x = ".", quiet = FALSE) {
       error_on = "never", quiet = quiet
     )
   )
+  repo <- try(git_info(x$get_path), silent = TRUE)
+  if (
+    !inherits(repo, "try-error") && repo$shorthand %in% c("main", "master") &&
+    any(grepl("Insufficient package version", check_output$warnings))
+  ) {
+    incoming <- grepl("Insufficient package version", check_output$warnings)
+    gsub(
+  "
+
+Insufficient package version \\(submitted: .*, existing: .*\\)
+
+Days since last update: [0-9]+", "", check_output$warnings[incoming]
+    ) -> new_incoming
+    if (length(strsplit(new_incoming, "\n")[[1]]) == 2) {
+      check_output$warnings <- check_output$warnings[!incoming]
+    }
+  }
   x$add_rcmdcheck(
     errors = check_output$errors,
     warnings = check_output$warnings,
