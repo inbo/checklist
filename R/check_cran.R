@@ -8,7 +8,7 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @return A `Checklist` object.
 #' @importFrom assertthat assert_that
-#' @importFrom gert git_ahead_behind
+#' @importFrom gert git_ahead_behind git_branch_exists git_info
 #' @importFrom httr HEAD
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
@@ -41,11 +41,9 @@ check_cran <- function(x = ".", quiet = FALSE) {
       error_on = "never", quiet = quiet
     )
   )
-  main_branch <- tryCatch(
-    ifelse(gert::git_branch_exists("main", repo = x$get_path), "main", "master"),
-    error = function(e) {
-      return("none")
-    }
+  main_branch <- ifelse(
+    is.na(git_info(repo = x$get_path)$head), "none",
+    ifelse(git_branch_exists("main", repo = x$get_path), "main", "master")
   )
   if (
     main_branch != "none" &&
