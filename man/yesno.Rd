@@ -26,7 +26,7 @@ Other utils:
 \code{\link{validate_email}()}
 }
 \author{
-Hadley Wickham \href{mailto:hadley@rstudio.com}{hadley@rstudio.com}
+Hadley Wickham \href{mailto:Hadley@Rstudio.com}{Hadley@Rstudio.com}
 Largely based on devtools:::yesno().
 The user gets three options in an random order: 2 for "no", 1 for "yes".
 The wording for "yes" and "no" is random as well.

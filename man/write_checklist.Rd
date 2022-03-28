@@ -48,7 +48,7 @@ solve.
 The best example is the \verb{checking CRAN incoming feasibility ... NOTE New submission} which appears when checking a package not on
 \href{https://cran.r-project.org/}{CRAN}.
 That is should an allowed note as long as the package is not on CRAN.
-Or permantly when your package is not intended for CRAN.
+Or permanently when your package is not intended for CRAN.
 
 Do not allow a warning or note to fix an issue specific to your machine.
 That will result in an error when checking the package on an other machine

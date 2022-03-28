@@ -35,7 +35,7 @@
 #' submission` which appears when checking a package not on
 #' [CRAN](https://cran.r-project.org/).
 #' That is should an allowed note as long as the package is not on CRAN.
-#' Or permantly when your package is not intended for CRAN.
+#' Or permanently when your package is not intended for CRAN.
 #'
 #' Do not allow a warning or note to fix an issue specific to your machine.
 #' That will result in an error when checking the package on an other machine

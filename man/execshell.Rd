@@ -14,7 +14,7 @@ multiline string.}
 \item{intern}{a logical (not \code{NA}) which indicates whether to
     capture the output of the command as an \R character vector.}
 
-\item{path}{The path from where the commandstring needs to be executed}
+\item{path}{The path from where the command string needs to be executed}
 
 \item{...}{Other arguments passed to \code{\link[base]{system}} or
 \code{\link[base]{shell}}.}

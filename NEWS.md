@@ -133,7 +133,7 @@
 
 ## Bugfixes
 
-* Avoid false positive lintr when `.Rproj` file is put under version control.
+* Avoid false positive linters when `.Rproj` file is put under version control.
 * `check_files()` considers files with svg extensions as graphical files.
 * Minor bugfix in `entrypoint_package.sh`.
 
@@ -232,7 +232,7 @@
 
 # checklist 0.1.3
 
-* Add `validate_email()` to check for valid email adresses.
+* Add `validate_email()` to check for valid email addresses.
 * Add `orcid2person()` which converts a valid ORCID into a `person` object.
 * Add `create_package()` which prepare an RStudio project with an empty package.
 

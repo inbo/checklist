@@ -1,6 +1,6 @@
-#' Write a .zenodo.json file
+#' Write a `.zenodo.json` file
 #'
-#' Zenodo uses the .zenodo.json file to define the citation information.
+#' Zenodo uses the `.zenodo.json` file to define the citation information.
 #' See the [Zenodo developers website](
 #'https://developers.zenodo.org/#add-metadata-to-your-github-repository-release)
 #' for more information.

@@ -11,7 +11,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-8595-8426")),
     person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
-Description: An opinated set of rules for R packages and R source code
+Description: An opinionated set of rules for R packages and R source code
     projects.
 License: GPL-3
 URL: https://inbo.github.io/checklist/, https://github.com/inbo/checklist,
@@ -37,12 +37,13 @@ Imports:
     utils,
     withr,
     yaml
-Suggests: 
+Suggests:
     covr,
     knitr,
     mockery,
     roxygen2,
     showtext,
+    spelling,
     sysfonts,
     testthat
 VignetteBuilder: 
