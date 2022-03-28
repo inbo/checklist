@@ -119,8 +119,9 @@ write_zenodo_json <- function(x = ".") {
   if (length(contributors) > 0) {
     zenodo$contributors <- contributors
   }
-  if (!is.na(this_desc$get("Language"))) {
-    zenodo$language <- this_desc$get("Language")
+  lang <- lang_2_iso_639_3(this_desc$get("Language"))
+  if (!is.na(lang)) {
+    zenodo$language <- lang
   }
   if (length(x$get_keywords) > 0) {
     zenodo$keywords <- x$get_keywords
@@ -157,13 +158,24 @@ write_zenodo_json <- function(x = ".") {
       )[
         !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
       ],
-      "Language field in DESCRIPTION must be valid ISO 639-3 3 letter code."[
-        !is.na(this_desc$get("Language")) &&
-          !this_desc$get("Language") %in% iso_639_3
-      ]
+      attr(lang, "problem")
     ),
     ".zenodo.json"
   )
 
   return(x)
+}
+
+lang_2_iso_639_3 <- function(lang) {
+  if (lang %in% iso_639_3$alpha_3) {
+    return(lang)
+  }
+  short <- gsub("-.*", "", lang)
+  if (short %in% iso_639_3$alpha_2) {
+    return(iso_639_3$alpha_3[iso_639_3$alpha_2 == short])
+  }
+  attr(lang, "problem") <-
+    "Language field in DESCRIPTION must be a valid language.
+E.g. en-GB or eng for (British) English and nl-BE or nld for (Flemish) Dutch."
+  return(lang)
 }

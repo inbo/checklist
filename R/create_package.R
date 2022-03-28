@@ -75,7 +75,9 @@ create_package <- function(
   assert_that(is.string(title))
   assert_that(is.string(language))
   assert_that(
-    language %in% iso_639_3, msg = "language is not a valid ISO 639-3 code."
+    is.null(attr(lang_2_iso_639_3(language), "problem")),
+    msg = "language is not a valid code.
+E.g. en-GB or eng for (British) English and nl-BE or nld for (Flemish) Dutch."
   )
 
   dir.create(path, showWarnings = FALSE)

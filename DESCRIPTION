@@ -50,6 +50,6 @@ VignetteBuilder:
 Remotes: 
     r-lib/lintr
 Encoding: UTF-8
-Language: eng
+Language: en-GB
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
