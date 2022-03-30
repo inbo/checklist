@@ -13,6 +13,7 @@
   Run `update_citation()` to update the citation files with the keywords.
 * Improve the extraction of the DOI from the URL field.
 * Allow `.rda` files in the `inst` folder of a package.
+* Allow back ticks around package name in `NEWS.md`.
 
 # checklist 0.2.3
 

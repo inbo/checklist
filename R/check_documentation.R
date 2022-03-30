@@ -38,6 +38,10 @@
 #' ## Second level heading
 #'
 #' * You can use second level headings when you want to add more structure.
+#'
+#'  # `package_name` version
+#'
+#'  * Adding back ticks around the package name is allowed.
 #' ```
 #' @inheritParams read_checklist
 #' @inheritParams rcmdcheck::rcmdcheck
@@ -125,7 +129,9 @@ See the details in ?pkgdown::build_news for the required format."
     )
   }
   ok <- grepl(
-    paste("#", description$get("Package"), "[0-9]+\\.[0-9]+(\\.[0-9]+)?"),
+    paste0(
+      "# `?", description$get("Package"), "`? [0-9]+\\.[0-9]+(\\.[0-9]+)?"
+    ),
     news_file[version_location]
   )
   doc_error <- c(
@@ -136,9 +142,13 @@ See the details in ?pkgdown::build_news for the required format."
   Use `# name version` format",
       news_file[version_location[!ok]]
     ),
-    "NEWS.md start with the current package version"[
-      news_file[1] != paste(
-        "#", description$get("Package"), as.character(description$get_version())
+    "NEWS.md starts with the current package version"[
+      !grepl(
+        paste0(
+          "# `?", description$get("Package"), "`? ",
+          as.character(description$get_version())
+        ),
+        news_file[1]
       )
     ],
     "NEWS.md should not contain level 3+ headings"[
@@ -167,14 +177,14 @@ See the details in ?pkgdown::build_news for the required format."
   doc_error <- c(
     doc_error,
     "NEWS.md should only contain a single blank line before or after a heading"[
-      any(news_file == "" | grepl("^\\w+$", news_file)) # nolint: nonportable_path_linter, line_length_linter.
+      any(news_file == "" | grepl("^\\w+$", news_file))
     ],
     "NEWS.md has a line longer than 80 characters (excluding URLs)."[
       any(nchar(news_file) > 80)
     ],
     "Item starts with `* ` or `    * `. Multiline items start with `  `.
     "[
-      !all(grepl("^((( ){4})?\\*| ) \\S", news_file)) # nolint: nonportable_path_linter, line_length_linter.
+      !all(grepl("^((( ){4})?\\*| ) \\S", news_file))
     ]
   )
 
