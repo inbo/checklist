@@ -9,7 +9,7 @@ options(
   yaml.eval.expr = TRUE,
   repos = c(
     CRAN = "https://cloud.r-project.org/",
-    INLA = "https://inla.r-inla-download.org/R/testing",
+    INLA = "https://inla.r-inla-download.org/R/stable",
     inbo = "https://inbo.r-universe.dev"
   ),
   install.packages.check.source = "yes",
