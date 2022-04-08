@@ -106,11 +106,11 @@ Failing folder: `%s`",
       c(
         "\\.[a-zA-Z]+ignore", "\\.Rprofile", "\\.[a-zA-Z]+\\.(json|yml)",
         "CITATION", "DESCRIPTION", "NAMESPACE", "CITATION.cff",
-        "README\\.R?md", "NEWS\\.md", # nolint: nonportable_path_linter.
+        "README\\.R?md", "NEWS\\.md",
         "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE.md", "SUPPORT.md",
         "SECURITY.md", "FUNDING.yml",
         "Dockerfile", "docker-compose.*.yml",
-        ".*-package\\.Rd", "cran-comments.md", "WORDLIST"
+        ".*-package\\.Rd", "cran-comments.md", "WORDLIST.*"
       ),
       collapse = "|"
     )
