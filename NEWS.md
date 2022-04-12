@@ -14,6 +14,7 @@
 * Improve the extraction of the DOI from the URL field.
 * Allow `.rda` files in the `inst` folder of a package.
 * Allow back ticks around package name in `NEWS.md`.
+* Add `prepare_ghpages()`.
 
 # checklist 0.2.3
 
