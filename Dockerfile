@@ -59,6 +59,12 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 ## install mockery
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("mockery")'
 
+## install pdftools
+RUN  apt-get update \
+  && apt-get install -y --no-install-recommends \
+       libpoppler-cpp-dev \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("pdftools")'
+
 ## install pkgdown
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
