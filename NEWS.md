@@ -11,10 +11,16 @@
   The method adds the keyword `"R package"` automatically.
   Store the keywords with `write_checklist(x)`.
   Run `update_citation()` to update the citation files with the keywords.
+  Use `x$get_keywords()` to retrieve the current keywords.
 * Improve the extraction of the DOI from the URL field.
 * Allow `.rda` files in the `inst` folder of a package.
 * Allow back ticks around package name in `NEWS.md`.
 * Add `prepare_ghpages()`.
+* `check_cran()` ignores the insufficient package version when checking the
+  main branch.
+  This required when checking an R package when the current version equals the
+  latest version on CRAN.
+* Define explicit which lintr options to use.
 
 # checklist 0.2.3
 
