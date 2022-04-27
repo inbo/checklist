@@ -43,7 +43,6 @@ Suggests:
     mockery,
     roxygen2,
     showtext,
-    spelling,
     sysfonts,
     testthat
 VignetteBuilder: 
