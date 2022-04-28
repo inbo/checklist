@@ -32,7 +32,7 @@ prepare_ghpages <- function(x = ".", verbose = TRUE) {
   )
   git_add("index.html", repo = x$get_path, force = TRUE)
   git_commit("placeholder", repo = x$get_path)
-  git_push(repo = x$get_path)
+  git_push(remote = "origin", repo = x$get_path, verbose = verbose)
   git_branch_checkout(branch = current_branch, repo = x$get_path)
   if (verbose) {
     message("gh-pages branch created and pushed")
