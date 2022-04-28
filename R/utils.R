@@ -1,5 +1,5 @@
 #' A function that asks a yes or no question to the user
-#' @author Hadley Wickham <hadley@rstudio.com>
+#' @author Hadley Wickham <Hadley@Rstudio.com>
 #' Largely based on devtools:::yesno().
 #' The user gets three options in an random order: 2 for "no", 1 for "yes".
 #' The wording for "yes" and "no" is random as well.
@@ -23,7 +23,7 @@ yesno <- function(...) {
   menu(qs[rand]) == which(rand == 1)
 }
 
-#' Check if the current workdir of a repo is clean
+#' Check if the current working directory of a repo is clean
 #'
 #' A clean working directory has no staged, unstaged or untracked files.
 #' @inheritParams gert::git_status
@@ -236,6 +236,22 @@ checklist_summarise_linter <- function(linter) {
   )
 }
 
+checklist_template <- function(
+    package, warnings, notes, citation_roles, keywords
+) {
+  template <- list(
+    description = "Configuration file for checklist::check_pkg()",
+    package = package,
+    allowed = list(warnings = warnings, notes = notes),
+    citation_roles = citation_roles
+  )
+  if (length(keywords) == 0) {
+    return(template)
+  }
+  template$keywords <- keywords
+  return(template)
+}
+
 rules <- function(x = "#", nl = "\n") {
   assert_that(is.string(nl), noNA(nl))
   paste(c(nl, rep(x, getOption("width", 80)), nl), collapse = "")
@@ -274,7 +290,7 @@ is_repository <- function(path = ".") {
 #' The system command to be invoked, as a string.
 #' Multiple commands can be combined in this single string, e.g. with a
 #' multiline string.
-#' @param path The path from where the commandstring needs to be executed
+#' @param path The path from where the command string needs to be executed
 #' @param ... Other arguments passed to \code{\link[base]{system}} or
 #' \code{\link[base]{shell}}.
 #'
@@ -292,8 +308,14 @@ execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
     res <- system(commandstring, intern = TRUE, ...)
   }
   if (!intern) {
-    if (length(res) > 0) cat(res, sep = "\n") else return(invisible())
-  } else return(res)
+    if (length(res) > 0) {
+      cat(res, sep = "\n")
+    } else {
+      return(invisible())
+    }
+  } else {
+    return(res)
+  }
 }
 
 

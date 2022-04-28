@@ -127,7 +127,7 @@ When `check_filename()` does unfairly not allow a certain file or folder name, t
 ## Bundling your code in a package
 
 Most users think of an R package as a collection of generic functions that they can use to run their analysis.
-However, an R package is a useful way to bundle and document a standalone analysis too!
+However, an R package is a useful way to bundle and document a stand-alone analysis too!
 Suppose you want to pass your code to a collaborator or your future self who is working on a different computer.
 If you have a project folder with a bunch of files, people will need to get to know your project structure, find out what scripts to run and which dependencies they need.
 Unless you documented everything well they (including your future self!) will have a hard time figuring out how things work.

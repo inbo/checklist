@@ -15,6 +15,7 @@
 #'   `role`, `email` and  `comment` with valid `ORCID`.
 #'   When missing, the functions looks for `usethis.description` in the options.
 #'   See [usethis::use_description()] for more information.
+#' @param language Language of the package package in ISO 639-3 format.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom gert git_add git_init
@@ -40,10 +41,11 @@
 #' dir.create(path)
 #' create_package(
 #'   path = path, package = "packagename", title = "package title",
-#'   description = "A short description.", maintainer = maintainer
+#'   description = "A short description.", maintainer = maintainer,
+#'   language = "eng"
 #' )
 create_package <- function(
-  package, path = ".", title, description, maintainer
+  package, path = ".", title, description, maintainer, language
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -71,6 +73,12 @@ create_package <- function(
     msg = sprintf("`%s` is not an empty directory", path)
   )
   assert_that(is.string(title))
+  assert_that(is.string(language))
+  assert_that(
+    is.null(attr(lang_2_iso_639_3(language), "problem")),
+    msg = "language is not a valid code.
+E.g. en-GB or eng for (British) English and nl-BE or nld for (Flemish) Dutch."
+  )
 
   dir.create(path, showWarnings = FALSE)
   repo <- git_init(path = path)
@@ -92,14 +100,14 @@ License: GPL-3
 URL: https://github.com/inbo/%1$s
 BugReports: https://github.com/inbo/%1$s/issues
 Encoding: UTF-8
-LazyData: true
+Language: %6$s
 Roxygen: list(markdown = TRUE)
 RoxygenNote: %5$s
 ",
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
     description,
-    installed.packages()["roxygen2", "Version"]
+    installed.packages()["roxygen2", "Version"], language
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
   tidy_desc(path)

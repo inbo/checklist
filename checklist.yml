@@ -10,11 +10,9 @@ allowed:
 
       New submission
 
-      Unknown, possibly mis-spelled, fields in DESCRIPTION:
+      Unknown, possibly misspelled, fields in DESCRIPTION:
         'Remotes'
-
-      Availability using Additional_repositories specification:
-        ?   ?   https://ropensci.r-universe.dev
 citation_roles:
 - aut
 - cre
+keywords: R package

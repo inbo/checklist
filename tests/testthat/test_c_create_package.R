@@ -18,7 +18,7 @@ test_that("create_package() works", {
       package = package,
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
-      maintainer = maintainer
+      maintainer = maintainer, language = "eng"
     ),
     regexp = sprintf("package created at `.*%s`", package)
   )
@@ -101,6 +101,6 @@ test_that("create_package() works", {
   expect_is(
     x <- check_lintr(file.path(path, package), quiet = TRUE), "Checklist"
   )
-  expect_length(x$.__enclos_env__$private$linter, 5)
-  expect_output(print(x), "5 linters found")
+  expect_length(x$.__enclos_env__$private$linter, 6)
+  expect_output(print(x), "6 linters found")
 })

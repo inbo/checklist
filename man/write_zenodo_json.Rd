@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_zenodo_json.R
 \name{write_zenodo_json}
 \alias{write_zenodo_json}
-\title{Write a .zenodo.json file}
+\title{Write a \code{.zenodo.json} file}
 \usage{
 write_zenodo_json(x = ".")
 }
@@ -14,9 +14,8 @@ Defaults to \code{.}.}
 An invisible \code{Checklist} object.
 }
 \description{
-Zenodo uses the .zenodo.json file to define the citation information.
-See
-https://developers.zenodo.org/#add-metadata-to-your-github-repository-release
+Zenodo uses the \code{.zenodo.json} file to define the citation information.
+See the \href{https://developers.zenodo.org/#add-metadata-to-your-github-repository-release}{Zenodo developers website}
 for more information.
 }
 \seealso{

@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216")),
@@ -11,12 +11,14 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-8595-8426")),
     person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
-Description: An opinated set of rules for R packages and R source code
+Description: An opinionated set of rules for R packages and R source code
     projects.
 License: GPL-3
 URL: https://inbo.github.io/checklist/, https://github.com/inbo/checklist,
     https://doi.org/10.5281/zenodo.4028303
 BugReports: https://github.com/inbo/checklist/issues
+Depends:
+    R (>= 3.5.0)
 Imports:
     R6,
     assertthat,
@@ -35,7 +37,7 @@ Imports:
     utils,
     withr,
     yaml
-Suggests: 
+Suggests:
     covr,
     knitr,
     mockery,
@@ -47,8 +49,7 @@ VignetteBuilder:
     knitr
 Remotes: 
     r-lib/lintr
-Additional_repositories: https://ropensci.r-universe.dev
 Encoding: UTF-8
-LazyData: true
+Language: en-GB
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

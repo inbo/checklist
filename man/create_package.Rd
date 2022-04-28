@@ -4,7 +4,7 @@
 \alias{create_package}
 \title{Create an R package according to INBO requirements}
 \usage{
-create_package(package, path = ".", title, description, maintainer)
+create_package(package, path = ".", title, description, maintainer, language)
 }
 \arguments{
 \item{package}{Name of the new package.}
@@ -20,6 +20,8 @@ If you use \code{\link[utils:person]{utils::person()}}, then you must provide \c
 \code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.
 When missing, the functions looks for \code{usethis.description} in the options.
 See \code{\link[usethis:use_description]{usethis::use_description()}} for more information.}
+
+\item{language}{Language of the package package in ISO 639-3 format.}
 }
 \description{
 Creates a package template in a new folder.
@@ -60,11 +62,13 @@ path <- tempfile()
 dir.create(path)
 create_package(
   path = path, package = "packagename", title = "package title",
-  description = "A short description.", maintainer = maintainer
+  description = "A short description.", maintainer = maintainer,
+  language = "eng"
 )
 }
 \seealso{
 Other setup: 
+\code{\link{prepare_ghpages}()},
 \code{\link{setup_package}()},
 \code{\link{setup_source}()}
 }

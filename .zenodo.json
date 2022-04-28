@@ -1,7 +1,7 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "version": "0.2.3",
-  "description": "An opinated set of rules for R packages and R source code projects.",
+  "version": "0.2.4",
+  "description": "An opinionated set of rules for R packages and R source code projects.",
   "creators": [
     {
       "name": "Onkelinx, Thierry",
@@ -36,5 +36,7 @@
       "type": "ContactPerson",
       "orcid": "https://orcid.org/0000-0001-8804-4216"
     }
-  ]
+  ],
+  "language": "eng",
+  "keywords": "R package"
 }

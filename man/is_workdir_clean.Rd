@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_workdir_clean}
 \alias{is_workdir_clean}
-\title{Check if the current workdir of a repo is clean}
+\title{Check if the current working directory of a repo is clean}
 \usage{
 is_workdir_clean(repo)
 }

@@ -50,6 +50,10 @@ setup".
 ## Second level heading
 
 * You can use second level headings when you want to add more structure.
+
+ # `package_name` version
+
+ * Adding back ticks around the package name is allowed.
 }
 }
 

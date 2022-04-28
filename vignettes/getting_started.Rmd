@@ -44,6 +44,9 @@ knitr::opts_chunk$set(
 1. Run `x <- checklist::check_package()`.
   Fix any issues that arise during the checks.
   Repeat the last two steps until you end up with only a single new note about a _New submission_.
+1. Use `x$update_keywords()` if you want to define a set of keywords.
+  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
+  The functions add the keyword "R package" automatically to the citation files.
 1. Run `checklist::write_checklist(x)`.
   This functions can convert some 'new' warnings and notes into 'allowed' warnings and notes.
 1. Run `x <- checklist::check_package()` again to check that only 'allowed' warnings and notes remain.
@@ -89,7 +92,7 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
 
 ## Get it working with an existing package or update the checklist
 
-### Prerequistes
+### Prerequisites
 
 1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
@@ -108,6 +111,9 @@ especially if you are updating to a new checklist version and made some tweaks i
 1. Run `x <- checklist::check_package()` and fix any issues.
 Repeat this step until you have only issues that are not a problem.
 Commit any remaining changes.
+1. Use `x$update_keywords()` if you want to define a set of keywords.
+  These keywords occur in `INST/citation`, `CITATION.cff` and `.zenodo.json`.
+  The functions add the keyword "R package" automatically to the citation files.
 1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
 Then it asks which warnings and notes you want to allow.
@@ -153,7 +159,7 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
 
 ## Adding or updating checklist support to a project with R scripts
 
-### Prerequistes
+### Prerequisites
 
 1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
@@ -172,7 +178,7 @@ especially if you are updating to a new checklist version and made some tweaks i
 1. Run `x <- checklist::check_source()` and fix any issues.
 Repeat this step until you have only issues that are not a problem.
 Commit any changes.
-1. Update the `checklist.yml` with `checklist::write_checklist(x)`.
+1. Update the `checklist.yml` with `checklist::write_checklist(x, package = FALSE)`.
 This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
 Then it asks which warnings and notes you want to allow.
 You'll need to motivate each of them.

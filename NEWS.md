@@ -1,3 +1,27 @@
+# checklist 0.2.4
+
+* `check_description()` enforces a `Language` field with a valid
+  [ISO 639-3 code] (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Languages/List_of_ISO_639-3_language_codes_(2019)).
+* `create_package()` gains a required `language` argument.
+  This adds the required `Language` field to the `DESCRIPTION`.
+* `checklist` objects gain an `update_keywords` method.
+  This is currently only relevant for packages.
+  Usage: check your package with `x <- check_package()`.
+  Add keywords with `x$update_keywords(c("keyword 1", "keyword 2")`.
+  The method adds the keyword `"R package"` automatically.
+  Store the keywords with `write_checklist(x)`.
+  Run `update_citation()` to update the citation files with the keywords.
+  Use `x$get_keywords()` to retrieve the current keywords.
+* Improve the extraction of the DOI from the URL field.
+* Allow `.rda` files in the `inst` folder of a package.
+* Allow back ticks around package name in `NEWS.md`.
+* Add `prepare_ghpages()`.
+* `check_cran()` ignores the insufficient package version when checking the
+  main branch.
+  This required when checking an R package when the current version equals the
+  latest version on CRAN.
+* Define explicit which lintr options to use.
+
 # checklist 0.2.3
 
 * Add `vignette("zenodo")` on how to set up the integration with [Zenodo](https://www.zenodo.org) and
@@ -117,7 +141,7 @@
 
 ## Bugfixes
 
-* Avoid false positive lintr when `.Rproj` file is put under version control.
+* Avoid false positive linters when `.Rproj` file is put under version control.
 * `check_files()` considers files with svg extensions as graphical files.
 * Minor bugfix in `entrypoint_package.sh`.
 
@@ -216,7 +240,7 @@
 
 # checklist 0.1.3
 
-* Add `validate_email()` to check for valid email adresses.
+* Add `validate_email()` to check for valid email addresses.
 * Add `orcid2person()` which converts a valid ORCID into a `person` object.
 * Add `create_package()` which prepare an RStudio project with an empty package.
 

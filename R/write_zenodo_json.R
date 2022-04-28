@@ -1,8 +1,8 @@
-#' Write a .zenodo.json file
+#' Write a `.zenodo.json` file
 #'
-#' Zenodo uses the .zenodo.json file to define the citation information.
-#' See
-#' https://developers.zenodo.org/#add-metadata-to-your-github-repository-release
+#' Zenodo uses the `.zenodo.json` file to define the citation information.
+#' See the [Zenodo developers website](
+#'https://developers.zenodo.org/#add-metadata-to-your-github-repository-release)
 #' for more information.
 #'
 #' @return An invisible `Checklist` object.
@@ -106,12 +106,12 @@ write_zenodo_json <- function(x = ".") {
     }
   ))
 
-  description <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
+  cit_desc <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
   license <- this_desc$get("License")
   license <- ifelse(license == "GPL-3", "GPL-3.0", license)
   zenodo <- list(
     title = sprintf("%s: %s", this_desc$get("Package"), this_desc$get("Title")),
-    version = as.character(this_desc$get_version()), description = description,
+    version = as.character(this_desc$get_version()), description = cit_desc,
     creators = creators, upload_type = "software",
     access_right = "open", license = license,
     communities = list(list(identifier = "inbo"))
@@ -119,8 +119,12 @@ write_zenodo_json <- function(x = ".") {
   if (length(contributors) > 0) {
     zenodo$contributors <- contributors
   }
-  if (!is.na(this_desc$get("Language"))) {
-    zenodo$language <- gsub("(-.*)", "", this_desc$get("Language"))
+  lang <- lang_2_iso_639_3(this_desc$get("Language"))
+  if (!is.na(lang)) {
+    zenodo$language <- lang
+  }
+  if (length(x$get_keywords) > 0) {
+    zenodo$keywords <- x$get_keywords
   }
 
   if (!file_test("-f", file.path(x$get_path, ".Rbuildignore"))) {
@@ -146,15 +150,32 @@ write_zenodo_json <- function(x = ".") {
   # check if file is tracked and not modified
   repo <- x$get_path
   x$add_error(
-    paste(
-      ".zenodo.json file needs an update.",
-      "Run `update_citation()` or `check_package()` locally.",
-      "Then\ncommit `.zenodo.json`."
-    )[
-      !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
-    ],
+    c(
+      paste(
+        ".zenodo.json file needs an update.",
+        "Run `update_citation()` or `check_package()` locally.",
+        "Then\ncommit `.zenodo.json`."
+      )[
+        !is_tracked_not_modified(file = ".zenodo.json", repo = repo)
+      ],
+      attr(lang, "problem")
+    ),
     ".zenodo.json"
   )
 
-  return(invisible(x))
+  return(x)
+}
+
+lang_2_iso_639_3 <- function(lang) {
+  if (lang %in% iso_639_3$alpha_3) {
+    return(lang)
+  }
+  short <- gsub("-.*", "", lang)
+  if (short %in% iso_639_3$alpha_2) {
+    return(iso_639_3$alpha_3[iso_639_3$alpha_2 == short])
+  }
+  attr(lang, "problem") <-
+    "Language field in DESCRIPTION must be a valid language.
+E.g. en-GB or eng for (British) English and nl-BE or nld for (Flemish) Dutch."
+  return(lang)
 }

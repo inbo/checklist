@@ -71,7 +71,7 @@ write_citation_cff <- function(x = ".", roles) {
       return(z)
     }
   )
-  description <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
+  abstract <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
 
   license <- this_desc$get_field("License")
   license <- ifelse(license == "GPL-3", "GPL-3.0", license)
@@ -80,7 +80,7 @@ write_citation_cff <- function(x = ".", roles) {
     message = "If you use this software, please cite it as below.",
     authors = authors, contact = contact,
     title = sprintf("%s: %s", this_desc$get("Package"), this_desc$get("Title")),
-    version = as.character(this_desc$get_version()), abstract = description,
+    version = as.character(this_desc$get_version()), abstract = abstract,
     license = license, type = "software"
   )
 
@@ -100,6 +100,9 @@ write_citation_cff <- function(x = ".", roles) {
       list(list(type = "url", value = i))
     }
   )
+  if (length(x$get_keywords) > 0) {
+    citation$keywords <- x$get_keywords
+  }
 
   write_yaml(
     x = citation, file = file.path(x$get_path, "CITATION.cff"),
