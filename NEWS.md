@@ -1,3 +1,7 @@
+# checklist 0.2.5
+
+* to do
+
 # checklist 0.2.4
 
 * `check_description()` enforces a `Language` field with a valid
