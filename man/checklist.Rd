@@ -35,24 +35,24 @@ package.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-add_error}{\code{checklist$add_error()}}
-\item \href{#method-add_linter}{\code{checklist$add_linter()}}
-\item \href{#method-add_motivation}{\code{checklist$add_motivation()}}
-\item \href{#method-add_notes}{\code{checklist$add_notes()}}
-\item \href{#method-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
-\item \href{#method-add_warnings}{\code{checklist$add_warnings()}}
-\item \href{#method-allowed}{\code{checklist$allowed()}}
-\item \href{#method-confirm_motivation}{\code{checklist$confirm_motivation()}}
-\item \href{#method-new}{\code{checklist$new()}}
-\item \href{#method-print}{\code{checklist$print()}}
-\item \href{#method-set_roles}{\code{checklist$set_roles()}}
-\item \href{#method-update_keywords}{\code{checklist$update_keywords()}}
-\item \href{#method-clone}{\code{checklist$clone()}}
+\item \href{#method-Checklist-add_error}{\code{checklist$add_error()}}
+\item \href{#method-Checklist-add_linter}{\code{checklist$add_linter()}}
+\item \href{#method-Checklist-add_motivation}{\code{checklist$add_motivation()}}
+\item \href{#method-Checklist-add_notes}{\code{checklist$add_notes()}}
+\item \href{#method-Checklist-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
+\item \href{#method-Checklist-add_warnings}{\code{checklist$add_warnings()}}
+\item \href{#method-Checklist-allowed}{\code{checklist$allowed()}}
+\item \href{#method-Checklist-confirm_motivation}{\code{checklist$confirm_motivation()}}
+\item \href{#method-Checklist-new}{\code{checklist$new()}}
+\item \href{#method-Checklist-print}{\code{checklist$print()}}
+\item \href{#method-Checklist-set_roles}{\code{checklist$set_roles()}}
+\item \href{#method-Checklist-update_keywords}{\code{checklist$update_keywords()}}
+\item \href{#method-Checklist-clone}{\code{checklist$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_error"></a>}}
-\if{latex}{\out{\hypertarget{method-add_error}{}}}
+\if{html}{\out{<a id="method-Checklist-add_error"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-add_error}{}}}
 \subsection{Method \code{add_error()}}{
 Add errors
 \subsection{Usage}{
@@ -70,8 +70,8 @@ Add errors
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_linter"></a>}}
-\if{latex}{\out{\hypertarget{method-add_linter}{}}}
+\if{html}{\out{<a id="method-Checklist-add_linter"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-add_linter}{}}}
 \subsection{Method \code{add_linter()}}{
 Add results from \code{lintr::lint_package()}
 \subsection{Usage}{
@@ -87,8 +87,8 @@ Add results from \code{lintr::lint_package()}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_motivation"></a>}}
-\if{latex}{\out{\hypertarget{method-add_motivation}{}}}
+\if{html}{\out{<a id="method-Checklist-add_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-add_motivation}{}}}
 \subsection{Method \code{add_motivation()}}{
 Add motivation for allowed issues.
 \subsection{Usage}{
@@ -104,8 +104,8 @@ Add motivation for allowed issues.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_notes"></a>}}
-\if{latex}{\out{\hypertarget{method-add_notes}{}}}
+\if{html}{\out{<a id="method-Checklist-add_notes"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-add_notes}{}}}
 \subsection{Method \code{add_notes()}}{
 Add notes
 \subsection{Usage}{
@@ -121,8 +121,8 @@ Add notes
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_rcmdcheck"></a>}}
-\if{latex}{\out{\hypertarget{method-add_rcmdcheck}{}}}
+\if{html}{\out{<a id="method-Checklist-add_rcmdcheck"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-add_rcmdcheck}{}}}
 \subsection{Method \code{add_rcmdcheck()}}{
 Add results from \code{rcmdcheck::rcmdcheck}
 \subsection{Usage}{
@@ -142,8 +142,8 @@ Add results from \code{rcmdcheck::rcmdcheck}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_warnings"></a>}}
-\if{latex}{\out{\hypertarget{method-add_warnings}{}}}
+\if{html}{\out{<a id="method-Checklist-add_warnings"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-add_warnings}{}}}
 \subsection{Method \code{add_warnings()}}{
 Add warnings
 \subsection{Usage}{
@@ -159,8 +159,8 @@ Add warnings
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-allowed"></a>}}
-\if{latex}{\out{\hypertarget{method-allowed}{}}}
+\if{html}{\out{<a id="method-Checklist-allowed"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-allowed}{}}}
 \subsection{Method \code{allowed()}}{
 Add allowed warnings and notes
 \subsection{Usage}{
@@ -186,8 +186,8 @@ Defaults to \code{TRUE}.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-confirm_motivation"></a>}}
-\if{latex}{\out{\hypertarget{method-confirm_motivation}{}}}
+\if{html}{\out{<a id="method-Checklist-confirm_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-confirm_motivation}{}}}
 \subsection{Method \code{confirm_motivation()}}{
 Confirm the current motivation for allowed issues.
 \subsection{Usage}{
@@ -203,8 +203,8 @@ Confirm the current motivation for allowed issues.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Checklist-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-new}{}}}
 \subsection{Method \code{new()}}{
 Initialize a new Checklist object.
 \subsection{Usage}{
@@ -220,8 +220,8 @@ Initialize a new Checklist object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-Checklist-print"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-print}{}}}
 \subsection{Method \code{print()}}{
 Print the Checklist object.
 \subsection{Usage}{
@@ -237,8 +237,8 @@ Print the Checklist object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_roles"></a>}}
-\if{latex}{\out{\hypertarget{method-set_roles}{}}}
+\if{html}{\out{<a id="method-Checklist-set_roles"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-set_roles}{}}}
 \subsection{Method \code{set_roles()}}{
 set roles
 \subsection{Usage}{
@@ -254,8 +254,8 @@ set roles
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_keywords"></a>}}
-\if{latex}{\out{\hypertarget{method-update_keywords}{}}}
+\if{html}{\out{<a id="method-Checklist-update_keywords"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-update_keywords}{}}}
 \subsection{Method \code{update_keywords()}}{
 Update the keywords.
 \subsection{Usage}{
@@ -272,8 +272,8 @@ The default empty vector (\code{character(0)}) will erase the keywords.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Checklist-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Checklist-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

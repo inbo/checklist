@@ -40,7 +40,9 @@ We describe this in \code{vignette("getting_started")} under "Prepare local
 setup".
 }
 \section{Required format for \code{NEWS.md}}{
-\preformatted{# package_name version
+
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{# package_name version
 
 * Description of something that changed.
 * Lines should not exceed 80 characters.
@@ -54,7 +56,7 @@ setup".
  # `package_name` version
 
  * Adding back ticks around the package name is allowed.
-}
+}\if{html}{\out{</div>}}
 }
 
 \seealso{
