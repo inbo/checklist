@@ -190,7 +190,11 @@ RoxygenNote: %5$s
 package: yes
 allowed:
   warnings: []
-  notes: []",
+  notes: []
+citation_roles:
+- aut
+- cre
+keywords: R package",
     file.path(path, "checklist.yml")
   )
   git_add("checklist.yml", repo = repo)
