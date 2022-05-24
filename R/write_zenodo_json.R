@@ -124,7 +124,7 @@ write_zenodo_json <- function(x = ".") {
     zenodo$language <- lang
   }
   if (length(x$get_keywords) > 0) {
-    zenodo$keywords <- x$get_keywords
+    zenodo$keywords <- as.list(x$get_keywords)
   }
 
   if (!file_test("-f", file.path(x$get_path, ".Rbuildignore"))) {
