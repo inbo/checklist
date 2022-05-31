@@ -9,28 +9,44 @@
 #' @return A `Checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
-#' @importFrom utils file_test
+#' @importFrom fs is_file path
 #' @importFrom yaml read_yaml
 #' @family both
 read_checklist <- function(x = ".") {
-  if (!inherits(x, "Checklist")) {
-    assert_that(is.string(x))
-    x <- checklist$new(x = x)
-  } else if ("checklist" %in% x$get_checked) {
+  if (inherits(x, "Checklist")) {
     return(x)
   }
 
-  checklist_file <- file.path(x$get_path, "checklist.yml")
-  if (!file_test("-f", checklist_file)) {
+  assert_that(is.string(x))
+  checklist_file <- path(x, "checklist.yml")
+  if (!is_file(checklist_file)) {
     # no check list file found
     message("No `checklist.yml` found. Assuming this is a package.
 See `?write_checklist` to generate a `checklist.yml`.")
+    x <- checklist$new(x = x, language = "en-GB")
     x <- x$allowed()
     return(x)
   }
 
   # read existing check list file
   allowed <- read_yaml(checklist_file)
+  assert_that(has_name(allowed, "package"))
+  if (has_name(allowed, "spelling")) {
+    if (allowed$package) {
+      x <- checklist$new(x = x)
+    } else if (has_name(allowed$spelling, "default")) {
+      x <- checklist$new(x = x, language = allowed$spelling)
+    } else {
+      x <- checklist$new(x = x, language = "en-GB")
+    }
+    if (has_name(allowed$spelling, "ignore")) {
+      x$set_ignore(allowed$spelling$ignore)
+    }
+    if (has_name(allowed$spelling, "other")) {
+      x$set_other(allowed$spelling$other)
+    }
+  }
+  x$package <- allowed$package
   if (has_name(allowed, "citation_roles")) {
     x$set_roles(allowed$citation_roles)
   }
@@ -39,9 +55,7 @@ See `?write_checklist` to generate a `checklist.yml`.")
   }
 
   assert_that(has_name(allowed, "description"))
-  assert_that(has_name(allowed, "package"))
   assert_that(has_name(allowed, "allowed"))
-  package <- allowed$package
   allowed <- allowed$allowed
   assert_that(has_name(allowed, "warnings"))
   assert_that(has_name(allowed, "notes"))
@@ -84,7 +98,6 @@ See `?write_checklist` to generate a `checklist.yml`.")
     msg = "Each note in the checklist requires a value"
   )
   x <- x$allowed(warnings = allowed$warnings, notes = allowed$notes)
-  x$package <- package
 
   return(x)
 }

@@ -218,6 +218,10 @@ checklist_print <- function(
   )
   cat(output, sep = rules())
   cat(rules())
+  if (interactive()) {
+    cat("\nDon't forget to store changes with `write_checklist()`\n")
+    cat(rules())
+  }
 }
 
 checklist_summarise_linter <- function(linter) {
@@ -237,7 +241,7 @@ checklist_summarise_linter <- function(linter) {
 }
 
 checklist_template <- function(
-    package, warnings, notes, citation_roles, keywords
+  package, warnings, notes, citation_roles, keywords, spelling
 ) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
@@ -245,10 +249,17 @@ checklist_template <- function(
     allowed = list(warnings = warnings, notes = notes),
     citation_roles = citation_roles
   )
-  if (length(keywords) == 0) {
-    return(template)
+  if (length(keywords) > 0) {
+    template$keywords <- keywords
   }
-  template$keywords <- keywords
+  spelling$root <- NULL
+  if (length(spelling$ignore) == 0) {
+    spelling$ignore <- NULL
+  }
+  if (length(spelling$other) == 0) {
+    spelling$other <- NULL
+  }
+  template$spelling <- spelling
   return(template)
 }
 

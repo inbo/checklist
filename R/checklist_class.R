@@ -8,6 +8,7 @@ checklist <- R6Class(
 
   "Checklist",
 
+  inherit = spelling,
   public = list(
 
     #' @description Add errors
@@ -130,10 +131,12 @@ checklist <- R6Class(
     },
 
     #' @description Initialize a new Checklist object.
-    #' @param x The path to the root of the package.
-    initialize = function(x) {
+    #' @param x The path to the root of the project.
+    #' @param language The default language for spell checking.
+    initialize = function(x = ".", language) {
       assert_that(is.string(x), noNA(x))
       private$path <- normalizePath(x, winslash = "/", mustWork = TRUE)
+      super$initialize(language = language, base_path = x)
       invisible(self)
     },
 
@@ -148,6 +151,9 @@ checklist <- R6Class(
       if (!is.null(dots$quiet) && dots$quiet) {
         return(invisible(NULL))
       }
+      cat("Spell checking settings\n\n")
+      super$print(...)
+      cat("\n\n")
       checklist_print(
         path = private$path,
         warnings = private$warnings,
@@ -229,7 +235,7 @@ Please contact the maintainer of the `checklist` package."
       checklist_template(
         package = self$package, warnings = private$allowed_warnings,
         notes = private$allowed_notes, citation_roles = private$roles,
-        keywords = private$keywords
+        keywords = private$keywords, spelling = super$settings
       )
     }
   ),

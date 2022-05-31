@@ -6,7 +6,14 @@
 \description{
 A class which contains all checklist results.
 }
+\seealso{
+Other class: 
+\code{\link{spelling}}
+}
 \concept{class}
+\section{Super class}{
+\code{\link[checklist:Spelling]{checklist::Spelling}} -> \code{Checklist}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -50,6 +57,15 @@ package.}
 \item \href{#method-Checklist-clone}{\code{checklist$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="Spelling" data-id="set_exceptions"><a href='../../checklist/html/Spelling.html#method-Spelling-set_exceptions'><code>checklist::Spelling$set_exceptions()</code></a></li>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="Spelling" data-id="set_ignore"><a href='../../checklist/html/Spelling.html#method-Spelling-set_ignore'><code>checklist::Spelling$set_ignore()</code></a></li>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="Spelling" data-id="set_other"><a href='../../checklist/html/Spelling.html#method-Spelling-set_other'><code>checklist::Spelling$set_other()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Checklist-add_error"></a>}}
 \if{latex}{\out{\hypertarget{method-Checklist-add_error}{}}}
@@ -208,13 +224,15 @@ Confirm the current motivation for allowed issues.
 \subsection{Method \code{new()}}{
 Initialize a new Checklist object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$new(x)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$new(x = ".", language)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{The path to the root of the package.}
+\item{\code{x}}{The path to the root of the project.}
+
+\item{\code{language}}{The default language for spell checking.}
 }
 \if{html}{\out{</div>}}
 }
