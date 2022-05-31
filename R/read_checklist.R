@@ -31,20 +31,24 @@ See `?write_checklist` to generate a `checklist.yml`.")
   # read existing check list file
   allowed <- read_yaml(checklist_file)
   assert_that(has_name(allowed, "package"))
-  if (has_name(allowed, "spelling")) {
-    if (allowed$package) {
-      x <- checklist$new(x = x)
-    } else if (has_name(allowed$spelling, "default")) {
-      x <- checklist$new(x = x, language = allowed$spelling)
-    } else {
-      x <- checklist$new(x = x, language = "en-GB")
-    }
-    if (has_name(allowed$spelling, "ignore")) {
-      x$set_ignore(allowed$spelling$ignore)
-    }
-    if (has_name(allowed$spelling, "other")) {
-      x$set_other(allowed$spelling$other)
-    }
+  if (!has_name(allowed, "spelling")) {
+    allowed$spelling <- list(default = "en-GB")
+  }
+  if (allowed$package) {
+    x <- checklist$new(x = x)
+  } else {
+    x <- checklist$new(
+      x = x,
+      language = ifelse(
+        has_name(allowed$spelling, "default"), "en-GB", allowed$spelling$default
+      )
+    )
+  }
+  if (has_name(allowed$spelling, "ignore")) {
+    x$set_ignore(allowed$spelling$ignore)
+  }
+  if (has_name(allowed$spelling, "other")) {
+    x$set_other(allowed$spelling$other)
   }
   x$package <- allowed$package
   if (has_name(allowed, "citation_roles")) {
