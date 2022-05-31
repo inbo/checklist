@@ -168,6 +168,16 @@ check_spelling <- function(x = ".") {
 #' @export
 #' @importFrom fs path_common path_rel
 print.checklist_spelling <- function(x, ...) {
+  if (length(x) == 0) {
+    return(invisible(NULL))
+  }
+  if (
+    getOption("checklist.rstudio_source_markers", TRUE) &&
+      requireNamespace("rstudioapi", quietly = TRUE) &&
+      rstudioapi::hasFun("sourceMarkers")
+  ) {
+    return(rstudio_source_markers(issues = x))
+  }
   common <- path_common(x$file)
   x$file <- path_rel(x$file, start = common)
   x$file <- factor(
@@ -198,4 +208,27 @@ print.checklist_spelling <- function(x, ...) {
     sep = rules(".")
   )
   return(invisible(NULL))
+}
+
+#' @importFrom fs path_common
+rstudio_source_markers <- function(issues) {
+  assert_that(
+    requireNamespace("rstudioapi", quietly = TRUE),
+    msg = "This function requires the `rstudioapi` package"
+  )
+  common <- path_common(issues$file)
+  issues$message <- sprintf(
+    "`%s` not found in the dictionary or wordlist for %s.", issues$message,
+    issues$language
+  )
+  issues$file <- factor(
+    issues$file, levels = names(sort(table(issues$file), decreasing = TRUE))
+  )
+  issues <- issues[order(issues$file), ]
+  issues$file <- as.character(issues$file)
+  # request source markers
+  rstudioapi::callFun(
+    "sourceMarkers", name = "checklist_spelling", markers = issues,
+    basePath = common, autoSelect = "first"
+  )
 }
