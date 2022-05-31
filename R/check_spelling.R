@@ -161,3 +161,41 @@ check_spelling <- function(x = ".") {
   rownames(issues) <- NULL
   return(issues)
 }
+
+#' Display a `checklist_spelling` summary
+#' @param x The `checklist_spelling` object
+#' @param ... currently ignored
+#' @export
+#' @importFrom fs path_common path_rel
+print.checklist_spelling <- function(x, ...) {
+  common <- path_common(x$file)
+  x$file <- path_rel(x$file, start = common)
+  x$file <- factor(
+    x$file, levels = names(sort(table(x$file), decreasing = TRUE))
+  )
+  x$message <- factor(
+    x$message, levels = names(sort(table(x$message), decreasing = TRUE))
+  )
+  display <- aggregate(
+    column ~ file + language + message + line, x, FUN = paste, collapse = "|"
+  )
+  display$line <- sprintf("%i (%s)", display$line, display$column)
+  display <- aggregate(
+    line ~ file + language + message, display, FUN = paste, collapse = ", "
+  )
+  display <- display[order(display$message), ]
+  display$message <- sprintf("%s: %s", display$message, display$line)
+  display <- aggregate(
+    message ~ file + language, display, FUN = paste, collapse = "\n"
+  )
+  display <- display[order(display$file), ]
+  cat(
+    "Overview of words missing from dictionary.",
+    "i (j) indicates that the word occures at line i, column j", sep = "\n"
+  )
+  cat(
+    sprintf("\n%s (%s)\n\n%s\n", display$file, display$language, display$message),
+    sep = rules(".")
+  )
+  return(invisible(NULL))
+}
