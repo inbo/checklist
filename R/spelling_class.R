@@ -138,7 +138,7 @@ get_language <- function(files, private) {
 #' @importFrom fs path path_norm path_split
 #' @importFrom utils menu
 change_language_interactive <- function(
-    x, main = "en-GB", other = list(), ignore = character(0)
+  x, main = "en-GB", other = list(), ignore = character(0)
 ) {
   print(x)
   answer <- menu(
@@ -149,64 +149,72 @@ change_language_interactive <- function(
     ),
     title = "\nHow should `checklist` spell check the files above?"
   )
-  if (answer == 1) {
-    return(invisible(list(other = other, ignore = ignore)))
-  }
-  other_lang <- names(other)
-  other <- list()
-  ignore <- character(0)
-  if (answer == 2) {
+  if (answer <= 2) {
+    other <- ifelse(answer == 1, list(other), list(list()))[[1]]
+    ignore <- ifelse(answer == 1, list(ignore), list(character(0)))[[1]]
     return(invisible(list(other = other, ignore = ignore)))
   }
   x <- x[order(x$path, method = "radix"), ]
-  to_do <- rep(TRUE, nrow(x))
-  detail <- path_split(x$path)
-  n_max <- max(vapply(detail, length, integer(1)))
-  detail <- vapply(
-    detail, FUN.VALUE = character(n_max), n_max = n_max,
-    FUN = function(x, n_max) {
-      c(x, rep("", n_max - length(x)))
-    }
+  result <- change_language_interactive2(
+    x, main = main, other_lang = names(other), base_path = "."
   )
-  detail <- rbind(".", detail)
-  while (any(to_do)) {
-    detail[1, ] <- path_norm(path(detail[1, ], detail[2, ]))
-    detail <- detail[-2, , drop = FALSE]
-    for (i in unique(detail[1, to_do])) {
-      current <- which(to_do)[detail[1, to_do] == i]
-      print(x[current, ], hide_ignore = TRUE)
-      answer <- menu(
-        c(
-          paste(
-            "use", c(main, other_lang),
-            "for all files"[length(current) > 1]
-          ),
-          "use an additional language",
-          "change the settings for some files"[length(current) > 1],
-          paste("ignore",  "all files"[length(current) > 1])
+  return(invisible(list(other = result$other, ignore = result$ignore)))
+}
+
+change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
+  first_path <- vapply(
+    path_split(x$path), FUN = `[`, FUN.VALUE = character(1), x = 1
+  )
+  x$path <- path_norm(path(base_path, x$path))
+  other <- list()
+  ignore <- character(0)
+  for (i in unique(first_path)) {
+    current <- which(first_path == i)
+    print(x[current, ], hide_ignore = TRUE)
+    answer <- menu(
+      c(
+        paste("ignore",  "all files"[length(current) > 1]),
+        paste(
+          "use", c(main, other_lang),
+          "for all files"[length(current) > 1]
         ),
-        title = "\nHow should `checklist` spell check the files above?"
-      )
-      if (answer == 1) {
-        to_do[current] <- FALSE
-      } else if (1 < answer && answer <= (length(other_lang) + 1)) {
-        other[[other_lang[answer - 1]]] <- sort(
-          c(other[[other_lang[answer - 1]]], i),
-          method = "radix"
-        )
-        to_do[current] <- FALSE
-      } else if (answer == (length(other_lang) + 2)) {
-        language <- validate_language(readline("Which language? "))
-        other[[language]] <- i
-        other_lang <- names(other)
-        to_do[current] <- FALSE
-      } else if (answer == (length(other_lang) + 3 + (length(current) > 1))) {
-        ignore <- sort(c(ignore, i), method = "radix")
-        to_do[current] <- FALSE
-      }
+        "change the settings for some files"[length(current) > 1],
+        "use an additional language"
+      ),
+      title = "\nHow should `checklist` spell check the files above?"
+    )
+    if (answer == 1) {
+      ignore <- sort(c(ignore, path_norm(path(base_path, i))), method = "radix")
+      next
     }
+    if (answer == 2) {
+      next
+    }
+    if (length(current) > 1 && answer == length(other_lang) + 3) {
+      x2 <- x[current, ]
+      x2$path <- path_rel(x2$path, start = path(base_path, i))
+      x2 <- change_language_interactive2(
+        x = x2, main = main, other_lang = other_lang,
+        base_path = path(base_path, i)
+      )
+      other_lang <- unique(c(other_lang, x2$other_lang))
+      ignore <- sort(c(ignore, x2$ignore), method = "radix")
+      for (j in names(x2$other)) {
+        other[[j]] <- sort(c(other[[j]], x2$other[[j]]), method = "radix")
+      }
+      next
+    }
+    if (answer == length(other_lang) + 3 + (length(current) > 1)) {
+      language <- validate_language(readline("Which language? "))
+      other_lang <- sort(c(other_lang, language), method = "radix")
+      other <- c(other, setNames(list(x$path[current]), language))
+      next
+    }
+    other[[other_lang[answer - 2]]] <- sort(
+      c(other[[other_lang[answer - 2]]], x$path[current]), method = "radix"
+    )
   }
-  return(invisible(list(other = other, ignore = ignore)))
+  return(list(ignore = ignore, other = other, other_lang = other_lang))
 }
 
 #' @export
