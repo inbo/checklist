@@ -1,12 +1,12 @@
 #' @title The spelling R6 class
-#' @description A class with the configuration for spell checkking
+#' @description A class with the configuration for spell checking
 #' @export
 #' @importFrom R6 R6Class
 #' @family class
 spelling <- R6Class(
-  "Spelling",
+  "spelling",
   public = list(
-    #' @description Initialize a new Spelling object.
+    #' @description Initialize a new `spelling` object.
     #' @param language the default language.
     #' @param base_path the base path of the project
     #' @importFrom assertthat assert_that is.string noNA
@@ -25,7 +25,7 @@ spelling <- R6Class(
       private$main <- validate_language(language)
       invisible(self)
     },
-    #' @description Print the Spelling object.
+    #' @description Print the `spelling` object.
     #' @param ... currently ignored.
     print = function(...) {
       dots <- list(...)
@@ -84,12 +84,16 @@ spelling <- R6Class(
       get_language(files = md_files, private = private)
     },
     #' @field get_rd The Rd files within the project.
-    #' @importFrom fs dir_ls
+    #' @importFrom fs dir_exists dir_ls
     get_rd = function() {
-      rd_files <- dir_ls(
-        path(private$path, "man"), recurse = FALSE, type = "file", all = TRUE,
-        regexp = "\\.[Rr]d$"
-      )
+      if (dir_exists(path(private$path, "man"))) {
+        rd_files <- dir_ls(
+          path(private$path, "man"), recurse = FALSE, type = "file", all = TRUE,
+          regexp = "\\.[Rr]d$"
+        )
+      } else {
+        rd_files <- character(0)
+      }
       get_language(files = rd_files, private = private)
     },
     #' @field settings A list with current spell checking settings.
@@ -120,6 +124,13 @@ validate_language <- function(language) {
 
 #' @importFrom fs path_has_parent path_rel
 get_language <- function(files, private) {
+  if (length(files) == 0) {
+    files <- data.frame(language = character(0), path = character(0))
+    class(files) <- c("checklist_language", class(files))
+    attr(files, "checklist_default") <- private$main
+    attr(files, "checklist_ignore") <- private$ignore
+    return(files)
+  }
   files <- data.frame(
     language = private$main, path = path_rel(files, start = private$path)
   )
@@ -161,6 +172,8 @@ change_language_interactive <- function(
   return(invisible(list(other = result$other, ignore = result$ignore)))
 }
 
+#' @importFrom fs path path_norm path_split
+#' @importFrom stats setNames
 change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
   first_path <- vapply(
     path_split(x$path), FUN = `[`, FUN.VALUE = character(1), x = 1
@@ -223,9 +236,11 @@ print.checklist_language <- function(x, ..., hide_ignore = FALSE) {
   assert_that(is.flag(hide_ignore), noNA(hide_ignore))
 
   cat("Default language:", attr(x, "checklist_default"), "\n\n")
-  print(
-    sort(x$path[x$language == attr(x, "checklist_default")], method = "radix")
-  )
+  if (any(x$language == attr(x, "checklist_default"))) {
+    print(
+      sort(x$path[x$language == attr(x, "checklist_default")], method = "radix")
+    )
+  }
   x <- x[!x$language %in% c(attr(x, "checklist_default"), "ignore"), ]
   while (length(unique(x$language))) {
     current <- head(unique(x$language), 1)

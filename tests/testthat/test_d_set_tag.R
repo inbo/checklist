@@ -17,7 +17,7 @@ test_that("set_tag() works", {
     package = package,
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.",
-    maintainer = maintainer, language = "eng"
+    maintainer = maintainer, language = "en-GB"
   )
   repo <- git_init(file.path(path, package))
   git_config_set(name = "user.name", value = "junk", repo = repo)

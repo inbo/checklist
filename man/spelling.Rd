@@ -4,7 +4,7 @@
 \alias{spelling}
 \title{The spelling R6 class}
 \description{
-A class with the configuration for spell checkking
+A class with the configuration for spell checking
 }
 \seealso{
 Other class: 
@@ -27,19 +27,19 @@ Other class:
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-Spelling-new}{\code{spelling$new()}}
-\item \href{#method-Spelling-print}{\code{spelling$print()}}
-\item \href{#method-Spelling-set_exceptions}{\code{spelling$set_exceptions()}}
-\item \href{#method-Spelling-set_ignore}{\code{spelling$set_ignore()}}
-\item \href{#method-Spelling-set_other}{\code{spelling$set_other()}}
-\item \href{#method-Spelling-clone}{\code{spelling$clone()}}
+\item \href{#method-spelling-new}{\code{spelling$new()}}
+\item \href{#method-spelling-print}{\code{spelling$print()}}
+\item \href{#method-spelling-set_exceptions}{\code{spelling$set_exceptions()}}
+\item \href{#method-spelling-set_ignore}{\code{spelling$set_ignore()}}
+\item \href{#method-spelling-set_other}{\code{spelling$set_other()}}
+\item \href{#method-spelling-clone}{\code{spelling$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Spelling-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Spelling-new}{}}}
+\if{html}{\out{<a id="method-spelling-new"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-new}{}}}
 \subsection{Method \code{new()}}{
-Initialize a new Spelling object.
+Initialize a new \code{spelling} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{spelling$new(language, base_path = ".")}\if{html}{\out{</div>}}
 }
@@ -55,10 +55,10 @@ Initialize a new Spelling object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Spelling-print"></a>}}
-\if{latex}{\out{\hypertarget{method-Spelling-print}{}}}
+\if{html}{\out{<a id="method-spelling-print"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-print}{}}}
 \subsection{Method \code{print()}}{
-Print the Spelling object.
+Print the \code{spelling} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{spelling$print(...)}\if{html}{\out{</div>}}
 }
@@ -72,8 +72,8 @@ Print the Spelling object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Spelling-set_exceptions"></a>}}
-\if{latex}{\out{\hypertarget{method-Spelling-set_exceptions}{}}}
+\if{html}{\out{<a id="method-spelling-set_exceptions"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-set_exceptions}{}}}
 \subsection{Method \code{set_exceptions()}}{
 Define which files to ignore or to spell check in a
 different language.
@@ -83,8 +83,8 @@ different language.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Spelling-set_ignore"></a>}}
-\if{latex}{\out{\hypertarget{method-Spelling-set_ignore}{}}}
+\if{html}{\out{<a id="method-spelling-set_ignore"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-set_ignore}{}}}
 \subsection{Method \code{set_ignore()}}{
 Manually set the ignore vector.
 Only use this if you known what you are doing.
@@ -101,8 +101,8 @@ Only use this if you known what you are doing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Spelling-set_other"></a>}}
-\if{latex}{\out{\hypertarget{method-Spelling-set_other}{}}}
+\if{html}{\out{<a id="method-spelling-set_other"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-set_other}{}}}
 \subsection{Method \code{set_other()}}{
 Manually set the other list.
 Only use this if you known what you are doing.
@@ -119,8 +119,8 @@ Only use this if you known what you are doing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Spelling-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-Spelling-clone}{}}}
+\if{html}{\out{<a id="method-spelling-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

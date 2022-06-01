@@ -11,5 +11,18 @@ check_spelling(x = ".")
 Defaults to \code{.}.}
 }
 \description{
-Spell check a package or project
+This function checks by default any markdown (\code{.md}) or Rmarkdown (\code{.Rmd})
+file found within the project.
+It also checks any R help file (\code{.Rd}) in the \code{man} folder.
+Use the \code{set_exceptions()} method of the \code{checklist} object to exclude files
+or use a different language.
 }
+\seealso{
+Other both: 
+\code{\link{check_filename}()},
+\code{\link{check_lintr}()},
+\code{\link{print.checklist_spelling}()},
+\code{\link{read_checklist}()},
+\code{\link{write_checklist}()}
+}
+\concept{both}

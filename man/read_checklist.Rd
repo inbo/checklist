@@ -23,6 +23,8 @@ It is mainly used by the other functions inside the package.
 Other both: 
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{write_checklist}()}
 }
 \concept{both}

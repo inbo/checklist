@@ -56,6 +56,8 @@ That will result in an error when checking the package on an other machine
 Other both: 
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()}
 }
 \concept{both}

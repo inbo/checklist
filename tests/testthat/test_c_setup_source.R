@@ -5,7 +5,7 @@ test_that("setup_source() works", {
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
 
   expect_error(
-    setup_source(path = path),
+    setup_source(path = path, language = "en-GB"),
     regexp = "could not find repository from"
   )
   git_init(path = path)
@@ -13,7 +13,7 @@ test_that("setup_source() works", {
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
   expect_message({
-      junk <- setup_source(path = path)
+      junk <- setup_source(path = path, language = "en-GB")
     },
     "project prepared for checklist::check_source()"
   )

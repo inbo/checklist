@@ -15,7 +15,11 @@
 #'   `role`, `email` and  `comment` with valid `ORCID`.
 #'   When missing, the functions looks for `usethis.description` in the options.
 #'   See [usethis::use_description()] for more information.
-#' @param language Language of the package package in ISO 639-3 format.
+#' @param language Language of the project in `xx-YY` format.
+#' `xx` is the two letter code for the language.
+#' `YY` is the two letter code for the language variant.
+#' E.g. `en-GB` for British English, `en-US` for American English, ``nl-BE` for
+#' Belgian Dutch.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom gert git_add git_init
@@ -42,7 +46,7 @@
 #' create_package(
 #'   path = path, package = "packagename", title = "package title",
 #'   description = "A short description.", maintainer = maintainer,
-#'   language = "eng"
+#'   language = "en-GB"
 #' )
 create_package <- function(
   package, path = ".", title, description, maintainer, language
@@ -74,11 +78,7 @@ create_package <- function(
   )
   assert_that(is.string(title))
   assert_that(is.string(language))
-  assert_that(
-    is.null(attr(lang_2_iso_639_3(language), "problem")),
-    msg = "language is not a valid code.
-E.g. en-GB or eng for (British) English and nl-BE or nld for (Flemish) Dutch."
-  )
+  validate_language(language)
 
   dir.create(path, showWarnings = FALSE)
   repo <- git_init(path = path)

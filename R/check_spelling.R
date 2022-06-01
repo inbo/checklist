@@ -58,7 +58,7 @@ spelling_check <- function(text, filename, wordlist) {
 }
 
 #' @importFrom tools RdTextFilter
-spelling_parse_rd <- function(rd_file, marcros, wordlist) {
+spelling_parse_rd <- function(rd_file, macros, wordlist) {
   text <- RdTextFilter(rd_file, macros = macros)
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
@@ -127,9 +127,16 @@ spelling_parse_md_yaml <- function(text) {
 }
 
 #' Spell check a package or project
+#'
+#' This function checks by default any markdown (`.md`) or Rmarkdown (`.Rmd`)
+#' file found within the project.
+#' It also checks any R help file (`.Rd`) in the `man` folder.
+#' Use the `set_exceptions()` method of the `checklist` object to exclude files
+#' or use a different language.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom tools loadPkgRdMacros loadRdMacros
+#' @family both
 check_spelling <- function(x = ".") {
   x <- read_checklist(x = x)
   md_files <- x$get_md
@@ -167,6 +174,8 @@ check_spelling <- function(x = ".") {
 #' @param ... currently ignored
 #' @export
 #' @importFrom fs path_common path_rel
+#' @importFrom stats aggregate
+#' @family both
 print.checklist_spelling <- function(x, ...) {
   if (length(x) == 0) {
     return(invisible(NULL))

@@ -38,5 +38,7 @@
     }
   ],
   "language": "eng",
-  "keywords": "R package"
+  "keywords": [
+    "R package"
+  ]
 }

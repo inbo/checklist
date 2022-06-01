@@ -67,6 +67,8 @@ These are fonts files which often require their own file name scheme.
 \seealso{
 Other both: 
 \code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{write_checklist}()}
 }

@@ -8,23 +8,28 @@
 #' and the checklist configuration file (`checklist.yml`).
 #' @param path The path to the project.
 #' Defaults to `"."`.
+#' @inheritParams create_package
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
-setup_source <- function(path = ".") {
+setup_source <- function(path = ".", language) {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   assert_that(is_workdir_clean(repo = path))
 
   # add checklist.yml
   writeLines(
-    "description: Configuration file for checklist::check_pkg()
+    paste(
+      "description: Configuration file for checklist::check_pkg()
 package: no
 allowed:
   warnings: []
-  notes: []",
+  notes: []
+spelling:
+  default:", validate_language(language)
+    ),
     file.path(path, "checklist.yml")
   )
   git_add("checklist.yml", force = TRUE, repo = path)
