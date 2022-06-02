@@ -34,22 +34,33 @@ check_spelling <- function(x = ".") {
       rd_issues <- vapply(
         path(root, rd_files$path[rd_files$language == lang]),
         FUN = spelling_parse_rd, FUN.VALUE = vector(mode = "list", length = 1),
-        wordlist = wordlist
+        wordlist = wordlist, macros = macros
       )
       return(list(c(md_issues, rd_issues)))
     }
   )
   issues <- do.call(rbind, unlist(issues, recursive = FALSE))
   rownames(issues) <- NULL
+  attr(issues, "checklist_path") <- x$get_path
   return(issues)
 }
 
-#' @importFrom hunspell dictionary en_stats
+#' @importFrom fs file_exists path
+#' @importFrom hunspell dictionary
 spelling_wordlist <- function(lang = "en_GB", root = ".") {
-  add_words <- en_stats
-  wordlist_file <- file.path(root, "inst", paste0("wordlist.", tolower(lang)))
-  if (file.exists(wordlist_file)) {
-    add_words <- c(add_words, readLines(wordlist_file))
+  path("spelling", "inbo.dic") |>
+    system.file(package = "checklist") |>
+    readLines() -> add_words
+  path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
+    system.file(package = "checklist") -> dict
+  if (file_exists(dict)) {
+    readLines(dict) |>
+      c(add_words) -> add_words
+  }
+  dict <- path(root, "inst", tolower(lang), ext = "dic")
+  if (file_exists(dict)) {
+    readLines(dict) |>
+      c(add_words) -> add_words
   }
   dict <- dictionary(lang = lang, add_words = add_words)
   attr(dict, "checklist_language") <- gsub("_", "-", lang)
@@ -57,7 +68,7 @@ spelling_wordlist <- function(lang = "en_GB", root = ".") {
 }
 
 #' @importFrom hunspell hunspell
-spelling_check <- function(text, filename, wordlist) {
+spelling_check <- function(text, filename, wordlist, raw_text = text) {
   if (all(text == "")) {
     return(
       data.frame(
@@ -78,7 +89,7 @@ spelling_check <- function(text, filename, wordlist) {
   }
   result <- vapply(
     relevant, FUN.VALUE = vector(mode = "list", length = 1),
-    text = text, problems = problems,
+    text = raw_text, problems = problems,
     FUN = function(i, text, problems) {
       list(
         vapply(
@@ -95,11 +106,21 @@ spelling_check <- function(text, filename, wordlist) {
     }
   )
   result <- do.call(rbind, unlist(result, recursive = FALSE))
+  # append meta data
   result$file <- filename
   result$type <- "warning"
   result$language <- attr(wordlist, "checklist_language")
   rownames(result) <- NULL
   class(result) <- c("checklist_spelling", class(result))
+
+  # remove false positives
+  # negative numbers
+  result <- result[!grepl("^-[0-9]+$", result$message), ]
+  # multiple dashes
+  result <- result[!grepl("^-{2, }$", result$message), ]
+  # remove trailing dots
+  result$message <- gsub("\\.$", "", result$message)
+
   return(result)
 }
 
@@ -117,8 +138,8 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
 
 #' @importFrom assertthat assert_that
 spelling_parse_md <- function(md_file, wordlist) {
-  text <- readLines(md_file)
-  text <- spelling_parse_md_yaml(text = text)
+  raw_text <- readLines(md_file)
+  text <- spelling_parse_md_yaml(text = raw_text)
   # remove chunks
   chunks <- grep("^```", text)
   assert_that(
@@ -131,6 +152,37 @@ spelling_parse_md <- function(md_file, wordlist) {
   }
   # remove in line chunks
   text <- gsub("\\`r .*?`", "", text)
+  # remove ignored sections
+  start <- grep("<!-- spell-check: ignore:start -->", text)
+  end <- grep("<!-- spell-check: ignore:end -->", text)
+  assert_that(
+    length(start) == length(end),
+    msg = paste(
+      "unmatched `spell-check: ignore:start` and `spell-check: ignore:end` in",
+      md_file
+    )
+  )
+  assert_that(
+    all(start < end),
+    msg = paste(
+      "`spell-check: ignore:end` appears before `spell-check: ignore:start`",
+      "found in", md_file
+    )
+  )
+  assert_that(
+    all(head(end, -1) < tail(start, -1)),
+    msg = paste(
+      "new `spell-check: ignore:start` found without closing the previous in",
+      md_file
+    )
+  )
+  while (length(start)) {
+    text[start[1]:end[1]] <- ""
+    start <- tail(start, -1)
+    end <- tail(end, -1)
+  }
+  # remove ignored lines
+  text <- gsub(".*<!-- spell-check: ignore -->.*", "", text)
   # remove bookdown references
   text <- gsub("\\\\@ref\\(.*?\\)", "", text)
   # remove bookdown anchor
@@ -150,13 +202,16 @@ spelling_parse_md <- function(md_file, wordlist) {
   # remove Markdown urls
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub("(http|https|ftp):\\/\\/[\\w|\\.|\\/|-]+", "", text, perl = TRUE)
+  text <- gsub("(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=]+", "", text, perl = TRUE)
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
-  # remove spell-check ignore
-  text <- gsub(".*<!-- spell-check: ignore -->.*", "", text)
+  # remove text between matching back ticks on the same line
+  text <- gsub("`.+?`", "", text)
+  # remove markdown comments
+  text <- gsub("<!--.*?-->", "", text)
+
   list(spelling_check(
-    text = text, filename = md_file, wordlist = wordlist
+    text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   ))
 }
 

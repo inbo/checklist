@@ -18,7 +18,6 @@ LineEndingConversion: None
 
 BuildType: Package
 PackageUseDevtools: Yes
-PackageCleanBeforeInstall: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageCheckArgs: --as-cran --no-manual --timings
 PackageRoxygenize: rd,collate,namespace

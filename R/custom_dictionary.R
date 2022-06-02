@@ -1,0 +1,32 @@
+#' Add words to custom dictionaries
+#' @param issues The output of `check_spelling()`.
+#' @export
+custom_dictionary <- function(issues) {
+  assert_that(
+    inherits(issues, "checklist_spelling"),
+    msg = "`issues`"
+  )
+  assert_that(
+    !is.null(attr(issues, "checklist_path")),
+    msg = "Something went wrong. Please rerun `check_spelling().`"
+  )
+
+  vapply(
+    unique(issues$language), FUN.VALUE = NULL,
+    FUN = function(lang) {
+      unique(issues$message[issues$language == lang]) |>
+        add_words()
+    }
+  )
+}
+
+#' @importFrom fs dir_create file_exists path path_dir path_ext_remove
+add_words <- function(words, dictionary) {
+  dictionary <- path(path_ext_remove(dictionary), ext = "dic")
+  if (file_exists(dictionary)) {
+    words <- c(words, readLines(dictionary))
+  }
+  dir_create(path_dir(dictionary), recurse = TRUE)
+  writeLines(sort(unique(words), method = "radix"), dictionary)
+  return(invisible(NULL))
+}
