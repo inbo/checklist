@@ -1,3 +1,49 @@
+#' Spell check a package or project
+#'
+#' This function checks by default any markdown (`.md`) or Rmarkdown (`.Rmd`)
+#' file found within the project.
+#' It also checks any R help file (`.Rd`) in the `man` folder.
+#' Use the `set_exceptions()` method of the `checklist` object to exclude files
+#' or use a different language.
+#' @inheritParams read_checklist
+#' @export
+#' @importFrom tools loadPkgRdMacros loadRdMacros
+#' @family both
+check_spelling <- function(x = ".") {
+  x <- read_checklist(x = x)
+  md_files <- x$get_md
+  rd_files <- x$get_rd
+  macros <- loadRdMacros(
+    file.path(R.home("share"), "Rd", "macros", "system.Rd"),
+    loadPkgRdMacros(x$get_path, macros = NULL)
+  )
+  issues <- vapply(
+    unique(c(md_files$language, rd_files$language)), root = x$get_path,
+    md_files = md_files, rd_files = rd_files, macros = macros,
+    FUN.VALUE = vector(mode = "list", length = 1),
+    FUN = function(lang, root, md_files, rd_files, macros) {
+      if (lang == "ignore") {
+        return(list(NULL))
+      }
+      wordlist <- spelling_wordlist(lang = gsub("-", "_", lang), root = root)
+      md_issues <- vapply(
+        path(root, md_files$path[md_files$language == lang]),
+        FUN = spelling_parse_md, FUN.VALUE = vector(mode = "list", length = 1),
+        wordlist = wordlist
+      )
+      rd_issues <- vapply(
+        path(root, rd_files$path[rd_files$language == lang]),
+        FUN = spelling_parse_rd, FUN.VALUE = vector(mode = "list", length = 1),
+        wordlist = wordlist
+      )
+      return(list(c(md_issues, rd_issues)))
+    }
+  )
+  issues <- do.call(rbind, unlist(issues, recursive = FALSE))
+  rownames(issues) <- NULL
+  return(issues)
+}
+
 #' @importFrom hunspell dictionary en_stats
 spelling_wordlist <- function(lang = "en_GB", root = ".") {
   add_words <- en_stats
@@ -124,49 +170,6 @@ spelling_parse_md_yaml <- function(text) {
   text[header][!grepl("(title|description)", text[header])] <- ""
   text[header] <- gsub(".*?:(.*)", "\\1", text[header])
   return(text)
-}
-
-#' Spell check a package or project
-#'
-#' This function checks by default any markdown (`.md`) or Rmarkdown (`.Rmd`)
-#' file found within the project.
-#' It also checks any R help file (`.Rd`) in the `man` folder.
-#' Use the `set_exceptions()` method of the `checklist` object to exclude files
-#' or use a different language.
-#' @inheritParams read_checklist
-#' @export
-#' @importFrom tools loadPkgRdMacros loadRdMacros
-#' @family both
-check_spelling <- function(x = ".") {
-  x <- read_checklist(x = x)
-  md_files <- x$get_md
-  rd_files <- x$get_rd
-  macros <- loadRdMacros(
-    file.path(R.home("share"), "Rd", "macros", "system.Rd"),
-    loadPkgRdMacros(x$get_path, macros = NULL)
-  )
-  issues <- vapply(
-    unique(c(md_files$language, rd_files$language)), root = x$get_path,
-    md_files = md_files, rd_files = rd_files, macros = macros,
-    FUN.VALUE = vector(mode = "list", length = 1),
-    FUN = function(lang, root, md_files, rd_files, macros) {
-      wordlist <- spelling_wordlist(lang = gsub("-", "_", lang), root = root)
-      md_issues <- vapply(
-        path(root, md_files$path[md_files$language == lang]),
-        FUN = spelling_parse_md, FUN.VALUE = vector(mode = "list", length = 1),
-        wordlist = wordlist
-      )
-      rd_issues <- vapply(
-        path(root, rd_files$path[rd_files$language == lang]),
-        FUN = spelling_parse_rd, FUN.VALUE = vector(mode = "list", length = 1),
-        wordlist = wordlist
-      )
-      return(list(c(md_issues, rd_issues)))
-    }
-  )
-  issues <- do.call(rbind, unlist(issues, recursive = FALSE))
-  rownames(issues) <- NULL
-  return(issues)
 }
 
 #' Display a `checklist_spelling` summary

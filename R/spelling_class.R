@@ -122,7 +122,7 @@ validate_language <- function(language) {
   return(language)
 }
 
-#' @importFrom fs path_has_parent path_rel
+#' @importFrom fs path_filter path_has_parent path_rel
 get_language <- function(files, private) {
   if (length(files) == 0) {
     files <- data.frame(language = character(0), path = character(0))
@@ -131,15 +131,16 @@ get_language <- function(files, private) {
     attr(files, "checklist_ignore") <- private$ignore
     return(files)
   }
-  files <- data.frame(
-    language = private$main, path = path_rel(files, start = private$path)
-  )
+  path_rel(files, start = private$path) |>
+    path_filter(path("*renv", "library*"), invert = TRUE) -> files
+  files <- data.frame(language = private$main, path = files)
   for (current in names(private$other)) {
     test_current <- outer(files$path, private$other[[current]], path_has_parent)
     files$language[apply(test_current, 1, any)] <- current
   }
-  test_ignore <- outer(files, private$ignore, path_has_parent)
+  test_ignore <- outer(files$path, private$ignore, path_has_parent)
   files$language[apply(test_ignore, 1, any)] <- "ignore"
+
   class(files) <- c("checklist_language", class(files))
   attr(files, "checklist_default") <- private$main
   attr(files, "checklist_ignore") <- private$ignore
@@ -183,12 +184,12 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
   ignore <- character(0)
   for (i in unique(first_path)) {
     current <- which(first_path == i)
-    print(x[current, ], hide_ignore = TRUE)
+    print(sort(x$path[current]), method = "radix")
     answer <- menu(
       c(
         paste("ignore",  "all files"[length(current) > 1]),
         paste(
-          "use", c(main, other_lang),
+          "use", c(sprintf("%s (default)", main), other_lang),
           "for all files"[length(current) > 1]
         ),
         "change the settings for some files"[length(current) > 1],
