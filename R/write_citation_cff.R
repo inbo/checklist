@@ -1,9 +1,9 @@
-#' Write a CITATION.cff file
+#' Write a `CITATION.cff` file
 #'
 #' This file format contains the citation information.
 #' It is supported by GitHub, Zenodo and Zotero.
 #'
-#' @return An invisible `Checklist` object.
+#' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
 #' @inheritParams update_citation
 #' @export

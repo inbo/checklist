@@ -1,17 +1,18 @@
 #' @title Make hexagonal logo for package
 #'
-#' @description This function makes a hexsticker in INBO style for the provided
-#' package name.
+#' @description This function makes a hexagonal logo in INBO style for the
+#' provided package name.
 #'
-#' @param package_name package name that should be mentioned on the hexsticker
-#' @param filename filename to save the sticker
-#' @param icon optional filename to an svg file with an icon
+#' @param package_name package name that should be mentioned on the hexagonal
+#' sticker.
+#' @param filename filename to save the sticker.
+#' @param icon optional filename to an  `.svg` file with an icon.
 #' @param scale Scales the `icon`.
 #' @param x number of pixels to move the icon to the right.
 #' Use negative numbers to move the icon to the left.
 #' @param y number of pixels to move the icon to the bottom.
 #' Use negative numbers to move the icon to the top.
-#' @return A figure is saved in the working directory or provided path
+#' @return A figure is saved in the working directory or provided path.
 #'
 #' @export
 #'

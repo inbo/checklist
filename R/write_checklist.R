@@ -1,6 +1,6 @@
 #' Write a check list with allowed issues in the source code
 #'
-#' Checklist stores it configuration as a `checklist.yml` file.
+#' checklist stores it configuration as a `checklist.yml` file.
 #' `create_package()`, `setup_package()` and `setup_source()` generate a default
 #' file.
 #' If you need to allow some warnings or notes, you need to update the
@@ -9,8 +9,8 @@
 #' @details
 #' First run `x <- checklist::check_package()` or
 #' `x <- checklist::check_source()`.
-#' These commands run the checks and store the CheckList object in the variable
-#' `x`.
+#' These commands run the checks and store the `checklist` object in the
+#' variable `x`.
 #' Next you can store the configuration with `checklist::write_checklist(x)`.
 #' This will first list any existing allowed warnings or notes.
 #' For every one of them, choose whether you want to keep it or not.

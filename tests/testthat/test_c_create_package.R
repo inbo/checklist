@@ -53,7 +53,7 @@ test_that("create_package() works", {
   expect_is({
       x <- check_package(file.path(path, package), fail = FALSE, quiet = TRUE)
     },
-    "Checklist"
+    "checklist"
   )
   expect_true(file_test("-f", file.path(path, package, ".zenodo.json")))
   expect_true(file_test("-f", file.path(path, package, "CITATION.cff")))
@@ -68,14 +68,14 @@ test_that("create_package() works", {
   stub(x$add_motivation, "readline", "junk", depth = 2)
   expect_is(
     x$add_motivation(which = "notes"),
-    "Checklist"
+    "checklist"
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 2)
 
   stub(x$confirm_motivation, "yesno", TRUE, depth = 2)
   expect_is(
     x$confirm_motivation(which = "notes"),
-    "Checklist"
+    "checklist"
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 2)
 
@@ -93,13 +93,13 @@ test_that("create_package() works", {
   stub(x$confirm_motivation, "yesno", FALSE, depth = 2)
   expect_is(
     x$confirm_motivation(which = "notes"),
-    "Checklist"
+    "checklist"
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
 
   writeLines("dummy<-function(){F}", file.path(path, package, "R", "dummy.R"))
   expect_is(
-    x <- check_lintr(file.path(path, package), quiet = TRUE), "Checklist"
+    x <- check_lintr(file.path(path, package), quiet = TRUE), "checklist"
   )
   expect_length(x$.__enclos_env__$private$linter, 6)
   expect_output(print(x), "6 linters found")

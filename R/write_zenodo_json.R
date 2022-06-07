@@ -5,7 +5,7 @@
 #'https://developers.zenodo.org/#add-metadata-to-your-github-repository-release)
 #' for more information.
 #'
-#' @return An invisible `Checklist` object.
+#' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that

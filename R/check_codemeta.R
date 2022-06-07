@@ -2,7 +2,7 @@
 #'
 #' Use the checks from [codemetar::give_opinions()].
 #' @inheritParams read_checklist
-#' @return A `Checklist` object.
+#' @return A `checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom codemetar give_opinions
 #' @importFrom gert git_status

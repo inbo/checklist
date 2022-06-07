@@ -16,3 +16,10 @@ citation_roles:
 - aut
 - cre
 keywords: R package
+spelling:
+  default: en-GB
+  ignore:
+  - .github
+  - LICENSE.md
+  - README.md
+  - inst/generic_template

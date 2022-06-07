@@ -4,16 +4,16 @@
 #' file in the root of a project.
 #' This function reads this configuration.
 #' It is mainly used by the other functions inside the package.
-#' @param x Either a `Checklist` object or a path to the source code.
+#' @param x Either a `checklist` object or a path to the source code.
 #' Defaults to `.`.
-#' @return A `Checklist` object.
+#' @return A `checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
 #' @importFrom fs is_file path
 #' @importFrom yaml read_yaml
 #' @family both
 read_checklist <- function(x = ".") {
-  if (inherits(x, "Checklist")) {
+  if (inherits(x, "checklist")) {
     return(x)
   }
 

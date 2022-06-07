@@ -38,7 +38,7 @@ test_that("setup_source() works", {
       sink()
       x
     },
-    "Checklist"
+    "checklist"
   )
 
   writeLines("sessionInfo()", file.path(path, "junk.r"))
@@ -61,6 +61,6 @@ test_that("setup_source() works", {
     sink()
     x
   },
-  "Checklist"
+  "checklist"
   )
 })

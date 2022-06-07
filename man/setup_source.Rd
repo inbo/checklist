@@ -13,7 +13,7 @@ Defaults to \code{"."}.}
 \item{language}{Language of the project in \code{xx-YY} format.
 \code{xx} is the two letter code for the language.
 \code{YY} is the two letter code for the language variant.
-E.g. \code{en-GB} for British English, \code{en-US} for American English, ``nl-BE` for
+E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
 Belgian Dutch.}
 }
 \description{
@@ -21,7 +21,7 @@ This adds the required GitHub workflows to run \code{check_source()} automatical
 whenever you push commits to GitHub.
 It also adds a
 \href{https://creativecommons.org/licenses/by/4.0/}{CC-BY 4.0} license file,
-a \href{https://inbo.github.io/checklist/CODE_OF_CONDUCT.html}{CODE_OF_CONDUCT.md}
+a \href{https://inbo.github.io/checklist/CODE_OF_CONDUCT.html}{\code{CODE_OF_CONDUCT.md}}
 and the checklist configuration file (\code{checklist.yml}).
 }
 \seealso{

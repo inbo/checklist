@@ -18,7 +18,7 @@
 #' @param language Language of the project in `xx-YY` format.
 #' `xx` is the two letter code for the language.
 #' `YY` is the two letter code for the language variant.
-#' E.g. `en-GB` for British English, `en-US` for American English, ``nl-BE` for
+#' E.g. `en-GB` for British English, `en-US` for American English, `nl-BE` for
 #' Belgian Dutch.
 #' @export
 #' @importFrom assertthat assert_that is.string

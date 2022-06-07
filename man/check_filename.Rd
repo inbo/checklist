@@ -7,7 +7,7 @@
 check_filename(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
 \description{
@@ -54,13 +54,13 @@ Exception to these exceptions: \code{R/sysdata.rda}.
 
 Underscores (\verb{_}) causes problems for graphical files when using LaTeX to
 create pdf output.
-This is how we generate pdf output from RMarkdown.
+This is how we generate pdf output from rmarkdown.
 Therefore you need to use a dash (\code{-}) as separator instead of
 an underscores (\verb{_}).
-Applies to files with extensions "csl", "eps", "jpg", "jpeg", "pdf", "png"
-and "ps".
+Applies to files with extensions \code{.csl}, \code{.eps}, \code{.jpg}, \code{.jpeg}, \code{.pdf}, \code{.png}
+and \code{.ps}.
 
-We ignore files with "otf" or "ttf" extensions.
+We ignore files with \code{.otf} or \code{.ttf} extensions.
 These are fonts files which often require their own file name scheme.
 }
 

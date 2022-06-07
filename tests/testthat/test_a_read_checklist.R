@@ -2,7 +2,7 @@ test_that("read_checklist works", {
   target <- tempfile("checklist")
   dir.create(target)
   # no checklist.yml
-  suppressMessages(expect_is(x <- read_checklist(target), "Checklist"))
+  suppressMessages(expect_is(x <- read_checklist(target), "checklist"))
   expect_identical(read_checklist(x), x)
   expect_identical(x$get_path, path_norm(target))
   expect_identical(x$get_checked, "checklist")

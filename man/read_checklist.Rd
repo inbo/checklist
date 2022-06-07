@@ -7,11 +7,11 @@
 read_checklist(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
 \value{
-A \code{Checklist} object.
+A \code{checklist} object.
 }
 \description{
 The checklist package stores configuration information in the \code{checklist.yml}

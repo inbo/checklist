@@ -14,11 +14,12 @@ create_hexsticker(
 )
 }
 \arguments{
-\item{package_name}{package name that should be mentioned on the hexsticker}
+\item{package_name}{package name that should be mentioned on the hexagonal
+sticker.}
 
-\item{filename}{filename to save the sticker}
+\item{filename}{filename to save the sticker.}
 
-\item{icon}{optional filename to an svg file with an icon}
+\item{icon}{optional filename to an  \code{.svg} file with an icon.}
 
 \item{x}{number of pixels to move the icon to the right.
 Use negative numbers to move the icon to the left.}
@@ -29,11 +30,11 @@ Use negative numbers to move the icon to the top.}
 \item{scale}{Scales the \code{icon}.}
 }
 \value{
-A figure is saved in the working directory or provided path
+A figure is saved in the working directory or provided path.
 }
 \description{
-This function makes a hexsticker in INBO style for the provided
-package name.
+This function makes a hexagonal logo in INBO style for the
+provided package name.
 }
 \examples{
 \dontrun{

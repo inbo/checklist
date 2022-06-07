@@ -6,7 +6,7 @@ test_that("check_filename() works", {
 
   # fail on white space in folder names
   dir.create(file.path(path, "with space"))
-  expect_is(suppressMessages(x <- check_filename(path)), "Checklist")
+  expect_is(suppressMessages(x <- check_filename(path)), "checklist")
   expect_true(x$fail)
   unlink(file.path(path, "with space"))
 

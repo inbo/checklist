@@ -12,7 +12,7 @@
 #' Note that this will result in a warning, which you can allow via
 #' `write_checklist()`.
 #'
-#' @return An invisible `Checklist` object.
+#' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
 #' @param roles Roles to select the persons for the `DESCRIPTION`.
 #' Defaults to `c("aut", "cre")`.

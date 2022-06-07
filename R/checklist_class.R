@@ -6,7 +6,7 @@
 #' @family class
 checklist <- R6Class(
 
-  "Checklist",
+  "checklist",
 
   inherit = spelling,
   public = list(
@@ -130,7 +130,7 @@ checklist <- R6Class(
       invisible(self)
     },
 
-    #' @description Initialize a new Checklist object.
+    #' @description Initialize a new `checklist` object.
     #' @param x The path to the root of the project.
     #' @param language The default language for spell checking.
     initialize = function(x = ".", language) {
@@ -144,7 +144,7 @@ checklist <- R6Class(
     #' package.
     package = TRUE,
 
-    #' @description Print the Checklist object.
+    #' @description Print the `checklist` object.
     #' @param ... currently ignored.
     print = function(...) {
       dots <- list(...)

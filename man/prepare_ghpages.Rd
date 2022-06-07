@@ -7,7 +7,7 @@
 prepare_ghpages(x = ".", verbose = TRUE)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{verbose}{display some progress info while downloading}

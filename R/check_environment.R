@@ -2,7 +2,7 @@
 #'
 #' Some actions will fail when these environment variables are not set.
 #' This function does only work on GitHub.
-#' @return An invisible `Checklist` object.
+#' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
 #' @export
 #' @family package

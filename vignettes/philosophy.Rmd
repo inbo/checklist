@@ -163,6 +163,6 @@ Keep in mind that you seldom run an analysis _exactly_ once.
   Every function needs at least a title and an entry for every argument.
 - Most likely you would still need a short script that combines a few high level functions of your package to run the analysis.
   The `inst` folder is an ideal place to bundle such scripts within the package.
-  You can also use it to store small (!) datasets or RMarkdown reports.
+  You can also use it to store small (!) datasets or rmarkdown reports.
 
 ## References

@@ -1,6 +1,7 @@
 #' Standardised test for an R source repository
 #'
-#' A convenience function that runs test on a project with only R and Rmd files.
+#' A convenience function that runs test on a project with only `.R` and `.Rmd`
+#' files.
 #' The details section lists the relevant functions.
 #' When you fixed a problem, you can speed things up by running only the related
 #' check.
