@@ -212,7 +212,10 @@ spelling_parse_md <- function(md_file, wordlist) {
   text <- gsub("`.+?`", "", text)
   # remove markdown comments
   text <- gsub("<!--.*?-->", "", text)
-
+  # remove HTML image with alt tag while keeping the alt tag
+  text <- gsub("<.*?alt ?= ?\"(.*?)\".*?>", "\"\\1\"", text)
+  # remove HTML image without alt tag
+  text <- gsub("<img.*?>", "", text)
   list(spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   ))
