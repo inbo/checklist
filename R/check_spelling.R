@@ -47,10 +47,13 @@ check_spelling <- function(x = ".") {
 
 #' @importFrom fs file_exists path
 #' @importFrom hunspell dictionary
+#' @importFrom renv dependencies
 spelling_wordlist <- function(lang = "en_GB", root = ".") {
   path("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
-    readLines() -> add_words
+    readLines() %>%
+    c(unique(dependencies(root, progress = FALSE)$Package)) -> add_words
+
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
   if (file_exists(dict)) {
@@ -202,7 +205,7 @@ spelling_parse_md <- function(md_file, wordlist) {
   # remove Markdown urls
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub("(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=]+", "", text, perl = TRUE)
+  text <- gsub("(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+", "", text, perl = TRUE)
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
   # remove text between matching back ticks on the same line

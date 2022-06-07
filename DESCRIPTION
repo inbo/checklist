@@ -33,6 +33,7 @@ Imports:
     lintr (>= 2.0.1.9000),
     pkgdown,
     rcmdcheck,
+    renv,
     rmarkdown,
     rorcid,
     sessioninfo,
