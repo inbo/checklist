@@ -1,6 +1,7 @@
 #' Add words to custom dictionaries
 #' @param issues The output of `check_spelling()`.
 #' @export
+#' @importFrom fs path
 custom_dictionary <- function(issues) {
   assert_that(
     inherits(issues, "checklist_spelling"),
@@ -12,12 +13,16 @@ custom_dictionary <- function(issues) {
   )
 
   vapply(
-    unique(issues$language), FUN.VALUE = NULL,
+    unique(issues$language), FUN.VALUE = logical(1),
     FUN = function(lang) {
+      dict_file <- tolower(gsub("-", "_", lang))
+      dict_file <- path(attr(issues, "checklist_path"), "inst", dict_file)
       unique(issues$message[issues$language == lang]) |>
-        add_words()
+        add_words(dictionary = dict_file)
+      return(TRUE)
     }
   )
+  return(invisible(NULL))
 }
 
 #' @importFrom fs dir_create file_exists path path_dir path_ext_remove
