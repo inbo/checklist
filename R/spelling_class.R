@@ -38,6 +38,14 @@ spelling <- R6Class(
     },
     #' @description Define which files to ignore or to spell check in a
     #' different language.
+    #' @param language The language.
+    set_default = function(language) {
+      private$main <- validate_language(language)
+      private$other[[private$main]] <- NULL
+      return(self)
+    },
+    #' @description Define which files to ignore or to spell check in a
+    #' different language.
     set_exceptions = function() {
       exceptions <- change_language_interactive(
         rbind(self$get_md, self$get_rd), main = private$main,
