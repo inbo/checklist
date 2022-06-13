@@ -25,6 +25,7 @@ Please have a look at \code{vignette("philosophy")} for more details on the rule
 Other both: 
 \code{\link{check_filename}()},
 \code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
 \code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{write_checklist}()}

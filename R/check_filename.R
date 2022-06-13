@@ -35,8 +35,8 @@
 #' This is how we generate pdf output from rmarkdown.
 #' Therefore you need to use a dash (`-`) as separator instead of
 #' an underscores (`_`).
-#' Applies to files with extensions `.csl`, `.eps`, `.jpg`, `.jpeg`, `.pdf`, `.png`
-#' and `.ps`.
+#' Applies to files with extensions `.csl`, `.eps`, `.jpg`, `.jpeg`, `.pdf`,
+#' `.png` and `.ps`.
 #'
 #' We ignore files with `.otf` or `.ttf` extensions.
 #' These are fonts files which often require their own file name scheme.

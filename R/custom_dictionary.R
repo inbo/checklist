@@ -2,6 +2,7 @@
 #' @param issues The output of `check_spelling()`.
 #' @export
 #' @importFrom fs path
+#' @family both
 custom_dictionary <- function(issues) {
   assert_that(
     inherits(issues, "checklist_spelling"),

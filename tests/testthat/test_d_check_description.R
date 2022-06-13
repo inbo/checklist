@@ -67,7 +67,7 @@ test_that("check_description() works", {
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "remove remotes", repo = repo)
-  expect_is(x <- check_description(repo), "Checklist")
+  expect_is(x <- check_description(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION,
     "Package version not updated"

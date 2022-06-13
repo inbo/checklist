@@ -19,6 +19,7 @@ Other both:
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
 \code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
 \code{\link{read_checklist}()},
 \code{\link{write_checklist}()}
 }

@@ -21,7 +21,8 @@ This adds the required GitHub workflows to run \code{check_source()} automatical
 whenever you push commits to GitHub.
 It also adds a
 \href{https://creativecommons.org/licenses/by/4.0/}{CC-BY 4.0} license file,
-a \href{https://inbo.github.io/checklist/CODE_OF_CONDUCT.html}{\code{CODE_OF_CONDUCT.md}}
+a
+\href{https://inbo.github.io/checklist/CODE_OF_CONDUCT.html}{\code{CODE_OF_CONDUCT.md}}
 and the checklist configuration file (\code{checklist.yml}).
 }
 \seealso{

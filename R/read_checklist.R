@@ -9,7 +9,7 @@
 #' @return A `checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
-#' @importFrom fs is_file path
+#' @importFrom fs is_dir is_file path path_real
 #' @importFrom yaml read_yaml
 #' @family both
 read_checklist <- function(x = ".") {
@@ -17,7 +17,8 @@ read_checklist <- function(x = ".") {
     return(x)
   }
 
-  assert_that(is.string(x))
+  assert_that(is.string(x), is_dir(x))
+  x <- path_real(x)
   checklist_file <- path(x, "checklist.yml")
   if (!is_file(checklist_file)) {
     # no check list file found

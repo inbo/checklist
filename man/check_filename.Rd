@@ -57,8 +57,8 @@ create pdf output.
 This is how we generate pdf output from rmarkdown.
 Therefore you need to use a dash (\code{-}) as separator instead of
 an underscores (\verb{_}).
-Applies to files with extensions \code{.csl}, \code{.eps}, \code{.jpg}, \code{.jpeg}, \code{.pdf}, \code{.png}
-and \code{.ps}.
+Applies to files with extensions \code{.csl}, \code{.eps}, \code{.jpg}, \code{.jpeg}, \code{.pdf},
+\code{.png} and \code{.ps}.
 
 We ignore files with \code{.otf} or \code{.ttf} extensions.
 These are fonts files which often require their own file name scheme.
@@ -68,6 +68,7 @@ These are fonts files which often require their own file name scheme.
 Other both: 
 \code{\link{check_lintr}()},
 \code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
 \code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{write_checklist}()}

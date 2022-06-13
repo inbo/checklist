@@ -12,3 +12,13 @@ custom_dictionary(issues)
 \description{
 Add words to custom dictionaries
 }
+\seealso{
+Other both: 
+\code{\link{check_filename}()},
+\code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{print.checklist_spelling}()},
+\code{\link{read_checklist}()},
+\code{\link{write_checklist}()}
+}
+\concept{both}

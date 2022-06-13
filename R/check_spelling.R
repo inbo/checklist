@@ -51,7 +51,7 @@ check_spelling <- function(x = ".") {
 spelling_wordlist <- function(lang = "en_GB", root = ".") {
   path("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
-    readLines() %>%
+    readLines() |>
     c(unique(dependencies(root, progress = FALSE)$Package)) -> add_words
 
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>

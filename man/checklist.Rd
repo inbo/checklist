@@ -60,6 +60,7 @@ package.}
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_default"><a href='../../checklist/html/spelling.html#method-spelling-set_default'><code>checklist::spelling$set_default()</code></a></li>
 <li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_exceptions"><a href='../../checklist/html/spelling.html#method-spelling-set_exceptions'><code>checklist::spelling$set_exceptions()</code></a></li>
 <li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_ignore"><a href='../../checklist/html/spelling.html#method-spelling-set_ignore'><code>checklist::spelling$set_ignore()</code></a></li>
 <li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_other"><a href='../../checklist/html/spelling.html#method-spelling-set_other'><code>checklist::spelling$set_other()</code></a></li>

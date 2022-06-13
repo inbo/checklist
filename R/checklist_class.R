@@ -133,10 +133,13 @@ checklist <- R6Class(
     #' @description Initialize a new `checklist` object.
     #' @param x The path to the root of the project.
     #' @param language The default language for spell checking.
+    #' @importFrom fs is_dir path_real
     initialize = function(x = ".", language) {
       assert_that(is.string(x), noNA(x))
-      private$path <- normalizePath(x, winslash = "/", mustWork = TRUE)
-      super$initialize(language = language, base_path = x)
+      x <- path_real(x)
+      assert_that(is_dir(x))
+      private$path <- x
+      super$initialize(language = language, base_path = private$path)
       invisible(self)
     },
 

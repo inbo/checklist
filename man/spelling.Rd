@@ -29,6 +29,7 @@ Other class:
 \itemize{
 \item \href{#method-spelling-new}{\code{spelling$new()}}
 \item \href{#method-spelling-print}{\code{spelling$print()}}
+\item \href{#method-spelling-set_default}{\code{spelling$set_default()}}
 \item \href{#method-spelling-set_exceptions}{\code{spelling$set_exceptions()}}
 \item \href{#method-spelling-set_ignore}{\code{spelling$set_ignore()}}
 \item \href{#method-spelling-set_other}{\code{spelling$set_other()}}
@@ -67,6 +68,24 @@ Print the \code{spelling} object.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{currently ignored.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-spelling-set_default"></a>}}
+\if{latex}{\out{\hypertarget{method-spelling-set_default}{}}}
+\subsection{Method \code{set_default()}}{
+Define which files to ignore or to spell check in a
+different language.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{spelling$set_default(language)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{language}}{The language.}
 }
 \if{html}{\out{</div>}}
 }
