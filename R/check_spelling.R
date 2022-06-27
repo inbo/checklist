@@ -219,6 +219,29 @@ spelling_parse_md <- function(md_file, wordlist) {
   text <- gsub("<.*?alt ?= ?\"(.*?)\".*?>", "\"\\1\"", text)
   # remove HTML image without alt tag
   text <- gsub("<img.*?>", "", text)
+  # remove HTML script
+  text <- gsub("<script.*?>.*<\\/script>", "", text, ignore.case = TRUE)
+  start <- grep("<script.*?>", text)
+  end <- grep("<\\/script>", text)
+  assert_that(
+    length(start) == length(end),
+    msg = paste("unmatched `<script>` and `</script>` in", md_file)
+  )
+  assert_that(
+    all(start < end),
+    msg = paste("`</script>` appears before `<script>` found in", md_file)
+  )
+  assert_that(
+    all(head(end, -1) < tail(start, -1)),
+    msg = paste("new `<script>` found without closing the previous in", md_file)
+  )
+  while (length(start)) {
+    text[start[1]:end[1]] <- ""
+    start <- tail(start, -1)
+    end <- tail(end, -1)
+  }
+  # remove HTML div and p tags
+  text <- gsub("<\\/?(div|p).*?>", "", text, ignore.case = TRUE)
   list(spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   ))
