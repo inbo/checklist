@@ -19,6 +19,7 @@ check_spelling <- function(x = ".") {
     file.path(R.home("share"), "Rd", "macros", "system.Rd"),
     loadPkgRdMacros(x$get_path, macros = NULL)
   )
+  install_dictorionary(unique(c(md_files$language, rd_files$language)))
   issues <- vapply(
     unique(c(md_files$language, rd_files$language)), root = x$get_path,
     md_files = md_files, rd_files = rd_files, macros = macros,
@@ -306,4 +307,65 @@ rstudio_source_markers <- function(issues) {
     "sourceMarkers", name = "checklist_spelling", markers = issues,
     basePath = common, autoSelect = "first"
   )
+}
+
+#' @importFrom hunspell list_dictionaries
+install_dictorionary <- function(lang) {
+  lang <- lang[lang != "ignore"]
+  available <- list_dictionaries()
+  ok <- gsub("-", "_", lang) %in% available
+  if (all(ok)) {
+    return(TRUE)
+  }
+  install_dutch(lang[!ok])
+  install_french(lang[!ok])
+}
+
+#' @importFrom fs file_copy
+install_dutch <- function(lang) {
+  if (length(grep("^nl", lang)) == 0) {
+    return(FALSE)
+  }
+  assert_that(
+    requireNamespace("curl", quietly = TRUE),
+    msg = "The `curl` package is missing"
+  )
+  target <- system.file("dict", package = "hunspell")
+  curl::curl_download(
+    "https://github.com/OpenTaal/opentaal-hunspell/raw/master/nl.dic",
+    path(target, "nl_BE.dic")
+  )
+  curl::curl_download(
+  "https://raw.githubusercontent.com/OpenTaal/opentaal-hunspell/master/nl.aff",
+    path(target, "nl_BE.aff")
+  )
+  file_copy(path(target, "nl_BE.dic"), path(target, "nl_NL.dic"))
+  file_copy(path(target, "nl_BE.aff"), path(target, "nl_NL.aff"))
+  return(TRUE)
+}
+
+#' @importFrom fs file_copy file_move
+#' @importFrom utils unzip
+install_french <- function(lang) {
+  if (length(grep("^fr", lang)) == 0) {
+    return(FALSE)
+  }
+  assert_that(
+    requireNamespace("curl", quietly = TRUE),
+    msg = "The `curl` package is missing"
+  )
+  zipfile <- tempfile(fileext = ".zip")
+  curl::curl_download(
+    "http://grammalecte.net/download/fr/hunspell-french-dictionaries-v7.0.zip",
+    zipfile
+  )
+  target <- system.file("dict", package = "hunspell")
+  unzip(
+    zipfile, files = paste0("fr-classique.", c("aff", "dic")), exdir = target
+  )
+  file_move(path(target, "fr-classique.aff"), path(target, "fr_FR.aff"))
+  file_move(path(target, "fr-classique.dic"), path(target, "fr_FR.dic"))
+  file_copy(path(target, "fr_FR.aff"), path(target, "fr_BE.aff"))
+  file_copy(path(target, "fr_FR.dic"), path(target, "fr_BE.dic"))
+  return(TRUE)
 }
