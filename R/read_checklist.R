@@ -41,7 +41,7 @@ See `?write_checklist` to generate a `checklist.yml`.")
     x <- checklist$new(
       x = x,
       language = ifelse(
-        has_name(allowed$spelling, "default"), "en-GB", allowed$spelling$default
+        has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
       )
     )
   }
