@@ -241,13 +241,14 @@ checklist_summarise_linter <- function(linter) {
 }
 
 checklist_template <- function(
-  package, warnings, notes, citation_roles, keywords, spelling
+  package, warnings, notes, citation_roles, keywords, spelling, required
 ) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
     package = package,
     allowed = list(warnings = warnings, notes = notes),
-    citation_roles = citation_roles
+    citation_roles = citation_roles,
+    required = required
   )
   if (length(keywords) > 0) {
     template$keywords <- keywords

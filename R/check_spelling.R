@@ -208,7 +208,9 @@ spelling_parse_md <- function(md_file, wordlist) {
   # remove Markdown urls
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub("(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+", "", text, perl = TRUE)
+  text <- gsub(
+    "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+", "", text, perl = TRUE
+  )
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
   # remove text between matching back ticks on the same line
@@ -303,7 +305,9 @@ print.checklist_spelling <- function(x, ...) {
     "i (j) indicates that the word occures at line i, column j", sep = "\n"
   )
   cat(
-    sprintf("\n%s (%s)\n\n%s\n", display$file, display$language, display$message),
+    sprintf(
+      "\n%s (%s)\n\n%s\n", display$file, display$language, display$message
+    ),
     sep = rules(".")
   )
   return(invisible(NULL))

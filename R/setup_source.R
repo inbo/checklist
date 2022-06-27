@@ -13,61 +13,50 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
+#' @importFrom fs dir_create file_copy path path_real
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
 setup_source <- function(path = ".", language) {
-  path <- normalizePath(path, winslash = "/", mustWork = TRUE)
+  path <- path_real(path)
   assert_that(is_workdir_clean(repo = path))
-
-  # add checklist.yml
-  writeLines(
-    paste(
-      "description: Configuration file for checklist::check_pkg()
-package: no
-allowed:
-  warnings: []
-  notes: []
-spelling:
-  default:", validate_language(language)
-    ),
-    file.path(path, "checklist.yml")
-  )
+  x <- checklist$new(x = path, language = language, package = FALSE)
+  x$set_required(c("filename conventions", "lintr"))
+  write_checklist(x = x)
   git_add("checklist.yml", force = TRUE, repo = path)
 
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
-    file.copy(
+    file_copy(
       system.file(
         file.path("generic_template", "cc_by_4_0.md"), package = "checklist"
       ),
-      file.path(path, "LICENSE.md")
+      path(path, "LICENSE.md")
     )
     git_add("LICENSE.md", force = TRUE, repo = path)
   }
 
   # Add code of conduct
-  dir.create(file.path(path, ".github"), showWarnings = FALSE)
-  file.copy(
+  dir_create(path(path, ".github"))
+  file_copy(
     system.file(
-      file.path("generic_template", "CODE_OF_CONDUCT.md"),
-      package = "checklist"
+      path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
     ),
-    file.path(path, ".github", "CODE_OF_CONDUCT.md")
+    path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  git_add(file.path(".github", "CODE_OF_CONDUCT.md"),
-                force = TRUE, repo = path)
+  git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = path)
 
   # Add GitHub actions
-  dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
-  file.copy(
+  dir_create(path(path, ".github", "workflows"))
+  file_copy(
     system.file(
-      file.path("source_template", "check_source.yml"), package = "checklist"),
-    file.path(path, ".github", "workflows", "check_source.yml"),
+      path("source_template", "check_source.yml"), package = "checklist"
+    ),
+    path(path, ".github", "workflows", "check_source.yml"),
     overwrite = TRUE
   )
   git_add(
-    file.path(".github", "workflows", "check_source.yml"),
+    path(".github", "workflows", "check_source.yml"),
     force = TRUE, repo = path
   )
 

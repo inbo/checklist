@@ -20,4 +20,6 @@ repository-code: https://github.com/inbo/checklist
 identifiers:
 - type: url
   value: https://inbo.github.io/checklist/
-keywords: R package
+keywords:
+- quality control
+- R package

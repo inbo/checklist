@@ -53,6 +53,7 @@ package.}
 \item \href{#method-checklist-new}{\code{checklist$new()}}
 \item \href{#method-checklist-print}{\code{checklist$print()}}
 \item \href{#method-checklist-set_roles}{\code{checklist$set_roles()}}
+\item \href{#method-checklist-set_required}{\code{checklist$set_required()}}
 \item \href{#method-checklist-update_keywords}{\code{checklist$update_keywords()}}
 \item \href{#method-checklist-clone}{\code{checklist$clone()}}
 }
@@ -225,7 +226,7 @@ Confirm the current motivation for allowed issues.
 \subsection{Method \code{new()}}{
 Initialize a new \code{checklist} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$new(x = ".", language)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$new(x = ".", language, package = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -234,6 +235,8 @@ Initialize a new \code{checklist} object.
 \item{\code{x}}{The path to the root of the project.}
 
 \item{\code{language}}{The default language for spell checking.}
+
+\item{\code{package}}{Is this a package or a project?}
 }
 \if{html}{\out{</div>}}
 }
@@ -268,6 +271,23 @@ set roles
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{roles}}{A vector with roles.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checklist-set_required"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-set_required}{}}}
+\subsection{Method \code{set_required()}}{
+set required checks
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$set_required(checks = character(0))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{checks}}{a vector of required checks}
 }
 \if{html}{\out{</div>}}
 }

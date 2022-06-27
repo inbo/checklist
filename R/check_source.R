@@ -20,6 +20,7 @@
 #' Defaults to `TRUE` on non-interactive session and `FALSE` on an interactive
 #' session.
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom fs dir_exists file_exists path
 #' @importFrom utils file_test
 #' @export
 #' @family source

@@ -22,9 +22,8 @@ read_checklist <- function(x = ".") {
   checklist_file <- path(x, "checklist.yml")
   if (!is_file(checklist_file)) {
     # no check list file found
-    message("No `checklist.yml` found. Assuming this is a package.
-See `?write_checklist` to generate a `checklist.yml`.")
-    x <- checklist$new(x = x, language = "en-GB")
+    message("No `checklist.yml` found. Assuming this is a project.")
+    x <- checklist$new(x = x, language = "en-GB", package = FALSE)
     x <- x$allowed()
     return(x)
   }
@@ -36,14 +35,17 @@ See `?write_checklist` to generate a `checklist.yml`.")
     allowed$spelling <- list(default = "en-GB")
   }
   if (allowed$package) {
-    x <- checklist$new(x = x)
+    x <- checklist$new(x = x, package = TRUE)
   } else {
     x <- checklist$new(
-      x = x,
+      x = x, package = FALSE,
       language = ifelse(
         has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
       )
     )
+    if (has_name(allowed, "required")) {
+      x$set_required(allowed$required)
+    }
   }
   if (has_name(allowed$spelling, "ignore")) {
     x$set_ignore(allowed$spelling$ignore)

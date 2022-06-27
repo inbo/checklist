@@ -133,13 +133,24 @@ checklist <- R6Class(
     #' @description Initialize a new `checklist` object.
     #' @param x The path to the root of the project.
     #' @param language The default language for spell checking.
+    #' @param package Is this a package or a project?
+    #' @importFrom assertthat assert_that is.flag is.string noNA
     #' @importFrom fs is_dir path_real
-    initialize = function(x = ".", language) {
-      assert_that(is.string(x), noNA(x))
+    initialize = function(x = ".", language, package = TRUE) {
+      assert_that(is.string(x), noNA(x), is.flag(package), noNA(package))
       x <- path_real(x)
       assert_that(is_dir(x))
       private$path <- x
       super$initialize(language = language, base_path = private$path)
+      self$package <- package
+      private$required <- list(
+        "checklist",
+        c(
+          "checklist", "CITATION", "DESCRIPTION", "documentation",
+          "R CMD check", "codemeta", "license", "CITATION.cff", ".zenodo.json",
+          "repository secret", "filename conventions", "lintr"
+        )
+      )[[package + 1]]
       invisible(self)
     },
 
@@ -176,6 +187,24 @@ checklist <- R6Class(
       invisible(self)
     },
 
+    #' @description set required checks
+    #' @param checks a vector of required checks
+    set_required = function(checks = character(0)) {
+      assert_that(is.character(checks))
+      ok <- checks %in% private$available_checks
+      assert_that(
+        all(ok),
+        msg = paste(
+          "unknown checks", paste0("`", checks[!ok], "`", collapse = ", ")
+        )
+      )
+      private$required <- sort(unique(c(
+        checks,
+        list(character(0), private$available_checks)[[self$package + 1]]
+      )))
+      return(invisible(self))
+    },
+
     #' @description Update the keywords.
     #' @param keywords a character vector with the new keywords.
     #' The default empty vector (`character(0)`) will erase the keywords.
@@ -210,21 +239,13 @@ checklist <- R6Class(
 
     #' @field fail A logical indicating if all checks passed.
     fail = function() {
-      required_checks <- list(
-        always = c("checklist", "filename conventions", "lintr"),
-        package = c(
-          "CITATION", "DESCRIPTION", "documentation", "R CMD check", "codemeta",
-          "license", "CITATION.cff", ".zenodo.json", "repository secret"
-        )
-      )
-      required_checks <- unlist(required_checks[c(TRUE, self$package)])
       assert_that(
-        all(private$checked %in% required_checks),
+        all(private$checked %in% private$available_checks),
         msg = "Something went wrong while checking your package.
 Please contact the maintainer of the `checklist` package."
       )
       errors <- vapply(private$errors, length, integer(1))
-      any(!required_checks %in% private$checked) ||
+      any(!private$required %in% private$checked) ||
         any(errors > 0) ||
         length(private$linter) ||
         any(
@@ -238,7 +259,8 @@ Please contact the maintainer of the `checklist` package."
       checklist_template(
         package = self$package, warnings = private$allowed_warnings,
         notes = private$allowed_notes, citation_roles = private$roles,
-        keywords = private$keywords, spelling = super$settings
+        keywords = private$keywords, spelling = super$settings,
+        required = sort(unique(private$required))
       )
     }
   ),
@@ -246,6 +268,11 @@ Please contact the maintainer of the `checklist` package."
   private = list(
     allowed_notes = list(),
     allowed_warnings = list(),
+    available_checks = c(
+      "checklist", "CITATION", "DESCRIPTION", "documentation",
+      "R CMD check", "codemeta", "license", "CITATION.cff", ".zenodo.json",
+      "repository secret", "filename conventions", "lintr"
+    ),
     checked = character(0),
     errors = list(),
     keywords = character(0),
@@ -253,6 +280,7 @@ Please contact the maintainer of the `checklist` package."
     notes = character(0),
     path = character(0),
     roles = c("aut", "cre"),
+    required = "checklist",
     warnings = character(0)
   )
 )
