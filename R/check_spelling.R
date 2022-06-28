@@ -102,6 +102,15 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
           problems[[i]], FUN.VALUE = vector(mode = "list", length = 1),
           text = text, i = i,
           FUN = function(word, text, i) {
+            if (grepl("\\\\$", word)) {
+              return(list(
+                data.frame(
+                  type = character(0), file = character(0), line = integer(0),
+                  column = integer(0), message = character(0),
+                  language = character(0)
+                )
+              ))
+            }
             detect <- gregexpr(word, text[i])[[1]]
             list(
               data.frame(line = i, column = as.vector(detect), message = word)
@@ -147,7 +156,7 @@ spelling_parse_md <- function(md_file, wordlist) {
   raw_text <- readLines(md_file)
   text <- spelling_parse_md_yaml(text = raw_text)
   # remove chunks
-  chunks <- grep("^```", text)
+  chunks <- grep("^\\s*```", text)
   assert_that(
     length(chunks) %% 2 == 0,
     msg = paste("Odd number of chunk delimiters detected in", md_file)
@@ -205,6 +214,10 @@ spelling_parse_md <- function(md_file, wordlist) {
   text <- gsub("&nbsp;", " ", text)
   # remove LaTeX commands
   text <- gsub("\\\\\\w+", "", text)
+  # remove Markdown figuren
+  text <- gsub(
+    "!\\[((.|\n)*?)\\]\\(.*?\\)(\\{.*?\\})?\\\\?", " \\1 ", text, perl = TRUE
+  )
   # remove Markdown urls
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
