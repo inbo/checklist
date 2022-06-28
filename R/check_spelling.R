@@ -76,22 +76,22 @@ spelling_wordlist <- function(lang = "en_GB", root = ".") {
 #' @importFrom hunspell hunspell
 spelling_check <- function(text, filename, wordlist, raw_text = text) {
   if (all(text == "")) {
-    return(
-      data.frame(
-        type = character(0), file = character(0), line = integer(0),
-        column = integer(0), message = character(0), language = character(0)
-      )
+    result <- data.frame(
+      type = character(0), file = character(0), line = integer(0),
+      column = integer(0), message = character(0), language = character(0)
     )
+    class(result) <- c("checklist_spelling", class(result))
+    return(result)
   }
   problems <- hunspell(text = text, dict = wordlist)
   relevant <- which(vapply(problems, length, integer(1)) > 0)
   if (length(relevant) == 0) {
-    return(
-      data.frame(
-        type = character(0), file = character(0), line = integer(0),
-        column = integer(0), message = character(0), language = character(0)
-      )
+    result <- data.frame(
+      type = character(0), file = character(0), line = integer(0),
+      column = integer(0), message = character(0), language = character(0)
     )
+    class(result) <- c("checklist_spelling", class(result))
+    return(result)
   }
   result <- vapply(
     relevant, FUN.VALUE = vector(mode = "list", length = 1),
@@ -282,7 +282,7 @@ spelling_parse_md_yaml <- function(text) {
 #' @importFrom stats aggregate
 #' @family both
 print.checklist_spelling <- function(x, ...) {
-  if (length(x) == 0) {
+  if (length(x) == 0 || nrow(x) == 0) {
     return(invisible(NULL))
   }
   if (
