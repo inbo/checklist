@@ -16,7 +16,7 @@ file found within the project.
 It also checks any R help file (\code{.Rd}) in the \code{man} folder.
 Use the \code{set_exceptions()} method of the \code{checklist} object to exclude files
 or use a different language.
-Have a look at \code{vignettes("spelling")} for more
+Have a look at \code{vignette("spelling", package = "checklist")} for more
 details.
 }
 \seealso{

@@ -5,7 +5,7 @@
 #' It also checks any R help file (`.Rd`) in the `man` folder.
 #' Use the `set_exceptions()` method of the `checklist` object to exclude files
 #' or use a different language.
-#' Have a look at `vignettes("spelling")` for more
+#' Have a look at `vignette("spelling", package = "checklist")` for more
 #' details.
 #' @inheritParams read_checklist
 #' @export
