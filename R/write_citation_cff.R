@@ -118,7 +118,7 @@ write_citation_cff <- function(x = ".", roles) {
     )
   } else {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
-    new <- "^CITATION\\.cff$" # nolint: nonportable_path_linter.
+    new <- "^CITATION\\.cff$"
     writeLines(
       sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )

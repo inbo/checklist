@@ -51,7 +51,7 @@ test_that("set_tag() works", {
     "Not on GitHub, not a push or not on main or master."
   )
 
-  Sys.setenv(GITHUB_REF = "refs/heads/junk")  # nolint: nonportable_path_linter.
+  Sys.setenv(GITHUB_REF = "refs/heads/junk")
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
@@ -59,13 +59,13 @@ test_that("set_tag() works", {
 
   # on master, not GitHub
   Sys.setenv(
-    GITHUB_REF = "refs/heads/master" # nolint: nonportable_path_linter.
+    GITHUB_REF = "refs/heads/master"
   )
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
-  Sys.setenv(GITHUB_REF = "refs/heads/main") # nolint: nonportable_path_linter.
+  Sys.setenv(GITHUB_REF = "refs/heads/main")
   expect_message(
     set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
@@ -78,7 +78,7 @@ test_that("set_tag() works", {
     "Not on GitHub, not a push or not on main or master."
   )
   Sys.setenv(
-    GITHUB_REF = "refs/heads/master" # nolint: nonportable_path_linter.
+    GITHUB_REF = "refs/heads/master"
   )
   expect_message(
     set_tag(file.path(path, package)),
@@ -88,6 +88,6 @@ test_that("set_tag() works", {
   # on master, GitHub, push
   Sys.setenv(GITHUB_EVENT_NAME = "push")
   expect_invisible(set_tag(file.path(path, package)))
-  Sys.setenv(GITHUB_REF = "refs/heads/main") # nolint: nonportable_path_linter.
+  Sys.setenv(GITHUB_REF = "refs/heads/main")
   expect_message(set_tag(file.path(path, package)), "tag.*already exists")
 })

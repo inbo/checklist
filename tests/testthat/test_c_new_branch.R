@@ -29,7 +29,7 @@ test_that("new_branch() creates a branch from the main branch", {
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(
     remote = "origin", set_upstream = TRUE, repo = repo, verbose = FALSE,
-    refspec = "refs/heads/branch" # nolint: nonportable_path_linter.
+    refspec = "refs/heads/branch"
   )
   expect_invisible(
     new_branch("new", checkout = TRUE, repo = path, verbose = FALSE)

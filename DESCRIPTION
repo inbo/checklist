@@ -52,8 +52,6 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
-Remotes: 
-    r-lib/lintr
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)

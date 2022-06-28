@@ -34,7 +34,7 @@ write_zenodo_json <- function(x = ".") {
   )
   authors_orcid[!grepl("orcid.org", authors_orcid)] <- ""
   authors_orcid <- gsub(
-    ".*orcid.org/(([0-9]{4}-){3}[0-9]{3}[0-9X]).*", "https://orcid.org/\\1", # nolint: nonportable_path_linter, line_length_linter.
+    ".*orcid.org/(([0-9]{4}-){3}[0-9]{3}[0-9X]).*", "https://orcid.org/\\1",
     authors_orcid
   )
 
@@ -136,7 +136,7 @@ write_zenodo_json <- function(x = ".") {
     )
   } else {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
-    new <- "^\\.zenodo\\.json$" # nolint: nonportable_path_linter.
+    new <- "^\\.zenodo\\.json$"
     writeLines(
       sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )
