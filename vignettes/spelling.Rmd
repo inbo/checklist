@@ -12,6 +12,45 @@ library(knitr)
 opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+## Configuration
+
+The configuration of `check_spelling()` is stored in the `checklist.yml` file at the root of the project.
+This comprises the default language to use for spell checking and optionally which files to exclude from spell checking or to spell check using a different language.
+Use `setup_package()` or `setup_project()` first.
+We recommend to follow the steps in `vignette("getting_started", package = "checklist")` to set-up the `checklist.yml`.
+In case of a package you must set the language in the `Language:` field of the `DESCRIPTION` file.
+In case the `Language:` field is not set `en-GB` is used.
+`setup_project()` will ask which default language to set and will store the information in `checklist.yml`.
+
+Note that a language is defined with the `xx-YY` syntax.
+The first two letters must be lower case (`xx`) and define the language.
+While the last two letters must be upper case (`YY`) and define the language variant.
+A few relevant examples:
+
+- `en-GB`: English as written in the UK.
+- `en-US`: English as written in the USA.
+- `nl-BE`: Dutch as written in Belgium.
+- `nl-NL`: Dutch as written in the Netherlands.
+
+Before you can change the setting, you must read the current settings with `x <- read_checklist(path)`.
+This object has several methods to change the spell checking settings.
+`x$set_default(language)` changes the default language.
+`x$set_exceptions()` allows you to review the current settings on the relevant folders and files within the project.
+You must choose between keeping the current configuration, using the default language for all files or change the setting for some files.
+If you select the last options, the function starts at the root of the project and lists the relevant files or folders at the root.
+In case of a file, you can choose to ignore the file, use the default language or use an additional language.
+If you select any of these options in case of a folder, it will recursively apply to all files in that folder.
+Therefore the function gives an extra option in case of a folder: change the setting for some of the files.
+After updating the settings, you need to store them with `write_checklist(x)`.
+`check_spelling()` will now use the updated settings.
+
+```{r eval = FALSE}
+x <- read_checklist(".")
+x$set_default("nl-BE")
+x$set_exceptions()
+write_checklist(x)
+```
+
 ## Basic usage
 
 Run `check_spelling()` at the working directory of the project.
@@ -28,22 +67,22 @@ Clicking on an issue in this tab will open the corresponding file and move the c
 
 Some of the issues will be typos and need to be fixed.
 Others are words not listed in the available dictionaries.
-You have a few options to handles those words in `.Rmd` files.
-
-1. `check_spelling()` ignores words with `verbatim` syntax (between back ticks "`").
-1. You can ignore an entire line by placing `<!-- spell-check: ignore-->` at the end of the line.
-1. Ignore a block of lines by adding an extra line with `<!-- spell-check: ignore:start-->` at the beginning of the block.
-End the block with `<!-- spell-check: ignore:end-->` on a new line at the end of the block.
-
 The following options work both with `.Rmd` as `.Rd` files.
 
+1. `check_spelling()` ignores words with `verbatim` syntax (between back ticks "`").
 1. Exclude the entire file from spell checking.
 More details on that in the configuration section.
 1. Add the words to a project specific custom dictionary.
 
+You have a few options to handles those words in `.Rmd` files.
+
+1. You can ignore an entire line by placing `<!-- spell-check: ignore -->` at the end of the line.
+1. Ignore a block of lines by adding an extra line with `<!-- spell-check: ignore:start -->` at the beginning of the block.
+End the block with `<!-- spell-check: ignore:end -->` on a new line at the end of the block.
+
 ## Custom dictionary
 
-First of all make sure that `check_spelling()` only return words you want to add to the custom dictionary.
+First of all make sure that `check_spelling()` only returns words you want to add to the custom dictionary.
 Next store the output of `check_spelling()` in an object and use that object as input in `custom_directory()`.
 This will append to words to a `.dic` file in the `inst` folder.
 Running `check_spelling()` again should return an empty list of issues.
@@ -60,42 +99,3 @@ No.
 Project based custom dictionaries are located within the project.
 This is required to make the project reproducible.
 What you can do is copy the `.dic` files from other projects.
-
-## Configuration
-
-The configuration of `check_spelling()` is stored in the `checklist.yml` file at the root of the project.
-When this file is missing, `check_spelling()` assumes your spelling is an R package.
-It will use the language set in the `DESCRIPTION` as default language.
-In case the `Language:` field is not set or when there is no `DESCRIPTION`, `en-GB` is used.
-
-Note that a language is defined with the `xx-YY` syntax.
-The first two letters must be lower case (`xx`) and define the language.
-While the last two letters must be upper case (`YY`) and define the language variant.
-A few relevant examples:
-
-- `en-GB`: English as written in the UK.
-- `en-US`: English as written in the USA.
-- `nl-BE`: Dutch as written in Belgium.
-- `nl-NL`: Dutch as written in the Netherlands.
-
-Before you can change the setting, you must read the current settings with `read_checklist(path)`.
-This object has several methods to change the spell checking settings.
-`$set_default(language)` sets the default language.
-`$set_exceptions()` allows you to review the current settings on the relevant folders and files within the project.
-You must choose between keeping the current configuration, using the default language for all files or change the setting for some files.
-If you select the last options, the function starts at the root of the project and lists the relevant files or folders at the root.
-In case of a file, you can choose to ignore the file, use the default language or use an additional language.
-If you select any of these options in case of a folder, it will recursively apply to all files in that folder.
-Therefore the function gives an extra option in case of a folder: change the setting for some of the files.
-After updating the settings, you need to store them with `write_checklist()`.
-`check_spelling()` will now use the updated settings.
-
-```{r eval = FALSE}
-x <- read_checklist(".")
-x$set_default("nl-BE")
-x$set_exceptions()
-write_checklist(x)
-```
-
-We recommend to follow the steps in `vignette("getting_started", package = "checklist")` to set-up the `checklist.yml`.
-If you run `read_checklist()` on a folder without a `checklist.yml`, it will return a default `checklist.yml`.
