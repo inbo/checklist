@@ -159,8 +159,8 @@ spelling_parse_md <- function(md_file, wordlist) {
   # remove in line chunks
   text <- gsub("\\`r .*?`", "", text)
   # remove ignored sections
-  start <- grep("<!-- spell-check: ignore:start -->", text)
-  end <- grep("<!-- spell-check: ignore:end -->", text)
+  start <- grep("<!-- spell-check: ignore:start\\s*-->", text)
+  end <- grep("<!-- spell-check: ignore:end\\s*-->", text)
   assert_that(
     length(start) == length(end),
     msg = paste(
@@ -188,7 +188,7 @@ spelling_parse_md <- function(md_file, wordlist) {
     end <- tail(end, -1)
   }
   # remove ignored lines
-  text <- gsub(".*<!-- spell-check: ignore -->.*", "", text)
+  text <- gsub(".*<!-- spell-check: ignore\\s*-->.*", "", text)
   # remove bookdown references
   text <- gsub("\\\\@ref\\(.*?\\)", "", text)
   # remove bookdown anchor
