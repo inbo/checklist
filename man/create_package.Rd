@@ -74,6 +74,7 @@ create_package(
 Other setup: 
 \code{\link{prepare_ghpages}()},
 \code{\link{setup_package}()},
+\code{\link{setup_project}()},
 \code{\link{setup_source}()}
 }
 \concept{setup}

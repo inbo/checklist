@@ -29,6 +29,7 @@ and the checklist configuration file (\code{checklist.yml}).
 Other setup: 
 \code{\link{create_package}()},
 \code{\link{prepare_ghpages}()},
-\code{\link{setup_package}()}
+\code{\link{setup_package}()},
+\code{\link{setup_project}()}
 }
 \concept{setup}

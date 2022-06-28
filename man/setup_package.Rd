@@ -36,6 +36,7 @@ Actions.
 Other setup: 
 \code{\link{create_package}()},
 \code{\link{prepare_ghpages}()},
+\code{\link{setup_project}()},
 \code{\link{setup_source}()}
 }
 \concept{setup}
