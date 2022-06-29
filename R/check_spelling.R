@@ -19,7 +19,7 @@ check_spelling <- function(x = ".") {
     file.path(R.home("share"), "Rd", "macros", "system.Rd"),
     loadPkgRdMacros(x$get_path, macros = NULL)
   )
-  install_dictorionary(unique(c(md_files$language, rd_files$language)))
+  install_dictionary(unique(c(md_files$language, rd_files$language)))
   issues <- vapply(
     unique(c(md_files$language, rd_files$language)), root = x$get_path,
     md_files = md_files, rd_files = rd_files, macros = macros,
@@ -290,7 +290,7 @@ print.checklist_spelling <- function(x, ...) {
       requireNamespace("rstudioapi", quietly = TRUE) &&
       rstudioapi::hasFun("sourceMarkers")
   ) {
-    return(rstudio_source_markers(issues = x))
+    return(rstudio_source_markers(issues = x)) # nocov
   }
   common <- path_common(x$file)
   x$file <- path_rel(x$file, start = common)
@@ -327,7 +327,8 @@ print.checklist_spelling <- function(x, ...) {
 }
 
 #' @importFrom fs path_common
-rstudio_source_markers <- function(issues) {
+rstudio_source_markers <- function(issues) { # nocov start
+  # nocov_start
   assert_that(
     requireNamespace("rstudioapi", quietly = TRUE),
     msg = "This function requires the `rstudioapi` package"
@@ -347,10 +348,10 @@ rstudio_source_markers <- function(issues) {
     "sourceMarkers", name = "checklist_spelling", markers = issues,
     basePath = common, autoSelect = "first"
   )
-}
+} # nocov end
 
 #' @importFrom hunspell list_dictionaries
-install_dictorionary <- function(lang) {
+install_dictionary <- function(lang) {
   lang <- lang[lang != "ignore"]
   available <- list_dictionaries()
   ok <- gsub("-", "_", lang) %in% available
@@ -379,8 +380,12 @@ install_dutch <- function(lang) {
   "https://raw.githubusercontent.com/OpenTaal/opentaal-hunspell/master/nl.aff",
     path(target, "nl_BE.aff")
   )
-  file_copy(path(target, "nl_BE.dic"), path(target, "nl_NL.dic"))
-  file_copy(path(target, "nl_BE.aff"), path(target, "nl_NL.aff"))
+  file_copy(
+    path(target, "nl_BE.dic"), path(target, "nl_NL.dic"), overwrite = TRUE
+  )
+  file_copy(
+    path(target, "nl_BE.aff"), path(target, "nl_NL.aff"), overwrite = TRUE
+  )
   return(TRUE)
 }
 
@@ -405,7 +410,11 @@ install_french <- function(lang) {
   )
   file_move(path(target, "fr-classique.aff"), path(target, "fr_FR.aff"))
   file_move(path(target, "fr-classique.dic"), path(target, "fr_FR.dic"))
-  file_copy(path(target, "fr_FR.aff"), path(target, "fr_BE.aff"))
-  file_copy(path(target, "fr_FR.dic"), path(target, "fr_BE.dic"))
+  file_copy(
+    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
+  )
+  file_copy(
+    path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
+  )
   return(TRUE)
 }

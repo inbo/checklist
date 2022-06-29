@@ -29,9 +29,6 @@ spelling <- R6Class(
     #' @param ... currently ignored.
     print = function(...) {
       dots <- list(...)
-      if (!is.null(dots$quiet) && dots$quiet) {
-        return(invisible(NULL))
-      }
       cat("Root:", private$path, "\n\n")
       print(rbind(self$get_md, self$get_rd))
       return(invisible(NULL))
