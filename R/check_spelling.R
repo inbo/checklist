@@ -256,6 +256,8 @@ spelling_parse_md <- function(md_file, wordlist) {
   }
   # remove HTML div and p tags
   text <- gsub("<\\/?(div|p).*?>", "", text, ignore.case = TRUE)
+  # remove forward and backward slashes surrounded by whitespace
+  text <- gsub("\\s[/\\\\]\\s", " ", text)
   list(spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   ))
