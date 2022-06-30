@@ -3,6 +3,7 @@ GMRF
 Matérn
 SPDE
 geostatistical
+quantile
 variogram
 variograms
 zero-inflated
