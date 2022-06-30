@@ -13,13 +13,14 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
+#' @importFrom fs dir_create dir_ls file_copy is_file path
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
 setup_package <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   assert_that(
-    file_test("-f", file.path(path, "DESCRIPTION")),
+    file_test("-f", path(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
   )
   package <- desc(path)$get("Package")
@@ -30,226 +31,187 @@ setup_package <- function(path = ".") {
   tidy_desc(path)
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
-  if (!file_test("-f", file.path(path, ".gitignore"))) {
-    file.copy(
-      system.file(
-        file.path("generic_template", "gitignore"), package = "checklist"
-      ),
-      file.path(path, ".gitignore")
-    )
-  } else {
-    current <- readLines(file.path(path, ".gitignore"))
+  if (is_file(path(path, ".gitignore"))) {
+    current <- readLines(path(path, ".gitignore"))
     new <- readLines(
-      system.file(
-        file.path("generic_template", "gitignore"), package = "checklist"
-      )
+      system.file(path("generic_template", "gitignore"), package = "checklist")
     )
-    writeLines(
-      sort(unique(c(new, current))),
-      file.path(path, ".gitignore")
+    writeLines(sort(unique(c(new, current))), path(path, ".gitignore"))
+  } else {
+    file_copy(
+      system.file(path("generic_template", "gitignore"), package = "checklist"),
+      path(path, ".gitignore")
     )
   }
   git_add(".gitignore", force = TRUE, repo = path)
 
-  if (!file_test("-f", file.path(path, ".Rbuildignore"))) {
-    file.copy(
-      system.file(
-        file.path("package_template", "rbuildignore"), package = "checklist"
-      ),
-      file.path(path, ".Rbuildignore")
-    )
-  } else {
-    current <- readLines(file.path(path, ".Rbuildignore"))
+  if (is_file(path(path, ".Rbuildignore"))) {
+    current <- readLines(path(path, ".Rbuildignore"))
     new <- readLines(
       system.file(
-        file.path("package_template", "rbuildignore"), package = "checklist"
+        path("package_template", "rbuildignore"), package = "checklist"
       )
     )
-    writeLines(
-      sort(unique(c(new, current))),
-      file.path(path, ".Rbuildignore")
+    writeLines(sort(unique(c(new, current))), path(path, ".Rbuildignore"))
+  } else {
+    file_copy(
+      system.file(
+        path("package_template", "rbuildignore"), package = "checklist"
+      ),
+      path(path, ".Rbuildignore")
     )
   }
   git_add(".Rbuildignore", force = TRUE, repo = path)
 
   # add checklist.yml
-  writeLines(
-    "description: Configuration file for checklist::check_pkg()
-package: yes
-allowed:
-  warnings: []
-  notes: []
-citation_roles:
-- aut
-- cre
-keywords: R package",
-    file.path(path, "checklist.yml")
-  )
+  suppressMessages({
+    x <- read_checklist(x = path)
+  })
+  x$package <- TRUE
+  x$set_required()
+  x$set_ignore(c(".github", "LICENSE.md"))
+  write_checklist(x)
   git_add("checklist.yml", force = TRUE, repo = path)
 
   # add codecov.yml
-  file.copy(
-    system.file(
-      file.path("package_template", "codecov.yml"), package = "checklist"
-    ),
-    file.path(path, "codecov.yml")
+  file_copy(
+    system.file(path("package_template", "codecov.yml"), package = "checklist"),
+    path(path, "codecov.yml")
   )
   git_add("codecov.yml", force = TRUE, repo = path)
 
   # add NEWS.md
-  if (!file_test("-f", file.path(path, "NEWS.md"))) {
+  if (!is_file(path(path, "NEWS.md"))) {
     news <- sprintf(
       "# %s 0.0.0\n\n* Added a `NEWS.md` file to track changes to the package.",
       package
     )
-    writeLines(news, file.path(path, "NEWS.md"))
+    writeLines(news, path(path, "NEWS.md"))
     git_add("NEWS.md", force = TRUE, repo = path)
   }
 
   # add README.Rmd
-  if (!file_test("-f", file.path(path, "README.md"))) {
+  if (!is_file(path(path, "README.md"))) {
     readme <- readLines(
-      system.file(
-        file.path("package_template", "README.Rmd"), package = "checklist"
-      )
+      system.file(path("package_template", "README.Rmd"), package = "checklist")
     )
     readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
-    writeLines(readme, file.path(path, "README.Rmd"))
+    writeLines(readme, path(path, "README.Rmd"))
     git_add("README.Rmd", force = TRUE, repo = path)
   }
 
   # add LICENSE.md
-  if (length(list.files(path, "LICEN(S|C)E")) == 0) {
-    file.copy(
-      system.file(
-        file.path("generic_template", "gplv3.md"), package = "checklist"
-      ),
-      file.path(path, "LICENSE.md")
+  if (length(dir_ls(path, regexp = "LICEN(S|C)E")) == 0) {
+    file_copy(
+      system.file(path("generic_template", "gplv3.md"), package = "checklist"),
+      path(path, "LICENSE.md")
     )
     git_add("LICENSE.md", force = TRUE, repo = path)
   }
 
   # Add code of conduct
-  dir.create(file.path(path, ".github"), showWarnings = FALSE)
-  file.copy(
+  dir_create(path(path, ".github"))
+  file_copy(
     system.file(
-      file.path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
+      path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
     ),
-    file.path(path, ".github", "CODE_OF_CONDUCT.md")
+    path(path, ".github", "CODE_OF_CONDUCT.md")
   )
-  git_add(file.path(".github", "CODE_OF_CONDUCT.md"), force = TRUE,
-                repo = path)
+  git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = path)
 
   # Add contributing guidelines
-  file.copy(
+  file_copy(
     system.file(
-      file.path("package_template", "CONTRIBUTING.md"), package = "checklist"
+      path("package_template", "CONTRIBUTING.md"), package = "checklist"
     ),
-    file.path(path, ".github", "CONTRIBUTING.md")
+    path(path, ".github", "CONTRIBUTING.md")
   )
-  git_add(file.path(".github", "CONTRIBUTING.md"), force = TRUE,
-                repo = path)
+  git_add(path(".github", "CONTRIBUTING.md"), force = TRUE, repo = path)
 
   # Add GitHub actions
-  dir.create(file.path(path, ".github", "workflows"), showWarnings = FALSE)
-  file.copy(
+  dir_create(path(path, ".github", "workflows"))
+  file_copy(
     system.file(
-      file.path("package_template", "check_on_branch.yml"),
+      path("package_template", "check_on_branch.yml"), package = "checklist"
+    ),
+    path(path, ".github", "workflows", "check_on_branch.yml"), overwrite = TRUE
+  )
+  git_add(
+    path(".github", "workflows", "check_on_branch.yml"), force = TRUE,
+    repo = path
+  )
+  unlink(path(path, ".github", "workflows", "check_on_master.yml"))
+  file_copy(
+    system.file(
+      path("package_template", "check_on_main.yml"), package = "checklist"
+    ),
+    path(path, ".github", "workflows", "check_on_main.yml"), overwrite = TRUE
+  )
+  git_add(
+    path(".github", "workflows", "check_on_main.yml"), force = TRUE, repo = path
+  )
+  file_copy(
+    system.file(
+      path("package_template", "check_on_different_r_os.yml"),
       package = "checklist"
     ),
-    file.path(path, ".github", "workflows", "check_on_branch.yml"),
+    path(path, ".github", "workflows", "check_on_different_r_os.yml"),
     overwrite = TRUE
   )
-  git_add(file.path(".github", "workflows", "check_on_branch.yml"),
+  git_add(
+    path(".github", "workflows", "check_on_different_r_os.yml"),
     force = TRUE, repo = path
   )
-  unlink(file.path(path, ".github", "workflows", "check_on_master.yml"))
-  file.copy(
-    system.file(
-      file.path("package_template", "check_on_main.yml"),
-      package = "checklist"
-    ),
-    file.path(path, ".github", "workflows", "check_on_main.yml"),
-    overwrite = TRUE
-  )
-  git_add(file.path(".github", "workflows", "check_on_main.yml"),
-                force = TRUE, repo = path)
-  file.copy(
-    system.file(
-      file.path("package_template", "check_on_different_r_os.yml"),
-      package = "checklist"
-    ),
-    file.path(path, ".github", "workflows", "check_on_different_r_os.yml"),
-    overwrite = TRUE
+  file_copy(
+    system.file(path("package_template", "release.yml"), package = "checklist"),
+    path(path, ".github", "workflows", "release.yml"), overwrite = TRUE
   )
   git_add(
-    file.path(".github", "workflows", "check_on_different_r_os.yml"),
-    force = TRUE, repo = path)
-  file.copy(
-    system.file(
-      file.path("package_template", "release.yml"), package = "checklist"
-    ),
-    file.path(path, ".github", "workflows", "release.yml"),
-    overwrite = TRUE
+    path(".github", "workflows", "release.yml"), force = TRUE, repo = path
   )
-  git_add(
-    file.path(".github", "workflows", "release.yml"),
-    force = TRUE, repo = path)
 
   # Add pkgdown website
   pkgd <- readLines(
-    system.file(
-      file.path("package_template", "_pkgdown.yml"), package = "checklist"
-    )
+    system.file(path("package_template", "_pkgdown.yml"), package = "checklist")
   )
   pkgd <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, pkgd)
-  writeLines(pkgd, file.path(path, "_pkgdown.yml"))
+  writeLines(pkgd, path(path, "_pkgdown.yml"))
   git_add("_pkgdown.yml", force = TRUE, repo = path)
-  dir.create(file.path(path, "pkgdown"), showWarnings = FALSE)
-  file.copy(
+  dir_create(path(path, "pkgdown"))
+  file_copy(
+    system.file(path("package_template", "pkgdown.css"), package = "checklist"),
+    path(path, "pkgdown", "extra.css"), overwrite = TRUE
+  )
+  git_add(path("pkgdown", "extra.css"), force = TRUE, repo = path)
+  dir_create(path(path, "man", "figures"))
+  file_copy(
+    system.file(path("package_template", "logo-en.png"), package = "checklist"),
+    path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
+  )
+  git_add(path("man", "figures", "logo-en.png"), force = TRUE, repo = path)
+  file_copy(
     system.file(
-      file.path("package_template", "pkgdown.css"), package = "checklist"
+      path("package_template", "background-pattern.png"), package = "checklist"
     ),
-    file.path(path, "pkgdown", "extra.css"), overwrite = TRUE
+    path(path, "man", "figures", "background-pattern.png"), overwrite = TRUE
   )
-  git_add(file.path("pkgdown", "extra.css"), force = TRUE, repo = path)
-  dir.create(
-    file.path(path, "man", "figures"), showWarnings = FALSE, recursive = TRUE
+  git_add(
+    path("man", "figures", "background-pattern.png"), force = TRUE, repo = path
   )
-  file.copy(
+  file_copy(
     system.file(
-      file.path("package_template", "logo-en.png"), package = "checklist"
+      path("package_template", "flanders.woff2"), package = "checklist"
     ),
-    file.path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
+    path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
   )
-  git_add(file.path("man", "figures", "logo-en.png"), force = TRUE,
-                repo = path)
-  file.copy(
+  git_add(path("man", "figures", "flanders.woff2"), force = TRUE, repo = path)
+  file_copy(
     system.file(
-      file.path("package_template", "background-pattern.png"),
-      package = "checklist"
+      path("package_template", "flanders.woff"), package = "checklist"
     ),
-    file.path(path, "man", "figures", "background-pattern.png"),
-    overwrite = TRUE
+    path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
   )
-  git_add(file.path("man", "figures", "background-pattern.png"),
-    force = TRUE, repo = path)
-  file.copy(
-    system.file(
-      file.path("package_template", "flanders.woff2"), package = "checklist"
-    ),
-    file.path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
-  )
-  git_add(file.path("man", "figures", "flanders.woff2"),
-                force = TRUE, repo = path)
-  file.copy(
-    system.file(
-      file.path("package_template", "flanders.woff"), package = "checklist"
-    ),
-    file.path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
-  )
-  git_add(file.path("man", "figures", "flanders.woff"),
-                force = TRUE, repo = path)
+  git_add(path("man", "figures", "flanders.woff"), force = TRUE, repo = path)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))
