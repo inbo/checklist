@@ -102,16 +102,7 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
           problems[[i]], FUN.VALUE = vector(mode = "list", length = 1),
           text = text, i = i,
           FUN = function(word, text, i) {
-            if (grepl("\\\\$", word)) {
-              return(list(
-                data.frame(
-                  type = character(0), file = character(0), line = integer(0),
-                  column = integer(0), message = character(0),
-                  language = character(0)
-                )
-              ))
-            }
-            detect <- gregexpr(word, text[i])[[1]]
+            detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
             list(
               data.frame(line = i, column = as.vector(detect), message = word)
             )
@@ -137,6 +128,14 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
   result$message <- gsub("\\.$", "", result$message)
 
   return(result)
+}
+
+spelling_clean_problem <- function(problem) {
+  # escape trailing backspace
+  problem <- gsub("\\\\$", "\\\\\\\\", problem)
+  # escape special regexp characters
+  problem <- gsub("\\+", "\\\\+", problem)
+  return(problem)
 }
 
 #' @importFrom tools RdTextFilter
