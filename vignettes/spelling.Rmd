@@ -45,7 +45,9 @@ After updating the settings, you need to store them with `write_checklist(x)`.
 `check_spelling()` will now use the updated settings.
 
 ```{r eval = FALSE}
-x <- read_checklist(".")
+# This code assumes your working directory is at the root of your project.
+# Pass the path to the project root to read_checklist() if that is not the case.
+x <- read_checklist()
 x$set_default("nl-BE")
 x$set_exceptions()
 write_checklist(x)
