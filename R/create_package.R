@@ -50,7 +50,7 @@
 #'   language = "en-GB"
 #' )
 create_package <- function(
-  package, path = ".", title, description, maintainer, language
+  package, path = ".", title, description, maintainer, language = "en-GB"
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -78,7 +78,6 @@ create_package <- function(
     msg = sprintf("`%s` is not an empty directory", path)
   )
   assert_that(is.string(title))
-  assert_that(is.string(language))
   validate_language(language)
 
   dir_create(path)

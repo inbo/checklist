@@ -17,7 +17,7 @@
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
-setup_source <- function(path = ".", language) {
+setup_source <- function(path = ".", language = "en-GB") {
   path <- path_real(path)
   assert_that(is_workdir_clean(repo = path))
   x <- checklist$new(x = path, language = language, package = FALSE)

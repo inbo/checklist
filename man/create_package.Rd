@@ -4,7 +4,14 @@
 \alias{create_package}
 \title{Create an R package according to INBO requirements}
 \usage{
-create_package(package, path = ".", title, description, maintainer, language)
+create_package(
+  package,
+  path = ".",
+  title,
+  description,
+  maintainer,
+  language = "en-GB"
+)
 }
 \arguments{
 \item{package}{Name of the new package.}
