@@ -19,12 +19,12 @@ This comprises the default language to use for spell checking and optionally whi
 Use `setup_package()` or `setup_project()` first.
 We recommend to follow the steps in `vignette("getting_started", package = "checklist")` to set-up the `checklist.yml`.
 In case of a package you must set the language in the `Language:` field of the `DESCRIPTION` file.
-In case the `Language:` field is not set `en-GB` is used.
+In case the `Language:` field is not set, `en-GB` is used.
 `setup_project()` will ask which default language to set and will store the information in `checklist.yml`.
 
 Note that a language is defined with the `xx-YY` syntax.
 The first two letters must be lower case (`xx`) and define the language.
-While the last two letters must be upper case (`YY`) and define the language variant.
+The last two letters must be upper case (`YY`) and define the language variant.
 A few relevant examples:
 
 - `en-GB`: English as written in the UK.
@@ -40,7 +40,7 @@ You must choose between keeping the current configuration, using the default lan
 If you select the last options, the function starts at the root of the project and lists the relevant files or folders at the root.
 In case of a file, you can choose to ignore the file, use the default language or use an additional language.
 If you select any of these options in case of a folder, it will recursively apply to all files in that folder.
-Therefore the function gives an extra option in case of a folder: change the setting for some of the files.
+To change the setting for some of the files, the function gives an extra option in case of a folder.
 After updating the settings, you need to store them with `write_checklist(x)`.
 `check_spelling()` will now use the updated settings.
 
@@ -54,7 +54,7 @@ write_checklist(x)
 ## Basic usage
 
 Run `check_spelling()` at the working directory of the project.
-Or run `check_spelling(path)` were `path` points to a directory with the files you want to spell check.
+Or run `check_spelling(path)` where `path` points to a directory with the files you want to spell check.
 This will look for all markdown files (`.md` and `.Rmd`) within the directory and its subdirectories.
 In case your project is an R package, it will also check all R help files (`.Rd`) in the `man` directory.
 Note that `check_spelling()` does not check R code.
@@ -72,13 +72,13 @@ The following options work both with `.Rmd` as `.Rd` files.
 1. `check_spelling()` ignores words with `verbatim` syntax (between back ticks "`").
 1. Exclude the entire file from spell checking.
 More details on that in the configuration section.
-1. Add the words to a project specific custom dictionary.
+1. Add the words to a project specific custom dictionary (see below).
 
-You have a few options to handles those words in `.Rmd` files.
+You have a few more options to handle those words in `.Rmd` files.
 
 1. You can ignore an entire line by placing `<!-- spell-check: ignore -->` at the end of the line.
 1. Ignore a block of lines by adding an extra line with `<!-- spell-check: ignore:start -->` at the beginning of the block.
-End the block with `<!-- spell-check: ignore:end -->` on a new line at the end of the block.
+End the block with `<!-- spell-check: ignore:end -->` on a new line.
 
 ## Custom dictionary
 
