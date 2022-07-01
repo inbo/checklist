@@ -301,12 +301,7 @@ print.checklist_spelling <- function(x, ...) {
   }
   common <- path_common(x$file)
   x$file <- path_rel(x$file, start = common)
-  x$file <- factor(
-    x$file, levels = names(sort(table(x$file), decreasing = TRUE))
-  )
-  x$message <- factor(
-    x$message, levels = names(sort(table(x$message), decreasing = TRUE))
-  )
+  x <- x[order(x$file, x$line, x$message), ]
   display <- aggregate(
     column ~ file + language + message + line, x, FUN = paste, collapse = "|"
   )
@@ -314,12 +309,10 @@ print.checklist_spelling <- function(x, ...) {
   display <- aggregate(
     line ~ file + language + message, display, FUN = paste, collapse = ", "
   )
-  display <- display[order(display$message), ]
   display$message <- sprintf("%s: %s", display$message, display$line)
   display <- aggregate(
     message ~ file + language, display, FUN = paste, collapse = "\n"
   )
-  display <- display[order(display$file), ]
   cat(
     "Overview of words missing from dictionary.",
     "i (j) indicates that the word occures at line i, column j", sep = "\n"
@@ -345,10 +338,7 @@ rstudio_source_markers <- function(issues) { # nocov start
     "`%s` not found in the dictionary or wordlist for %s.", issues$message,
     issues$language
   )
-  issues$file <- factor(
-    issues$file, levels = names(sort(table(issues$file), decreasing = TRUE))
-  )
-  issues <- issues[order(issues$file), ]
+  issues <- issues[order(issues$file, issues$line, issues$column), ]
   issues$file <- as.character(issues$file)
   # request source markers
   rstudioapi::callFun(
