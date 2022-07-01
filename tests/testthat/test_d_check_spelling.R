@@ -1,5 +1,8 @@
 library(mockery)
 test_that("check_spelling()", {
+  old_option <- getOption("checklist.rstudio_source_markers", TRUE)
+  options("checklist.rstudio_source_markers" = FALSE)
+  on.exit(options("checklist.rstudio_source_markers" = old_option), add = TRUE)
   maintainer <- person(
     given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
@@ -19,10 +22,10 @@ test_that("check_spelling()", {
   )
   expect_is(
     {z <- check_spelling(path(path, package))},
-    "checklist_spelling"
+    "checklist"
   )
-  expect_identical(nrow(z), 0L)
-  expect_invisible(print(z))
+  expect_identical(nrow(z$get_spelling), 0L)
+  expect_invisible(print(z$get_spelling))
 
   writeLines(
     "#' Een test functie
@@ -43,18 +46,19 @@ dummy <- function(x) {
     path(path, package, "README.Rmd")
   )
   expect_is(
-    {z <- check_spelling(path(path, package))},
-    "checklist_spelling"
+    {z <- check_spelling(path(path, package), quiet = TRUE)},
+    "checklist"
   )
-  expect_identical(nrow(z), 6L)
-  expect_output(print(z), "Overview of words")
+  expect_is(z$get_spelling, "checklist_spelling")
+  expect_identical(nrow(z$get_spelling), 6L)
+  expect_output(print(z$get_spelling), "Overview of words")
   expect_invisible(custom_dictionary(z))
   expect_is(
     {z <- check_spelling(path(path, package))},
-    "checklist_spelling"
+    "checklist"
   )
-  expect_identical(nrow(z), 0L)
-  expect_invisible(print(z))
+  expect_identical(nrow(z$get_spelling), 0L)
+  expect_invisible(print(z$get_spelling))
 
   x <- read_checklist(path(path, package))
   expect_is(x$set_default("en-GB"), "checklist")

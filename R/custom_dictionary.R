@@ -4,10 +4,8 @@
 #' @importFrom fs path
 #' @family both
 custom_dictionary <- function(issues) {
-  assert_that(
-    inherits(issues, "checklist_spelling"),
-    msg = "`issues`"
-  )
+  assert_that(inherits(issues, "checklist"))
+  issues <- issues$get_spelling
   assert_that(
     !is.null(attr(issues, "checklist_path")),
     msg = "Something went wrong. Please rerun `check_spelling().`"

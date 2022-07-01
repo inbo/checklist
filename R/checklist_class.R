@@ -243,6 +243,16 @@ checklist <- R6Class(
       return(private$roles)
     },
 
+    #' @field get_spelling Return the issues found by `check_spelling()`
+    #' @importFrom assertthat assert_that
+    get_spelling = function() {
+      assert_that(
+        "spelling" %in% private$checked,
+        msg = "please run `check_speling()` first"
+      )
+      return(private$spelling)
+    },
+
     #' @field fail A logical indicating if all checks passed.
     fail = function() {
       assert_that(
