@@ -238,7 +238,12 @@ checklist <- R6Class(
       return(private$path)
     },
 
-    #' @field get_roles The roles to select contributors for the CITATION.
+    #' @field get_required A vector with the names of the required checks.
+    get_required = function() {
+      return(private$required)
+    },
+
+    #' @field get_roles The roles to select contributors for the `CITATION`.
     get_roles = function() {
       return(private$roles)
     },

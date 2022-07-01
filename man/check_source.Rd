@@ -31,4 +31,8 @@ List of checks in order:
 \item \code{check_filename()}
 }
 }
+\seealso{
+Other source: 
+\code{\link{check_project}()}
+}
 \concept{source}

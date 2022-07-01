@@ -47,7 +47,6 @@
 #' @family both
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
-
   if (
     is_repository(x$get_path) && nrow(git_ls(repo = x$get_path)) > 0
   ) {

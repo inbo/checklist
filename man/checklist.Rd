@@ -31,7 +31,9 @@ package.}
 
 \item{\code{get_path}}{The path to the package.}
 
-\item{\code{get_roles}}{The roles to select contributors for the CITATION.}
+\item{\code{get_required}}{A vector with the names of the required checks.}
+
+\item{\code{get_roles}}{The roles to select contributors for the \code{CITATION}.}
 
 \item{\code{get_spelling}}{Return the issues found by \code{check_spelling()}}
 
