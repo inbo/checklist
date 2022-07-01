@@ -9,9 +9,11 @@
 #' details.
 #' @inheritParams read_checklist
 #' @export
+#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom tools loadPkgRdMacros loadRdMacros
 #' @family both
-check_spelling <- function(x = ".") {
+check_spelling <- function(x = ".", quiet = FALSE) {
+  assert_that(is.flag(quiet), noNA(quiet))
   x <- read_checklist(x = x)
   md_files <- x$get_md
   rd_files <- x$get_rd
@@ -45,7 +47,11 @@ check_spelling <- function(x = ".") {
   issues <- do.call(rbind, unlist(issues, recursive = FALSE))
   rownames(issues) <- NULL
   attr(issues, "checklist_path") <- x$get_path
-  return(issues)
+  if (!quiet && nrow(issues) > 0) {
+    print(issues)
+  }
+  x$add_spelling(issues)
+  return(x)
 }
 
 #' @importFrom fs file_exists path

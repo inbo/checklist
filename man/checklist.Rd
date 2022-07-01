@@ -47,6 +47,7 @@ package.}
 \item \href{#method-checklist-add_motivation}{\code{checklist$add_motivation()}}
 \item \href{#method-checklist-add_notes}{\code{checklist$add_notes()}}
 \item \href{#method-checklist-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
+\item \href{#method-checklist-add_spelling}{\code{checklist$add_spelling()}}
 \item \href{#method-checklist-add_warnings}{\code{checklist$add_warnings()}}
 \item \href{#method-checklist-allowed}{\code{checklist$allowed()}}
 \item \href{#method-checklist-confirm_motivation}{\code{checklist$confirm_motivation()}}
@@ -155,6 +156,23 @@ Add results from \code{rcmdcheck::rcmdcheck}
 \item{\code{warnings}}{A vector with warning messages.}
 
 \item{\code{notes}}{A vector with notes.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checklist-add_spelling"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_spelling}{}}}
+\subsection{Method \code{add_spelling()}}{
+Add results from \code{check_spelling()}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_spelling(issues)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{issues}}{A \code{data.frame} with spell checking issues.}
 }
 \if{html}{\out{</div>}}
 }

@@ -163,7 +163,8 @@ checklist_format_output <- function(
 
 #' @importFrom sessioninfo session_info
 checklist_print <- function(
-  path, warnings, allowed_warnings, notes, allowed_notes, linter, errors
+  path, warnings, allowed_warnings, notes, allowed_notes, linter, errors,
+  spelling
 ) {
   print(session_info())
   output <- c(
@@ -214,6 +215,7 @@ checklist_print <- function(
       type = "missing", variable = "note"
     ),
     checklist_summarise_linter(linter),
+    checklist_summarise_spelling(spelling),
     checklist_format_error(errors)
   )
   cat(output, sep = rules())
@@ -238,6 +240,30 @@ checklist_summarise_linter <- function(linter) {
     rules("-"),
     paste(messages, collapse = "\n")
   )
+}
+
+checklist_summarise_spelling <- function(spelling) {
+  if (nrow(spelling) == 0) {
+    return(character(0))
+  }
+
+  messages <- vapply(
+    unique(spelling$language), FUN.VALUE = character(1), spelling = spelling,
+    FUN = function(i, spelling) {
+      sprintf(
+        "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s", i,
+        paste(
+          sort(as.character(unique(spelling$message[spelling$language == i]))),
+          collapse = ", "
+        ),
+        paste(
+          sort(as.character(unique(spelling$file[spelling$language == i]))),
+          collapse = "\n"
+        )
+      )
+    }
+  )
+  paste(messages, collapse = rules("-"))
 }
 
 checklist_template <- function(

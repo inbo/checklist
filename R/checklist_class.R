@@ -84,6 +84,15 @@ checklist <- R6Class(
       invisible(self)
     },
 
+    #' @description Add results from `check_spelling()`
+    #' @param issues A `data.frame` with spell checking issues.
+    add_spelling = function(issues) {
+      assert_that(inherits(issues, "checklist_spelling"))
+      private$spelling <- issues
+      private$checked <- sort(unique(c(private$checked, "spelling")))
+      invisible(self)
+    },
+
     #' @description Add warnings
     #' @param warnings A vector with warnings.
     add_warnings = function(warnings) {
@@ -169,13 +178,10 @@ checklist <- R6Class(
       super$print(...)
       cat("\n\n")
       checklist_print(
-        path = private$path,
-        warnings = private$warnings,
-        allowed_warnings = private$allowed_warnings,
-        notes = private$notes,
-        allowed_notes = private$allowed_notes,
-        linter = private$linter,
-        errors = private$errors
+        path = private$path, warnings = private$warnings,
+        allowed_warnings = private$allowed_warnings, notes = private$notes,
+        allowed_notes = private$allowed_notes, linter = private$linter,
+        errors = private$errors, spelling = private$spelling
       )
     },
 
@@ -247,7 +253,8 @@ Please contact the maintainer of the `checklist` package."
       errors <- vapply(private$errors, length, integer(1))
       any(!private$required %in% private$checked) ||
         any(errors > 0) ||
-        length(private$linter) ||
+        ("lintr" %in% private$required && length(private$linter) > 0) ||
+        ("spelling" %in% private$required && nrow(private$spelling) > 0) ||
         any(
           !private$warnings %in% checklist_extract(private$allowed_warnings)
         ) ||
@@ -271,7 +278,7 @@ Please contact the maintainer of the `checklist` package."
     available_checks = c(
       "checklist", "CITATION", "DESCRIPTION", "documentation",
       "R CMD check", "codemeta", "license", "CITATION.cff", ".zenodo.json",
-      "repository secret", "filename conventions", "lintr"
+      "repository secret", "filename conventions", "lintr", "spelling"
     ),
     checked = character(0),
     errors = list(),
@@ -281,6 +288,14 @@ Please contact the maintainer of the `checklist` package."
     path = character(0),
     roles = c("aut", "cre"),
     required = "checklist",
+    spelling = structure(
+      list(
+        type = character(0), file = character(0), line = integer(0),
+        column = integer(0), message = character(0), language = character(0)
+      ),
+      class = c("checklist_spelling", "data.frame"), row.names = integer(0),
+      checklist_path = "."
+    ),
     warnings = character(0)
   )
 )

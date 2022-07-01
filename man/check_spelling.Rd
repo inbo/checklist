@@ -4,7 +4,7 @@
 \alias{check_spelling}
 \title{Spell check a package or project}
 \usage{
-check_spelling(x = ".")
+check_spelling(x = ".", quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
