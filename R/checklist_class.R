@@ -181,14 +181,9 @@ checklist <- R6Class(
       private$path <- x
       super$initialize(language = language, base_path = private$path)
       self$package <- package
-      private$required <- list(
-        "checklist",
-        c(
-          "checklist", "CITATION", "DESCRIPTION", "documentation",
-          "R CMD check", "codemeta", "license", "CITATION.cff", ".zenodo.json",
-          "repository secret", "filename conventions", "lintr"
-        )
-      )[[package + 1]]
+      private$required <- list("checklist", private$available_checks)[[
+        package + 1
+      ]]
       invisible(self)
     },
 

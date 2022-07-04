@@ -27,6 +27,11 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     x <- check_filename(x = x)
   }
 
+  if ("spelling" %in% x$get_required) {
+    quiet_cat("Checking spelling\n", quiet = quiet)
+    x <- check_spelling(x = x)
+  }
+
   print(x, quiet = quiet)
   if (!x$fail) {
     quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)

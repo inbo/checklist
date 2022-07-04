@@ -60,6 +60,9 @@ check_package <- function(
 
   x <- check_environment(x)
 
+  quiet_cat("Checking spelling\n", quiet = quiet)
+  x <- check_spelling(x = x)
+
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")
     on.exit({

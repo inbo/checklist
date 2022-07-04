@@ -24,10 +24,12 @@ setup_project <- function(path = ".") {
   checks <- c(checks, list("filename conventions", character(0))[[answer]])
   answer <- menu(c("yes", "no"), title = "check code style?")
   checks <- c(checks, list("lintr", character(0))[[answer]])
-  x$set_required(checks = checks)
   answer <- menu(
     c("English", "Dutch", "French"), title = "Default language of the project?"
   )
   x$set_default(c("en-GB", "nl-BE", "fr-FR")[answer])
+  answer <- menu(c("yes", "no"), title = "check spelling?")
+  checks <- c(checks, list("spelling", character(0))[[answer]])
+  x$set_required(checks = checks)
   write_checklist(x = x)
 }
