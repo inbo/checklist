@@ -1,6 +1,12 @@
 # checklist 0.2.5
 
-* to do
+* Add spell checking functionality.
+  See `vignette("spelling", package = "checklist")` for more details.
+* The `checklist` class stores the required checks.
+* Add `setup_project()` to set-up `checklist` on an existing project.
+  This function allows the user to choose which checks to be required.
+* Add `check_project()` to run the required checks of a project.
+* Fix bug in `.zenodo.json` when only one keyword is present.
 
 # checklist 0.2.4
 
