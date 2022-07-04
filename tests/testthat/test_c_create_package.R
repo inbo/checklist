@@ -51,7 +51,7 @@ test_that("create_package() works", {
   )
 
   expect_is({
-      x <- check_package(file.path(path, package), fail = FALSE, quiet = TRUE)
+      x <- check_project(file.path(path, package), fail = FALSE, quiet = TRUE)
     },
     "checklist"
   )

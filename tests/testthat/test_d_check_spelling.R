@@ -1,5 +1,5 @@
 library(mockery)
-test_that("check_spelling()", {
+test_that("check_spelling() on a package", {
   old_option <- getOption("checklist.rstudio_source_markers", TRUE)
   options("checklist.rstudio_source_markers" = FALSE)
   on.exit(options("checklist.rstudio_source_markers" = old_option), add = TRUE)
@@ -99,13 +99,18 @@ dummy <- function(x) {
   )
 })
 
-test_that("check_spelling()", {
+test_that("check_spelling() on a project", {
   path <- tempfile("check_spelling")
   dir_create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   stub(setup_project, "interactive", TRUE)
   stub(setup_project, "menu", 1)
   expect_invisible(setup_project(path))
+  expect_is(check_project(path, quiet = TRUE), "checklist")
+  dir_create(path, "source")
+  writeLines("# Een test functie", path(path, "source", "dummy.Rmd"))
+  expect_is(check_project(path, fail = FALSE, quiet = TRUE), "checklist")
+
   x <- read_checklist(path)
   stub(change_language_interactive, "menu", 3)
   stub(change_language_interactive2, "menu", 1, 2)
