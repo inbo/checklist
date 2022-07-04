@@ -12,9 +12,15 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     inherits(x, "checklist") || is_file(path(x, "checklist.yml")),
     msg = "Please initialise the project first with `setup_project()`"
   )
+
   x <- read_checklist(x = x)
   if (x$package) {
     return(check_package(x = x, fail = fail, quiet = quiet))
+  }
+
+  if ("spelling" %in% x$get_required) {
+    quiet_cat("Checking spelling\n", quiet = quiet)
+    x <- check_spelling(x = x)
   }
 
   if ("lintr" %in% x$get_required) {
@@ -25,11 +31,6 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   if ("filename conventions" %in% x$get_required) {
     quiet_cat("Checking filename conventions\n", quiet = quiet)
     x <- check_filename(x = x)
-  }
-
-  if ("spelling" %in% x$get_required) {
-    quiet_cat("Checking spelling\n", quiet = quiet)
-    x <- check_spelling(x = x)
   }
 
   print(x, quiet = quiet)

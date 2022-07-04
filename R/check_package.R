@@ -38,6 +38,9 @@ check_package <- function(
   assert_that(is.flag(pkgdown), noNA(pkgdown))
   assert_that(is.flag(quiet), noNA(quiet))
 
+  quiet_cat("Checking spelling\n", quiet = quiet)
+  x <- check_spelling(x = x, quiet = quiet)
+
   x <- check_cran(x = x, quiet = quiet)
 
   quiet_cat("Checking code style\n", quiet = quiet)
@@ -59,9 +62,6 @@ check_package <- function(
   x <- check_codemeta(x)
 
   x <- check_environment(x)
-
-  quiet_cat("Checking spelling\n", quiet = quiet)
-  x <- check_spelling(x = x, quiet = quiet)
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")
