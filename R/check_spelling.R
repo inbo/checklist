@@ -152,6 +152,10 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
   text <- gsub(email_regexp, "", text, perl = TRUE)
   # remove functions
   text <- gsub("[a-zA-Z0-9]+:{2,3}[\\w\\.]+\\(.*?\\)", "", text, perl = TRUE)
+  # remove forward and backward slashes surrounded by whitespace
+  text <- gsub("\\s[/\\\\]\\s", " ", text)
+  text <- gsub("\\s[/\\\\]$", " ", text)
+  text <- gsub("^[/\\\\]\\s", " ", text)
   list(spelling_check(
     text = text, filename = rd_file, wordlist = wordlist
   ))
@@ -265,6 +269,8 @@ spelling_parse_md <- function(md_file, wordlist) {
   text <- gsub("<\\/?(div|p).*?>", "", text, ignore.case = TRUE)
   # remove forward and backward slashes surrounded by whitespace
   text <- gsub("\\s[/\\\\]\\s", " ", text)
+  text <- gsub("\\s[/\\\\]$", " ", text)
+  text <- gsub("^[/\\\\]\\s", " ", text)
   list(spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   ))
