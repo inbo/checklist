@@ -14,11 +14,18 @@ checklist <- R6Class(
     #' @description Add errors
     #' @param errors A vector with errors.
     #' @param item The item on which to store the errors.
-    add_error = function(errors, item) {
+    #' @param keep Keep old results
+    add_error = function(errors, item, keep = TRUE) {
       assert_that(is.character(errors), noNA(errors))
       assert_that(is.string(item), noNA(item))
+      assert_that(item %in% private$available_checks)
       private$errors[[item]] <- errors
-      private$checked <- sort(unique(c(private$checked, item)))
+      private$checked[item] <- ifelse(
+        item %in% private$required,
+        length(errors) > 0 ||
+          (keep && !is.na(private$checked[item]) && private$checked[item]),
+        NA
+      )
       invisible(self)
     },
 
@@ -27,7 +34,9 @@ checklist <- R6Class(
     add_linter = function(linter) {
       assert_that(inherits(linter, "lints"))
       private$linter <- linter
-      private$checked <- sort(unique(c(private$checked, "lintr")))
+      private$checked["lintr"] <- ifelse(
+        "lintr" %in% private$required, length(linter) > 0, NA
+      )
       invisible(self)
     },
 
@@ -67,9 +76,19 @@ checklist <- R6Class(
 
     #' @description Add notes
     #' @param notes A vector with notes.
-    add_notes = function(notes) {
+    #' @param item The item on which to store the notes.
+    add_notes = function(notes, item) {
       assert_that(is.character(notes), noNA(notes))
-      private$notes <- unique(c(private$notes, remove_fancy_quotes(notes)))
+      assert_that(is.string(item), noNA(item))
+      assert_that(item %in% private$available_checks)
+      notes <- remove_fancy_quotes(notes)
+      private$notes <- unique(c(private$notes, notes))
+      private$checked[item] <- ifelse(
+        item %in% private$required,
+        !all(notes %in% checklist_extract(private$allowed_notes)) ||
+          (!is.na(private$checked[item]) && private$checked[item]),
+        NA
+      )
       invisible(self)
     },
 
@@ -78,9 +97,9 @@ checklist <- R6Class(
     #' @param warnings A vector with warning messages.
     #' @param notes A vector with notes.
     add_rcmdcheck = function(errors, warnings, notes) {
-      self$add_error(errors, "R CMD check")
-      self$add_warnings(remove_fancy_quotes(warnings))
-      self$add_notes(remove_fancy_quotes(notes))
+      self$add_error(errors, item = "R CMD check", keep = FALSE)
+      self$add_warnings(warnings, item = "R CMD check")
+      self$add_notes(notes, item = "R CMD check")
       invisible(self)
     },
 
@@ -89,16 +108,26 @@ checklist <- R6Class(
     add_spelling = function(issues) {
       assert_that(inherits(issues, "checklist_spelling"))
       private$spelling <- issues
-      private$checked <- sort(unique(c(private$checked, "spelling")))
+      private$checked["spelling"] <- ifelse(
+        "spelling" %in% private$required, nrow(issues) > 0, NA
+      )
       invisible(self)
     },
 
     #' @description Add warnings
     #' @param warnings A vector with warnings.
-    add_warnings = function(warnings) {
+    #' @param item The item on which to store the warnings.
+    add_warnings = function(warnings, item) {
       assert_that(is.character(warnings), noNA(warnings))
-      private$warnings <- unique(
-        c(private$warnings, remove_fancy_quotes(warnings))
+      assert_that(is.string(item), noNA(item))
+      assert_that(item %in% private$available_checks)
+      warnings <- remove_fancy_quotes(warnings)
+      private$warnings <- unique(c(private$warnings, warnings))
+      private$checked[item] <- ifelse(
+        item %in% private$required,
+        !all(warnings %in% checklist_extract(private$allowed_warnings)) ||
+          (!is.na(private$checked[item]) && private$checked[item]),
+        NA
       )
       invisible(self)
     },
@@ -118,7 +147,7 @@ checklist <- R6Class(
       assert_that(inherits(notes, "list"))
       private$allowed_warnings <- remove_fancy_quotes(warnings)
       private$allowed_notes <- remove_fancy_quotes(notes)
-      private$checked <- sort(unique(c(private$checked, "checklist")))
+      private$checked["checklist"] <- FALSE
       invisible(self)
     },
 
@@ -225,7 +254,7 @@ checklist <- R6Class(
 
     #' @field get_checked A vector with checked topics.
     get_checked = function() {
-      return(private$checked)
+      return(names(private$checked))
     },
 
     #' @field get_keywords A vector with keywords.
@@ -252,28 +281,23 @@ checklist <- R6Class(
     #' @importFrom assertthat assert_that
     get_spelling = function() {
       assert_that(
-        "spelling" %in% private$checked,
+        "spelling" %in% names(private$checked),
         msg = "please run `check_speling()` first"
       )
       return(private$spelling)
     },
 
-    #' @field fail A logical indicating if all checks passed.
+    #' @field fail A logical indicating if any required check fails.
+    #' @importFrom assertthat assert_that
     fail = function() {
       assert_that(
-        all(private$checked %in% private$available_checks),
+        all(names(private$checked) %in% private$available_checks),
+        anyDuplicated(names(private$checked)) == 0,
         msg = "Something went wrong while checking your package.
 Please contact the maintainer of the `checklist` package."
       )
-      errors <- vapply(private$errors, length, integer(1))
-      any(!private$required %in% private$checked) ||
-        any(errors > 0) ||
-        ("lintr" %in% private$required && length(private$linter) > 0) ||
-        ("spelling" %in% private$required && nrow(private$spelling) > 0) ||
-        any(
-          !private$warnings %in% checklist_extract(private$allowed_warnings)
-        ) ||
-        any(!private$notes %in% checklist_extract(private$allowed_notes))
+      !all(private$required %in% names(private$checked)) ||
+        any(na.omit(private$checked))
     },
 
     #' @field template A list for a check list template.
@@ -295,7 +319,12 @@ Please contact the maintainer of the `checklist` package."
       "R CMD check", "codemeta", "license", "CITATION.cff", ".zenodo.json",
       "repository secret", "filename conventions", "lintr", "spelling"
     ),
-    checked = character(0),
+    # stores a named logical vector of checked items.
+    # names must match the available checks
+    # TRUE: check required and failed
+    # FALSE: check required and passed
+    # NA: check not required
+    checked = logical(0),
     errors = list(),
     keywords = character(0),
     linter = structure(list(), class = "lints", path = "."),

@@ -55,7 +55,7 @@ update_citation <- function(x = ".", roles) {
     "No `# end checklist entry` found in `inst/CITATION`"[length(end) == 0]
   )
   if (length(problems)) {
-    x$add_warnings(problems)
+    x$add_warnings(problems, "CITATION")
     return(x)
   }
   problems <- c(
@@ -70,7 +70,7 @@ update_citation <- function(x = ".", roles) {
     ]
   )
   if (length(problems)) {
-    x$add_error(problems, "CITATION")
+    x$add_error(problems, item = "CITATION", keep = FALSE)
     return(x)
   }
   authors <- eval(parse(text = this_desc$get_field("Authors@R")))
@@ -148,7 +148,7 @@ update_citation <- function(x = ".", roles) {
     )[
       file.path("inst", "CITATION") %in% current$file
     ],
-    "CITATION"
+    item = "CITATION", keep = FALSE
   )
 
   x <- write_zenodo_json(x = x)

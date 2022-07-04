@@ -101,7 +101,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
 
   doc_error <- c(doc_error, check_news(x))
 
-  x$add_error(doc_error, "documentation")
+  x$add_error(doc_error, item = "documentation", keep = FALSE)
   return(x)
 }
 

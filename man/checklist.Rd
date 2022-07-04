@@ -37,7 +37,7 @@ package.}
 
 \item{\code{get_spelling}}{Return the issues found by \code{check_spelling()}}
 
-\item{\code{fail}}{A logical indicating if all checks passed.}
+\item{\code{fail}}{A logical indicating if any required check fails.}
 
 \item{\code{template}}{A list for a check list template.}
 }
@@ -79,7 +79,7 @@ package.}
 \subsection{Method \code{add_error()}}{
 Add errors
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_error(errors, item)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_error(errors, item, keep = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -88,6 +88,8 @@ Add errors
 \item{\code{errors}}{A vector with errors.}
 
 \item{\code{item}}{The item on which to store the errors.}
+
+\item{\code{keep}}{Keep old results}
 }
 \if{html}{\out{</div>}}
 }
@@ -132,13 +134,15 @@ Add motivation for allowed issues.
 \subsection{Method \code{add_notes()}}{
 Add notes
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_notes(notes)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_notes(notes, item)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{notes}}{A vector with notes.}
+
+\item{\code{item}}{The item on which to store the notes.}
 }
 \if{html}{\out{</div>}}
 }
@@ -187,13 +191,15 @@ Add results from \code{check_spelling()}
 \subsection{Method \code{add_warnings()}}{
 Add warnings
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_warnings(warnings)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_warnings(warnings, item)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{warnings}}{A vector with warnings.}
+
+\item{\code{item}}{The item on which to store the warnings.}
 }
 \if{html}{\out{</div>}}
 }

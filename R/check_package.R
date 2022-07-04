@@ -25,7 +25,7 @@
 #' @param pkgdown Test pkgdown website.
 #' Defaults to `TRUE` on an interactive session and `FALSE` on a non-interactive
 #' session.
-#' @inheritParams rcmdcheck::rcmdcheck
+#' @param quiet Whether to print check output during checking.
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom pkgdown build_site
 #' @importFrom utils file_test

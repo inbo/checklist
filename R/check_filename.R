@@ -167,8 +167,8 @@ Fails: `%s`",
     )
   )
 
-  x$add_warnings(warnings)
-  x$add_error(problems, "filename conventions")
+  x$add_error(problems, item = "filename conventions", keep = FALSE)
+  x$add_warnings(warnings, item = "filename conventions")
 
   return(x)
 }

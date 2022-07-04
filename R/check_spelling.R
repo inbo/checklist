@@ -8,6 +8,7 @@
 #' Have a look at `vignette("spelling", package = "checklist")` for more
 #' details.
 #' @inheritParams read_checklist
+#' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom tools loadPkgRdMacros loadRdMacros

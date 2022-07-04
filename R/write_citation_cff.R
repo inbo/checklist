@@ -133,7 +133,7 @@ write_citation_cff <- function(x = ".", roles) {
     )[
       !is_tracked_not_modified(file = "CITATION.cff", repo = repo)
     ],
-    "CITATION.cff"
+    item = "CITATION.cff", keep = FALSE
   )
 
   return(invisible(x))

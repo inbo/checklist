@@ -117,9 +117,9 @@ from the web. More info on https://github.com/github/renaming"[
     "Language field not set."[is.na(this_desc$get("Language"))]
   )
 
-  x$add_error(desc_error, "DESCRIPTION")
-  x$add_notes(notes)
-  x$add_warnings(check_authors(this_desc))
+  x$add_error(desc_error, item = "DESCRIPTION", keep = FALSE)
+  x$add_notes(notes, item = "DESCRIPTION")
+  x$add_warnings(check_authors(this_desc), item = "DESCRIPTION")
 
   check_license(x = x)
 }
@@ -243,7 +243,7 @@ Please send a pull request if you need support for this license.",
   if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
     x$add_error(
       errors = c(problems, "No LICENSE.md file"),
-      item = "license"
+      item = "license", keep = FALSE
     )
     return(x)
   }
@@ -262,7 +262,7 @@ Please send a pull request if you need support for this license.",
         (length(current) != length(official)) || any(current != official)
       ]
     ),
-    item = "license"
+    item = "license", keep = FALSE
   )
 
   return(x)

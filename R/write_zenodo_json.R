@@ -160,7 +160,7 @@ write_zenodo_json <- function(x = ".") {
       ],
       attr(lang, "problem")
     ),
-    ".zenodo.json"
+    item = ".zenodo.json", keep = FALSE
   )
 
   return(x)

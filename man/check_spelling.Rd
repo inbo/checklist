@@ -9,6 +9,8 @@ check_spelling(x = ".", quiet = FALSE)
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \description{
 This function checks by default any markdown (\code{.md}) or Rmarkdown (\code{.Rmd})
