@@ -12,39 +12,70 @@
 setup_project <- function(path = ".") {
   assert_that(is.string(path), is_dir(path), interactive())
   path <- path_real(path)
-  checklist_file <- path(path, "checklist.yml")
+  files <- c("checklist.yml")
+  checklist_file <- path(path, files)
+
   if (is_file(checklist_file)) {
     x <- read_checklist(path)
   } else {
     x <- checklist$new(x = path, language = "en-GB", package = FALSE)
-    x <- x$allowed()
+    x$allowed()
+    x$set_ignore(c(".github", "LICENSE.md"))
   }
-  setup_vc(path = path)
+
+  repo <- setup_vc(path = path)
   checks <- "checklist"
-  answer <- menu(c("yes", "no"), title = "check file name conventions?")
+
+  answer <- menu(c("yes", "no"), title = "Check file name conventions?")
   checks <- c(checks, list("filename conventions", character(0))[[answer]])
-  answer <- menu(c("yes", "no"), title = "check code style?")
+
+  answer <- menu(c("yes", "no"), title = "Check code style?")
   checks <- c(checks, list("lintr", character(0))[[answer]])
+
   answer <- menu(
     c("English", "Dutch", "French"), title = "Default language of the project?"
   )
   x$set_default(c("en-GB", "nl-BE", "fr-FR")[answer])
-  answer <- menu(c("yes", "no"), title = "check spelling?")
+
+  answer <- menu(c("yes", "no"), title = "Check spelling?")
   checks <- c(checks, list("spelling", character(0))[[answer]])
+
+  answer <- menu(
+    c("yes", "no"),
+    title = "Check the LICENSE file? The file will be created when missing."
+  )
+  checks <- c(checks, list("license", character(0))[[answer]])
+  files <- c(files, list("LICENSE.md", character(0))[[answer]])
+  if (!file_exists(path(path, "LICENSE.md"))) {
+    file_copy(
+      system.file(
+        file.path("generic_template", "cc_by_4_0.md"), package = "checklist"
+      ),
+      path(path, "LICENSE.md")
+    )
+  }
+
   x$set_required(checks = checks)
   write_checklist(x = x)
+
+  if (is.null(repo)) {
+    return(invisible(NULL))
+  }
+  git_add(files, force = TRUE, repo = repo)
+  return(invisible(NULL))
 }
 
-#' @importFrom gert git_add git_init
+#' @importFrom gert git_add git_find git_init
 setup_vc <- function(path) {
   if (is_repository(path)) {
     assert_that(is_workdir_clean(path))
+    repo <- git_find(path)
   } else {
-    answer <- menu(c("yes", "no"), title = "use version control?")
+    answer <- menu(c("yes", "no"), title = "Use version control?")
     if (answer == 2) {
       return(invisible(NULL))
     }
-    git_init(path = path)
+    repo <- git_init(path = path)
   }
 
   # add .gitignore
@@ -61,7 +92,7 @@ setup_vc <- function(path) {
   } else {
     file_copy(template, path(path, ".gitignore"))
   }
-  git_add(".gitignore", force = TRUE, repo = path)
+  git_add(".gitignore", force = TRUE, repo = repo)
 
   # Add GitHub actions
   dir_create(path(path, ".github", "workflows"))
@@ -72,8 +103,8 @@ setup_vc <- function(path) {
     path(path, ".github", "workflows", "check_project.yml"), overwrite = TRUE
   )
   git_add(
-    path(".github", "workflows", "check_project.yml"), force = TRUE, repo = path
+    path(".github", "workflows", "check_project.yml"), force = TRUE, repo = repo
   )
 
-  return(invisible(NULL))
+  return(invisible(repo))
 }

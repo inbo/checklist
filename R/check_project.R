@@ -25,12 +25,17 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
 
   if ("lintr" %in% x$get_required) {
     quiet_cat("Checking code style\n", quiet = quiet)
-    x <- check_lintr(x = x)
+    x <- check_lintr(x = x, quiet = quiet)
   }
 
   if ("filename conventions" %in% x$get_required) {
     quiet_cat("Checking filename conventions\n", quiet = quiet)
     x <- check_filename(x = x)
+  }
+
+  if ("license" %in% x$get_required) {
+    quiet_cat("Checking the license\n", quiet = quiet)
+    x <- check_license(x = x)
   }
 
   print(x, quiet = quiet)

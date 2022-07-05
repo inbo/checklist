@@ -217,33 +217,34 @@ unchanged_repo <- function(repo, old_status) {
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
+#' @importFrom fs file_exists path
 #' @export
 #' @family package
 check_license <- function(x = ".") {
   x <- read_checklist(x = x)
-  assert_that(
-    x$package,
-    msg = "`check_license()` is only relevant for packages.
-`checklist.yml` indicates this is not a package."
-  )
-  this_desc <- description$new(
-    file = file.path(x$get_path, "DESCRIPTION")
-  )
+  if (x$package) {
+    this_desc <- description$new(
+      file = file.path(x$get_path, "DESCRIPTION")
+    )
 
-  # check if the license is allowed
-  problems <- sprintf(
-    "%s license currently not allowed.
+    # check if the license is allowed
+    current_license <- this_desc$get_field("License")
+    problems <- sprintf(
+      "%s license currently not allowed.
 Please send a pull request if you need support for this license.",
-    this_desc$get_field("License")
-  )[
-    !this_desc$get_field("License") %in% c("GPL-3")
-  ]
+this_desc$get_field("License")
+    )[
+      !current_license %in% c("GPL-3")
+    ]
+  } else {
+    current_license <- "CC-BY"
+    problems <- character(0)
+  }
 
   # check if LICENSE.md exists
-  if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
+  if (!file_exists(path(x$get_path, "LICENSE.md"))) {
     x$add_error(
-      errors = c(problems, "No LICENSE.md file"),
-      item = "license", keep = FALSE
+      errors = c(problems, "No LICENSE.md file"), item = "license", keep = FALSE
     )
     return(x)
   }
@@ -251,10 +252,10 @@ Please send a pull request if you need support for this license.",
   # check if LICENSE.md matches the official version
   current <- readLines(file.path(x$get_path, "LICENSE.md"))
   official <- switch(
-    this_desc$get_field("License"),
-    "GPL-3" = system.file("generic_template", "gplv3.md", package = "checklist")
+    current_license, "GPL-3" = "gplv3.md", "CC-BY" = "cc_by_4_0.md"
   )
-  official <- readLines(official)
+  system.file("generic_template", official, package = "checklist") |>
+    readLines() -> official
   x$add_error(
     errors = c(
       problems,

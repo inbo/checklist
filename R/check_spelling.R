@@ -22,15 +22,14 @@ check_spelling <- function(x = ".", quiet = FALSE) {
     file.path(R.home("share"), "Rd", "macros", "system.Rd"),
     loadPkgRdMacros(x$get_path, macros = NULL)
   )
-  install_dictionary(unique(c(md_files$language, rd_files$language)))
+  languages <- unique(c(md_files$language, rd_files$language))
+  languages <- languages[languages != "ignore"]
+  install_dictionary(languages)
   issues <- vapply(
-    unique(c(md_files$language, rd_files$language)), root = x$get_path,
+    languages, root = x$get_path,
     md_files = md_files, rd_files = rd_files, macros = macros,
     FUN.VALUE = vector(mode = "list", length = 1),
     FUN = function(lang, root, md_files, rd_files, macros) {
-      if (lang == "ignore") {
-        return(list(NULL))
-      }
       wordlist <- spelling_wordlist(lang = gsub("-", "_", lang), root = root)
       md_issues <- vapply(
         path(root, md_files$path[md_files$language == lang]),
