@@ -20,7 +20,7 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
 
   if ("spelling" %in% x$get_required) {
     quiet_cat("Checking spelling\n", quiet = quiet)
-    x <- check_spelling(x = x)
+    x <- check_spelling(x = x, quiet = quiet)
   }
 
   if ("lintr" %in% x$get_required) {

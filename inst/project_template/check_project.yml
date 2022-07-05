@@ -1,0 +1,15 @@
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+
+name: check-project
+
+jobs:
+  check-src:
+    runs-on: ubuntu-latest
+    name: "Run required package checks"
+    steps:
+      - uses: inbo/actions/check_project@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

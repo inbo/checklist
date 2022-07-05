@@ -105,6 +105,8 @@ test_that("check_spelling() on a project", {
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   stub(setup_project, "interactive", TRUE)
   stub(setup_project, "menu", 1)
+  stub(setup_project, "interactive", TRUE, 2)
+  stub(setup_project, "menu", 1, 2)
   expect_invisible(setup_project(path))
   expect_is(check_project(path, quiet = TRUE), "checklist")
   dir_create(path, "source")
