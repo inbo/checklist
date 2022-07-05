@@ -106,5 +106,30 @@ setup_vc <- function(path) {
     path(".github", "workflows", "check_project.yml"), force = TRUE, repo = repo
   )
 
+  # Add code of conduct
+  answer <- menu(c("yes", "no"), title = "Add a default code of conduct?")
+  if (answer == 1) {
+    dir_create(path(path, ".github"))
+    file_copy(
+      system.file(
+        path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
+      ),
+      path(path, ".github", "CODE_OF_CONDUCT.md")
+    )
+    git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = repo)
+  }
+
+  # Add contributing guidelines
+  answer <- menu(c("yes", "no"), title = "Add default contributing guidelines?")
+  if (answer == 1) {
+    file_copy(
+      system.file(
+        path("package_template", "CONTRIBUTING.md"), package = "checklist"
+      ),
+      path(path, ".github", "CONTRIBUTING.md")
+    )
+    git_add(path(".github", "CONTRIBUTING.md"), force = TRUE, repo = repo)
+  }
+
   return(invisible(repo))
 }
