@@ -35,6 +35,7 @@ Actions.
 \seealso{
 Other setup: 
 \code{\link{create_package}()},
+\code{\link{create_project}()},
 \code{\link{prepare_ghpages}()},
 \code{\link{setup_project}()},
 \code{\link{setup_source}()}

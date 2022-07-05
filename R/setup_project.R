@@ -133,3 +133,30 @@ setup_vc <- function(path) {
 
   return(invisible(repo))
 }
+
+
+#' Initialise a new R project
+#'
+#' This function creates a new RStudio project with `checklist` functionality.
+#' @param path The folder in which to create the project as a folder.
+#' @param project The name of the project.
+#' @export
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom fs dir_create dir_exists file_copy is_dir path
+#' @family setup
+create_project <- function(path, project) {
+  assert_that(is.string(path), noNA(path), is_dir(path))
+  assert_that(is.string(project), noNA(project))
+  assert_that(!dir_exists(path(path, project)), msg = "Existing project folder")
+  dir_create(path(path, project))
+
+  # create RStudio project
+  file_copy(
+    system.file(
+      path("project_template", "rproj.template"), package = "checklist"
+    ),
+    path(path, project, project, ext = "Rproj")
+  )
+
+  setup_project(path(path, project))
+}

@@ -79,6 +79,7 @@ create_package(
 }
 \seealso{
 Other setup: 
+\code{\link{create_project}()},
 \code{\link{prepare_ghpages}()},
 \code{\link{setup_package}()},
 \code{\link{setup_project}()},

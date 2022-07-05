@@ -103,15 +103,18 @@ test_that("check_spelling() on a project", {
   path <- tempfile("check_spelling")
   dir_create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
-  stub(setup_project, "interactive", TRUE)
-  stub(setup_project, "menu", 1)
-  stub(setup_project, "interactive", TRUE, depth = 2)
-  stub(setup_project, "menu", 1, depth = 2)
-  expect_invisible(setup_project(path))
-  expect_is(check_project(path, quiet = TRUE), "checklist")
-  dir_create(path, "source")
-  writeLines("# Een test functie", path(path, "source", "dummy.Rmd"))
-  expect_is(check_project(path, fail = FALSE, quiet = TRUE), "checklist")
+  stub(create_project, "interactive", TRUE, depth = 2)
+  stub(create_project, "menu", 1, depth = 2)
+  stub(create_project, "interactive", TRUE, depth = 3)
+  stub(create_project, "menu", 1, depth = 3)
+  expect_invisible(create_project(path, "spelling"))
+  expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
+  dir_create(path(path, "spelling"), "source")
+  writeLines("# Een testfunctie", path(path, "spelling", "source", "dummy.Rmd"))
+  expect_is(
+    check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE),
+    "checklist"
+  )
 
   x <- read_checklist(path)
   stub(change_language_interactive, "menu", 3)
