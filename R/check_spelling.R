@@ -247,6 +247,8 @@ spelling_parse_md <- function(md_file, wordlist) {
   text <- gsub("`.+?`", "", text)
   # remove markdown comments
   text <- gsub("<!--.*?-->", "", text)
+  # remove markdown settings
+  text <- gsub("\\{\\.unnumbered\\}", "", text)
   # remove HTML image with alt tag while keeping the alt tag
   text <- gsub("<.*?alt ?= ?\"(.*?)\".*?>", "\"\\1\"", text)
   # remove HTML image without alt tag
