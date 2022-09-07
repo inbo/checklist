@@ -1,3 +1,7 @@
+# checklist 0.2.5
+
+* `check_license()` allows MIT license in addition to GPLv3 for packages
+
 # checklist 0.2.4
 
 * `check_description()` enforces a `Language` field with a valid
