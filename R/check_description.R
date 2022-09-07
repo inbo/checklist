@@ -212,6 +212,7 @@ unchanged_repo <- function(repo, old_status) {
 #'
 #' Currently, following licenses are allowed:
 #' - GPL-3
+#' - MIT
 #'
 #' We will consider pull requests adding support for other open source licenses.
 #'
@@ -237,7 +238,7 @@ check_license <- function(x = ".") {
 Please send a pull request if you need support for this license.",
     this_desc$get_field("License")
   )[
-    !this_desc$get_field("License") %in% c("GPL-3")
+    !this_desc$get_field("License") %in% c("GPL-3", "MIT")
   ]
 
   # check if LICENSE.md exists
@@ -250,12 +251,25 @@ Please send a pull request if you need support for this license.",
   }
 
   # check if LICENSE.md matches the official version
-  current <- readLines(file.path(x$get_path, "LICENSE.md"))
+  current <- switch(
+    this_desc$get_field("License"),
+    "GPL-3" = readLines(file.path(x$get_path, "LICENSE.md")),
+    "MIT" = readLines(file.path(x$get_path, "LICENSE.md"))[-(1:4)]
+    )
   official <- switch(
     this_desc$get_field("License"),
-    "GPL-3" = system.file("generic_template", "gplv3.md", package = "checklist")
+    "GPL-3" = system.file(
+      "generic_template", "gplv3.md", package = "checklist"
+      ),
+    "MIT" = system.file(
+      "generic_template", "mit.md", package = "checklist"
+    )
   )
-  official <- readLines(official)
+  official <- switch(
+    this_desc$get_field("License"),
+    "GPL-3" = readLines(official),
+    "MIT" = readLines(official)[-(1:4)]
+  )
   x$add_error(
     errors = c(
       problems,
