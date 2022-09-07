@@ -4,11 +4,15 @@
 \alias{setup_package}
 \title{Add or update the checklist infrastructure to an existing package}
 \usage{
-setup_package(path = ".")
+setup_package(path = ".", license = c("GPL-3", "MIT"))
 }
 \arguments{
 \item{path}{The path to the package.
 Defaults to \code{"."}.}
+
+\item{license}{What type of license should be used?
+Choice between GPL-3 and MIT.
+Default GPL-3.}
 }
 \description{
 Use this function when you have an existing package and you want to use the
@@ -21,7 +25,7 @@ Please DO READ \code{vignette("getting_started")} before running this function.
 What you get with a checklist setup:
 \itemize{
 \item minimal folder structure and files required for an R package using INBO
-guidelines with GPL-3 license.
+guidelines with GPL-3 or MIT license.
 \item an RStudio project file
 \item a local git repository
 \item an initial \code{NEWS.md} file

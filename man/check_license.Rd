@@ -26,6 +26,7 @@ Use \code{setup_package()} to add the correct \code{LICENSE.md} to the package.
 Currently, following licenses are allowed:
 \itemize{
 \item GPL-3
+\item MIT
 }
 
 We will consider pull requests adding support for other open source licenses.
