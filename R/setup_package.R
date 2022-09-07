@@ -10,14 +10,19 @@
 #'
 #' @param path The path to the package.
 #' Defaults to `"."`.
+#' @param license What type of license should be used?
+#' Choice between GPL-3 and MIT.
+#' Default GPL-3.
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
-setup_package <- function(path = ".") {
+setup_package <- function(path = ".",
+                          license = c("GPL-3", "MIT")) {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
+  license <- match.arg(license)
   assert_that(
     file_test("-f", file.path(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
@@ -117,8 +122,14 @@ allowed:
   # add LICENSE.md
   if (length(list.files(path, "LICEN(S|C)E")) == 0) {
     file.copy(
-      system.file(
-        file.path("generic_template", "gplv3.md"), package = "checklist"
+      switch(
+        license,
+        "GPL-3" = system.file(
+          file.path("generic_template", "gplv3.md"), package = "checklist"
+        ),
+        "MIT" = system.file(
+          file.path("generic_template", "mit.md"), package = "checklist"
+        )
       ),
       file.path(path, "LICENSE.md")
     )

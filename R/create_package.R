@@ -16,6 +16,9 @@
 #'   When missing, the functions looks for `usethis.description` in the options.
 #'   See [usethis::use_description()] for more information.
 #' @param language Language of the package package in ISO 639-3 format.
+#' @param license What type of license should be used?
+#' Choice between GPL-3 and MIT.
+#' Default GPL-3.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom gert git_add git_init
@@ -42,10 +45,11 @@
 #' create_package(
 #'   path = path, package = "packagename", title = "package title",
 #'   description = "A short description.", maintainer = maintainer,
-#'   language = "eng"
+#'   language = "eng", license = "GPL-3"
 #' )
 create_package <- function(
-  package, path = ".", title, description, maintainer, language
+  package, path = ".", title, description, maintainer, language,
+  license = c("GPL-3", "MIT")
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -79,6 +83,7 @@ create_package <- function(
     msg = "language is not a valid code.
 E.g. en-GB or eng for (British) English and nl-BE or nld for (Flemish) Dutch."
   )
+  license <- match.arg(license)
 
   dir.create(path, showWarnings = FALSE)
   repo <- git_init(path = path)
@@ -96,7 +101,7 @@ Authors@R:
            role = c(\"cph\", \"fnd\"),
            email = \"info@inbo.be\"))
 Description: %4$s
-License: GPL-3
+License: %7$s
 URL: https://github.com/inbo/%1$s
 BugReports: https://github.com/inbo/%1$s/issues
 Encoding: UTF-8
@@ -107,7 +112,8 @@ RoxygenNote: %5$s
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
     description,
-    installed.packages()["roxygen2", "Version"], language
+    installed.packages()["roxygen2", "Version"], language,
+    license
   )
   writeLines(description, file.path(path, "DESCRIPTION"))
   tidy_desc(path)
@@ -176,9 +182,14 @@ RoxygenNote: %5$s
 
   # add LICENSE.md
   file.copy(
-    system.file(
-      file.path("generic_template", "gplv3.md"),
-      package = "checklist"
+    switch(
+      license,
+      "GPL-3" = system.file(
+        file.path("generic_template", "gplv3.md"), package = "checklist"
+      ),
+      "MIT" = system.file(
+        file.path("generic_template", "mit.md"), package = "checklist"
+      )
     ),
     file.path(path, "LICENSE.md")
   )
