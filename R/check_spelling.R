@@ -184,6 +184,16 @@ spelling_parse_md <- function(md_file, wordlist) {
   }
   # remove in line chunks
   text <- gsub("\\`r .*?`", "", text)
+  # remove markdown divs
+  divs <- grep("^:::", text)
+  assert_that(
+    length(divs) %% 2 == 0,
+    msg = paste("Odd number of div (`:::`) delimiters detected in", md_file)
+  )
+  while (length(divs)) {
+    text[c(divs[1], divs[2])] <- ""
+    divs <- tail(divs, -2)
+  }
   # remove ignored sections
   start <- grep("<!-- spell-check: ignore:start\\s*-->", text)
   end <- grep("<!-- spell-check: ignore:end\\s*-->", text)
