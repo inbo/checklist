@@ -83,7 +83,7 @@ spelling <- R6Class(
     #' @importFrom fs dir_ls path
     get_md = function() {
       md_files <- dir_ls(
-        private$path, recurse = TRUE, type = "file", regexp = "\\.[Rr]?md$",
+        private$path, recurse = TRUE, type = "file", regexp = "\\.[Rrq]?md$",
         all = TRUE
       )
       get_language(files = md_files, private = private)
