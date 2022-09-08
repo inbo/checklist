@@ -138,7 +138,7 @@ write_zenodo_json <- function(x = ".") {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
     new <- "^\\.zenodo\\.json$"
     writeLines(
-      sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
+      c_sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )
   }
 

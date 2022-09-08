@@ -36,7 +36,7 @@ setup_package <- function(path = ".") {
     new <- readLines(
       system.file(path("generic_template", "gitignore"), package = "checklist")
     )
-    writeLines(sort(unique(c(new, current))), path(path, ".gitignore"))
+    writeLines(c_sort(unique(c(new, current))), path(path, ".gitignore"))
   } else {
     file_copy(
       system.file(path("generic_template", "gitignore"), package = "checklist"),
@@ -52,7 +52,7 @@ setup_package <- function(path = ".") {
         path("package_template", "rbuildignore"), package = "checklist"
       )
     )
-    writeLines(sort(unique(c(new, current))), path(path, ".Rbuildignore"))
+    writeLines(c_sort(unique(c(new, current))), path(path, ".Rbuildignore"))
   } else {
     file_copy(
       system.file(

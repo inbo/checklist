@@ -120,7 +120,7 @@ write_citation_cff <- function(x = ".", roles) {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
     new <- "^CITATION\\.cff$"
     writeLines(
-      sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
+      c_sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )
   }
 

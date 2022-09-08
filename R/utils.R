@@ -231,7 +231,7 @@ checklist_summarise_linter <- function(linter) {
     return(character(0))
   }
   linter_message <- vapply(linter, `[[`, character(1), "message")
-  messages <- sort(table(linter_message), decreasing = TRUE)
+  messages <- c_sort(table(linter_message), decreasing = TRUE)
   messages <- sprintf("%i times \"%s\"", messages, names(messages))
   sprintf(
     "%i linter%s found.
@@ -253,11 +253,13 @@ checklist_summarise_spelling <- function(spelling) {
       sprintf(
         "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s", i,
         paste(
-          sort(as.character(unique(spelling$message[spelling$language == i]))),
+          c_sort(
+            as.character(unique(spelling$message[spelling$language == i]))
+          ),
           collapse = ", "
         ),
         paste(
-          sort(as.character(unique(spelling$file[spelling$language == i]))),
+          c_sort(as.character(unique(spelling$file[spelling$language == i]))),
           collapse = "\n"
         )
       )

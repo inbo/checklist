@@ -189,7 +189,7 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
   ignore <- character(0)
   for (i in unique(first_path)) {
     current <- which(first_path == i)
-    print(sort(x$path[current]), method = "radix")
+    print(c_sort(x$path[current]))
     answer <- menu(
       c(
         paste("ignore",  "all files"[length(current) > 1]),
@@ -203,7 +203,7 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
       title = "\nHow should `checklist` spell check the files above?"
     )
     if (answer == 1) {
-      ignore <- sort(c(ignore, path_norm(path(base_path, i))), method = "radix")
+      ignore <- c_sort(c(ignore, path_norm(path(base_path, i))))
       next
     }
     if (answer == 2) {
@@ -217,20 +217,20 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
         base_path = path(base_path, i)
       )
       other_lang <- unique(c(other_lang, x2$other_lang))
-      ignore <- sort(c(ignore, x2$ignore), method = "radix")
+      ignore <- c_sort(c(ignore, x2$ignore))
       for (j in names(x2$other)) {
-        other[[j]] <- sort(c(other[[j]], x2$other[[j]]), method = "radix")
+        other[[j]] <- c_sort(c(other[[j]], x2$other[[j]]))
       }
       next
     }
     if (answer == length(other_lang) + 3 + (length(current) > 1)) {
       language <- validate_language(readline("Which language? "))
-      other_lang <- sort(c(other_lang, language), method = "radix")
+      other_lang <- c_sort(c(other_lang, language))
       other <- c(other, setNames(list(x$path[current]), language))
       next
     }
-    other[[other_lang[answer - 2]]] <- sort(
-      c(other[[other_lang[answer - 2]]], x$path[current]), method = "radix"
+    other[[other_lang[answer - 2]]] <- c_sort(
+      c(other[[other_lang[answer - 2]]], x$path[current])
     )
   }
   return(list(ignore = ignore, other = other, other_lang = other_lang))
@@ -244,14 +244,14 @@ print.checklist_language <- function(x, ..., hide_ignore = FALSE) {
   cat("Default language:", attr(x, "checklist_default"), "\n\n")
   if (any(x$language == attr(x, "checklist_default"))) {
     print(
-      sort(x$path[x$language == attr(x, "checklist_default")], method = "radix")
+      c_sort(x$path[x$language == attr(x, "checklist_default")])
     )
   }
   x <- x[!x$language %in% c(attr(x, "checklist_default"), "ignore"), ]
   while (length(unique(x$language))) {
     current <- head(unique(x$language), 1)
     cat("\nAdditional language:", current, "\n\n")
-    print(sort(x$path[x$language == current], method = "radix"))
+    print(c_sort(x$path[x$language == current]))
     x <- x[x$language != current, ]
   }
   if (hide_ignore) {

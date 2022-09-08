@@ -31,6 +31,6 @@ add_words <- function(words, dictionary) {
     words <- c(words, readLines(dictionary))
   }
   dir_create(path_dir(dictionary), recurse = TRUE)
-  writeLines(sort(unique(words), method = "radix"), dictionary)
+  writeLines(c_sort(unique(words)), dictionary)
   return(invisible(NULL))
 }

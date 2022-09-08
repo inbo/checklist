@@ -2,6 +2,7 @@
 
 S3method(print,checklist_language)
 S3method(print,checklist_spelling)
+export(c_sort)
 export(check_codemeta)
 export(check_cran)
 export(check_description)

@@ -136,20 +136,6 @@ from the web. More info on https://github.com/github/renaming"[
 tidy_desc <- function(x = ".") {
   x <- read_checklist(x = x)
 
-  # set locale to get a stable sorting order
-  old_ctype <- Sys.getlocale(category = "LC_CTYPE")
-  old_collate <- Sys.getlocale(category = "LC_COLLATE")
-  old_time <- Sys.getlocale(category = "LC_TIME")
-  Sys.setlocale(category = "LC_CTYPE", locale = "C")
-  Sys.setlocale(category = "LC_COLLATE", locale = "C")
-  Sys.setlocale(category = "LC_TIME", locale = "C")
-  on.exit(Sys.setlocale(category = "LC_CTYPE", locale = old_ctype), add = TRUE)
-  on.exit(
-    Sys.setlocale(category = "LC_COLLATE", locale = old_collate),
-    add = TRUE
-  )
-  on.exit(Sys.setlocale(category = "LC_TIME", locale = old_time), add = TRUE)
-
   # turn crayon off
   old_crayon <- getOption("crayon.enabled")
   on.exit(options("crayon.enabled" = old_crayon), add = TRUE)
@@ -166,7 +152,7 @@ tidy_desc <- function(x = ".") {
   # Alphabetise remotes
   remotes <- desc$get_remotes()
   if (length(remotes) > 0) {
-    desc$set_remotes(sort(remotes))
+    desc$set_remotes(c_sort(remotes))
   }
 
   desc$set("Encoding" = "UTF-8")

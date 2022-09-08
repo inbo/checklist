@@ -86,7 +86,7 @@ setup_vc <- function(path) {
     current <- readLines(path(path, ".gitignore"))
     new <- readLines(template)
     writeLines(
-      sort(unique(c(new, current)), method = "radix"),
+      c_sort(unique(c(new, current))),
       path(path, ".gitignore")
     )
   } else {

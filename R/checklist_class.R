@@ -213,7 +213,7 @@ checklist <- R6Class(
     #' @param roles A vector with roles.
     set_roles = function(roles) {
       assert_that(is.character(roles), noNA(roles))
-      private$roles <- sort(unique(roles))
+      private$roles <- c_sort(unique(roles))
       invisible(self)
     },
 
@@ -228,7 +228,7 @@ checklist <- R6Class(
           "unknown checks", paste0("`", checks[!ok], "`", collapse = ", ")
         )
       )
-      private$required <- sort(unique(c(
+      private$required <- c_sort(unique(c(
         checks,
         list(character(0), private$available_checks)[[self$package + 1]]
       )))
@@ -240,7 +240,7 @@ checklist <- R6Class(
     #' The default empty vector (`character(0)`) will erase the keywords.
     update_keywords = function(keywords = character(0)) {
       assert_that(inherits(keywords, "character"))
-      private$keywords <- sort(keywords)
+      private$keywords <- c_sort(keywords)
       invisible(self)
     }
   ),
@@ -301,7 +301,7 @@ Please contact the maintainer of the `checklist` package."
         package = self$package, warnings = private$allowed_warnings,
         notes = private$allowed_notes, citation_roles = private$roles,
         keywords = private$keywords, spelling = super$settings,
-        required = sort(unique(private$required))
+        required = c_sort(unique(private$required))
       )
     }
   ),

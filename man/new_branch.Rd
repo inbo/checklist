@@ -25,6 +25,7 @@ Then it creates the new branch from the (updated) main branch.
 }
 \seealso{
 Other utils: 
+\code{\link{c_sort}()},
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
 \code{\link{is_repository}()},
