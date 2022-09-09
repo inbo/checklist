@@ -290,6 +290,10 @@ spelling_parse_md <- function(md_file, wordlist) {
   text <- gsub("\\s[/\\\\]\\s", " ", text)
   text <- gsub("\\s[/\\\\]$", " ", text)
   text <- gsub("^[/\\\\]\\s", " ", text)
+  # remove quarto anchors
+  text <- gsub("\\{#.*?\\}", "", text)
+  # remove quarto caption options
+  text <- gsub("^:(.*)\\{.*?\\}", "\\1", text)
   list(spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   ))
