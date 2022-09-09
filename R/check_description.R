@@ -254,7 +254,7 @@ Please send a pull request if you need support for this license.",
   current <- switch(
     this_desc$get_field("License"),
     "GPL-3" = readLines(file.path(x$get_path, "LICENSE.md")),
-    "MIT" = readLines(file.path(x$get_path, "LICENSE.md"))[-(1:4)]
+    "MIT" = readLines(file.path(x$get_path, "LICENSE.md"))
     )
   official <- switch(
     this_desc$get_field("License"),
@@ -268,8 +268,33 @@ Please send a pull request if you need support for this license.",
   official <- switch(
     this_desc$get_field("License"),
     "GPL-3" = readLines(official),
-    "MIT" = readLines(official)[-(1:4)]
+    "MIT" = readLines(official)
   )
+  if (this_desc$get_field("License") == "MIT") {
+    author <- this_desc$get_author(role = "cph")
+    cph <- paste(c(author$given, author$family), collapse = " ")
+    x$add_error(
+      errors = c(
+        problems,
+        "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION"[
+          !grepl(paste0(cph, "$"), current[3])
+        ]
+      )
+    )
+    x$add_error(
+      errors = c(
+        problems,
+        "Copyright statement in LICENSE.md not in correct format"[
+          !grepl(
+            paste0("^Copyright \\(c\\) \\d{4}(-(\\d{4})?)? ", cph, "$"),
+            current[3]
+            )
+        ]
+      )
+    )
+    official <- official[-3]
+    current <- current[-3]
+  }
   x$add_error(
     errors = c(
       problems,
