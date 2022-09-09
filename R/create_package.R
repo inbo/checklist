@@ -193,6 +193,14 @@ RoxygenNote: %5$s
     ),
     file.path(path, "LICENSE.md")
   )
+  if (license == "MIT") {
+    mit <- readLines(file.path(path, "LICENSE.md"))
+    mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
+    mit[3] <- gsub("<COPYRIGHT HOLDERS>",
+                   "Research Institute for Nature and Forest",
+                   mit[3])
+    writeLines(mit, file.path(path, "LICENSE.md"))
+  }
   git_add("LICENSE.md", repo = repo)
 
   # add checklist.yml
