@@ -101,3 +101,20 @@ No.
 Project based custom dictionaries are located within the project.
 This is required to make the project reproducible.
 What you can do is copy the `.dic` files from other projects.
+
+# Quarto projects
+
+When `check_spelling()` finds a [Quarto book project](https://quarto.org/docs/books/), it will check if `lang` is set in `_quarto.yml`.
+Then `check_spelling()` uses that `lang` for all files listed under the `book: chapters` and `book: appendices` tabs.
+Please use the Quarto specific markdown to specify sections with a different language.
+Here are two examples.
+
+```
+    ::: {lang=nl-BE}
+    Paragraph in Dutch
+    :::
+```
+
+```
+    A sentence with a [word]{lang=nl-BE} in Dutch.
+```
