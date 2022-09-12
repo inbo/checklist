@@ -145,11 +145,56 @@ get_language <- function(files, private) {
   }
   test_ignore <- outer(files$path, private$ignore, path_has_parent)
   files$language[apply(test_ignore, 1, any)] <- "ignore"
-
+  dir_ls(private$path, regexp = "_quarto\\.yml", recurse = TRUE) |>
+    vapply(
+      FUN = list_quarto_md, FUN.VALUE = vector(mode = "list", length = 1L),
+      root = private$path
+    ) |>
+    c(list(data.frame(quarto_lang = character(0), path = character(0)))) |>
+    do.call(what = rbind) |>
+    merge(x = files, all.x = TRUE, by = "path") -> files
+  files$language <- ifelse(
+    is.na(files$quarto_lang), files$language, files$quarto_lang
+  )
+  files$quarto_lang <- NULL
   class(files) <- c("checklist_language", class(files))
   attr(files, "checklist_default") <- private$main
   attr(files, "checklist_ignore") <- private$ignore
   return(files)
+}
+
+#' @importFrom assertthat has_name
+#' @importFrom fs path path_dir path_rel
+#' @importFrom yaml read_yaml
+list_quarto_md <- function(quarto, root) {
+  settings <- read_yaml(quarto)
+  if (!has_name(settings, "lang")) {
+    files <- data.frame(quarto_lang = character(0), path = character(0))
+    return(list(files))
+  }
+  if (!has_name(settings, "book")) {
+    warning(
+      paste(
+        "quarto project other than `book` detected.",
+        "Please contact the maintainer."
+      ),
+      call. = FALSE
+    )
+    files <- data.frame(quarto_lang = character(0), path = character(0))
+    return(list(files))
+  }
+  vapply(settings$book$chapters, FUN.VALUE = list(1), FUN = function(input) {
+    if (inherits(input, "character")) {
+      return(list(input))
+    }
+    return(list(input$chapters))
+  }) |>
+    unlist() |>
+    c(settings$book$appendices) -> files
+  path_dir(quarto) |>
+    path_rel(root) |>
+    path(files) -> files
+  list(data.frame(quarto_lang = settings$lang, path = files))
 }
 
 #' @importFrom fs path path_norm path_split
