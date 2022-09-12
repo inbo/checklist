@@ -34,7 +34,7 @@ check_spelling <- function(x = ".", quiet = FALSE) {
       md_issues <- vapply(
         path(root, md_files$path[md_files$language == lang]),
         FUN = spelling_parse_md, FUN.VALUE = vector(mode = "list", length = 1),
-        wordlist = wordlist
+        wordlist = wordlist, x = x
       )
       rd_issues <- vapply(
         path(root, rd_files$path[rd_files$language == lang]),
@@ -169,7 +169,7 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
 }
 
 #' @importFrom assertthat assert_that
-spelling_parse_md <- function(md_file, wordlist) {
+spelling_parse_md <- function(md_file, wordlist, x) {
   raw_text <- readLines(md_file)
   text <- spelling_parse_md_yaml(text = raw_text)
   # remove chunks
@@ -184,16 +184,6 @@ spelling_parse_md <- function(md_file, wordlist) {
   }
   # remove in line chunks
   text <- gsub("\\`r .*?`", "", text)
-  # remove markdown divs
-  divs <- grep("^:::", text)
-  assert_that(
-    length(divs) %% 2 == 0,
-    msg = paste("Odd number of div (`:::`) delimiters detected in", md_file)
-  )
-  while (length(divs)) {
-    text[c(divs[1], divs[2])] <- ""
-    divs <- tail(divs, -2)
-  }
   # remove ignored sections
   start <- grep("<!-- spell-check: ignore:start\\s*-->", text)
   end <- grep("<!-- spell-check: ignore:end\\s*-->", text)
@@ -297,10 +287,82 @@ spelling_parse_md <- function(md_file, wordlist) {
   # remove quarto anchors
   text <- gsub("\\{#.*?\\}", "", text)
   # remove quarto caption options
-  text <- gsub("^:(.*)\\{.*?\\}", "\\1", text)
-  list(spelling_check(
+  text <- gsub("^: (.*)\\{.*?\\}", "\\1", text)
+
+  # extract other languages
+  assert_that(
+    length(
+      grep("(\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*){2,}", text)
+    ) == 0,
+    msg = paste("Multiple `[]{lang=}` on the same line found in", md_file)
+  )
+
+  other_languages <- data.frame(
+    line = integer(0), text = character(0), language = character(0)
+  )
+  inline_language <- grep("\\[.*?\\]\\{lang=[a-z]{2}(-[A-Z]{2})?\\}", text)
+  other_languages <- data.frame(
+    line = inline_language,
+    text = gsub(
+      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*", "\\1",
+      text[inline_language]
+    ),
+    language = gsub(
+      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*", "\\2",
+      text[inline_language]
+    )
+  )
+  text <- gsub("\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}", "", text)
+  other_lang_start <- grep("^::: \\{.*?lang=[a-z]{2}(-[A-Z]{2})?.*?\\}", text)
+  other_lang_end <- grep("^:::\\s*$", text)
+  while (length(other_lang_start)) {
+    other_lang_end <- other_lang_end[other_lang_end > min(other_lang_start)]
+    assert_that(
+      length(other_lang_end) >= length(other_lang_start),
+      msg = "`::: {lang=}` without matching `:::` found"
+    )
+    other_languages <- rbind(
+      other_languages,
+      data.frame(
+        line = seq(other_lang_start[1] + 1, other_lang_end[1] - 1),
+        text = text[seq(other_lang_start[1] + 1, other_lang_end[1] - 1)],
+        language = gsub(
+          ".*lang=([a-z]{2}(-[A-Z]{2})).*", "\\1", text[other_lang_start[1]]
+        )
+      )
+    )
+    text[seq(other_lang_start[1], other_lang_end[1])] <- ""
+    other_lang_start <- tail(other_lang_start, -1)
+  }
+  # remove quarto divs
+  divs <- grep("^:::", text)
+  assert_that(
+    length(divs) %% 2 == 0,
+    msg = paste("Odd number of div (`:::`) delimiters detected in", md_file)
+  )
+  while (length(divs)) {
+    text[c(divs[1], divs[2])] <- ""
+    divs <- tail(divs, -2)
+  }
+  main_language <- spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
-  ))
+  )
+  other_languages <- vapply(
+    unique(other_languages$language), empty_text = rep("", length(raw_text)),
+    FUN.VALUE = vector(mode = "list", length = 1), input = other_languages,
+    raw_text = raw_text, md_file = md_file,
+    FUN = function(lang, input, empty_text, raw_text, md_file) {
+      empty_text[input[input$language == lang, "line"]] <-
+        input[input$language == lang, "text"]
+        list(spelling_check(
+          text = empty_text, raw_text = raw_text, filename = md_file,
+          wordlist = spelling_wordlist(
+            lang = gsub("-", "_", lang), root = x$get_path
+          )
+        ))
+    }
+  )
+  list(do.call(rbind, c(other_languages, list(main_language))))
 }
 
 #' @importFrom utils head
