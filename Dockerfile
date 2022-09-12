@@ -92,8 +92,10 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 ## install spelling
 RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
-    hunspell-nl \
+    hunspell-de-de \
+    hunspell-en-gb \
     hunspell-fr \
+    hunspell-nl \
   && apt-get clean \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
