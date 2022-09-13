@@ -165,3 +165,47 @@ test_that("check_spelling() on a project", {
     "list"
   )
 })
+
+test_that("check_spelling() works on a quarto project", {
+  path <- tempfile("quarto")
+  dir_create(path)
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  dir_create(path, "source")
+  writeLines(
+    c("project:", "  type: book"),
+    path(path, "source", "_quarto.yml")
+  )
+  expect_identical(
+    list_quarto_md(path(path, "source", "_quarto.yml"), root = path),
+    list(data.frame(quarto_lang = character(0), path = character(0)))
+  )
+  writeLines("lang: en-GB", path(path, "source", "_quarto.yml"))
+  expect_warning(
+    {z <- list_quarto_md(path(path, "source", "_quarto.yml"), root = path)},
+    "contact the maintainer"
+  )
+  expect_identical(
+    z,
+    list(data.frame(quarto_lang = character(0), path = character(0)))
+  )
+  writeLines(
+    c(
+      "project:", "  type: book", "lang: en-GB", "book:", "  chapters:",
+      "    - language.qmd"
+    ),
+    path(path, "source", "_quarto.yml")
+  )
+  writeLines(
+    c(
+      "# Language", "::: {lang=nl-BE}", "vlinder [papillon]{lang=fr-FR}", ":::",
+      "wrongwords"
+    ),
+    path(path, "source", "language.qmd")
+  )
+  expect_is({z <- check_spelling(path)}, "checklist")
+  stub(checklist_print, "interactive", TRUE, depth = 1)
+  expect_output(print(z))
+
+  expect_output(quiet_cat("test", quiet = FALSE), "test")
+  expect_silent(quiet_cat("test", quiet = TRUE))
+})
