@@ -20,8 +20,9 @@ test_that("check_spelling() on a package", {
       description = "A dummy package.", language = "en-GB"
     )
   )
-  expect_is(
-    {z <- check_spelling(path(path, package))},
+  expect_is({
+    z <- check_spelling(path(path, package))
+  },
     "checklist"
   )
   expect_identical(nrow(z$get_spelling), 0L)
@@ -202,7 +203,10 @@ test_that("check_spelling() works on a quarto project", {
     ),
     path(path, "source", "language.qmd")
   )
-  expect_is({z <- check_spelling(path)}, "checklist")
+  expect_is({
+    z <- check_spelling(path)
+  }, "checklist"
+  )
   stub(checklist_print, "interactive", TRUE, depth = 1)
   expect_output(print(z))
 
