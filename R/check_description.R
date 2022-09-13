@@ -265,46 +265,38 @@ Please send a pull request if you need support for this license.",
       "generic_template", "mit.md", package = "checklist"
     )
   )
-  official <- switch(
-    this_desc$get_field("License"),
-    "GPL-3" = readLines(official),
-    "MIT" = readLines(official)
-  )
+  official <- readLines(official)
   if (this_desc$get_field("License") == "MIT") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
-    x$add_error(
-      errors = c(
-        problems,
-        "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION"[
-          !grepl(paste0(cph, "$"), current[3])
-        ]
-      )
+    problems <- c(
+      problems,
+      "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION"[
+        !grepl(paste0(cph, "$"), current[3])
+      ]
     )
-    x$add_error(
-      errors = c(
-        problems,
-        "Copyright statement in LICENSE.md not in correct format"[
-          !grepl(
-            paste0("^Copyright \\(c\\) \\d{4}(-(\\d{4})?)? ", cph, "$"),
-            current[3]
-            )
-        ]
-      )
+    problems <- c(
+      problems,
+      "Copyright statement in LICENSE.md not in correct format"[
+        !grepl(
+          paste0("^Copyright \\(c\\) \\d{4}(-(\\d{4})?)? ", cph, "$"),
+          current[3]
+        )
+      ]
     )
     official <- official[-3]
     current <- current[-3]
   }
-  x$add_error(
-    errors = c(
+  problems <- c(
       problems,
       "LICENSE.md doesn't match the version in the checklist package"[
         (length(current) != length(official)) || any(current != official)
       ]
-    ),
+    )
+  x$add_error(
+    errors = problems,
     item = "license"
   )
-
   return(x)
 }
 
