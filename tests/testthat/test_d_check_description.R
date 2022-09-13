@@ -88,11 +88,4 @@ test_that("check_description() works", {
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION, "Package version not updated"
   )
-
-  file.remove(file.path(path, package, "LICENSE.md"))
-  expect_is(x <- check_license(file.path(path, package)), "Checklist")
-  expect_identical(
-    x$.__enclos_env__$private$errors$license,
-    "No LICENSE.md file"
-  )
 })
