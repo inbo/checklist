@@ -36,7 +36,7 @@ test_that("check_license() works", {
   mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
                    " INBO")
   writeLines(mit, file.path(repo, "LICENSE.md"))
-  expect_is(x <- check_license(repo), "Checklist")
+  expect_is(x <- check_license(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     c("Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION",
@@ -44,7 +44,7 @@ test_that("check_license() works", {
 
 
   file.remove(file.path(repo, "LICENSE.md"))
-  expect_is(x <- check_license(repo), "Checklist")
+  expect_is(x <- check_license(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     "No LICENSE.md file"
