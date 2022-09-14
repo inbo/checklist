@@ -17,11 +17,16 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
   x <- read_checklist(x = x)
   md_files <- x$get_md
-  rd_files <- x$get_rd
-  macros <- loadRdMacros(
-    file.path(R.home("share"), "Rd", "macros", "system.Rd"),
-    loadPkgRdMacros(x$get_path, macros = NULL)
-  )
+  if (x$package) {
+    rd_files <- x$get_rd
+    macros <- loadRdMacros(
+      file.path(R.home("share"), "Rd", "macros", "system.Rd"),
+      loadPkgRdMacros(x$get_path, macros = NULL)
+    )
+  } else {
+    rd_files <- data.frame(language = character(0), path = character(0))
+    macros <- NULL
+  }
   languages <- unique(c(md_files$language, rd_files$language))
   languages <- languages[languages != "ignore"]
   install_dictionary(languages)
