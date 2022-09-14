@@ -197,6 +197,7 @@ unchanged_repo <- function(repo, old_status) {
 #'
 #' Currently, following licenses are allowed:
 #' - GPL-3
+#' - MIT
 #'
 #' We will consider pull requests adding support for other open source licenses.
 #'
@@ -218,9 +219,9 @@ check_license <- function(x = ".") {
     problems <- sprintf(
       "%s license currently not allowed.
 Please send a pull request if you need support for this license.",
-this_desc$get_field("License")
+      this_desc$get_field("License")
     )[
-      !current_license %in% c("GPL-3")
+      !current_license %in% c("GPL-3", "MIT")
     ]
   } else {
     current_license <- "CC-BY"
@@ -236,22 +237,51 @@ this_desc$get_field("License")
   }
 
   # check if LICENSE.md matches the official version
-  current <- readLines(file.path(x$get_path, "LICENSE.md"))
+  current <- switch(
+    current_license,
+    "GPL-3" = readLines(file.path(x$get_path, "LICENSE.md")),
+    "MIT" = readLines(file.path(x$get_path, "LICENSE.md")),
+    "CC-BY" = readLines(file.path(x$get_path, "LICENSE.md"))
+    )
   official <- switch(
-    current_license, "GPL-3" = "gplv3.md", "CC-BY" = "cc_by_4_0.md"
+    current_license,
+    "GPL-3" = "gplv3.md",
+    "MIT" = "mit.md",
+    "CC-BY" = "cc_by_4_0.md"
   )
   system.file("generic_template", official, package = "checklist") |>
     readLines() -> official
-  x$add_error(
-    errors = c(
+  if (current_license == "MIT") {
+    author <- this_desc$get_author(role = "cph")
+    cph <- paste(c(author$given, author$family), collapse = " ")
+    problems <- c(
+      problems,
+      "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION"[
+        !grepl(paste0(cph, "$"), current[3])
+      ]
+    )
+    problems <- c(
+      problems,
+      "Copyright statement in LICENSE.md not in correct format"[
+        !grepl(
+          paste0("^Copyright \\(c\\) \\d{4}(-(\\d{4})?)? ", cph, "$"),
+          current[3]
+        )
+      ]
+    )
+    official <- official[-3]
+    current <- current[-3]
+  }
+  problems <- c(
       problems,
       "LICENSE.md doesn't match the version in the checklist package"[
         (length(current) != length(official)) || any(current != official)
       ]
-    ),
+    )
+  x$add_error(
+    errors = problems,
     item = "license", keep = FALSE
   )
-
   return(x)
 }
 

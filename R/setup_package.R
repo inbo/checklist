@@ -10,6 +10,9 @@
 #'
 #' @param path The path to the package.
 #' Defaults to `"."`.
+#' @param license What type of license should be used?
+#' Choice between GPL-3 and MIT.
+#' Default GPL-3.
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
@@ -17,8 +20,10 @@
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
-setup_package <- function(path = ".") {
+setup_package <- function(path = ".",
+                          license = c("GPL-3", "MIT")) {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
+  license <- match.arg(license)
   assert_that(
     file_test("-f", path(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
@@ -102,10 +107,25 @@ setup_package <- function(path = ".") {
 
   # add LICENSE.md
   if (length(dir_ls(path, regexp = "LICEN(S|C)E")) == 0) {
-    file_copy(
-      system.file(path("generic_template", "gplv3.md"), package = "checklist"),
+    file.copy(
+      switch(
+        license,
+        "GPL-3" = system.file(
+          path("generic_template", "gplv3.md"), package = "checklist"),
+        "MIT" = system.file(
+          path("generic_template", "mit.md"), package = "checklist"
+        )
+      ),
       path(path, "LICENSE.md")
     )
+    if (license == "MIT") {
+      mit <- readLines(path(path, "LICENSE.md"))
+      mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
+      mit[3] <- gsub("<COPYRIGHT HOLDERS>",
+                     "Research Institute for Nature and Forest",
+                     mit[3])
+      writeLines(mit, path(path, "LICENSE.md"))
+    }
     git_add("LICENSE.md", force = TRUE, repo = path)
   }
 

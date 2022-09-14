@@ -2,7 +2,7 @@
 #' What you get with a checklist setup:
 #'
 #' - minimal folder structure and files required for an R package using INBO
-#'   guidelines with GPL-3 license.
+#'   guidelines with GPL-3 or MIT license.
 #' - an RStudio project file
 #' - a local git repository
 #' - an initial `NEWS.md` file

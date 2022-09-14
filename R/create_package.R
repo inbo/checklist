@@ -20,6 +20,9 @@
 #' `YY` is the two letter code for the language variant.
 #' E.g. `en-GB` for British English, `en-US` for American English, `nl-BE` for
 #' Belgian Dutch.
+#' @param license What type of license should be used?
+#' Choice between GPL-3 and MIT.
+#' Default GPL-3.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
@@ -47,10 +50,11 @@
 #' create_package(
 #'   path = path, package = "packagename", title = "package title",
 #'   description = "A short description.", maintainer = maintainer,
-#'   language = "en-GB"
+#'   language = "en-GB", license = "GPL-3"
 #' )
 create_package <- function(
-  package, path = ".", title, description, maintainer, language = "en-GB"
+  package, path = ".", title, description, maintainer, language = "en-GB",
+  license = c("GPL-3", "MIT")
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -79,6 +83,7 @@ create_package <- function(
   )
   assert_that(is.string(title))
   validate_language(language)
+  license <- match.arg(license)
 
   dir_create(path)
   repo <- git_init(path = path)
@@ -102,7 +107,7 @@ Authors@R:
            role = c(\"cph\", \"fnd\"),
            email = \"info@inbo.be\"))
 Description: %4$s
-License: GPL-3
+License: %7$s
 URL: https://github.com/inbo/%1$s
 BugReports: https://github.com/inbo/%1$s/issues
 Encoding: UTF-8
@@ -113,7 +118,8 @@ RoxygenNote: %5$s
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
     description,
-    installed.packages()["roxygen2", "Version"], language
+    installed.packages()["roxygen2", "Version"], language,
+    license
   )
   writeLines(description, path(path, "DESCRIPTION"))
   tidy_desc(path)
@@ -177,12 +183,26 @@ RoxygenNote: %5$s
   git_add("README.Rmd", repo = repo)
 
   # add LICENSE.md
-  file_copy(
-    system.file(
-      path("generic_template", "gplv3.md"), package = "checklist"
+  file.copy(
+    switch(
+      license,
+      "GPL-3" = system.file(
+        file.path("generic_template", "gplv3.md"), package = "checklist"
+      ),
+      "MIT" = system.file(
+        file.path("generic_template", "mit.md"), package = "checklist"
+      )
     ),
     path(path, "LICENSE.md")
   )
+  if (license == "MIT") {
+    mit <- readLines(file.path(path, "LICENSE.md"))
+    mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
+    mit[3] <- gsub("<COPYRIGHT HOLDERS>",
+                   "Research Institute for Nature and Forest",
+                   mit[3])
+    writeLines(mit, file.path(path, "LICENSE.md"))
+  }
   git_add("LICENSE.md", repo = repo)
 
   # Add code of conduct

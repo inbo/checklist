@@ -1,6 +1,6 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "An opinionated set of rules for R packages and R source code projects.",
   "creators": [
     {

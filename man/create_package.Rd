@@ -10,7 +10,8 @@ create_package(
   title,
   description,
   maintainer,
-  language = "en-GB"
+  language = "en-GB",
+  license = c("GPL-3", "MIT")
 )
 }
 \arguments{
@@ -33,6 +34,10 @@ See \code{\link[usethis:use_description]{usethis::use_description()}} for more i
 \code{YY} is the two letter code for the language variant.
 E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
 Belgian Dutch.}
+
+\item{license}{What type of license should be used?
+Choice between GPL-3 and MIT.
+Default GPL-3.}
 }
 \description{
 Creates a package template in a new folder.
@@ -43,7 +48,7 @@ Please DO READ \code{vignette("getting_started")} before running this function.
 What you get with a checklist setup:
 \itemize{
 \item minimal folder structure and files required for an R package using INBO
-guidelines with GPL-3 license.
+guidelines with GPL-3 or MIT license.
 \item an RStudio project file
 \item a local git repository
 \item an initial \code{NEWS.md} file
@@ -74,7 +79,7 @@ dir.create(path)
 create_package(
   path = path, package = "packagename", title = "package title",
   description = "A short description.", maintainer = maintainer,
-  language = "en-GB"
+  language = "en-GB", license = "GPL-3"
 )
 }
 \seealso{
