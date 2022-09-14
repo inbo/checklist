@@ -28,6 +28,7 @@ the main branch.
 }
 \seealso{
 Other utils: 
+\code{\link{c_sort}()},
 \code{\link{create_hexsticker}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},

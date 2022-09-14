@@ -51,7 +51,7 @@ RUN apt-get update \
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
 ## install lintr
-RUN Rscript --no-save --no-restore -e 'remotes::install_github("r-lib/lintr")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 
 ## install microbenchmark
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
@@ -90,7 +90,14 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rmarkdown")'
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
 ## install spelling
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("spelling")'
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    hunspell-de-de \
+    hunspell-en-gb \
+    hunspell-fr \
+    hunspell-nl \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
 
 ## install spelling
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("withr")'
@@ -101,4 +108,5 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgra
 
 COPY docker/entrypoint_package.sh /entrypoint_package.sh
 COPY docker/entrypoint_source.sh /entrypoint_source.sh
+COPY docker/entrypoint_project.sh /entrypoint_project.sh
 ENTRYPOINT ["/entrypoint_package.sh"]

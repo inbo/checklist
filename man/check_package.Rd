@@ -12,7 +12,7 @@ check_package(
 )
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{fail}{Should the function return an error in case of a problem?

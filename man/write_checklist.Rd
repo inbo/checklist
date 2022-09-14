@@ -4,17 +4,14 @@
 \alias{write_checklist}
 \title{Write a check list with allowed issues in the source code}
 \usage{
-write_checklist(x = ".", package = TRUE)
+write_checklist(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
-
-\item{package}{Logical indication if \code{checklist.yml} refers to an R package.
-Defaults to \code{TRUE}.}
 }
 \description{
-Checklist stores it configuration as a \code{checklist.yml} file.
+checklist stores it configuration as a \code{checklist.yml} file.
 \code{create_package()}, \code{setup_package()} and \code{setup_source()} generate a default
 file.
 If you need to allow some warnings or notes, you need to update the
@@ -23,8 +20,8 @@ configuration.
 \details{
 First run \code{x <- checklist::check_package()} or
 \code{x <- checklist::check_source()}.
-These commands run the checks and store the CheckList object in the variable
-\code{x}.
+These commands run the checks and store the \code{checklist} object in the
+variable \code{x}.
 Next you can store the configuration with \code{checklist::write_checklist(x)}.
 This will first list any existing allowed warnings or notes.
 For every one of them, choose whether you want to keep it or not.
@@ -59,6 +56,9 @@ That will result in an error when checking the package on an other machine
 Other both: 
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()}
 }
 \concept{both}

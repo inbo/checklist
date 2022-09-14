@@ -7,7 +7,7 @@
 check_documentation(x = ".", quiet = FALSE)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{quiet}{Whether to print check output during checking.}
@@ -40,7 +40,9 @@ We describe this in \code{vignette("getting_started")} under "Prepare local
 setup".
 }
 \section{Required format for \code{NEWS.md}}{
-\preformatted{# package_name version
+
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{# package_name version
 
 * Description of something that changed.
 * Lines should not exceed 80 characters.
@@ -54,7 +56,7 @@ setup".
  # `package_name` version
 
  * Adding back ticks around the package name is allowed.
-}
+}\if{html}{\out{</div>}}
 }
 
 \seealso{

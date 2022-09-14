@@ -7,14 +7,14 @@
 check_lintr(x = ".", quiet = FALSE)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{quiet}{Whether to print check output during checking.}
 }
 \description{
 This functions does \href{https://en.wikipedia.org/wiki/Static_program_analysis}{static code analysis}.
-It relies on \code{\link[lintr:lint_package]{lintr::lint_package()}}.
+It relies on \code{\link[lintr:lint]{lintr::lint_package()}}.
 We recommend that you activate all code diagnostics in RStudio to help
 meeting the requirements.
 You can find this in the menu \emph{Tools} > \emph{Global options} > \emph{Code} >
@@ -24,6 +24,9 @@ Please have a look at \code{vignette("philosophy")} for more details on the rule
 \seealso{
 Other both: 
 \code{\link{check_filename}()},
+\code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{write_checklist}()}
 }

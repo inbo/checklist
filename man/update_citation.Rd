@@ -7,14 +7,14 @@
 update_citation(x = ".", roles)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
 Defaults to \code{c("aut", "cre")}.}
 }
 \value{
-An invisible \code{Checklist} object.
+An invisible \code{checklist} object.
 }
 \description{
 The function creates the file \code{inst/CITATION} is case is doesn't exist.

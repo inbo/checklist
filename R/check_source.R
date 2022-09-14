@@ -1,6 +1,7 @@
 #' Standardised test for an R source repository
 #'
-#' A convenience function that runs test on a project with only R and Rmd files.
+#' A convenience function that runs test on a project with only `.R` and `.Rmd`
+#' files.
 #' The details section lists the relevant functions.
 #' When you fixed a problem, you can speed things up by running only the related
 #' check.
@@ -19,6 +20,7 @@
 #' Defaults to `TRUE` on non-interactive session and `FALSE` on an interactive
 #' session.
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom fs dir_exists file_exists path
 #' @importFrom utils file_test
 #' @export
 #' @family source

@@ -66,7 +66,7 @@ validate_email <- function(email) {
       "(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|",
       "\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*",
       "[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|",
-      "2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]", #nolint: nonportable_path_linter, line_length_linter.
+      "2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]",
       "[0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a",
       "\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])"
     ),
@@ -163,7 +163,8 @@ checklist_format_output <- function(
 
 #' @importFrom sessioninfo session_info
 checklist_print <- function(
-  path, warnings, allowed_warnings, notes, allowed_notes, linter, errors
+  path, warnings, allowed_warnings, notes, allowed_notes, linter, errors,
+  spelling
 ) {
   print(session_info())
   output <- c(
@@ -214,10 +215,15 @@ checklist_print <- function(
       type = "missing", variable = "note"
     ),
     checklist_summarise_linter(linter),
+    checklist_summarise_spelling(spelling),
     checklist_format_error(errors)
   )
   cat(output, sep = rules())
   cat(rules())
+  if (interactive()) {
+    cat("\nDon't forget to store changes with `write_checklist()`\n")
+    cat(rules())
+  }
 }
 
 checklist_summarise_linter <- function(linter) {
@@ -225,7 +231,7 @@ checklist_summarise_linter <- function(linter) {
     return(character(0))
   }
   linter_message <- vapply(linter, `[[`, character(1), "message")
-  messages <- sort(table(linter_message), decreasing = TRUE)
+  messages <- c_sort(table(linter_message), decreasing = TRUE)
   messages <- sprintf("%i times \"%s\"", messages, names(messages))
   sprintf(
     "%i linter%s found.
@@ -236,19 +242,53 @@ checklist_summarise_linter <- function(linter) {
   )
 }
 
+checklist_summarise_spelling <- function(spelling) {
+  if (nrow(spelling) == 0) {
+    return(character(0))
+  }
+
+  messages <- vapply(
+    unique(spelling$language), FUN.VALUE = character(1), spelling = spelling,
+    FUN = function(i, spelling) {
+      sprintf(
+        "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s", i,
+        paste(
+          c_sort(
+            as.character(unique(spelling$message[spelling$language == i]))
+          ),
+          collapse = ", "
+        ),
+        paste(
+          c_sort(as.character(unique(spelling$file[spelling$language == i]))),
+          collapse = "\n"
+        )
+      )
+    }
+  )
+  paste(messages, collapse = rules("-"))
+}
+
 checklist_template <- function(
-    package, warnings, notes, citation_roles, keywords
+  package, warnings, notes, citation_roles, keywords, spelling, required
 ) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
     package = package,
     allowed = list(warnings = warnings, notes = notes),
-    citation_roles = citation_roles
+    citation_roles = citation_roles,
+    required = required
   )
-  if (length(keywords) == 0) {
-    return(template)
+  if (length(keywords) > 0) {
+    template$keywords <- keywords
   }
-  template$keywords <- keywords
+  spelling$root <- NULL
+  if (length(spelling$ignore) == 0) {
+    spelling$ignore <- NULL
+  }
+  if (length(spelling$other) == 0) {
+    spelling$other <- NULL
+  }
+  template$spelling <- spelling
   return(template)
 }
 

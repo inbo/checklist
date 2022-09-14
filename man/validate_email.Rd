@@ -17,6 +17,7 @@ It only checks the format of the text, not if the email address exists.
 }
 \seealso{
 Other utils: 
+\code{\link{c_sort}()},
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
 \code{\link{is_repository}()},

@@ -14,7 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Starting an R package from scratch
+Were do you want to set-up `checklist`?
+
+1. I want to create a [new R package](#create-package) from scratch.
+1. I want to use or update `checklist` in an [existing R package](#setup-package).
+1. I want to use or update `checklist` in an R project containing [only R scripts or markdown file](#setup-project).
+
+## Starting an R package from scratch {#create-package}
 
 ### Prepare online setup
 
@@ -69,7 +75,7 @@ Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
 1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://orcid.org) if requested.
-Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
+Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. `dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e`.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
 Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
@@ -90,7 +96,7 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
         - `ubuntu-20.04 (devel)`
         - `windows-latest (release)`
 
-## Get it working with an existing package or update the checklist
+## Get it working with an existing package or update the checklist {#setup-package}
 
 ### Prerequisites
 
@@ -133,7 +139,7 @@ Choose _Settings_ > _Secrets_.
 Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
 Save it by clicking the _Add secret_ button.
 1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://orcid.org) if requested.
-Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e.
+Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. `dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e`.
 Copy the alphanumeric UUID, without the `Bearer` prefix.
 Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
 Go back to your package repository on GitHub.
@@ -157,7 +163,11 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
         - `ubuntu-20.04 (devel)`
         - `windows-latest (release)`
 
-## Adding or updating checklist support to a project with R scripts
+## Adding or updating checklist support to a project with R scripts {#setup-project}
+
+Below describes the legacy version using `setup_source()`.
+This functionality will gradually migrate into `setup_project()`.
+Use `setup_project()` when you want granular control on which checks to run.
 
 ### Prerequisites
 
@@ -170,10 +180,12 @@ It is OK to have Untracked files.
 ### Local setup
 
 1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `checklist::setup_source()`.
+1. Run `checklist::setup_source(language = "en-GB")`.
+Change the language to the one you want to use as default.
+See `vignette("spelling", package = "checklist")`.
 This will add and/or modify files.
 Inspect the modified files,
-especially if you are updating to a new checklist version and made some tweaks in the past.
+especially if you are updating to a new `checklist` version and made some tweaks in the past.
 1. Commit the changes.
 1. Run `x <- checklist::check_source()` and fix any issues.
 Repeat this step until you have only issues that are not a problem.

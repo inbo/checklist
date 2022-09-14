@@ -7,7 +7,7 @@
 check_source(x = ".", fail = !interactive())
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{fail}{Should the function return an error in case of a problem?
@@ -15,7 +15,8 @@ Defaults to \code{TRUE} on non-interactive session and \code{FALSE} on an intera
 session.}
 }
 \description{
-A convenience function that runs test on a project with only R and Rmd files.
+A convenience function that runs test on a project with only \code{.R} and \code{.Rmd}
+files.
 The details section lists the relevant functions.
 When you fixed a problem, you can speed things up by running only the related
 check.
@@ -29,5 +30,9 @@ List of checks in order:
 \item \code{check_lintr()}
 \item \code{check_filename()}
 }
+}
+\seealso{
+Other source: 
+\code{\link{check_project}()}
 }
 \concept{source}

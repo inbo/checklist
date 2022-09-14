@@ -7,11 +7,11 @@
 check_codemeta(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
 \value{
-A \code{Checklist} object.
+A \code{checklist} object.
 }
 \description{
 Use the checks from \code{\link[codemetar:give_opinions]{codemetar::give_opinions()}}.

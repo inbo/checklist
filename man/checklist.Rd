@@ -6,7 +6,14 @@
 \description{
 A class which contains all checklist results.
 }
+\seealso{
+Other class: 
+\code{\link{spelling}}
+}
 \concept{class}
+\section{Super class}{
+\code{\link[checklist:spelling]{checklist::spelling}} -> \code{checklist}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -24,9 +31,13 @@ package.}
 
 \item{\code{get_path}}{The path to the package.}
 
-\item{\code{get_roles}}{The roles to select contributors for the CITATION.}
+\item{\code{get_required}}{A vector with the names of the required checks.}
 
-\item{\code{fail}}{A logical indicating if all checks passed.}
+\item{\code{get_roles}}{The roles to select contributors for the \code{CITATION}.}
+
+\item{\code{get_spelling}}{Return the issues found by \code{check_spelling()}}
+
+\item{\code{fail}}{A logical indicating if any required check fails.}
 
 \item{\code{template}}{A list for a check list template.}
 }
@@ -35,28 +46,40 @@ package.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-add_error}{\code{checklist$add_error()}}
-\item \href{#method-add_linter}{\code{checklist$add_linter()}}
-\item \href{#method-add_motivation}{\code{checklist$add_motivation()}}
-\item \href{#method-add_notes}{\code{checklist$add_notes()}}
-\item \href{#method-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
-\item \href{#method-add_warnings}{\code{checklist$add_warnings()}}
-\item \href{#method-allowed}{\code{checklist$allowed()}}
-\item \href{#method-confirm_motivation}{\code{checklist$confirm_motivation()}}
-\item \href{#method-new}{\code{checklist$new()}}
-\item \href{#method-print}{\code{checklist$print()}}
-\item \href{#method-set_roles}{\code{checklist$set_roles()}}
-\item \href{#method-update_keywords}{\code{checklist$update_keywords()}}
-\item \href{#method-clone}{\code{checklist$clone()}}
+\item \href{#method-checklist-add_error}{\code{checklist$add_error()}}
+\item \href{#method-checklist-add_linter}{\code{checklist$add_linter()}}
+\item \href{#method-checklist-add_motivation}{\code{checklist$add_motivation()}}
+\item \href{#method-checklist-add_notes}{\code{checklist$add_notes()}}
+\item \href{#method-checklist-add_rcmdcheck}{\code{checklist$add_rcmdcheck()}}
+\item \href{#method-checklist-add_spelling}{\code{checklist$add_spelling()}}
+\item \href{#method-checklist-add_warnings}{\code{checklist$add_warnings()}}
+\item \href{#method-checklist-allowed}{\code{checklist$allowed()}}
+\item \href{#method-checklist-confirm_motivation}{\code{checklist$confirm_motivation()}}
+\item \href{#method-checklist-new}{\code{checklist$new()}}
+\item \href{#method-checklist-print}{\code{checklist$print()}}
+\item \href{#method-checklist-set_roles}{\code{checklist$set_roles()}}
+\item \href{#method-checklist-set_required}{\code{checklist$set_required()}}
+\item \href{#method-checklist-update_keywords}{\code{checklist$update_keywords()}}
+\item \href{#method-checklist-clone}{\code{checklist$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_default"><a href='../../checklist/html/spelling.html#method-spelling-set_default'><code>checklist::spelling$set_default()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_exceptions"><a href='../../checklist/html/spelling.html#method-spelling-set_exceptions'><code>checklist::spelling$set_exceptions()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_ignore"><a href='../../checklist/html/spelling.html#method-spelling-set_ignore'><code>checklist::spelling$set_ignore()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="checklist" data-topic="spelling" data-id="set_other"><a href='../../checklist/html/spelling.html#method-spelling-set_other'><code>checklist::spelling$set_other()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_error"></a>}}
-\if{latex}{\out{\hypertarget{method-add_error}{}}}
+\if{html}{\out{<a id="method-checklist-add_error"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_error}{}}}
 \subsection{Method \code{add_error()}}{
 Add errors
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_error(errors, item)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_error(errors, item, keep = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -65,13 +88,15 @@ Add errors
 \item{\code{errors}}{A vector with errors.}
 
 \item{\code{item}}{The item on which to store the errors.}
+
+\item{\code{keep}}{Keep old results}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_linter"></a>}}
-\if{latex}{\out{\hypertarget{method-add_linter}{}}}
+\if{html}{\out{<a id="method-checklist-add_linter"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_linter}{}}}
 \subsection{Method \code{add_linter()}}{
 Add results from \code{lintr::lint_package()}
 \subsection{Usage}{
@@ -87,8 +112,8 @@ Add results from \code{lintr::lint_package()}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_motivation"></a>}}
-\if{latex}{\out{\hypertarget{method-add_motivation}{}}}
+\if{html}{\out{<a id="method-checklist-add_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_motivation}{}}}
 \subsection{Method \code{add_motivation()}}{
 Add motivation for allowed issues.
 \subsection{Usage}{
@@ -104,25 +129,27 @@ Add motivation for allowed issues.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_notes"></a>}}
-\if{latex}{\out{\hypertarget{method-add_notes}{}}}
+\if{html}{\out{<a id="method-checklist-add_notes"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_notes}{}}}
 \subsection{Method \code{add_notes()}}{
 Add notes
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_notes(notes)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_notes(notes, item)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{notes}}{A vector with notes.}
+
+\item{\code{item}}{The item on which to store the notes.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_rcmdcheck"></a>}}
-\if{latex}{\out{\hypertarget{method-add_rcmdcheck}{}}}
+\if{html}{\out{<a id="method-checklist-add_rcmdcheck"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_rcmdcheck}{}}}
 \subsection{Method \code{add_rcmdcheck()}}{
 Add results from \code{rcmdcheck::rcmdcheck}
 \subsection{Usage}{
@@ -142,25 +169,44 @@ Add results from \code{rcmdcheck::rcmdcheck}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_warnings"></a>}}
-\if{latex}{\out{\hypertarget{method-add_warnings}{}}}
+\if{html}{\out{<a id="method-checklist-add_spelling"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_spelling}{}}}
+\subsection{Method \code{add_spelling()}}{
+Add results from \code{check_spelling()}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_spelling(issues)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{issues}}{A \code{data.frame} with spell checking issues.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checklist-add_warnings"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-add_warnings}{}}}
 \subsection{Method \code{add_warnings()}}{
 Add warnings
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_warnings(warnings)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_warnings(warnings, item)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{warnings}}{A vector with warnings.}
+
+\item{\code{item}}{The item on which to store the warnings.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-allowed"></a>}}
-\if{latex}{\out{\hypertarget{method-allowed}{}}}
+\if{html}{\out{<a id="method-checklist-allowed"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-allowed}{}}}
 \subsection{Method \code{allowed()}}{
 Add allowed warnings and notes
 \subsection{Usage}{
@@ -186,8 +232,8 @@ Defaults to \code{TRUE}.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-confirm_motivation"></a>}}
-\if{latex}{\out{\hypertarget{method-confirm_motivation}{}}}
+\if{html}{\out{<a id="method-checklist-confirm_motivation"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-confirm_motivation}{}}}
 \subsection{Method \code{confirm_motivation()}}{
 Confirm the current motivation for allowed issues.
 \subsection{Usage}{
@@ -203,27 +249,31 @@ Confirm the current motivation for allowed issues.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-checklist-new"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-new}{}}}
 \subsection{Method \code{new()}}{
-Initialize a new Checklist object.
+Initialize a new \code{checklist} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$new(x)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$new(x = ".", language, package = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{The path to the root of the package.}
+\item{\code{x}}{The path to the root of the project.}
+
+\item{\code{language}}{The default language for spell checking.}
+
+\item{\code{package}}{Is this a package or a project?}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-checklist-print"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-print}{}}}
 \subsection{Method \code{print()}}{
-Print the Checklist object.
+Print the \code{checklist} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{checklist$print(...)}\if{html}{\out{</div>}}
 }
@@ -237,8 +287,8 @@ Print the Checklist object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_roles"></a>}}
-\if{latex}{\out{\hypertarget{method-set_roles}{}}}
+\if{html}{\out{<a id="method-checklist-set_roles"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-set_roles}{}}}
 \subsection{Method \code{set_roles()}}{
 set roles
 \subsection{Usage}{
@@ -254,8 +304,25 @@ set roles
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-update_keywords"></a>}}
-\if{latex}{\out{\hypertarget{method-update_keywords}{}}}
+\if{html}{\out{<a id="method-checklist-set_required"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-set_required}{}}}
+\subsection{Method \code{set_required()}}{
+set required checks
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$set_required(checks = character(0))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{checks}}{a vector of required checks}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checklist-update_keywords"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-update_keywords}{}}}
 \subsection{Method \code{update_keywords()}}{
 Update the keywords.
 \subsection{Usage}{
@@ -272,8 +339,8 @@ The default empty vector (\code{character(0)}) will erase the keywords.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-checklist-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -7,11 +7,11 @@
 check_environment(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
 \value{
-An invisible \code{Checklist} object.
+An invisible \code{checklist} object.
 }
 \description{
 Some actions will fail when these environment variables are not set.

@@ -7,11 +7,11 @@
 read_checklist(x = ".")
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 }
 \value{
-A \code{Checklist} object.
+A \code{checklist} object.
 }
 \description{
 The checklist package stores configuration information in the \code{checklist.yml}
@@ -23,6 +23,9 @@ It is mainly used by the other functions inside the package.
 Other both: 
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{write_checklist}()}
 }
 \concept{both}

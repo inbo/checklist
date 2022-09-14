@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216")),
@@ -20,17 +20,20 @@ BugReports: https://github.com/inbo/checklist/issues
 Depends:
     R (>= 3.5.0)
 Imports:
-    R6,
     assertthat,
     codemetar,
     desc,
     devtools (> 2.4.0),
+    fs,
     gert,
     httr,
+    hunspell,
     jsonlite,
     lintr (>= 2.0.1.9000),
     pkgdown,
+    R6,
     rcmdcheck,
+    renv,
     rmarkdown,
     rorcid,
     sessioninfo,
@@ -39,17 +42,17 @@ Imports:
     yaml
 Suggests:
     covr,
+    curl,
     knitr,
     mockery,
     roxygen2,
+    rstudioapi,
     showtext,
     sysfonts,
     testthat
 VignetteBuilder: 
     knitr
-Remotes: 
-    r-lib/lintr
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1

@@ -101,7 +101,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
 
   doc_error <- c(doc_error, check_news(x))
 
-  x$add_error(doc_error, "documentation")
+  x$add_error(doc_error, item = "documentation", keep = FALSE)
   return(x)
 }
 
@@ -142,7 +142,7 @@ See the details in ?pkgdown::build_news for the required format."
   Use `# name version` format",
       news_file[version_location[!ok]]
     ),
-    "NEWS.md starts with the current package version"[
+    "NEWS.md doesn't start with the current package version"[
       !grepl(
         paste0(
           "# `?", description$get("Package"), "`? ",

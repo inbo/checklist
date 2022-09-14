@@ -2,19 +2,19 @@
 % Please edit documentation in R/write_citation_cff.R
 \name{write_citation_cff}
 \alias{write_citation_cff}
-\title{Write a CITATION.cff file}
+\title{Write a \code{CITATION.cff} file}
 \usage{
 write_citation_cff(x = ".", roles)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
 Defaults to \code{c("aut", "cre")}.}
 }
 \value{
-An invisible \code{Checklist} object.
+An invisible \code{checklist} object.
 }
 \description{
 This file format contains the citation information.

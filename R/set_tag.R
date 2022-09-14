@@ -17,7 +17,7 @@
 set_tag <- function(x = ".") {
   if (
     !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
-    !Sys.getenv("GITHUB_REF") %in% c("refs/heads/main", "refs/heads/master") || # nolint: nonportable_path_linter, line_length_linter.
+    !Sys.getenv("GITHUB_REF") %in% c("refs/heads/main", "refs/heads/master") ||
       Sys.getenv("GITHUB_EVENT_NAME") != "push"
   ) {
     message("Not on GitHub, not a push or not on main or master.")
@@ -40,7 +40,7 @@ set_tag <- function(x = ".") {
   version <- as.character(description$get_version())
   news <- readLines(file.path(x$get_path, "NEWS.md"))
   regex <- sprintf(
-    "^# %s [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$", # nolint: nonportable_path_linter.
+    "^# %s [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$",
     description$get("Package")
   )
   start <- grep(regex, news)
