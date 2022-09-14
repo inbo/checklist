@@ -2,7 +2,7 @@
 #'
 #' Use the checks from [codemetar::give_opinions()].
 #' @inheritParams read_checklist
-#' @return A `Checklist` object.
+#' @return A `checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom codemetar give_opinions
 #' @importFrom gert git_status
@@ -26,9 +26,11 @@ check_codemeta <- function(x = ".") {
     "Code metadata needs to be updated. Run `codemetar::write_codemeta()`."[
       !unchanged_repo(repo, status_before)
     ],
-    "codemeta"
+    item = "codemeta", keep = FALSE
   )
-  x$add_notes(sprintf("in %s fix %s", opinions$where, opinions$fixme))
+  x$add_notes(
+    sprintf("in %s fix %s", opinions$where, opinions$fixme), "codemeta"
+  )
 
   return(x)
 }

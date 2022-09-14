@@ -5,7 +5,7 @@
 #'https://developers.zenodo.org/#add-metadata-to-your-github-repository-release)
 #' for more information.
 #'
-#' @return An invisible `Checklist` object.
+#' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
@@ -34,7 +34,7 @@ write_zenodo_json <- function(x = ".") {
   )
   authors_orcid[!grepl("orcid.org", authors_orcid)] <- ""
   authors_orcid <- gsub(
-    ".*orcid.org/(([0-9]{4}-){3}[0-9]{3}[0-9X]).*", "https://orcid.org/\\1", # nolint: nonportable_path_linter, line_length_linter.
+    ".*orcid.org/(([0-9]{4}-){3}[0-9]{3}[0-9X]).*", "https://orcid.org/\\1",
     authors_orcid
   )
 
@@ -124,7 +124,7 @@ write_zenodo_json <- function(x = ".") {
     zenodo$language <- lang
   }
   if (length(x$get_keywords) > 0) {
-    zenodo$keywords <- x$get_keywords
+    zenodo$keywords <- as.list(x$get_keywords)
   }
 
   if (!file_test("-f", file.path(x$get_path, ".Rbuildignore"))) {
@@ -136,9 +136,9 @@ write_zenodo_json <- function(x = ".") {
     )
   } else {
     current <- readLines(file.path(x$get_path, ".Rbuildignore"))
-    new <- "^\\.zenodo\\.json$" # nolint: nonportable_path_linter.
+    new <- "^\\.zenodo\\.json$"
     writeLines(
-      sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
+      c_sort(unique(c(new, current))), file.path(x$get_path, ".Rbuildignore")
     )
   }
 
@@ -160,7 +160,7 @@ write_zenodo_json <- function(x = ".") {
       ],
       attr(lang, "problem")
     ),
-    ".zenodo.json"
+    item = ".zenodo.json", keep = FALSE
   )
 
   return(x)

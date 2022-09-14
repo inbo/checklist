@@ -70,23 +70,22 @@ from the web. More info on https://github.com/github/renaming"[
       )
       assert_that(
         any(branch_info$name %in%
-          c("origin/main", "origin/master")), #nolint: nonportable_path_linter.
+          c("origin/main", "origin/master")),
         msg =
       "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
       )
       ref_branch <- ifelse(
-        any(branch_info$name == "origin/main"), #nolint: nonportable_path_linter, line_length_linter.
-        "origin/main", "origin/master" #nolint: nonportable_path_linter, line_length_linter.
+        any(branch_info$name == "origin/main"), "origin/main", "origin/master"
       )
 "Branch master detected. From Oct. 1, 2020, any new repositories you create uses
 main as the default branch, instead of master. You can rename the default branch
 from the web. More info on https://github.com/github/renaming"[
-  !any(branch_info$name == "origin/main") #nolint: nonportable_path_linter.
+  !any(branch_info$name == "origin/main")
 ] -> notes
       commit1 <- git_commit_id(ref = ref_branch, repo = repo)
       commit2 <- git_commit_id(ref = "HEAD", repo = repo)
       desc_diff <- execshell(
-        sprintf("git diff %s..%s -- ./DESCRIPTION", commit1, commit2), #nolint: nonportable_path_linter, line_length_linter.
+        sprintf("git diff %s..%s -- ./DESCRIPTION", commit1, commit2),
         intern = TRUE,
         path = repo)
     }
@@ -118,9 +117,9 @@ from the web. More info on https://github.com/github/renaming"[
     "Language field not set."[is.na(this_desc$get("Language"))]
   )
 
-  x$add_error(desc_error, "DESCRIPTION")
-  x$add_notes(notes)
-  x$add_warnings(check_authors(this_desc))
+  x$add_error(desc_error, item = "DESCRIPTION", keep = FALSE)
+  x$add_notes(notes, item = "DESCRIPTION")
+  x$add_warnings(check_authors(this_desc), item = "DESCRIPTION")
 
   check_license(x = x)
 }
@@ -136,20 +135,6 @@ from the web. More info on https://github.com/github/renaming"[
 #' @family package
 tidy_desc <- function(x = ".") {
   x <- read_checklist(x = x)
-
-  # set locale to get a stable sorting order
-  old_ctype <- Sys.getlocale(category = "LC_CTYPE")
-  old_collate <- Sys.getlocale(category = "LC_COLLATE")
-  old_time <- Sys.getlocale(category = "LC_TIME")
-  Sys.setlocale(category = "LC_CTYPE", locale = "C")
-  Sys.setlocale(category = "LC_COLLATE", locale = "C")
-  Sys.setlocale(category = "LC_TIME", locale = "C")
-  on.exit(Sys.setlocale(category = "LC_CTYPE", locale = old_ctype), add = TRUE)
-  on.exit(
-    Sys.setlocale(category = "LC_COLLATE", locale = old_collate),
-    add = TRUE
-  )
-  on.exit(Sys.setlocale(category = "LC_TIME", locale = old_time), add = TRUE)
 
   # turn crayon off
   old_crayon <- getOption("crayon.enabled")
@@ -167,7 +152,7 @@ tidy_desc <- function(x = ".") {
   # Alphabetise remotes
   remotes <- desc$get_remotes()
   if (length(remotes) > 0) {
-    desc$set_remotes(sort(remotes))
+    desc$set_remotes(c_sort(remotes))
   }
 
   desc$set("Encoding" = "UTF-8")
@@ -219,54 +204,55 @@ unchanged_repo <- function(repo, old_status) {
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
+#' @importFrom fs file_exists path
 #' @export
 #' @family package
 check_license <- function(x = ".") {
   x <- read_checklist(x = x)
-  assert_that(
-    x$package,
-    msg = "`check_license()` is only relevant for packages.
-`checklist.yml` indicates this is not a package."
-  )
-  this_desc <- description$new(
-    file = file.path(x$get_path, "DESCRIPTION")
-  )
+  if (x$package) {
+    this_desc <- description$new(
+      file = file.path(x$get_path, "DESCRIPTION")
+    )
 
-  # check if the license is allowed
-  problems <- sprintf(
-    "%s license currently not allowed.
+    # check if the license is allowed
+    current_license <- this_desc$get_field("License")
+    problems <- sprintf(
+      "%s license currently not allowed.
 Please send a pull request if you need support for this license.",
-    this_desc$get_field("License")
-  )[
-    !this_desc$get_field("License") %in% c("GPL-3", "MIT")
-  ]
+      this_desc$get_field("License")
+    )[
+      !current_license %in% c("GPL-3", "MIT")
+    ]
+  } else {
+    current_license <- "CC-BY"
+    problems <- character(0)
+  }
 
   # check if LICENSE.md exists
-  if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
+  if (!file_exists(path(x$get_path, "LICENSE.md"))) {
     x$add_error(
-      errors = c(problems, "No LICENSE.md file"),
-      item = "license"
+      errors = c(problems, "No LICENSE.md file"), item = "license", keep = FALSE
     )
     return(x)
   }
 
   # check if LICENSE.md matches the official version
   current <- switch(
-    this_desc$get_field("License"),
+    current_license,
     "GPL-3" = readLines(file.path(x$get_path, "LICENSE.md")),
-    "MIT" = readLines(file.path(x$get_path, "LICENSE.md"))
+    "MIT" = readLines(file.path(x$get_path, "LICENSE.md")),
+    "CC-BY" = readLines(file.path(x$get_path, "LICENSE.md"))
     )
   official <- switch(
-    this_desc$get_field("License"),
-    "GPL-3" = system.file(
-      "generic_template", "gplv3.md", package = "checklist"
-      ),
-    "MIT" = system.file(
-      "generic_template", "mit.md", package = "checklist"
-    )
+    current_license,
+    "GPL-3" = "gplv3.md",
+    "MIT" = "mit.md",
+    "CC-BY" = "cc_by_4_0.md"
   )
+  system.file("generic_template", official, package = "checklist") |>
+    readLines() -> official
   official <- readLines(official)
-  if (this_desc$get_field("License") == "MIT") {
+  if (current_license == "MIT") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
     problems <- c(
@@ -295,7 +281,7 @@ Please send a pull request if you need support for this license.",
     )
   x$add_error(
     errors = problems,
-    item = "license"
+    item = "license", keep = FALSE
   )
   return(x)
 }

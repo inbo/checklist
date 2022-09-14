@@ -7,7 +7,7 @@
 check_lintr(x = ".", quiet = FALSE)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{quiet}{Whether to print check output during checking.}
@@ -24,6 +24,9 @@ Please have a look at \code{vignette("philosophy")} for more details on the rule
 \seealso{
 Other both: 
 \code{\link{check_filename}()},
+\code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
+\code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{write_checklist}()}
 }

@@ -6,7 +6,7 @@
 #' Notice that `check_package()` runs several additional tests.
 #' @inheritParams read_checklist
 #' @inheritParams rcmdcheck::rcmdcheck
-#' @return A `Checklist` object.
+#' @return A `checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom gert git_ahead_behind git_branch_exists git_info
 #' @importFrom httr HEAD

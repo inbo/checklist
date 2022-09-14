@@ -17,14 +17,14 @@ test_that("update_citation() works", {
   expect_is({
     x <- update_citation(file.path(path, package))
   },
-  "Checklist"
+  "checklist"
   )
   expect_identical(x$get_roles, c("aut", "cre"))
 
   expect_is({
     x <- update_citation(file.path(path, package), roles = c("aut"))
   },
-    "Checklist"
+    "checklist"
   )
   expect_identical(x$get_roles, c("aut"))
 
@@ -36,7 +36,7 @@ test_that("update_citation() works", {
   expect_is({
     x <- update_citation(file.path(path, package))
   },
-    "Checklist"
+    "checklist"
   )
   expect_identical(
     x$.__enclos_env__$private$warnings,
@@ -58,5 +58,5 @@ test_that("update_citation() works", {
   this_description$add_author(given = "test", family = "unit", role = "cph")
   this_description$write(file.path(path, package))
   file.remove(file.path(path, package, ".Rbuildignore"))
-  expect_is(update_citation(file.path(path, package)), "Checklist")
+  expect_is(update_citation(file.path(path, package)), "checklist")
 })

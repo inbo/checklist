@@ -3,12 +3,12 @@
 ### Fixing typos
 
 Small typos or grammatical errors in documentation may be edited directly using the GitHub web interface, so long as the changes are made in the _source_ file.
-E.g. edit a roxygen comment in a `.R` file below `R/`, not in an `.Rd` file below `man/`.
+E.g. edit a roxygen2 comment in a `.R` file below `R/`, not in an `.Rd` file below `man/`.
 
 ### Prerequisites
 
 Before you make a substantial pull request, you should always file an issue and make sure someone from the team agrees that it’s a problem. 
-If you’ve found a bug, create an associated issue and illustrate the bug with a minimal [reprex](https://www.tidyverse.org/help/#reprex).
+If you’ve found a bug, create an associated issue and illustrate the bug with a minimal [reproducible example](https://www.tidyverse.org/help/#reprex).
 
 ### Pull request process
 

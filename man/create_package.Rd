@@ -10,7 +10,7 @@ create_package(
   title,
   description,
   maintainer,
-  language,
+  language = "en-GB",
   license = c("GPL-3", "MIT")
 )
 }
@@ -29,7 +29,11 @@ If you use \code{\link[utils:person]{utils::person()}}, then you must provide \c
 When missing, the functions looks for \code{usethis.description} in the options.
 See \code{\link[usethis:use_description]{usethis::use_description()}} for more information.}
 
-\item{language}{Language of the package package in ISO 639-3 format.}
+\item{language}{Language of the project in \code{xx-YY} format.
+\code{xx} is the two letter code for the language.
+\code{YY} is the two letter code for the language variant.
+E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
+Belgian Dutch.}
 
 \item{license}{What type of license should be used?
 Choice between GPL-3 and MIT.
@@ -75,13 +79,15 @@ dir.create(path)
 create_package(
   path = path, package = "packagename", title = "package title",
   description = "A short description.", maintainer = maintainer,
-  language = "eng", license = "GPL-3"
+  language = "en-GB", license = "GPL-3"
 )
 }
 \seealso{
 Other setup: 
+\code{\link{create_project}()},
 \code{\link{prepare_ghpages}()},
 \code{\link{setup_package}()},
+\code{\link{setup_project}()},
 \code{\link{setup_source}()}
 }
 \concept{setup}

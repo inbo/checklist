@@ -25,7 +25,7 @@
 #' @param pkgdown Test pkgdown website.
 #' Defaults to `TRUE` on an interactive session and `FALSE` on a non-interactive
 #' session.
-#' @inheritParams rcmdcheck::rcmdcheck
+#' @param quiet Whether to print check output during checking.
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom pkgdown build_site
 #' @importFrom utils file_test
@@ -37,6 +37,9 @@ check_package <- function(
   assert_that(is.flag(fail), noNA(fail))
   assert_that(is.flag(pkgdown), noNA(pkgdown))
   assert_that(is.flag(quiet), noNA(quiet))
+
+  quiet_cat("Checking spelling\n", quiet = quiet)
+  x <- check_spelling(x = x, quiet = quiet)
 
   x <- check_cran(x = x, quiet = quiet)
 

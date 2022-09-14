@@ -1,6 +1,6 @@
 #' Write a check list with allowed issues in the source code
 #'
-#' Checklist stores it configuration as a `checklist.yml` file.
+#' checklist stores it configuration as a `checklist.yml` file.
 #' `create_package()`, `setup_package()` and `setup_source()` generate a default
 #' file.
 #' If you need to allow some warnings or notes, you need to update the
@@ -9,8 +9,8 @@
 #' @details
 #' First run `x <- checklist::check_package()` or
 #' `x <- checklist::check_source()`.
-#' These commands run the checks and store the CheckList object in the variable
-#' `x`.
+#' These commands run the checks and store the `checklist` object in the
+#' variable `x`.
 #' Next you can store the configuration with `checklist::write_checklist(x)`.
 #' This will first list any existing allowed warnings or notes.
 #' For every one of them, choose whether you want to keep it or not.
@@ -41,30 +41,22 @@
 #' That will result in an error when checking the package on an other machine
 #' (e.g. GitHub actions).
 #' @inheritParams read_checklist
-#' @param package Logical indication if `checklist.yml` refers to an R package.
-#' Defaults to `TRUE`.
-#' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom yaml write_yaml
 #' @export
 #' @family both
-write_checklist <- function(x = ".", package = TRUE) {
+write_checklist <- function(x = ".") {
   x <- suppressMessages(read_checklist(x = x))
 
-  assert_that(is.flag(package))
-  assert_that(noNA(package))
-  x$package <- package
-  if (!"r package" %in% tolower(x$get_keywords)) {
-    x$update_keywords(c(x$get_keywords, "R package"))
+  if (x$package && !"r package" %in% tolower(x$get_keywords)) {
+    x$update_keywords(unique(c(x$get_keywords, "R package")))
   }
 
-  if (package && !"R CMD check" %in% x$get_checked) {
-    x <- check_cran(x)
+  if (x$package && "R CMD check" %in% x$get_checked) {
+    x$confirm_motivation("warnings")
+    x$confirm_motivation("notes")
+    x$add_motivation("warnings")
+    x$add_motivation("notes")
   }
-
-  x$confirm_motivation("warnings")
-  x$confirm_motivation("notes")
-  x$add_motivation("warnings")
-  x$add_motivation("notes")
 
   write_yaml(x$template, file.path(x$get_path, "checklist.yml"))
   return(invisible(NULL))

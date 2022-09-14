@@ -2,14 +2,14 @@
 #'
 #' Some actions will fail when these environment variables are not set.
 #' This function does only work on GitHub.
-#' @return An invisible `Checklist` object.
+#' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
 #' @export
 #' @family package
 check_environment <- function(x = ".") {
   x <- read_checklist(x = x)
   if (!isTRUE(as.logical(Sys.getenv("GITHUB_ACTIONS", "FALSE")))) {
-    x$add_error(character(0), "repository secret")
+    x$add_error(character(0), item = "repository secret", keep = FALSE)
     return(invisible(x))
   }
   problems <- c(
@@ -18,7 +18,7 @@ check_environment <- function(x = ".") {
     "CODECOV_TOKEN"[Sys.getenv("CODECOV_TOKEN") == ""]
   )
   if (length(problems) == 0) {
-    x$add_error(character(0), "repository secret")
+    x$add_error(character(0), item = "repository secret", keep = FALSE)
     return(invisible(x))
   }
   fmt <- paste(
@@ -28,7 +28,7 @@ check_environment <- function(x = ".") {
   )
   x$add_error(
     sprintf(fmt = fmt, paste(problems, collapse = ", ")),
-    "repository secret"
+    item = "repository secret", keep = FALSE
   )
   return(invisible(x))
 }

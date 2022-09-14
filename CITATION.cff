@@ -11,7 +11,7 @@ contact:
 - email: info@inbo.be
   name: Research Institute for Nature and Forest
 title: 'checklist: A Thorough and Strict Set of Checks for R Packages and Source Code'
-version: 0.2.5
+version: 0.2.6
 abstract: An opinionated set of rules for R packages and R source code projects.
 license: GPL-3.0
 type: software
@@ -20,4 +20,6 @@ repository-code: https://github.com/inbo/checklist
 identifiers:
 - type: url
   value: https://inbo.github.io/checklist/
-keywords: R package
+keywords:
+- quality control
+- R package

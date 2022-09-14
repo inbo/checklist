@@ -1,0 +1,120 @@
+---
+title: "Spell checking with checklist"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spell checking with checklist}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Configuration
+
+The configuration of `check_spelling()` is stored in the `checklist.yml` file at the root of the project.
+This comprises the default language to use for spell checking and optionally which files to exclude from spell checking or to spell check using a different language.
+Use `setup_package()` or `setup_project()` first.
+We recommend to follow the steps in `vignette("getting_started", package = "checklist")` to set-up the `checklist.yml`.
+In case of a package you must set the language in the `Language:` field of the `DESCRIPTION` file.
+In case the `Language:` field is not set, `en-GB` is used.
+`setup_project()` will ask which default language to set and will store the information in `checklist.yml`.
+
+Note that a language is defined with the `xx-YY` syntax.
+The first two letters must be lower case (`xx`) and define the language.
+The last two letters must be upper case (`YY`) and define the language variant.
+A few relevant examples:
+
+- `en-GB`: English as written in the UK.
+- `en-US`: English as written in the USA.
+- `nl-BE`: Dutch as written in Belgium.
+- `nl-NL`: Dutch as written in the Netherlands.
+
+Before you can change the setting, you must read the current settings with `x <- read_checklist(path)`.
+This object has several methods to change the spell checking settings.
+`x$set_default(language)` changes the default language.
+`x$set_exceptions()` allows you to review the current settings on the relevant folders and files within the project.
+You must choose between keeping the current configuration, using the default language for all files or change the setting for some files.
+If you select the last options, the function starts at the root of the project and lists the relevant files or folders at the root.
+In case of a file, you can choose to ignore the file, use the default language or use an additional language.
+If you select any of these options in case of a folder, it will recursively apply to all files in that folder.
+To change the setting for some of the files, the function gives an extra option in case of a folder.
+After updating the settings, you need to store them with `write_checklist(x)`.
+`check_spelling()` will now use the updated settings.
+
+```{r eval = FALSE}
+# This code assumes your working directory is at the root of your project.
+# Pass the path to the project root to read_checklist() if that is not the case.
+x <- read_checklist()
+x$set_default("nl-BE")
+x$set_exceptions()
+write_checklist(x)
+```
+
+## Basic usage
+
+Run `check_spelling()` at the working directory of the project.
+Or run `check_spelling(path)` where `path` points to a directory with the files you want to spell check.
+This will look for all markdown files (`.md` and `.Rmd`) within the directory and its subdirectories.
+In case your project is an R package, it will also check all R help files (`.Rd`) in the `man` directory.
+Note that `check_spelling()` does not check R code.
+Neither in `.R` files nor chunks in `.Rmd` files.
+
+The function returns a data.frame with every word not present in the dictionary.
+Displaying the data.frame in an R session outside RStudio lists all unknown words per file combined with the line and column number were they appear.
+When you display this data.frame in RStudio, it opens a `Markers` tab.
+Clicking on an issue in this tab will open the corresponding file and move the cursor to that line.
+
+Some of the issues will be typos and need to be fixed.
+Others are words not listed in the available dictionaries.
+The following options work both with `.Rmd` as `.Rd` files.
+
+1. `check_spelling()` ignores words with `verbatim` syntax (between back ticks "`").
+1. Exclude the entire file from spell checking.
+More details on that in the configuration section.
+1. Add the words to a project specific custom dictionary (see below).
+
+You have a few more options to handle those words in `.Rmd` files.
+
+1. You can ignore an entire line by placing `<!-- spell-check: ignore -->` at the end of the line.
+1. Ignore a block of lines by adding an extra line with `<!-- spell-check: ignore:start -->` at the beginning of the block.
+End the block with `<!-- spell-check: ignore:end -->` on a new line.
+
+## Custom dictionary
+
+First of all make sure that `check_spelling()` only returns words you want to add to the custom dictionary.
+Next store the output of `check_spelling()` in an object and use that object as input in `custom_directory()`.
+This will append to words to a `.dic` file in the `inst` folder.
+Running `check_spelling()` again should return an empty list of issues.
+
+```{r, eval = FALSE}
+issues <- check_spelling()
+custom_dictionary(issues)
+```
+
+> I use a few technical terms quit often.
+> Can I use a common custom dictionary instead of a project based custom dictionary?
+
+No.
+Project based custom dictionaries are located within the project.
+This is required to make the project reproducible.
+What you can do is copy the `.dic` files from other projects.
+
+# Quarto projects
+
+When `check_spelling()` finds a [Quarto book project](https://quarto.org/docs/books/), it will check if `lang` is set in `_quarto.yml`.
+Then `check_spelling()` uses that `lang` for all files listed under the `book: chapters` and `book: appendices` tabs.
+Please use the Quarto specific markdown to specify sections with a different language.
+Here are two examples.
+
+```
+    ::: {lang=nl-BE}
+    Paragraph in Dutch
+    :::
+```
+
+```
+    A sentence with a [word]{lang=nl-BE} in Dutch.
+```

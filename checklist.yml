@@ -9,10 +9,29 @@ allowed:
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
-
-      Unknown, possibly misspelled, fields in DESCRIPTION:
-        'Remotes'
 citation_roles:
 - aut
 - cre
-keywords: R package
+required:
+- .zenodo.json
+- checklist
+- CITATION
+- CITATION.cff
+- codemeta
+- DESCRIPTION
+- documentation
+- filename conventions
+- license
+- lintr
+- R CMD check
+- repository secret
+keywords:
+- quality control
+- R package
+spelling:
+  default: en-GB
+  ignore:
+  - .github
+  - LICENSE.md
+  - README.md
+  - inst/generic_template

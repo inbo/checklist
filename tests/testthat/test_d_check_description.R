@@ -17,7 +17,7 @@ test_that("check_description() works", {
       package = package,
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
-      maintainer = maintainer, language = "eng"
+      maintainer = maintainer, language = "en-GB"
     )
   )
   repo <- file.path(path, package)
@@ -28,11 +28,11 @@ test_that("check_description() works", {
   this_desc <- desc::description$new(
     file = file.path(path, package, "DESCRIPTION")
   )
-  this_desc$add_remotes("inbo/INBOmd") # nolint: nonportable_path_linter.
+  this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "add remotes", repo = repo)
-  expect_is(x <- check_description(repo), "Checklist")
+  expect_is(x <- check_description(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION,
     c(
@@ -45,7 +45,7 @@ test_that("check_description() works", {
   desc::desc_bump_version(which = "dev", file = repo)
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "bump dev version", repo = repo)
-  expect_is(x <- check_description(repo), "Checklist")
+  expect_is(x <- check_description(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION,
     "Incorrect version tag format. Use `0.0` or `0.0.0`"
@@ -55,7 +55,7 @@ test_that("check_description() works", {
   desc::desc_bump_version(which = "patch", file = repo)
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "bump patch version", repo = repo)
-  expect_is(x <- check_description(repo), "Checklist")
+  expect_is(x <- check_description(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION, character(0)
   )
@@ -63,11 +63,11 @@ test_that("check_description() works", {
   this_desc <- desc::description$new(
     file = file.path(path, package, "DESCRIPTION")
   )
-  this_desc$del_remotes("inbo/INBOmd") # nolint: nonportable_path_linter.
+  this_desc$del_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "remove remotes", repo = repo)
-  expect_is(x <- check_description(repo), "Checklist")
+  expect_is(x <- check_description(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION,
     "Package version not updated"
@@ -84,7 +84,7 @@ test_that("check_description() works", {
   git_fetch(remote = "origin", repo = repo, verbose = FALSE)
   git_branch_create(branch = "junk", ref = "HEAD", checkout = TRUE, repo = repo)
 
-  expect_is(x <- check_description(file.path(path, package)), "Checklist")
+  expect_is(x <- check_description(file.path(path, package)), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION, "Package version not updated"
   )

@@ -7,7 +7,7 @@
 check_documentation(x = ".", quiet = FALSE)
 }
 \arguments{
-\item{x}{Either a \code{Checklist} object or a path to the source code.
+\item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{quiet}{Whether to print check output during checking.}
