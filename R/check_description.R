@@ -251,7 +251,6 @@ Please send a pull request if you need support for this license.",
   )
   system.file("generic_template", official, package = "checklist") |>
     readLines() -> official
-  official <- readLines(official)
   if (current_license == "MIT") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
