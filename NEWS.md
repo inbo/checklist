@@ -1,6 +1,6 @@
 # checklist 0.2.6
 
-* `check_license()` allows MIT license in addition to GPLv3 for packages
+* `check_license()` allows `"MIT"` license in addition to `"GPLv3"` for packages
 
 # checklist 0.2.5
 
