@@ -458,6 +458,7 @@ install_dictionary <- function(lang) {
   }
   install_dutch(lang[!ok])
   install_french(lang[!ok])
+  install_german(lang[!ok])
 }
 
 #' @importFrom fs file_copy
@@ -513,6 +514,25 @@ install_french <- function(lang) {
   )
   file_copy(
     path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
+  )
+  return(TRUE)
+}
+
+#' @importFrom fs file_copy file_move
+#' @importFrom utils unzip
+install_german <- function(lang) {
+  if (length(grep("^de", lang)) == 0) {
+    return(FALSE)
+  }
+  assert_that(
+    requireNamespace("curl", quietly = TRUE),
+    msg = "The `curl` package is missing"
+  )
+  zipfile <- tempfile(fileext = ".zip")
+  curl::curl_download("https://j3e.de/hunspell/de_DE.zip", zipfile)
+  target <- system.file("dict", package = "hunspell")
+  unzip(
+    zipfile, files = paste0("de_DE.", c("aff", "dic")), exdir = target
   )
   return(TRUE)
 }
