@@ -27,15 +27,21 @@ check_spelling <- function(x = ".", quiet = FALSE) {
     rd_files <- data.frame(language = character(0), path = character(0))
     macros <- NULL
   }
-  languages <- unique(c(md_files$language, rd_files$language))
+  r_files <- x$get_r
+  languages <- unique(c(md_files$language, rd_files$language, r_files$language))
   languages <- languages[languages != "ignore"]
   install_dictionary(languages)
   issues <- vapply(
-    languages, root = x$get_path,
+    languages, root = x$get_path, r_files = r_files,
     md_files = md_files, rd_files = rd_files, macros = macros,
     FUN.VALUE = vector(mode = "list", length = 1),
-    FUN = function(lang, root, md_files, rd_files, macros) {
+    FUN = function(lang, root, r_files, md_files, rd_files, macros) {
       wordlist <- spelling_wordlist(lang = gsub("-", "_", lang), root = root)
+      r_issues <- vapply(
+        path(root, r_files$path[r_files$language == lang]),
+        FUN = spelling_parse_r, FUN.VALUE = vector(mode = "list", length = 1),
+        wordlist = wordlist
+      )
       md_issues <- vapply(
         path(root, md_files$path[md_files$language == lang]),
         FUN = spelling_parse_md, FUN.VALUE = vector(mode = "list", length = 1),
@@ -46,7 +52,7 @@ check_spelling <- function(x = ".", quiet = FALSE) {
         FUN = spelling_parse_rd, FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist, macros = macros
       )
-      return(list(c(md_issues, rd_issues)))
+      return(list(c(md_issues, rd_issues, r_issues)))
     }
   )
   if (length(issues) == 0) {

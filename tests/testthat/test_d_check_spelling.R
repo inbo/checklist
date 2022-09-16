@@ -29,8 +29,8 @@ test_that("check_spelling() on a package", {
   expect_invisible(print(z$get_spelling))
 
   writeLines(
-    "#' Een test functie
-#' @param x het enige argument
+    "#' An example function
+#' @param x the only argument
 #' @export
 dummy <- function(x) {
   return(x)

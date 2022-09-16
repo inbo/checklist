@@ -45,7 +45,7 @@ spelling <- R6Class(
     #' different language.
     set_exceptions = function() {
       exceptions <- change_language_interactive(
-        rbind(self$get_md, self$get_rd, self$r), main = private$main,
+        rbind(self$get_md, self$get_rd, self$get_r), main = private$main,
         ignore = private$ignore, other = private$other
       )
       private$ignore <- exceptions$ignore
