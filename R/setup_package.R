@@ -119,6 +119,13 @@ setup_package <- function(path = ".",
       path(path, "LICENSE.md")
     )
     if (license == "MIT") {
+      writeLines(
+        c(paste0("YEAR: ", format(Sys.Date(), "%Y")),
+          "COPYRIGHT HOLDER: Research Institute for Nature and Forest"
+        ),
+        path(path, "LICENSE")
+      )
+      git_add("LICENSE", force = TRUE, repo = path)
       mit <- readLines(path(path, "LICENSE.md"))
       mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
       mit[3] <- gsub("<COPYRIGHT HOLDERS>",

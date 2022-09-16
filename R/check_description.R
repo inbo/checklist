@@ -221,7 +221,7 @@ check_license <- function(x = ".") {
 Please send a pull request if you need support for this license.",
       this_desc$get_field("License")
     )[
-      !current_license %in% c("GPL-3", "MIT")
+      !current_license %in% c("GPL-3", "MIT + file LICENSE")
     ]
   } else {
     current_license <- "CC-BY"
@@ -240,18 +240,18 @@ Please send a pull request if you need support for this license.",
   current <- switch(
     current_license,
     "GPL-3" = readLines(file.path(x$get_path, "LICENSE.md")),
-    "MIT" = readLines(file.path(x$get_path, "LICENSE.md")),
+    "MIT + file LICENSE" = readLines(file.path(x$get_path, "LICENSE.md")),
     "CC-BY" = readLines(file.path(x$get_path, "LICENSE.md"))
     )
   official <- switch(
     current_license,
     "GPL-3" = "gplv3.md",
-    "MIT" = "mit.md",
+    "MIT + file LICENSE" = "mit.md",
     "CC-BY" = "cc_by_4_0.md"
   )
   system.file("generic_template", official, package = "checklist") |>
     readLines() -> official
-  if (current_license == "MIT") {
+  if (current_license == "MIT + file LICENSE") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
     problems <- c(

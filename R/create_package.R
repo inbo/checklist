@@ -119,7 +119,7 @@ RoxygenNote: %5$s
     paste(format(maintainer, style = "R"), collapse = "\n"),
     description,
     installed.packages()["roxygen2", "Version"], language,
-    license
+    ifelse(license == "MIT", "MIT + file LICENSE", license)
   )
   writeLines(description, path(path, "DESCRIPTION"))
   tidy_desc(path)
@@ -196,9 +196,16 @@ RoxygenNote: %5$s
     path(path, "LICENSE.md")
   )
   if (license == "MIT") {
+    writeLines(
+      c(paste0("YEAR: ", format(Sys.Date(), "%Y")),
+        "COPYRIGHT HOLDER: Research Institute for Nature and Forest"
+        ),
+      path(path, "LICENSE")
+      )
+    git_add("LICENSE", repo = repo)
     mit <- readLines(file.path(path, "LICENSE.md"))
     mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
-    mit[3] <- gsub("<COPYRIGHT HOLDERS>",
+    mit[3] <- gsub("<COPYRIGHT HOLDER>",
                    "Research Institute for Nature and Forest",
                    mit[3])
     writeLines(mit, file.path(path, "LICENSE.md"))
