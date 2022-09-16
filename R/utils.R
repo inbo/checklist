@@ -1,6 +1,6 @@
 #' A function that asks a yes or no question to the user
 #' @author Hadley Wickham <Hadley@Rstudio.com>
-#' Largely based on devtools:::yesno().
+#' Largely based on `devtools:::yesno()`.
 #' The user gets three options in an random order: 2 for "no", 1 for "yes".
 #' The wording for "yes" and "no" is random as well.
 #' This forces the user to carefully read the question.
@@ -323,16 +323,16 @@ is_repository <- function(path = ".") {
 #' Pass command lines to a shell
 #'
 #' Cross-platform function to pass a command to the shell, using either
-#' \code{\link[base]{system}} or
-#' (Windows-only) \code{\link[base]{shell}}, depending on the operating system.
+#' [base::system()] or (Windows-only) [base::shell()], depending on the
+#' operating system.
 #'
 #' @param commandstring
 #' The system command to be invoked, as a string.
 #' Multiple commands can be combined in this single string, e.g. with a
 #' multiline string.
 #' @param path The path from where the command string needs to be executed
-#' @param ... Other arguments passed to \code{\link[base]{system}} or
-#' \code{\link[base]{shell}}.
+#' @param ... Other arguments passed to [base::system()] or
+#' [base::shell()].
 #'
 #' @inheritParams base::system
 #'

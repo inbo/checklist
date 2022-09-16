@@ -18,6 +18,8 @@ Other class:
 
 \item{\code{get_md}}{The markdown files within the project.}
 
+\item{\code{get_r}}{The R files within the project.}
+
 \item{\code{get_rd}}{The Rd files within the project.}
 
 \item{\code{settings}}{A list with current spell checking settings.}

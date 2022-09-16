@@ -28,7 +28,7 @@ Other utils:
 }
 \author{
 Hadley Wickham \href{mailto:Hadley@Rstudio.com}{Hadley@Rstudio.com}
-Largely based on devtools:::yesno().
+Largely based on \code{devtools:::yesno()}.
 The user gets three options in an random order: 2 for "no", 1 for "yes".
 The wording for "yes" and "no" is random as well.
 This forces the user to carefully read the question.
