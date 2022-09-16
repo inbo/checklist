@@ -1,3 +1,8 @@
+# checklist 0.2.7
+
+* the Dockerimage uses the same dictionaries as the local installation
+* add a German dictionary
+
 # checklist 0.2.6
 
 * `check_license()` allows `"MIT"` license in addition to `"GPLv3"` for packages
