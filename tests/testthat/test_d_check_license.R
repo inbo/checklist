@@ -32,6 +32,10 @@ test_that("check_license() works", {
     paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
            " Research Institute for Nature and Forest")
   )
+  expect_identical(
+    file.exists(file.path(repo, "LICENSE")),
+    TRUE
+  )
   # copyright holder mismatch
   mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
                    " INBO")
