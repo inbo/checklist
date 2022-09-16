@@ -30,7 +30,7 @@ spelling <- R6Class(
     print = function(...) {
       dots <- list(...)
       cat("Root:", private$path, "\n\n")
-      print(rbind(self$get_md, self$get_rd))
+      print(rbind(self$get_md, self$get_rd, self$get_r))
       return(invisible(NULL))
     },
     #' @description Define which files to ignore or to spell check in a
@@ -45,7 +45,7 @@ spelling <- R6Class(
     #' different language.
     set_exceptions = function() {
       exceptions <- change_language_interactive(
-        rbind(self$get_md, self$get_rd), main = private$main,
+        rbind(self$get_md, self$get_rd, self$r), main = private$main,
         ignore = private$ignore, other = private$other
       )
       private$ignore <- exceptions$ignore
@@ -87,6 +87,15 @@ spelling <- R6Class(
         all = TRUE
       )
       get_language(files = md_files, private = private)
+    },
+    #' @field get_r The R files within the project.
+    #' @importFrom fs dir_exists dir_ls
+    get_r = function() {
+      r_files <- dir_ls(
+        private$path, recurse = TRUE, type = "file", regexp = "\\.[R|r]$",
+        all = TRUE
+      )
+      get_language(files = r_files, private = private)
     },
     #' @field get_rd The Rd files within the project.
     #' @importFrom fs dir_exists dir_ls
