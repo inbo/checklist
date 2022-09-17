@@ -158,7 +158,7 @@ See the details in ?pkgdown::build_news for the required format."
 
   # remove URLs to avoid long line linters
   news_file <- gsub(
-    "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?)+", "", news_file
+    "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+", "", news_file
   )
 
   headings <- grep("^#", news_file)

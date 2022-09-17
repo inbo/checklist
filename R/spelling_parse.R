@@ -54,7 +54,9 @@ spelling_parse_r <- function(r_file, wordlist) {
   text <- gsub("\\[(.*?)\\]\\(.*?\\)", "\\1", text)
 
   # remove bare URLs
-  text <- gsub("(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?)+", "", text)
+  text <- gsub(
+    "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+", "", text
+  )
 
   list(spelling_check(
     text = text, filename = r_file, wordlist = wordlist
