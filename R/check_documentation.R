@@ -2,7 +2,7 @@
 #'
 #' The function make sure that the documentation is up to date.
 #' Rules:
-#' - You must use [roxygen2](https://roxygen2.r-lib.org) to document the
+#' - You must use [`roxygen2`](https://roxygen2.r-lib.org) to document the
 #'   functions.
 #' - If you use a `README.Rmd`, it should be rendered.
 #'   You need at least a `README.md`.
@@ -11,7 +11,7 @@
 #'
 #' @details
 #'
-#' The function generates the help files from the roxygen2 tag in the R code.
+#' The function generates the help files from the `roxygen2` tag in the R code.
 #' Then it checks whether any of the help files changed.
 #' We use the same principle with the `README.Rmd`.
 #' If any file changed, the documentation does not match the code.
@@ -20,8 +20,8 @@
 #' A side effect of running `check_documentation()` locally, is that it
 #' generates all the documentation.
 #' So the only thing left for you to do, is to commit these changes.
-#' Pro tip: make sure RStudio renders the roxygen2 tags whenever you install and
-#' restart the package.
+#' Pro tip: make sure RStudio renders the `roxygen2` tags whenever you install
+#' and restart the package.
 #' We describe this in `vignette("getting_started")` under "Prepare local
 #' setup".
 #'
