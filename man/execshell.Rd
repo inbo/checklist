@@ -17,11 +17,11 @@ multiline string.}
 \item{path}{The path from where the command string needs to be executed}
 
 \item{...}{Other arguments passed to \code{\link[base:system]{base::system()}} or
-\code{\link[base:system]{base::shell()}}.}
+\code{\link[base:shell]{base::shell()}}.}
 }
 \description{
 Cross-platform function to pass a command to the shell, using either
-\code{\link[base:system]{base::system()}} or (Windows-only) \code{\link[base:system]{base::shell()}}, depending on the
+\code{\link[base:system]{base::system()}} or (Windows-only) \code{\link[base:shell]{base::shell()}}, depending on the
 operating system.
 }
 \keyword{internal}
