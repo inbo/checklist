@@ -21,6 +21,7 @@ Setting the locale before sorting ensures a stable sorting order
 Other utils: 
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
+\code{\link{execshell}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},

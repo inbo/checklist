@@ -17,11 +17,23 @@ multiline string.}
 \item{path}{The path from where the command string needs to be executed}
 
 \item{...}{Other arguments passed to \code{\link[base:system]{base::system()}} or
-\code{\link[base:shell]{base::shell()}}.}
+\code{base::shell()}.}
 }
 \description{
 Cross-platform function to pass a command to the shell, using either
-\code{\link[base:system]{base::system()}} or (Windows-only) \code{\link[base:shell]{base::shell()}}, depending on the
+\code{\link[base:system]{base::system()}} or (Windows-only) \code{base::shell()}, depending on the
 operating system.
 }
-\keyword{internal}
+\seealso{
+Other utils: 
+\code{\link{c_sort}()},
+\code{\link{clean_git}()},
+\code{\link{create_hexsticker}()},
+\code{\link{is_repository}()},
+\code{\link{is_workdir_clean}()},
+\code{\link{new_branch}()},
+\code{\link{orcid2person}()},
+\code{\link{validate_email}()},
+\code{\link{yesno}()}
+}
+\concept{utils}

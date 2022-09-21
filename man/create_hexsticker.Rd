@@ -47,6 +47,7 @@ create_hexsticker("checklist", filename = output)
 Other utils: 
 \code{\link{c_sort}()},
 \code{\link{clean_git}()},
+\code{\link{execshell}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},

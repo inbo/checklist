@@ -30,6 +30,7 @@ the main branch.
 Other utils: 
 \code{\link{c_sort}()},
 \code{\link{create_hexsticker}()},
+\code{\link{execshell}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},

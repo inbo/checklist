@@ -323,7 +323,7 @@ is_repository <- function(path = ".") {
 #' Pass command lines to a shell
 #'
 #' Cross-platform function to pass a command to the shell, using either
-#' [base::system()] or (Windows-only) [base::shell()], depending on the
+#' [base::system()] or (Windows-only) `base::shell()`, depending on the
 #' operating system.
 #'
 #' @param commandstring
@@ -332,12 +332,10 @@ is_repository <- function(path = ".") {
 #' multiline string.
 #' @param path The path from where the command string needs to be executed
 #' @param ... Other arguments passed to [base::system()] or
-#' [base::shell()].
+#' `base::shell()`.
 #'
 #' @inheritParams base::system
-#'
-#' @keywords internal
-#'
+#' @family utils
 execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
   old_wd <- setwd(path)
   on.exit(setwd(old_wd), add = TRUE)
