@@ -16,7 +16,7 @@ Defaults to \code{.}.}
 The function make sure that the documentation is up to date.
 Rules:
 \itemize{
-\item You must use \href{https://roxygen2.r-lib.org}{roxygen2} to document the
+\item You must use \href{https://roxygen2.r-lib.org}{\code{roxygen2}} to document the
 functions.
 \item If you use a \code{README.Rmd}, it should be rendered.
 You need at least a \code{README.md}.
@@ -25,7 +25,7 @@ You need at least a \code{README.md}.
 }
 }
 \details{
-The function generates the help files from the roxygen2 tag in the R code.
+The function generates the help files from the \code{roxygen2} tag in the R code.
 Then it checks whether any of the help files changed.
 We use the same principle with the \code{README.Rmd}.
 If any file changed, the documentation does not match the code.
@@ -34,8 +34,8 @@ Hence \code{check_documentation()} returns an error.
 A side effect of running \code{check_documentation()} locally, is that it
 generates all the documentation.
 So the only thing left for you to do, is to commit these changes.
-Pro tip: make sure RStudio renders the roxygen2 tags whenever you install and
-restart the package.
+Pro tip: make sure RStudio renders the \code{roxygen2} tags whenever you install
+and restart the package.
 We describe this in \code{vignette("getting_started")} under "Prepare local
 setup".
 }

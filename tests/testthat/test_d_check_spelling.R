@@ -29,12 +29,10 @@ test_that("check_spelling() on a package", {
   expect_invisible(print(z$get_spelling))
 
   writeLines(
-    "#' Een test functie
-#' @param x het enige argument
-#' @export
-dummy <- function(x) {
-  return(x)
-}",
+    c(
+      "#' Een voorbeeldfunctie", "#' @param x het enige argument",
+      "#' @export", "dummy <- function(x) {", "  return(x)", "}"
+    ),
     path(path, package, "R", "dummy.R")
   )
   suppressMessages(document(path(path, package), quiet = TRUE))
@@ -51,7 +49,7 @@ dummy <- function(x) {
     "checklist"
   )
   expect_is(z$get_spelling, "checklist_spelling")
-  expect_identical(nrow(z$get_spelling), 6L)
+  expect_identical(nrow(z$get_spelling), 4L)
   expect_output(print(z$get_spelling), "Overview of words")
   expect_invisible(custom_dictionary(z))
   expect_is(

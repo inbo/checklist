@@ -102,7 +102,13 @@ Project based custom dictionaries are located within the project.
 This is required to make the project reproducible.
 What you can do is copy the `.dic` files from other projects.
 
-# Quarto projects
+## Rd files
+
+Rd files contain the information for the help files of functions in an R package.
+We recommend to use [Roxygen2](https://roxygen2.r-lib.org/) to write the documentation alongside the code of the functions.
+Building the package will generate the
+
+## Quarto projects
 
 When `check_spelling()` finds a [Quarto book project](https://quarto.org/docs/books/), it will check if `lang` is set in `_quarto.yml`.
 Then `check_spelling()` uses that `lang` for all files listed under the `book: chapters` and `book: appendices` tabs.
