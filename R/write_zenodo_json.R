@@ -108,7 +108,10 @@ write_zenodo_json <- function(x = ".") {
 
   cit_desc <- gsub(" +", " ", gsub("\n", " ", this_desc$get("Description")))
   license <- this_desc$get("License")
-  license <- ifelse(license == "GPL-3", "GPL-3.0", license)
+  license <- switch(license,
+                    "GPL-3" = "GPL-3.0",
+                    "MIT + file LICENSE" = "MIT",
+                    license)
   zenodo <- list(
     title = sprintf("%s: %s", this_desc$get("Package"), this_desc$get("Title")),
     version = as.character(this_desc$get_version()), description = cit_desc,
