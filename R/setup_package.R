@@ -103,7 +103,8 @@ setup_package <- function(path = ".",
     readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
     license_batch <- switch(
       license,
-      "GPL-3" = "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
+      "GPL-3" =
+        "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
       "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat")
     license_site <- switch(
       license,
