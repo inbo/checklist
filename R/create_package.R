@@ -179,6 +179,17 @@ RoxygenNote: %5$s
     system.file(path("package_template", "README.Rmd"), package = "checklist")
   )
   readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
+  license_batch <- switch(
+    license,
+    "GPL-3" = "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
+    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat")
+  license_site <- switch(
+    license,
+    "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",
+    "MIT" = "https://opensource.org/licenses/MIT"
+  )
+  readme <- gsub("\\{\\{\\{ license batch \\}\\}\\}", license_batch, readme)
+  readme <- gsub("\\{\\{\\{ license site \\}\\}\\}", license_site, readme)
   writeLines(readme, file.path(path, "README.Rmd"))
   git_add("README.Rmd", repo = repo)
 
