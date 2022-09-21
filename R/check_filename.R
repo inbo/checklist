@@ -79,7 +79,7 @@ check_filename <- function(x = ".") {
   check_dir <- vapply(
     dirs,
     function(x) {
-      all(grepl("^\\.?([a-z0-9_\\-\\/])+$", x))
+      all(grepl("^\\.?([a-z0-9_\\-\\/])+$", x, perl = TRUE))
     },
     logical(1)
   )
@@ -109,7 +109,7 @@ check_filename <- function(x = ".") {
         "README\\.R?md", "NEWS\\.md",
         "CODE_OF_CONDUCT\\.md", "CONTRIBUTING\\.md", "LICENSE\\.(md)?",
         "SUPPORT\\.md", "SECURITY\\.md", "FUNDING\\.yml",
-        "Dockerfile", "WORDLIST.*"
+        "Dockerfile", "WORDLIST.*", "docker-compose.*\\.yml"
       ),
       collapse = "|"
     )
