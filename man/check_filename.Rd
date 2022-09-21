@@ -15,7 +15,7 @@ A consistent naming schema avoids problems when working together,
 especially when working with different OS.
 Some OS (e.g. Windows) are case-insensitive whereas others (e.g. Linux) are
 case-sensitive.
-Note that the checklist GitHub Actions will test your code on Linux,
+Note that the \code{checklist} GitHub Actions will test your code on Linux,
 Windows and MacOS.
 }
 \details{
@@ -23,17 +23,17 @@ The sections below describe the default rules.
 We allow several exceptions when the community standard is different.
 E.g. a package stores the function scripts in the \code{R} folder, while our
 standard enforces lower case folder names.
-Use the community standard, even if it does conform with the checklist
+Use the community standard, even if it does conform with the \code{checklist}
 rules.
-Most likely checklist will have an exception for the name.
+Most likely \code{checklist} will have an exception for the name.
 If not, you can file an \href{https://github.com/inbo/checklist/issues}{issue} and
 motivate why you think we should add an exception.
 }
 \section{Rules for folder names}{
 
 \itemize{
-\item Folder names should only contain lower case letters, numbers and
-underscore (\verb{_}).
+\item Folder names should only contain lower case letters, numbers, dashes (\code{-})
+and underscores (\verb{_}).
 \item They can start with a single dot (\code{.}).
 }
 }
@@ -41,8 +41,8 @@ underscore (\verb{_}).
 \section{Default rules for file names}{
 
 \itemize{
-\item Base names should only contain lower case letters, numbers and
-underscore (\verb{_}).
+\item Base names should only contain lower case letters, numbers, dashes (\code{-})
+and underscores (\verb{_}).
 \item File extensions should only contains lower case letters and numbers.
 Exceptions: file extensions related to \code{R} must have an upper case \code{R} (
 \code{.R}, \code{.Rd}, \code{.Rda}, \code{.Rnw}, \code{.Rmd}, \code{.Rproj}).
