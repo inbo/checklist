@@ -31,6 +31,7 @@ test_that("check_spelling() on a package", {
   writeLines(
     c(
       "#' Een voorbeeldfunctie", "#' @param x het enige argument",
+      "#' @examples", "#' print(1)",
       "#' @export", "dummy <- function(x) {", "  return(x)", "}"
     ),
     path(path, package, "R", "dummy.R")
@@ -43,6 +44,18 @@ test_that("check_spelling() on a package", {
       "<script>", "</script>", "\\"
     ),
     path(path, package, "README.Rmd")
+  )
+  writeLines(
+    c("junk <- function(x) {", "  return(x)", "}"),
+    path(path, package, "R", "junk.R")
+  )
+  writeLines(
+    c(
+      "\\name{test}", "\\alias{test}", "\\title{Test function}",
+      "\\usage{test(x = 1)}", "\\arguments{\\item{x}{argument.}}",
+      "\\value{TRUE}", "\\description{Some words}"
+    ),
+    path(path, package, "man", "test.Rd")
   )
   expect_is(
     {z <- check_spelling(path(path, package), quiet = TRUE)},
@@ -83,6 +96,7 @@ test_that("check_spelling() on a package", {
   expect_false(install_dictionary("junk"))
   expect_true(install_dutch("nl-BE"))
   expect_true(install_french("fr-FR"))
+  expect_true(install_german("de-DE"))
 
   stub(change_language_interactive, "menu", 1, 2)
   expect_is(
@@ -197,7 +211,7 @@ test_that("check_spelling() works on a quarto project", {
   writeLines(
     c(
       "# Language", "::: {lang=nl-BE}", "vlinder [papillon]{lang=fr-FR}", ":::",
-      "wrongwords"
+      "wrongwords", ":::", "Other section", ":::"
     ),
     path(path, "source", "language.qmd")
   )
@@ -206,7 +220,11 @@ test_that("check_spelling() works on a quarto project", {
   }, "checklist"
   )
   stub(checklist_print, "interactive", TRUE, depth = 1)
+  hide_output <- tempfile(fileext = ".txt")
+  on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+  sink(hide_output)
   expect_output(print(z))
+  sink()
 
   expect_output(quiet_cat("test", quiet = FALSE), "test")
   expect_silent(quiet_cat("test", quiet = TRUE))
