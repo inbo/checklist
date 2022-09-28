@@ -33,7 +33,7 @@ setup_package <- function(path = ".",
   assert_that(is_workdir_clean(repo = path))
 
   # make DESCRIPTION tidy
-  tidy_desc(path)
+  suppressMessages(tidy_desc(path))
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
   if (is_file(path(path, ".gitignore"))) {
