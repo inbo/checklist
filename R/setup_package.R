@@ -88,7 +88,12 @@ setup_package <- function(path = ".",
   # add NEWS.md
   if (!is_file(path(path, "NEWS.md"))) {
     news <- sprintf(
-      "# %s 0.0.0\n\n* Added a `NEWS.md` file to track changes to the package.",
+      paste(
+        "# %s 0.0.0", "",
+        "* Added a `NEWS.md` file to track changes to the package.",
+        "* Add [`checklist`](https://inbo.github.io/checklist/) infrastructure.",
+        sep = "\n"
+      ),
       package
     )
     writeLines(news, path(path, "NEWS.md"))
