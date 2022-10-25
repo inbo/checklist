@@ -29,6 +29,7 @@ Other utils:
 \code{\link{is_repository}()},
 \code{\link{new_branch}()},
 \code{\link{orcid2person}()},
+\code{\link{store_authors}()},
 \code{\link{validate_email}()},
 \code{\link{yesno}()}
 }
