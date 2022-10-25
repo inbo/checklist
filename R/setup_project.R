@@ -65,6 +65,7 @@ setup_project <- function(path = ".") {
   return(invisible(NULL))
 }
 
+#' @importFrom fs dir_create file_copy file_exists is_file path
 #' @importFrom gert git_add git_find git_init
 setup_vc <- function(path) {
   if (is_repository(path)) {
@@ -107,28 +108,34 @@ setup_vc <- function(path) {
   )
 
   # Add code of conduct
-  answer <- menu(c("yes", "no"), title = "Add a default code of conduct?")
-  if (answer == 1) {
-    dir_create(path(path, ".github"))
-    file_copy(
-      system.file(
-        path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
-      ),
-      path(path, ".github", "CODE_OF_CONDUCT.md")
-    )
-    git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = repo)
+  if (!file_exists(path(path, ".github", "CODE_OF_CONDUCT.md"))) {
+    answer <- menu(c("yes", "no"), title = "Add a default code of conduct?")
+    if (answer == 1) {
+      dir_create(path(path, ".github"))
+      file_copy(
+        system.file(
+          path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
+        ),
+        path(path, ".github", "CODE_OF_CONDUCT.md")
+      )
+      git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = repo)
+    }
   }
 
   # Add contributing guidelines
-  answer <- menu(c("yes", "no"), title = "Add default contributing guidelines?")
-  if (answer == 1) {
-    file_copy(
-      system.file(
-        path("package_template", "CONTRIBUTING.md"), package = "checklist"
-      ),
-      path(path, ".github", "CONTRIBUTING.md")
+  if (!file_exists(path(path, ".github", "CONTRIBUTING.md"))) {
+    answer <- menu(
+      c("yes", "no"), title = "Add default contributing guidelines?"
     )
-    git_add(path(".github", "CONTRIBUTING.md"), force = TRUE, repo = repo)
+    if (answer == 1) {
+      file_copy(
+        system.file(
+          path("package_template", "CONTRIBUTING.md"), package = "checklist"
+        ),
+        path(path, ".github", "CONTRIBUTING.md")
+      )
+      git_add(path(".github", "CONTRIBUTING.md"), force = TRUE, repo = repo)
+    }
   }
 
   return(invisible(repo))
