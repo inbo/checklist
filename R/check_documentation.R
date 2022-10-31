@@ -184,8 +184,10 @@ See the details in ?pkgdown::build_news for the required format."
     "NEWS.md has a line longer than 80 characters (excluding URLs)."[
       any(nchar(news_file) > 80)
     ],
-    "Item starts with `* ` or `    * `. Multiline items start with `  `.
-    "[
+    paste(
+      "Items in NEWS.md must start with `* ` or `    * `.",
+      "Extra lines of items start with `  ` or `      `."
+    )[
       !all(grepl("^((( ){4})?\\*| ) \\S", news_file))
     ]
   )
