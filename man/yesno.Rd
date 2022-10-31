@@ -24,7 +24,6 @@ Other utils:
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},
-\code{\link{orcid2person}()},
 \code{\link{store_authors}()},
 \code{\link{validate_email}()}
 }

@@ -32,7 +32,6 @@ jobs:
       _R_CHECK_SYSTEM_CLOCK_: false
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2

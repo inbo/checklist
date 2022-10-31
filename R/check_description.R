@@ -285,6 +285,7 @@ Please send a pull request if you need support for this license.",
   return(x)
 }
 
+#' @importFrom utils person
 check_authors <- function(this_desc) {
   authors <- this_desc$get_authors()
   authors <- lapply(authors, unlist, recursive = FALSE)

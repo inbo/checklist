@@ -10,7 +10,7 @@
 #' @param path Where to create the package directory.
 #' @param title A single sentence with the title of the package.
 #' @param description A single paragraph describing the package.
-#' @param maintainer The output of [utils::person()] or [`orcid2person()`].
+#' @param maintainer The output of [utils::person()].
 #'   If you use [utils::person()], then you must provide `given`, `family`,
 #'   `role`, `email` and  `comment` with valid `ORCID`.
 #'   When missing, the functions looks for `usethis.description` in the options.
@@ -39,10 +39,6 @@
 #'   email = "thierry.onkelinx@inbo.be",
 #'   comment = c(ORCID = "0000-0001-8804-4216")
 #' )
-#' # maintainer with `orcid2person()`
-#' \dontrun{
-#' maintainer <- orcid2person("0000-0001-8804-4216")
-#' }
 #'
 #' # creating the package
 #' path <- tempfile()

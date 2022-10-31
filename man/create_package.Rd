@@ -23,7 +23,7 @@ create_package(
 
 \item{description}{A single paragraph describing the package.}
 
-\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{\link[=orcid2person]{orcid2person()}}.
+\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}}.
 If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
 \code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.
 When missing, the functions looks for \code{usethis.description} in the options.
@@ -68,10 +68,6 @@ maintainer <- person(
   email = "thierry.onkelinx@inbo.be",
   comment = c(ORCID = "0000-0001-8804-4216")
 )
-# maintainer with `orcid2person()`
-\dontrun{
-maintainer <- orcid2person("0000-0001-8804-4216")
-}
 
 # creating the package
 path <- tempfile()

@@ -35,7 +35,6 @@ Imports:
     rcmdcheck,
     renv,
     rmarkdown,
-    rorcid,
     sessioninfo,
     utils,
     withr,

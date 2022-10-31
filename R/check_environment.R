@@ -14,7 +14,6 @@ check_environment <- function(x = ".") {
   }
   problems <- c(
     "PAT"[Sys.getenv("INPUT_TOKEN") == ""],
-    "ORCID_TOKEN"[Sys.getenv("ORCID_TOKEN") == ""],
     "CODECOV_TOKEN"[Sys.getenv("CODECOV_TOKEN") == ""]
   )
   if (length(problems) == 0) {
