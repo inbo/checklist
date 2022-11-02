@@ -8,7 +8,8 @@ A class with the configuration for spell checking
 }
 \seealso{
 Other class: 
-\code{\link{checklist}}
+\code{\link{checklist}},
+\code{\link{citation_meta}}
 }
 \concept{class}
 \section{Active bindings}{

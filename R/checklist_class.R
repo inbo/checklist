@@ -192,7 +192,8 @@ checklist <- R6Class(
     package = TRUE,
 
     #' @description Print the `checklist` object.
-    #' @param ... currently ignored.
+    #' Add `quiet = TRUE` to suppress printing.
+    #' @param ... See description.
     print = function(...) {
       dots <- list(...)
       if (!is.null(dots$quiet) && dots$quiet) {

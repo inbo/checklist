@@ -25,6 +25,9 @@ size](https://img.shields.io/github/repo-size/inbo/checklist.svg)
 
 # The Checklist Package <img src="man/figures/logo.svg" align="right" alt="A hexagon with the word checklist" width="120" />
 
+**keywords**: quality control; documentation; publication
+<!-- community: inbo -->
+
 The goal of `checklist` is to provide an elaborate and strict set of
 checks for R packages and R code.
 

@@ -4,11 +4,11 @@ Title: A Thorough and Strict Set of Checks for R Packages and Source Code
 Version: 0.2.7
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-8804-4216")),
+           comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-3481-5684")),
+           comment = c(ORCID = "0000-0002-3481-5684", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Hans", "Van Calster", , "hans.vancalster@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0001-8595-8426")),
+           comment = c(ORCID = "0000-0001-8595-8426", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: An opinionated set of rules for R packages and R source code
@@ -29,6 +29,7 @@ Imports:
     httr,
     hunspell,
     jsonlite,
+    knitr,
     lintr (>= 2.0.1.9000),
     pkgdown,
     R6,
@@ -42,7 +43,6 @@ Imports:
 Suggests:
     covr,
     curl,
-    knitr,
     mockery,
     roxygen2,
     rstudioapi,

@@ -8,6 +8,7 @@ A class which contains all checklist results.
 }
 \seealso{
 Other class: 
+\code{\link{citation_meta}},
 \code{\link{spelling}}
 }
 \concept{class}
@@ -274,6 +275,7 @@ Initialize a new \code{checklist} object.
 \if{latex}{\out{\hypertarget{method-checklist-print}{}}}
 \subsection{Method \code{print()}}{
 Print the \code{checklist} object.
+Add \code{quiet = TRUE} to suppress printing.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{checklist$print(...)}\if{html}{\out{</div>}}
 }
@@ -281,7 +283,7 @@ Print the \code{checklist} object.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{currently ignored.}
+\item{\code{...}}{See description.}
 }
 \if{html}{\out{</div>}}
 }

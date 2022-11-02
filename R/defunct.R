@@ -1,6 +1,7 @@
 #' Defunct functions
 #' @export
 #' @rdname defunct
+#' @family utils
 orcid2person <- function() {
   .Defunct(
     msg =
