@@ -35,12 +35,17 @@ citation_meta <- R6Class(
       private$errors <- meta$errors
       private$notes <- meta$notes
       private$warnings <- meta$warnings
-      private$errors <- citation_r(self)
       if (length(private$errors) > 0) {
+        warning(
+          "Errors found parsing citation meta data. ",
+          "Citation files not updated."
+        )
         return(invisible(self))
       }
-      citation_zenodo(self)
-      citation_cff(self)
+      private$errors <- c(
+        private$errors, citation_r(self), citation_zenodo(self),
+        citation_cff(self)
+      )
       return(invisible(self))
     },
 
@@ -216,9 +221,15 @@ citation_zenodo <- function(meta) {
   gsub("\\.md", ".html", desc) |>
     readLines() |>
     paste(collapse = "\n") -> zenodo$description
+  citation_file <- path(meta$get_path, ".zenodo.json")
   toJSON(zenodo, pretty = TRUE, auto_unbox = TRUE) |>
-    writeLines(path(meta$get_path, ".zenodo.json"))
-  return(invisible(TRUE))
+    writeLines(citation_file)
+  errors <- paste(
+    citation_file, "is modified.",
+    "Run `checklist::citation_meta$new()` locally."[!interactive()],
+    "Please commit changes."
+  )[!is_tracked_not_modified(citation_file, meta$get_path)]
+  return(errors)
 }
 
 format_zenodo <- function(x, i) {
@@ -282,9 +293,14 @@ citation_cff <- function(meta) {
   if (has_name(input, "version")) {
     cff$version <- as.character(input$version)
   }
-  path(meta$get_path, "CITATION.cff") |>
-    write_yaml(x = cff, fileEncoding = "UTF-8")
-  return(invisible(TRUE))
+  citation_file <- path(meta$get_path, "CITATION.cff")
+  write_yaml(x = cff, file = citation_file, fileEncoding = "UTF-8")
+  errors <- paste(
+    citation_file, "is modified.",
+    "Run `checklist::citation_meta$new()` locally."[!interactive()],
+    "Please commit changes."
+  )[!is_tracked_not_modified(citation_file, meta$get_path)]
+  return(errors)
 }
 
 format_cff <- function(x, i) {
@@ -306,9 +322,10 @@ format_cff <- function(x, i) {
 #' @importFrom utils head tail
 citation_r <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  if (!meta$get_package || length(meta$get_errors) > 0) {
-    return(meta$get_errors)
+  if (!meta$get_package) {
+    return(character(0))
   }
+  assert_that(length(meta$get_errors) == 0)
   cit_meta <- meta$get_meta
   citation_file <- path(meta$get_path, "inst", "CITATION")
   if (is_file(citation_file)) {
@@ -382,5 +399,10 @@ citation_r <- function(meta) {
   )
   c(head(cit, start), "citEntry(", package_citation, ")", tail(cit, 1 - end)) |>
     writeLines(citation_file)
-  return(meta$get_errors)
+  errors <- paste(
+    citation_file, "is modified.",
+    "Run `checklist::citation_meta$new()` locally."[!interactive()],
+    "Please commit changes."
+  )[!is_tracked_not_modified(citation_file, meta$get_path)]
+  return(errors)
 }

@@ -311,18 +311,20 @@ execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
 #' @param repo path to the repository
 #'
 #' @importFrom gert git_status git_ls
-#' @importFrom assertthat assert_that
+#' @importFrom assertthat assert_that is.string
 #'
 #' @keywords internal
-is_tracked_not_modified <- function(
-  file,
-  repo = "."
-) {
-  assert_that(!missing(file))
-  assert_that(is.character(file))
-  tracked <- git_ls(repo = repo)
+is_tracked_not_modified <- function(file, repo = ".") {
+  assert_that(is.string(file))
+  tracked <- try(git_ls(repo = repo), silent = TRUE)
+  if (inherits(tracked, "try-error")) {
+    if (grepl("could not find repository", tracked)) {
+      return(TRUE)
+    }
+    stop(tracked)
+  }
   is_tracked <- file %in% tracked$path
   status <- git_status(repo = repo)
   is_not_modified <- !file %in% status$file[status$status == "modified"]
-  return(is_tracked & is_not_modified)
+  return(is_tracked && is_not_modified)
 }
