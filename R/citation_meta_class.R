@@ -24,12 +24,11 @@ citation_meta <- R6Class(
       )
       x <- read_checklist(x = path)
       private$path <- path
-      private$package <- x$package
-      if (private$package) {
-        meta <- citation_description(self)
-      } else {
-        meta <- citation_readme(self)
-      }
+      private$type <- ifelse(x$package, "package", "project")
+      meta <- switch(
+        private$type, package = citation_description(self),
+        citation_readme(self)
+      )
       meta$meta$language <- x$default
       private$meta <- meta$meta
       private$errors <- meta$errors
@@ -81,10 +80,9 @@ citation_meta <- R6Class(
       return(private$notes)
     },
 
-    #' @field get_package A logical indicating whether the source code refers to
-    #' a package.
-    get_package = function() {
-      return(private$package)
+    #' @field get_type A string indicating the type of source.
+    get_type = function() {
+      return(private$type)
     },
 
     #' @field get_path The path to the project.
@@ -101,7 +99,7 @@ citation_meta <- R6Class(
 
   private = list(
     errors = character(0), notes = character(0), meta = list(),
-    package = logical(0), path = character(0), warnings = list()
+    path = character(0), type = character(0), warnings = list()
   )
 )
 
@@ -322,7 +320,7 @@ format_cff <- function(x, i) {
 #' @importFrom utils head tail
 citation_r <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  if (!meta$get_package) {
+  if (meta$get_type != "package") {
     return(character(0))
   }
   assert_that(length(meta$get_errors) == 0)

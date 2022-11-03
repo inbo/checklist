@@ -3,7 +3,7 @@
 #' @importFrom fs path
 citation_description <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  assert_that(meta$get_package)
+  assert_that(meta$get_type == "package")
   path(meta$get_path, "DESCRIPTION") |>
     description$new() -> descript
   path(meta$get_path, "README.md") |>
