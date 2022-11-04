@@ -28,13 +28,9 @@ package.}
 \describe{
 \item{\code{get_checked}}{A vector with checked topics.}
 
-\item{\code{get_keywords}}{A vector with keywords.}
-
 \item{\code{get_path}}{The path to the package.}
 
 \item{\code{get_required}}{A vector with the names of the required checks.}
-
-\item{\code{get_roles}}{The roles to select contributors for the \code{CITATION}.}
 
 \item{\code{get_spelling}}{Return the issues found by \code{check_spelling()}}
 
@@ -58,9 +54,7 @@ package.}
 \item \href{#method-checklist-confirm_motivation}{\code{checklist$confirm_motivation()}}
 \item \href{#method-checklist-new}{\code{checklist$new()}}
 \item \href{#method-checklist-print}{\code{checklist$print()}}
-\item \href{#method-checklist-set_roles}{\code{checklist$set_roles()}}
 \item \href{#method-checklist-set_required}{\code{checklist$set_required()}}
-\item \href{#method-checklist-update_keywords}{\code{checklist$update_keywords()}}
 \item \href{#method-checklist-clone}{\code{checklist$clone()}}
 }
 }
@@ -289,23 +283,6 @@ Add \code{quiet = TRUE} to suppress printing.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-checklist-set_roles"></a>}}
-\if{latex}{\out{\hypertarget{method-checklist-set_roles}{}}}
-\subsection{Method \code{set_roles()}}{
-set roles
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$set_roles(roles)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{roles}}{A vector with roles.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-checklist-set_required"></a>}}
 \if{latex}{\out{\hypertarget{method-checklist-set_required}{}}}
 \subsection{Method \code{set_required()}}{
@@ -318,24 +295,6 @@ set required checks
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{checks}}{a vector of required checks}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-checklist-update_keywords"></a>}}
-\if{latex}{\out{\hypertarget{method-checklist-update_keywords}{}}}
-\subsection{Method \code{update_keywords()}}{
-Update the keywords.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$update_keywords(keywords = character(0))}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{keywords}}{a character vector with the new keywords.
-The default empty vector (\code{character(0)}) will erase the keywords.}
 }
 \if{html}{\out{</div>}}
 }

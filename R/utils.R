@@ -216,19 +216,12 @@ checklist_summarise_spelling <- function(spelling) {
   paste(messages, collapse = rules("-"))
 }
 
-checklist_template <- function(
-  package, warnings, notes, citation_roles, keywords, spelling, required
-) {
+checklist_template <- function(package, warnings, notes, spelling, required) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
-    package = package,
-    allowed = list(warnings = warnings, notes = notes),
-    citation_roles = citation_roles,
+    package = package, allowed = list(warnings = warnings, notes = notes),
     required = required
   )
-  if (length(keywords) > 0) {
-    template$keywords <- keywords
-  }
   spelling$root <- NULL
   if (length(spelling$ignore) == 0) {
     spelling$ignore <- NULL

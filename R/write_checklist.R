@@ -48,10 +48,6 @@
 write_checklist <- function(x = ".") {
   x <- suppressMessages(read_checklist(x = x))
 
-  if (x$package && !"r package" %in% tolower(x$get_keywords)) {
-    x$update_keywords(unique(c(x$get_keywords, "R package")))
-  }
-
   if (x$package && "R CMD check" %in% x$get_checked) {
     x$confirm_motivation("warnings")
     x$confirm_motivation("notes")

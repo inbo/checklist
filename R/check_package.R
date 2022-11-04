@@ -52,11 +52,11 @@ check_package <- function(
   quiet_cat("Checking description\n", quiet = quiet)
   x <- check_description(x)
 
-  quiet_cat("Updating citation\n", quiet = quiet)
-  x <- update_citation(x)
-
   quiet_cat("Checking documentation\n", quiet = quiet)
   x <- check_documentation(x, quiet = quiet)
+
+  quiet_cat("Updating citation\n", quiet = quiet)
+  x <- update_citation(x, quiet = quiet)
 
   quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)

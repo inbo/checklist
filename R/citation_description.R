@@ -6,15 +6,27 @@ citation_description <- function(meta) {
   assert_that(meta$get_type == "package")
   path(meta$get_path, "DESCRIPTION") |>
     description$new() -> descript
-  path(meta$get_path, "README.md") |>
-    readLines() |>
-    list() |>
-    setNames("text") |>
-    c(
-      list(errors = character(0), warnings = character(0), notes = character(0))
-    ) |>
-    readme_community() |>
-    readme_keywords() -> readme_meta
+  readme <- path(meta$get_path, "README.md")
+  if (!is_file(readme) && is_file(path(meta$get_path, "README.Rmd"))) {
+    build_readme(meta$get_path, encoding = "UTF-8")
+  }
+  if (!is_file(readme)) {
+    readme_meta <- list(
+      errors = paste(readme, "not found"), warnings = character(0),
+      notes = character(0)
+    )
+  } else {
+    readme |>
+      readLines() |>
+      list() |>
+      setNames("text") |>
+      c(
+        list(errors = character(0), warnings = character(0),
+             notes = character(0))
+      ) |>
+      readme_community() |>
+      readme_keywords() -> readme_meta
+  }
   urls <- description_url(descript$get_urls())
   authors <- description_author(descript$get_authors())
   list(

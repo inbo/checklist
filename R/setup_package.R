@@ -177,7 +177,6 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
     repo = path, filename = "check_on_branch.yml",
     template = "package_template", target = target
   )
-  file_delete(path(path, ".github", "workflows", "check_on_master.yml"))
   insert_file(
     repo = path, filename = "check_on_main.yml",
     template = "package_template", target = target

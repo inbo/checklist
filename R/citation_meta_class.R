@@ -22,7 +22,8 @@ citation_meta <- R6Class(
           path(path, "checklist.yml")
         )
       )
-      x <- read_checklist(x = path)
+      read_checklist(x = path) |>
+        citation_rbuildignore() -> x
       private$path <- path
       private$type <- ifelse(x$package, "package", "project")
       meta <- switch(
@@ -45,7 +46,7 @@ citation_meta <- R6Class(
         private$errors, citation_r(self), citation_zenodo(self),
         citation_cff(self)
       )
-      return(invisible(self))
+      return(self)
     },
 
     #' @description Print the `citation_meta` object.
@@ -67,7 +68,7 @@ citation_meta <- R6Class(
 
     #' @field get_errors Return the errors
     get_errors = function() {
-      return(private$erros)
+      return(private$errors)
     },
 
     #' @field get_meta Return the meta data as a list
@@ -341,7 +342,7 @@ citation_r <- function(meta) {
   }
   start <- grep("^# begin checklist entry", cit)
   end <- grep("^# end checklist entry", cit)
-  problems <- c(
+  errors <- c(
     "No `# begin checklist entry` found in `inst/CITATION`"[length(start) == 0],
     "No `# end checklist entry` found in `inst/CITATION`"[length(end) == 0],
     "Multiple `# begin checklist entry` found in `inst/CITATION`"[
@@ -354,8 +355,8 @@ citation_r <- function(meta) {
       head(start, length(end)) >= head(end, length(start))
     ]
   )
-  if (length(problems) > 0) {
-    return(problems)
+  if (length(errors) > 0) {
+    return(errors = errors)
   }
   authors <- cit_meta$roles$contributor[cit_meta$roles$role == "author"]
   authors <- cit_meta$authors[cit_meta$authors$id %in% authors, ]
@@ -402,5 +403,29 @@ citation_r <- function(meta) {
     "Run `checklist::citation_meta$new()` locally."[!interactive()],
     "Please commit changes."
   )[!is_tracked_not_modified(citation_file, meta$get_path)]
-  return(errors)
+  return(errors = errors)
+}
+
+#' @importFrom fs file_copy is_file path
+citation_rbuildignore <- function(x = ".") {
+  x <- read_checklist(x = x)
+  if (!x$package) {
+    return(invisible(x))
+  }
+  rbuildignore_file <- path(x$get_path, ".Rbuildignore")
+  if (!is_file(rbuildignore_file)) {
+    file_copy(
+      system.file(
+        path("package_template", "rbuildignore"), package = "checklist"
+      ),
+      rbuildignore_file
+    )
+    return(invisible(x))
+  }
+  current <- readLines(rbuildignore_file)
+  c("^\\.zenodo\\.json$", "^CITATION\\.cff$", current) |>
+    unique() |>
+    c_sort() |>
+    writeLines(rbuildignore_file)
+  return(invisible(x))
 }

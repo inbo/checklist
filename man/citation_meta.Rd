@@ -21,8 +21,7 @@ Other class:
 
 \item{\code{get_notes}}{Return the notes}
 
-\item{\code{get_package}}{A logical indicating whether the source code refers to
-a package.}
+\item{\code{get_type}}{A string indicating the type of source.}
 
 \item{\code{get_path}}{The path to the project.}
 

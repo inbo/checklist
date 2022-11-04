@@ -3,7 +3,16 @@
 citation_readme <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
   assert_that(meta$get_package == "project")
-  path(meta$get_path, "README.md") |>
+  readme_file <- path(meta$get_path, "README.md")
+  if (!is_file(readme_file)) {
+    return(
+      list(
+        errors = paste(readme_file, "not found"), warnings = character(0),
+        notes = character(0)
+      )
+    )
+  }
+  readme_file |>
     readLines() |>
     readme_badges() |>
     readme_title() |>
