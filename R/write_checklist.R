@@ -41,6 +41,7 @@
 #' That will result in an error when checking the package on an other machine
 #' (e.g. GitHub actions).
 #' @inheritParams read_checklist
+#' @importFrom fs path
 #' @importFrom yaml write_yaml
 #' @export
 #' @family both
@@ -58,6 +59,7 @@ write_checklist <- function(x = ".") {
     x$add_motivation("notes")
   }
 
-  write_yaml(x$template, file.path(x$get_path, "checklist.yml"))
+  path(x$get_path, "checklist.yml") |>
+    write_yaml(x = x$template)
   return(invisible(NULL))
 }

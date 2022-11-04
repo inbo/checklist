@@ -23,22 +23,22 @@ test_that("create_package() works", {
     regexp = sprintf("package created at `.*%s`", package)
   )
 
-  repo <- file.path(path, package)
+  repo <- path(path, package)
 
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
     "codecov.yml", "DESCRIPTION", "LICENSE.md", "NEWS.md", "README.Rmd",
     paste0(package, ".Rproj"),
-    file.path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
-    file.path(
+    path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
+    path(
       ".github", "workflows",
       c(
         "check_on_branch.yml", "check_on_different_r_os.yml",
         "check_on_main.yml", "release.yml"
       )
     ),
-    file.path("pkgdown", "extra.css"),
-    file.path(
+    path("pkgdown", "extra.css"),
+    path(
       "man", "figures",
       c(
         "logo-en.png", "background-pattern.png", "flanders.woff2",
@@ -46,21 +46,21 @@ test_that("create_package() works", {
       )
     )
   )
-  expect_true(
-    all(file.exists(file.path(path, package, new_files)))
-  )
+  expect_true(all(is_file(path(path, package, new_files))))
 
   expect_is({
-      x <- check_project(file.path(path, package), fail = FALSE, quiet = TRUE)
+      suppressWarnings({
+        x <- check_package(path(path, package), fail = FALSE, quiet = TRUE)
+      })
     },
     "checklist"
   )
-  expect_true(file_test("-f", file.path(path, package, ".zenodo.json")))
-  expect_true(file_test("-f", file.path(path, package, "CITATION.cff")))
+  expect_true(is_file(path(path, package, ".zenodo.json")))
+  expect_true(is_file(path(path, package, "CITATION.cff")))
 
   expect_error({
     check_package(
-      file.path(path, package), fail = TRUE, quiet = TRUE, pkgdown = TRUE
+      path(path, package), fail = TRUE, quiet = TRUE, pkgdown = TRUE
     )
   })
 
@@ -87,7 +87,7 @@ test_that("create_package() works", {
 
   stub(write_checklist, "x$add_motivation", NULL)
   stub(write_checklist, "x$confirm_motivation", NULL)
-  old_checklist <- read_checklist(file.path(path, package))
+  old_checklist <- read_checklist(path(path, package))
   expect_invisible(write_checklist(x))
   expect_false(
     identical(
@@ -103,9 +103,9 @@ test_that("create_package() works", {
   )
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
 
-  writeLines("dummy<-function(){F}", file.path(path, package, "R", "dummy.R"))
+  writeLines("dummy<-function(){F}", path(path, package, "R", "dummy.R"))
   expect_is(
-    x <- check_lintr(file.path(path, package), quiet = TRUE), "checklist"
+    x <- check_lintr(path(path, package), quiet = TRUE), "checklist"
   )
   expect_length(x$.__enclos_env__$private$linter, 6)
   expect_output(print(x), "6 linters found")

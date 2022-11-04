@@ -27,8 +27,8 @@
 #' session.
 #' @param quiet Whether to print check output during checking.
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom fs file_delete
 #' @importFrom pkgdown build_site
-#' @importFrom utils file_test
 #' @export
 #' @family package
 check_package <- function(
@@ -75,7 +75,7 @@ check_package <- function(
     Sys.setenv(CI = TRUE)
     if (quiet) {
       junk <- tempfile(fileext = ".txt")
-      on.exit(file.remove(junk), add = TRUE, after = TRUE)
+      on.exit(file_delete(junk), add = TRUE, after = TRUE)
       sink(junk)
       build_site(x$get_path, preview = FALSE)
       sink()

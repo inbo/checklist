@@ -21,25 +21,25 @@ test_that("check_license() works", {
       license = "MIT"
     )
   )
-  repo <- file.path(path, package)
+  repo <- path(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  mit <- readLines(file.path(repo, "LICENSE.md"))
+  mit <- readLines(path(repo, "LICENSE.md"))
   expect_identical(
     mit[3],
     paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
            " Research Institute for Nature and Forest")
   )
   expect_identical(
-    file.exists(file.path(repo, "LICENSE")),
+    file.exists(path(repo, "LICENSE")),
     TRUE
   )
   # copyright holder mismatch
   mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
                    " INBO")
-  writeLines(mit, file.path(repo, "LICENSE.md"))
+  writeLines(mit, path(repo, "LICENSE.md"))
   expect_is(x <- check_license(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
@@ -47,7 +47,7 @@ test_that("check_license() works", {
       "Copyright statement in LICENSE.md not in correct format"))
 
 
-  file.remove(file.path(repo, "LICENSE.md"))
+  file_delete(path(repo, "LICENSE.md"))
   expect_is(x <- check_license(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,

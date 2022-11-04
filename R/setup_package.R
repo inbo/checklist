@@ -20,15 +20,16 @@
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
-setup_package <- function(path = ".",
-                          license = c("GPL-3", "MIT")) {
+setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   license <- match.arg(license)
   assert_that(
-    file_test("-f", path(path, "DESCRIPTION")),
+    is_file(path(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
   )
-  package <- desc(path)$get("Package")
+  descript <- desc(path)
+  package <- descript$get("Package")
+  version <- descript$get_version()
 
   assert_that(is_workdir_clean(repo = path))
 
@@ -37,36 +38,40 @@ setup_package <- function(path = ".",
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
   if (is_file(path(path, ".gitignore"))) {
-    current <- readLines(path(path, ".gitignore"))
-    new <- readLines(
-      system.file(path("generic_template", "gitignore"), package = "checklist")
-    )
-    writeLines(c_sort(unique(c(new, current))), path(path, ".gitignore"))
+    path(path, ".gitignore") |>
+      readLines() -> current
+    path("generic_template", "gitignore") |>
+      system.file(package = "checklist") |>
+      readLines() -> new
+    c(new, current) |>
+      unique() |>
+      c_sort() |>
+      writeLines(path(path, ".gitignore"))
+    git_add(".gitignore", force = TRUE, repo = path)
   } else {
-    file_copy(
-      system.file(path("generic_template", "gitignore"), package = "checklist"),
-      path(path, ".gitignore")
+    insert_file(
+      repo = path, filename = "gitignore", template = "generic_template",
+      target = path, new_name = ".gitignore"
     )
   }
-  git_add(".gitignore", force = TRUE, repo = path)
 
   if (is_file(path(path, ".Rbuildignore"))) {
-    current <- readLines(path(path, ".Rbuildignore"))
-    new <- readLines(
-      system.file(
-        path("package_template", "rbuildignore"), package = "checklist"
-      )
-    )
-    writeLines(c_sort(unique(c(new, current))), path(path, ".Rbuildignore"))
+    path(path, ".Rbuildignore") |>
+      readLines() -> current
+    path("package_template", "rbuildignore") |>
+      system.file(package = "checklist") |>
+      readLines() -> new
+    c(new, current) |>
+      unique() |>
+      c_sort() |>
+      writeLines(path(path, ".Rbuildignore"))
+    git_add(".Rbuildignore", force = TRUE, repo = path)
   } else {
-    file_copy(
-      system.file(
-        path("package_template", "rbuildignore"), package = "checklist"
-      ),
-      path(path, ".Rbuildignore")
+    insert_file(
+      repo = path, filename = "rbuildignore", template = "package_template",
+      target = path, new_name = ".Rbuildignore"
     )
   }
-  git_add(".Rbuildignore", force = TRUE, repo = path)
 
   # add checklist.yml
   suppressMessages({
@@ -79,33 +84,28 @@ setup_package <- function(path = ".",
   git_add("checklist.yml", force = TRUE, repo = path)
 
   # add codecov.yml
-  file_copy(
-    system.file(path("package_template", "codecov.yml"), package = "checklist"),
-    path(path, "codecov.yml")
+  insert_file(
+    repo = path, filename = "codecov.yml", template = "package_template",
+    target = path
   )
-  git_add("codecov.yml", force = TRUE, repo = path)
 
   # add NEWS.md
   if (!is_file(path(path, "NEWS.md"))) {
-    news <- sprintf(
+    sprintf(
       paste(
-        "# %s 0.0.0", "",
+        "# %s %s", "",
         "* Added a `NEWS.md` file to track changes to the package.",
       "* Add [`checklist`](https://inbo.github.io/checklist/) infrastructure.",
         sep = "\n"
       ),
-      package
-    )
-    writeLines(news, path(path, "NEWS.md"))
+      package, as.character(version)
+    ) |>
+      writeLines(path(path, "NEWS.md"))
     git_add("NEWS.md", force = TRUE, repo = path)
   }
 
   # add README.Rmd
   if (!is_file(path(path, "README.md"))) {
-    readme <- readLines(
-      system.file(path("package_template", "README.Rmd"), package = "checklist")
-    )
-    readme <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, readme)
     license_batch <- switch(
       license,
       "GPL-3" =
@@ -116,25 +116,28 @@ setup_package <- function(path = ".",
       "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",
       "MIT" = "https://opensource.org/licenses/MIT"
     )
-    readme <- gsub("\\{\\{\\{ license batch \\}\\}\\}", license_batch, readme)
-    readme <- gsub("\\{\\{\\{ license site \\}\\}\\}", license_site, readme)
-    writeLines(readme, path(path, "README.Rmd"))
+    path("package_template", "README.Rmd") |>
+      system.file(package = "checklist") |>
+      readLines() |>
+      gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
+      gsub(
+        pattern = "\\{\\{\\{ license batch \\}\\}\\}",
+        replacement = license_batch
+      ) |>
+      gsub(
+        pattern = "\\{\\{\\{ license site \\}\\}\\}", replacement = license_site
+      ) |>
+      writeLines(path(path, "README.Rmd"))
     git_add("README.Rmd", force = TRUE, repo = path)
   }
 
   # add LICENSE.md
   if (length(dir_ls(path, regexp = "LICEN(S|C)E")) == 0) {
-    file.copy(
-      switch(
-        license,
-        "GPL-3" = system.file(
-          path("generic_template", "gplv3.md"), package = "checklist"),
-        "MIT" = system.file(
-          path("generic_template", "mit.md"), package = "checklist"
-        )
-      ),
-      path(path, "LICENSE.md")
-    )
+    switch(license, "GPL-3" = "gplv3.md", "MIT" = "mit.md") |>
+      insert_file(
+        repo = path, template = "generic_template", target = path,
+        new_name = "LICENSE.md"
+      )
     if (license == "MIT") {
       writeLines(
         c(paste0("YEAR: ", format(Sys.Date(), "%Y")),
@@ -154,108 +157,71 @@ setup_package <- function(path = ".",
   }
 
   # Add code of conduct
-  dir_create(path(path, ".github"))
-  file_copy(
-    system.file(
-      path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
-    ),
-    path(path, ".github", "CODE_OF_CONDUCT.md")
+  target <- path(path, ".github")
+  dir_create(target)
+  insert_file(
+    repo = path, filename = "CODE_OF_CONDUCT.md", template = "generic_template",
+    target = target
   )
-  git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = path)
 
   # Add contributing guidelines
-  file_copy(
-    system.file(
-      path("package_template", "CONTRIBUTING.md"), package = "checklist"
-    ),
-    path(path, ".github", "CONTRIBUTING.md")
+  insert_file(
+    repo = path, filename = "CONTRIBUTING.md", template = "package_template",
+    target = target
   )
-  git_add(path(".github", "CONTRIBUTING.md"), force = TRUE, repo = path)
 
   # Add GitHub actions
-  dir_create(path(path, ".github", "workflows"))
-  file_copy(
-    system.file(
-      path("package_template", "check_on_branch.yml"), package = "checklist"
-    ),
-    path(path, ".github", "workflows", "check_on_branch.yml"), overwrite = TRUE
+  target <- path(path, ".github", "workflows")
+  dir_create(target)
+  insert_file(
+    repo = path, filename = "check_on_branch.yml",
+    template = "package_template", target = target
   )
-  git_add(
-    path(".github", "workflows", "check_on_branch.yml"), force = TRUE,
-    repo = path
+  file_delete(path(path, ".github", "workflows", "check_on_master.yml"))
+  insert_file(
+    repo = path, filename = "check_on_main.yml",
+    template = "package_template", target = target
   )
-  unlink(path(path, ".github", "workflows", "check_on_master.yml"))
-  file_copy(
-    system.file(
-      path("package_template", "check_on_main.yml"), package = "checklist"
-    ),
-    path(path, ".github", "workflows", "check_on_main.yml"), overwrite = TRUE
+  insert_file(
+    repo = path, filename = "check_on_different_r_os.yml",
+    template = "package_template", target = target
   )
-  git_add(
-    path(".github", "workflows", "check_on_main.yml"), force = TRUE, repo = path
-  )
-  file_copy(
-    system.file(
-      path("package_template", "check_on_different_r_os.yml"),
-      package = "checklist"
-    ),
-    path(path, ".github", "workflows", "check_on_different_r_os.yml"),
-    overwrite = TRUE
-  )
-  git_add(
-    path(".github", "workflows", "check_on_different_r_os.yml"),
-    force = TRUE, repo = path
-  )
-  file_copy(
-    system.file(path("package_template", "release.yml"), package = "checklist"),
-    path(path, ".github", "workflows", "release.yml"), overwrite = TRUE
-  )
-  git_add(
-    path(".github", "workflows", "release.yml"), force = TRUE, repo = path
+  insert_file(
+    repo = path, filename = "release.yml", template = "package_template",
+    target = target
   )
 
   # Add pkgdown website
-  pkgd <- readLines(
-    system.file(path("package_template", "_pkgdown.yml"), package = "checklist")
-  )
+  path("package_template", "_pkgdown.yml") |>
+    system.file(package = "checklist") |>
+    readLines() -> pkgd
   pkgd <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, pkgd)
   writeLines(pkgd, path(path, "_pkgdown.yml"))
   git_add("_pkgdown.yml", force = TRUE, repo = path)
-  dir_create(path(path, "pkgdown"))
-  file_copy(
-    system.file(path("package_template", "pkgdown.css"), package = "checklist"),
-    path(path, "pkgdown", "extra.css"), overwrite = TRUE
+  target <- path(path, "pkgdown")
+  dir_create(target)
+  insert_file(
+    repo = path, filename = "pkgdown.css", template = "package_template",
+    target = target, new_name = "extra.css"
   )
-  git_add(path("pkgdown", "extra.css"), force = TRUE, repo = path)
-  dir_create(path(path, "man", "figures"))
-  file_copy(
-    system.file(path("package_template", "logo-en.png"), package = "checklist"),
-    path(path, "man", "figures", "logo-en.png"), overwrite = TRUE
+  target <- path(path, "man", "figures")
+  dir_create(target)
+  insert_file(
+    repo = path, filename = "logo-en.png", template = "package_template",
+    target = target
   )
-  git_add(path("man", "figures", "logo-en.png"), force = TRUE, repo = path)
-  file_copy(
-    system.file(
-      path("package_template", "background-pattern.png"), package = "checklist"
-    ),
-    path(path, "man", "figures", "background-pattern.png"), overwrite = TRUE
+  insert_file(
+    repo = path, filename = "background-pattern.png",
+    template = "package_template", target = target
   )
-  git_add(
-    path("man", "figures", "background-pattern.png"), force = TRUE, repo = path
+  insert_file(
+    repo = path, filename = "flanders.woff2", template = "package_template",
+    target = target
   )
-  file_copy(
-    system.file(
-      path("package_template", "flanders.woff2"), package = "checklist"
-    ),
-    path(path, "man", "figures", "flanders.woff2"), overwrite = TRUE
+  insert_file(
+    repo = path, filename = "flanders.woff", template = "package_template",
+    target = target
   )
-  git_add(path("man", "figures", "flanders.woff2"), force = TRUE, repo = path)
-  file_copy(
-    system.file(
-      path("package_template", "flanders.woff"), package = "checklist"
-    ),
-    path(path, "man", "figures", "flanders.woff"), overwrite = TRUE
-  )
-  git_add(path("man", "figures", "flanders.woff"), force = TRUE, repo = path)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))

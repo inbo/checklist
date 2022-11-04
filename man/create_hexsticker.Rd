@@ -6,7 +6,7 @@
 \usage{
 create_hexsticker(
   package_name,
-  filename = file.path("man", "figures", "logo.svg"),
+  filename = path("man", "figures", "logo.svg"),
   icon,
   x = 0,
   y = 0,

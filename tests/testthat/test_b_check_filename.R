@@ -26,11 +26,11 @@ test_that("check_filename() works", {
 
   # fail on dash in file names
   dir_create(path(path, "source"))
-  writeLines("sessionInfo()", file.path(path, "source", "correct.R"))
+  writeLines("sessionInfo()", path(path, "source", "correct.R"))
   git_init(path = path)
   git_config_set(name = "user.name", value = "junk", repo = path)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
-  git_add(file.path("source", "correct.R"), repo = path)
+  git_add(path("source", "correct.R"), repo = path)
   gert::git_commit("initial commit", repo = path)
   wrong_file <- path(path, "source", "this Is wrong.R")
   writeLines("sessionInfo()", wrong_file)

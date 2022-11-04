@@ -7,14 +7,14 @@ test_that("is_tracked_not_modified() works", {
   git_config_set(name = "user.name", value = "junk", repo = path)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
-  writeLines("Initial line", file.path(path, "testfile.R"))
-  writeLines("testfile.R", file.path(path, ".gitignore"))
+  writeLines("Initial line", path(path, "testfile.R"))
+  writeLines("testfile.R", path(path, ".gitignore"))
 
   # File is gitignored
   expect_false(is_tracked_not_modified("testfile.R", repo = path))
 
   # File is not gitignored, but untracked (new, unstaged file)
-  unlink(file.path(path, ".gitignore"))
+  unlink(path(path, ".gitignore"))
   expect_false(is_tracked_not_modified("testfile.R", repo = path))
 
   # Start tracking the file (new, staged file)
@@ -26,7 +26,7 @@ test_that("is_tracked_not_modified() works", {
   expect_true(is_tracked_not_modified("testfile.R", repo = path))
 
   # Modify the file
-  writeLines("New line", file.path(path, "testfile.R"))
+  writeLines("New line", path(path, "testfile.R"))
   expect_false(is_tracked_not_modified("testfile.R", repo = path))
 
   # Commit the changes

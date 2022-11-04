@@ -47,11 +47,9 @@ setup_project <- function(path = ".") {
   checks <- c(checks, list("license", character(0))[[answer]])
   files <- c(files, list("LICENSE.md", character(0))[[answer]])
   if (!file_exists(path(path, "LICENSE.md"))) {
-    file_copy(
-      system.file(
-        file.path("generic_template", "cc_by_4_0.md"), package = "checklist"
-      ),
-      path(path, "LICENSE.md")
+    insert_file(
+      repo = repo, filename = "cc_by_4_0.md", template = "generic_template",
+      target = path, new_name = "LICENSE.md"
     )
   }
 

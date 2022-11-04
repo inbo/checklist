@@ -18,20 +18,20 @@ test_that("setup_package() works", {
     description = "A dummy package.",
     maintainer = maintainer, language = "en-GB"
   )
-  repo <- file.path(path, package)
+  repo <- path(path, package)
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
     "codecov.yml", "LICENSE.md", "NEWS.md", "README.Rmd",
-    file.path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
-    file.path(
+    path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
+    path(
       ".github", "workflows",
       c(
         "check_on_branch.yml", "check_on_different_r_os.yml",
         "check_on_main.yml", "release.yml"
       )
     ),
-    file.path("pkgdown", "extra.css"),
-    file.path(
+    path("pkgdown", "extra.css"),
+    path(
       "man", "figures",
       c(
         "logo-en.png", "background-pattern.png", "flanders.woff2",
@@ -39,15 +39,15 @@ test_that("setup_package() works", {
       )
     )
   )
-  file.remove(file.path(path, package, new_files))
+  file_delete(path(path, package, new_files))
   git_add(files = new_files, repo = repo)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
   expect_message(
-    setup_package(file.path(path, package)),
+    setup_package(path(path, package)),
     "package prepared for checklist::check_package()"
   )
-  expect_true(all(file.exists(file.path(path, package, new_files))))
+  expect_true(all(file.exists(path(path, package, new_files))))
 })

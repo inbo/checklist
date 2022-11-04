@@ -83,7 +83,7 @@ test_that("check_spelling() on a package", {
     "checklist_language"
   )
   hide_output <- tempfile(fileext = ".txt")
-  on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
   sink(hide_output)
   expect_invisible(print(z, hide_ignore = TRUE))
   sink()
@@ -102,7 +102,7 @@ test_that("check_spelling() on a package", {
   expect_is(
     {
       hide_output2 <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output2), add = TRUE, after = TRUE)
       sink(hide_output2)
       z <- x$set_exceptions()
       sink()
@@ -135,7 +135,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
       sink(hide_output)
       z <- change_language_interactive(
         data.frame(language = "en-GB", path = "a.Rmd")
@@ -150,7 +150,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output2 <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output2), add = TRUE, after = TRUE)
       sink(hide_output2)
       z <- change_language_interactive2(
         data.frame(language = "en-GB", path = "a.Rmd"), main = "en-GB",
@@ -166,7 +166,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output3 <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output3), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output3), add = TRUE, after = TRUE)
       sink(hide_output3)
       z <- change_language_interactive2(
         data.frame(language = "en-GB", path = path("a", c("a.Rmd", "b.Rmd"))),
@@ -221,7 +221,7 @@ test_that("check_spelling() works on a quarto project", {
   )
   stub(checklist_print, "interactive", TRUE, depth = 1)
   hide_output <- tempfile(fileext = ".txt")
-  on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
   sink(hide_output)
   expect_output(print(z))
   sink()

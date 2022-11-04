@@ -43,6 +43,7 @@
 #'
 #' @inheritParams read_checklist
 #' @export
+#' @importFrom fs path
 #' @importFrom gert git_ls
 #' @family both
 check_filename <- function(x = ".") {
@@ -91,7 +92,7 @@ check_filename <- function(x = ".") {
     vapply(
       dirs[!check_dir],
       function(x) {
-        do.call(file.path, as.list(x))
+        do.call(path, as.list(x))
       },
       character(1)
     )

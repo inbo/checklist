@@ -11,6 +11,7 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom fs path
 #' @importFrom tools loadPkgRdMacros loadRdMacros
 #' @family both
 check_spelling <- function(x = ".", quiet = FALSE) {
@@ -19,10 +20,8 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   md_files <- x$get_md
   if (x$package) {
     rd_files <- x$get_rd
-    macros <- loadRdMacros(
-      file.path(R.home("share"), "Rd", "macros", "system.Rd"),
-      loadPkgRdMacros(x$get_path, macros = NULL)
-    )
+    macros <- path(R.home("share"), "Rd", "macros", "system.Rd") |>
+      loadRdMacros(loadPkgRdMacros(x$get_path, macros = NULL))
   } else {
     rd_files <- data.frame(language = character(0), path = character(0))
     macros <- NULL
