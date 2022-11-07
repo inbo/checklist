@@ -9,6 +9,8 @@ update_citation(x = ".", quiet = FALSE)
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{quiet}{Whether to print check output during checking.}
 }
 \value{
 An invisible \code{checklist} object.

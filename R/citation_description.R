@@ -24,10 +24,12 @@ citation_description <- function(meta) {
   if (lang != "") {
     cit_meta$language <- lang
   }
-  remotes <- git_remote_list()
-  remotes$url[remotes$name == "origin"] |>
-    gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
-    gsub(pattern = "\\.git$", replacement = "") -> cit_meta$source
+  if (is_repository(meta$get_path)) {
+    remotes <- git_remote_list(meta$get_path)
+    remotes$url[remotes$name == "origin"] |>
+      gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
+      gsub(pattern = "\\.git$", replacement = "") -> cit_meta$source
+  }
   list(
     meta = cit_meta,
     errors = c(urls$errors, keywords$errors, communities$errors),

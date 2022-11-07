@@ -2,10 +2,11 @@
 #'
 #' This file format contains the citation information.
 #' It is supported by GitHub, Zenodo and Zotero.
+#' This function is super-seeded by `update_citation()`.
 #'
 #' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
-#' @inheritParams update_citation
+#' @param roles No longer used.
 #' @export
 #' @importFrom assertthat assert_that
 #' @family package

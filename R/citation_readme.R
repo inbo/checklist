@@ -21,10 +21,12 @@ citation_readme <- function(meta) {
     readme_community() |>
     readme_description() |>
     readme_keywords() -> cit_meta
-  remotes <- git_remote_list()
-  remotes$url[remotes$name == "origin"] |>
-    gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
-    gsub(pattern = "\\.git$", replacement = "") -> cit_meta$meta$source
+  if (is_repository(meta$get_path)) {
+    remotes <- git_remote_list(meta$get_path)
+    remotes$url[remotes$name == "origin"] |>
+      gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
+      gsub(pattern = "\\.git$", replacement = "") -> cit_meta$meta$source
+  }
   cit_meta$meta$upload_type <- "software"
   license_file <- path(meta$get_path, "LICENSE.md")
   if (!is_file(license_file)) {

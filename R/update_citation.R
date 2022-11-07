@@ -24,6 +24,7 @@
 #'
 #' @return An invisible `checklist` object.
 #' @inheritParams read_checklist
+#' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
