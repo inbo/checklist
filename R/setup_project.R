@@ -46,7 +46,7 @@ setup_project <- function(path = ".") {
   )
   checks <- c(checks, list("license", character(0))[[answer]])
   files <- c(files, list("LICENSE.md", character(0))[[answer]])
-  if (!file_exists(path(path, "LICENSE.md"))) {
+  if (answer == 1 && !file_exists(path(path, "LICENSE.md"))) {
     insert_file(
       repo = repo, filename = "cc_by_4_0.md", template = "generic_template",
       target = path, new_name = "LICENSE.md"
@@ -94,29 +94,22 @@ setup_vc <- function(path) {
   git_add(".gitignore", force = TRUE, repo = repo)
 
   # Add GitHub actions
-  dir_create(path(path, ".github", "workflows"))
-  file_copy(
-    system.file(
-      path("project_template", "check_project.yml"), package = "checklist"
-    ),
-    path(path, ".github", "workflows", "check_project.yml"), overwrite = TRUE
-  )
-  git_add(
-    path(".github", "workflows", "check_project.yml"), force = TRUE, repo = repo
+  target <- path(path, ".github", "workflows")
+  dir_create(target)
+  insert_file(
+    repo = repo, filename = "check_project.yml", template = "project_template",
+    target = target
   )
 
   # Add code of conduct
   if (!file_exists(path(path, ".github", "CODE_OF_CONDUCT.md"))) {
     answer <- menu(c("yes", "no"), title = "Add a default code of conduct?")
     if (answer == 1) {
-      dir_create(path(path, ".github"))
-      file_copy(
-        system.file(
-          path("generic_template", "CODE_OF_CONDUCT.md"), package = "checklist"
-        ),
-        path(path, ".github", "CODE_OF_CONDUCT.md")
+      target <- path(path, ".github")
+      insert_file(
+        repo = repo, filename = "CODE_OF_CONDUCT.md",
+        template = "generic_template", target = target
       )
-      git_add(path(".github", "CODE_OF_CONDUCT.md"), force = TRUE, repo = repo)
     }
   }
 
@@ -126,13 +119,10 @@ setup_vc <- function(path) {
       c("yes", "no"), title = "Add default contributing guidelines?"
     )
     if (answer == 1) {
-      file_copy(
-        system.file(
-          path("package_template", "CONTRIBUTING.md"), package = "checklist"
-        ),
-        path(path, ".github", "CONTRIBUTING.md")
+      insert_file(
+        repo = repo, filename = "CONTRIBUTING.md",
+        template = "package_template", target = target
       )
-      git_add(path(".github", "CONTRIBUTING.md"), force = TRUE, repo = repo)
     }
   }
 
