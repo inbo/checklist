@@ -8,7 +8,7 @@ test_that("update_citation() works", {
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   package <- "citation"
   create_package(
-    path = path, package = package,
+    path = path, package = package, keywords = "dummy", communities = "inbo",
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.", maintainer = maintainer,
     language = "en-GB"

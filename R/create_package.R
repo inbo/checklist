@@ -23,6 +23,8 @@
 #' @param license What type of license should be used?
 #' Choice between GPL-3 and MIT.
 #' Default GPL-3.
+#' @param keywords A vector of keywords.
+#' @param communities An optional vector of Zenodo community id's.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
@@ -46,11 +48,11 @@
 #' create_package(
 #'   path = path, package = "packagename", title = "package title",
 #'   description = "A short description.", maintainer = maintainer,
-#'   language = "en-GB", license = "GPL-3"
+#'   language = "en-GB", license = "GPL-3", keywords = "keyword"
 #' )
 create_package <- function(
   package, path = ".", title, description, maintainer, language = "en-GB",
-  license = c("GPL-3", "MIT")
+  license = c("GPL-3", "MIT"), keywords, communities = character(0)
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -72,6 +74,8 @@ create_package <- function(
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
+  assert_that(is.character(keywords), length(keywords) > 0)
+  assert_that(is.character(communities))
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,
@@ -91,6 +95,15 @@ create_package <- function(
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
+  if (length(communities)) {
+    communities <- sprintf(
+      "Config/checklist/communities: %s\n",
+      paste(communities, collapse = "; ")
+    )
+  } else {
+    communities <- ""
+  }
+
   # create DESCRIPTION
   sprintf(
 "Type: Package
@@ -106,6 +119,7 @@ Description: %4$s
 License: %7$s
 URL: https://github.com/inbo/%1$s
 BugReports: https://github.com/inbo/%1$s/issues
+%9$sConfig/checklist/keywords: %8$s
 Encoding: UTF-8
 Language: %6$s
 Roxygen: list(markdown = TRUE)
@@ -113,9 +127,9 @@ RoxygenNote: %5$s
 ",
     package, toTitleCase(title),
     paste(format(maintainer, style = "R"), collapse = "\n"),
-    description,
-    installed.packages()["roxygen2", "Version"], language,
-    ifelse(license == "MIT", "MIT + file LICENSE", license)
+    description, installed.packages()["roxygen2", "Version"], language,
+    ifelse(license == "MIT", "MIT + file LICENSE", license),
+    paste(keywords, collapse = "; "), communities
   ) |>
     writeLines(path(path, "DESCRIPTION"))
   tidy_desc(path)

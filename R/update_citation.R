@@ -15,8 +15,7 @@
 #' @note
 #'
 #' Source of the citation meta data:
-#' - package: Mainly `DESCRIPTION`.
-#'   keywords and (Zenodo) community extracted from `README.md`.
+#' - package: `DESCRIPTION`
 #' - project: `README.md`
 #'
 #' Should you want to add more information to the `inst/CITATION` file,

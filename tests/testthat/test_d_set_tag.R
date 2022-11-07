@@ -13,11 +13,10 @@ test_that("set_tag() works", {
 
   package <- "settag"
   create_package(
-    path = path,
-    package = package,
+    path = path, package = package, keywords = "dummy", communities = "inbo",
     title = "testing the ability of checklist to create a minimal package",
-    description = "A dummy package.",
-    maintainer = maintainer, language = "en-GB"
+    description = "A dummy package.", maintainer = maintainer,
+    language = "en-GB"
   )
   repo <- git_init(path(path, package))
   git_config_set(name = "user.name", value = "junk", repo = repo)

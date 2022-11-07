@@ -32,8 +32,7 @@ It is only relevant for packages.
 \note{
 Source of the citation meta data:
 \itemize{
-\item package: Mainly \code{DESCRIPTION}.
-keywords and (Zenodo) community extracted from \code{README.md}.
+\item package: \code{DESCRIPTION}
 \item project: \code{README.md}
 }
 

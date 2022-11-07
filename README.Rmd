@@ -21,9 +21,6 @@ output: github_document
 
 # The Checklist Package <img src="man/figures/logo.svg" align="right" alt="A hexagon with the word checklist" width="120" />
 
-**keywords**: quality control; documentation; publication
-<!-- community: inbo -->
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE, comment = "#>", fig.path = "man/figures/README-",

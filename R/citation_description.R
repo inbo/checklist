@@ -6,27 +6,10 @@ citation_description <- function(meta) {
   assert_that(meta$get_type == "package")
   path(meta$get_path, "DESCRIPTION") |>
     description$new() -> descript
-  readme <- path(meta$get_path, "README.md")
-  if (!is_file(readme) && is_file(path(meta$get_path, "README.Rmd"))) {
-    build_readme(meta$get_path, encoding = "UTF-8")
-  }
-  if (!is_file(readme)) {
-    readme_meta <- list(
-      errors = paste(readme, "not found"), warnings = character(0),
-      notes = character(0)
-    )
-  } else {
-    readme |>
-      readLines() |>
-      list() |>
-      setNames("text") |>
-      c(
-        list(errors = character(0), warnings = character(0),
-             notes = character(0))
-      ) |>
-      readme_community() |>
-      readme_keywords() -> readme_meta
-  }
+  descript$get_field("Config/checklist/keywords", default = character(0)) |>
+    description_keywords() -> keywords
+  descript$get_field("Config/checklist/communities", default = character(0)) |>
+    description_communities() -> communities
   urls <- description_url(descript$get_urls())
   authors <- description_author(descript$get_authors())
   list(
@@ -36,7 +19,7 @@ citation_description <- function(meta) {
     version = descript$get_version(), license = descript$get_field("License"),
     upload_type = "software", description = descript$get_field("Description")
   ) |>
-    c(authors$meta, readme_meta$meta, urls$meta) -> cit_meta
+    c(authors$meta, keywords$meta, communities$meta, urls$meta) -> cit_meta
   lang <- descript$get_field("Language", default = "")
   if (lang != "") {
     cit_meta$language <- lang
@@ -46,8 +29,9 @@ citation_description <- function(meta) {
     gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
     gsub(pattern = "\\.git$", replacement = "") -> cit_meta$source
   list(
-    meta = cit_meta, errors = c(urls$errors, readme_meta$errors),
-    warnings = readme_meta$warnings, notes = c(authors$notes, readme_meta$notes)
+    meta = cit_meta,
+    errors = c(urls$errors, keywords$errors, communities$errors),
+    warnings = character(0), notes = c(authors$notes, communities$notes)
   )
 }
 
@@ -128,5 +112,42 @@ description_url <- function(urls) {
   list(
     meta = list(url = urls),
     errors = "Multiple DOI found in DESCRIPTION"[length(doi_line) > 1]
+  )
+}
+
+description_keywords <- function(keywords) {
+  if (length(keywords) == 0) {
+    return(
+      list(
+        meta = list(),
+        errors = paste(
+          "no keywords found in `DESCRIPTION`.",
+          "Please add them with `Config/checklist/keywords: keyword; second`"
+        )
+      )
+    )
+  }
+  list(
+    meta = list(keywords = strsplit(keywords, "; ")[[1]]), errors = character(0)
+  )
+}
+
+description_communities <- function(communities) {
+  if (length(communities) == 0) {
+    return(
+      list(
+        meta = list(), notes = character(0),
+        errors = paste(
+          "no communities found in `DESCRIPTION`.",
+          "Please add them with `Config/checklist/communities: inbo; second`"
+        )
+      )
+    )
+  }
+  communities <- strsplit(communities, "; ")[[1]]
+  notes <-
+    "inbo not listed as community in `DESCRIPTION`"[!"inbo" %in% communities]
+  list(
+    meta = list(community = communities), errors = character(0), notes = notes
   )
 }

@@ -11,7 +11,9 @@ create_package(
   description,
   maintainer,
   language = "en-GB",
-  license = c("GPL-3", "MIT")
+  license = c("GPL-3", "MIT"),
+  keywords,
+  communities = character(0)
 )
 }
 \arguments{
@@ -38,6 +40,10 @@ Belgian Dutch.}
 \item{license}{What type of license should be used?
 Choice between GPL-3 and MIT.
 Default GPL-3.}
+
+\item{keywords}{A vector of keywords.}
+
+\item{communities}{An optional vector of Zenodo community id's.}
 }
 \description{
 Creates a package template in a new folder.
@@ -75,7 +81,7 @@ dir.create(path)
 create_package(
   path = path, package = "packagename", title = "package title",
   description = "A short description.", maintainer = maintainer,
-  language = "en-GB", license = "GPL-3"
+  language = "en-GB", license = "GPL-3", keywords = "keyword"
 )
 }
 \seealso{

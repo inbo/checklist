@@ -16,6 +16,7 @@ An invisible \code{checklist} object.
 \description{
 This file format contains the citation information.
 It is supported by GitHub, Zenodo and Zotero.
+This function is super-seeded by \code{update_citation()}.
 }
 \seealso{
 Other package: 

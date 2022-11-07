@@ -13,12 +13,9 @@ test_that("check_license() works", {
   package <- "checklicense"
   suppressMessages(
     create_package(
-      path = path,
-      package = package,
+      path = path, package = package, keywords = "dummy", communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.",
-      maintainer = maintainer,
-      license = "MIT"
+      description = "A dummy package.", maintainer = maintainer, license = "MIT"
     )
   )
   repo <- path(path, package)

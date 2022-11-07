@@ -51,6 +51,8 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
+Config/checklist/communities: inbo
+Config/checklist/keywords: quality control; documentation; publication
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)

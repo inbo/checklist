@@ -29,10 +29,6 @@ knitr::opts_chunk$set(
 
 # {{{ Package }}}
 
-**keywords**: first keyword; second keyword
-
-<!-- community: inbo -->
-
 The goal of {{{ Package }}} is to ...
 
 ## Installation

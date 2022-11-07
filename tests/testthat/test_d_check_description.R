@@ -13,11 +13,10 @@ test_that("check_description() works", {
   package <- "checkdescription"
   suppressMessages(
     create_package(
-      path = path,
-      package = package,
+      path = path, package = package, keywords = "dummy", communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.",
-      maintainer = maintainer, language = "en-GB"
+      description = "A dummy package.", maintainer = maintainer,
+      language = "en-GB"
     )
   )
   repo <- path(path, package)
