@@ -1,45 +1,50 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
   "version": "0.2.7",
-  "description": "An opinionated set of rules for R packages and R source code projects.",
-  "creators": [
-    {
-      "name": "Onkelinx, Thierry",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
-    }
-  ],
+  "license": "GPL-3",
   "upload_type": "software",
-  "access_right": "open",
-  "license": "GPL-3.0",
-  "communities": [
-    {
-      "identifier": "inbo"
-    }
+  "description": "<p>An opinionated set of rules for R packages and R source code\nprojects.<\/p>",
+  "keywords": [
+    "quality control",
+    "documentation",
+    "publication"
   ],
+  "language": "eng",
   "contributors": [
     {
+      "name": "Onkelinx, Thierry",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216",
+      "type": "ContactPerson"
+    },
+    {
       "name": "Lommelen, Els",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0002-3481-5684"
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0002-3481-5684",
+      "type": "ProjectMember"
     },
     {
       "name": "Van Calster, Hans",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0001-8595-8426"
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8595-8426",
+      "type": "ProjectMember"
     },
     {
       "name": "Research Institute for Nature and Forest",
       "type": "RightsHolder"
-    },
-    {
-      "name": "Onkelinx, Thierry",
-      "type": "ContactPerson",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
     }
   ],
-  "language": "eng",
-  "keywords": [
-    "R package",
-    "quality control"
+  "creators": [
+    {
+      "name": "Onkelinx, Thierry",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216"
+    }
+  ],
+  "access_right": "open",
+  "communities": [
+    {
+      "identifier": "inbo"
+    }
   ]
 }

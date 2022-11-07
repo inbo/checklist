@@ -9,6 +9,8 @@ write_citation_cff(x = ".", roles)
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{roles}{No longer used.}
 }
 \value{
 An invisible \code{checklist} object.
