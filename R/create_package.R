@@ -10,11 +10,9 @@
 #' @param path Where to create the package directory.
 #' @param title A single sentence with the title of the package.
 #' @param description A single paragraph describing the package.
-#' @param maintainer The output of [utils::person()].
-#'   If you use [utils::person()], then you must provide `given`, `family`,
-#'   `role`, `email` and  `comment` with valid `ORCID`.
-#'   When missing, the functions looks for `usethis.description` in the options.
-#'   See [usethis::use_description()] for more information.
+#' @param maintainer When missing, the function interactively lets you add the
+#' maintainer and other authors.
+#' Otherwise it must be the output of [utils::person()].
 #' @param language Language of the project in `xx-YY` format.
 #' `xx` is the two letter code for the language.
 #' `YY` is the two letter code for the language variant.
@@ -51,8 +49,8 @@
 #'   language = "en-GB", license = "GPL-3", keywords = "keyword"
 #' )
 create_package <- function(
-  package, path = ".", title, description, maintainer, language = "en-GB",
-  license = c("GPL-3", "MIT"), keywords, communities = character(0)
+  package, path = ".", title, description, keywords, language = "en-GB",
+  license = c("GPL-3", "MIT"), communities = character(0), maintainer
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -60,16 +58,16 @@ create_package <- function(
       "Please install the `roxygen2` package. `install.packages(\"roxygen2\")`"
   )
   if (missing(maintainer)) {
-    utd <- getOption("usethis.description")
-    assert_that(
-      has_name(utd, "Authors@R"),
-      msg = paste(
-        "maintainer not provided and no usethis::use_description defaults",
-        "available."
-      )
-    )
-    maintainer <- head(eval(parse(text = utd$"Authors@R")), 1)
+    cat("Please select the maintainer")
+    maintainer <- author2person(role = c("aut", "cre"))
+    answer <- askYesNo("Add another author?")
+    while (isTRUE(answer)) {
+      maintainer <- c(maintainer, author2person())
+      answer <- askYesNo("Add another author?")
+    }
+    assert_that(!is.na(answer), msg = "function interupted by user")
   }
+
   assert_that(inherits(maintainer, "person"))
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))

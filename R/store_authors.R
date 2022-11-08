@@ -15,14 +15,14 @@ store_authors <- function(x = ".") {
     } else {
       current <- data.frame(
         given = character(0), family = character(0), email = character(0),
-        orcid = character(0), usage = integer(0)
+        orcid = character(0), affiliation = character(0), usage = integer(0)
       )
     }
   } else {
     dir_create(root)
     current <- data.frame(
       given = character(0), family = character(0), email = character(0),
-      orcid = character(0), usage = integer(0)
+      orcid = character(0), affiliation = character(0), usage = integer(0)
     )
   }
   this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
@@ -44,12 +44,14 @@ author2df <- function(z) {
   if (all(z$role %in% c("cph", "fnd"))) {
     return(list(data.frame(
       given = character(0), family = character(0), email = character(0),
-      orcid = character(0), usage = integer(0)
+      orcid = character(0), affiliation = character(0), usage = integer(0)
     )))
   }
   list(data.frame(
     given = z$given, family = z$family, email = coalesce(z$email, ""),
-    orcid = coalesce(unname(z$comment["ORCID"]), ""), usage = 1
+    orcid = coalesce(unname(z$comment["ORCID"]), ""),
+    affiliation = coalesce(unname(z$comment["affiliation"]), ""),
+    usage = 1
   ))
 }
 
