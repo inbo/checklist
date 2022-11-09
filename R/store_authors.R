@@ -7,7 +7,6 @@
 #' @importFrom utils read.table write.table
 #' @family utils
 store_authors <- function(x = ".") {
-  x <- read_checklist(x = x)
   root <- R_user_dir("checklist", which = "data")
   if (is_dir(root)) {
     if (is_file(path(root, "author.txt"))) {
@@ -26,12 +25,24 @@ store_authors <- function(x = ".") {
       orcid = character(0), affiliation = character(0), usage = integer(0)
     )
   }
-  this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
-  author <- this_desc$get_authors()
-  vapply(author, author2df, vector(mode = "list", 1)) |>
-    c(list(current)) |>
-    do.call(what = rbind) |>
-    aggregate(x = usage ~ given + family + email + orcid, FUN = sum) |>
+  if (file_exists(path(x, "DESCRIPTION"))) {
+    this_desc <- description$new(file = path(x, "DESCRIPTION"))
+    author <- this_desc$get_authors()
+    vapply(author, author2df, vector(mode = "list", 1)) |>
+      c(list(current)) |>
+      do.call(what = rbind) -> new_author
+  } else {
+    citation_meta$new(x)$get_meta$authors |>
+      cbind(usage = 1, email = "") -> cit_meta
+    cit_meta <- cit_meta[
+      , c("given", "family", "email", "orcid", "affiliation", "usage")
+    ]
+    new_author <- rbind(current, cit_meta)
+  }
+  aggregate(
+    x = usage ~ given + family + email + orcid + affiliation, FUN = sum,
+    data = new_author
+  ) |>
     write.table(
       file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
       fileEncoding = "UTF8"

@@ -117,6 +117,10 @@ test_that("check_spelling() on a project", {
   path <- tempfile("check_spelling")
   dir_create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  system.file("DESCRIPTION", package = "checklist") |>
+    dirname() |>
+    store_authors()
   stub(create_project, "readline", "test")
   expect_invisible(
     {
@@ -132,7 +136,16 @@ test_that("check_spelling() on a project", {
     check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE),
     "checklist"
   )
-  add_words("Onkelinx", path(path, "spelling", "inst", "en_gb"))
+  hide_author <- tempfile(fileext = ".txt")
+  on.exit(file_delete(hide_author), add = TRUE, after = TRUE)
+  sink(hide_author)
+  aut <- use_author()
+  c(aut$given, aut$family) |>
+    strsplit(" ") |>
+    unlist() |>
+    unique() |>
+    add_words(path(path, "spelling", "inst", "en_gb"))
+  sink()
   expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
 
   x <- read_checklist(path)
