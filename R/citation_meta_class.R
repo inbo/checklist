@@ -227,7 +227,11 @@ citation_zenodo <- function(meta) {
     citation_file, "is modified.",
     "Run `checklist::citation_meta$new()` locally."[!interactive()],
     "Please commit changes."
-  )[!is_tracked_not_modified(citation_file, meta$get_path)]
+  )[
+    !is_tracked_not_modified(
+      path_rel(citation_file, meta$get_path), meta$get_path
+    )
+  ]
   return(errors)
 }
 
@@ -298,7 +302,11 @@ citation_cff <- function(meta) {
     citation_file, "is modified.",
     "Run `checklist::citation_meta$new()` locally."[!interactive()],
     "Please commit changes."
-  )[!is_tracked_not_modified(citation_file, meta$get_path)]
+  )[
+    !is_tracked_not_modified(
+      path_rel(citation_file, meta$get_path), meta$get_path
+    )
+  ]
   return(errors)
 }
 
@@ -402,7 +410,11 @@ citation_r <- function(meta) {
     citation_file, "is modified.",
     "Run `checklist::citation_meta$new()` locally."[!interactive()],
     "Please commit changes."
-  )[!is_tracked_not_modified(citation_file, meta$get_path)]
+  )[
+    !is_tracked_not_modified(
+      path_rel(citation_file, meta$get_path), meta$get_path
+    )
+  ]
   return(errors = errors)
 }
 
