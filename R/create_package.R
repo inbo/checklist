@@ -28,7 +28,7 @@
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
 #' @importFrom tools toTitleCase
-#' @importFrom utils installed.packages
+#' @importFrom utils askYesNo installed.packages
 #' @family setup
 #' @examples
 #' # maintainer in `utils::person()` format
@@ -60,12 +60,9 @@ create_package <- function(
   if (missing(maintainer)) {
     cat("Please select the maintainer")
     maintainer <- author2person(role = c("aut", "cre"))
-    answer <- askYesNo("Add another author?")
-    while (isTRUE(answer)) {
+    while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
       maintainer <- c(maintainer, author2person())
-      answer <- askYesNo("Add another author?")
     }
-    assert_that(!is.na(answer), msg = "function interupted by user")
   }
 
   assert_that(inherits(maintainer, "person"))

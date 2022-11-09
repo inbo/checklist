@@ -11,7 +11,8 @@ store_authors <- function(x = ".") {
   root <- R_user_dir("checklist", which = "data")
   if (is_dir(root)) {
     if (is_file(path(root, "author.txt"))) {
-      current <- read.table(path(root, "author.txt"), header = TRUE, sep = "\t")
+      path(root, "author.txt") |>
+        read.table(header = TRUE, sep = "\t") -> current
     } else {
       current <- data.frame(
         given = character(0), family = character(0), email = character(0),

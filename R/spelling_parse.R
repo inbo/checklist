@@ -203,6 +203,9 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   # remove quarto caption options
   text <- gsub("^: (.*)\\{.*?\\}", "\\1", text)
 
+  # remove markdown footnotes
+  text <- gsub("\\[\\^.*?\\]", "", text)
+
   # extract other languages
   assert_that(
     length(
@@ -258,6 +261,7 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     text[c(divs[1], divs[2])] <- ""
     divs <- tail(divs, -2)
   }
+
   main_language <- spelling_check(
     text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
   )

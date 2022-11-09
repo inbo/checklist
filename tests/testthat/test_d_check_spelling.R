@@ -117,18 +117,23 @@ test_that("check_spelling() on a project", {
   path <- tempfile("check_spelling")
   dir_create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
-  stub(create_project, "interactive", TRUE, depth = 2)
-  stub(create_project, "menu", 1, depth = 2)
-  stub(create_project, "interactive", TRUE, depth = 3)
-  stub(create_project, "menu", 1, depth = 3)
-  expect_invisible(create_project(path, "spelling"))
-  expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
-  dir_create(path(path, "spelling"), "source")
-  writeLines("# Een testfunctie", path(path, "spelling", "source", "dummy.Rmd"))
+  stub(create_project, "readline", "test")
+  expect_invisible(
+    {
+      hide_create <- tempfile(fileext = ".txt")
+      on.exit(file_delete(hide_create), add = TRUE, after = TRUE)
+      sink(hide_create)
+      z <- create_project(path, "spelling")
+      sink()
+    }
+  )
+
   expect_is(
     check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE),
     "checklist"
   )
+  add_words("Onkelinx", path(path, "spelling", "inst", "en_gb"))
+  expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
 
   x <- read_checklist(path)
   stub(change_language_interactive, "menu", 3)
@@ -217,7 +222,7 @@ test_that("check_spelling() works on a quarto project", {
     path(path, "source", "language.qmd")
   )
   expect_is({
-    z <- check_spelling(path)
+    z <- check_spelling(path, quiet = TRUE)
   }, "checklist"
   )
   stub(checklist_print, "interactive", TRUE, depth = 1)

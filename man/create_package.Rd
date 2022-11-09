@@ -9,11 +9,11 @@ create_package(
   path = ".",
   title,
   description,
-  maintainer,
+  keywords,
   language = "en-GB",
   license = c("GPL-3", "MIT"),
-  keywords,
-  communities = character(0)
+  communities = character(0),
+  maintainer
 )
 }
 \arguments{
@@ -25,11 +25,7 @@ create_package(
 
 \item{description}{A single paragraph describing the package.}
 
-\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}}.
-If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
-\code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.
-When missing, the functions looks for \code{usethis.description} in the options.
-See \code{\link[usethis:use_description]{usethis::use_description()}} for more information.}
+\item{keywords}{A vector of keywords.}
 
 \item{language}{Language of the project in \code{xx-YY} format.
 \code{xx} is the two letter code for the language.
@@ -41,9 +37,11 @@ Belgian Dutch.}
 Choice between GPL-3 and MIT.
 Default GPL-3.}
 
-\item{keywords}{A vector of keywords.}
-
 \item{communities}{An optional vector of Zenodo community id's.}
+
+\item{maintainer}{When missing, the function interactively lets you add the
+maintainer and other authors.
+Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
 }
 \description{
 Creates a package template in a new folder.

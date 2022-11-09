@@ -7,10 +7,9 @@
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom fs is_dir path path_real
-#' @importFrom utils menu
 #' @family setup
 setup_project <- function(path = ".") {
-  assert_that(is.string(path), is_dir(path), interactive())
+  assert_that(is.string(path), is_dir(path))
   path <- path_real(path)
   files <- c("checklist.yml")
   checklist_file <- path(path, files)
@@ -24,29 +23,27 @@ setup_project <- function(path = ".") {
   }
 
   repo <- setup_vc(path = path)
-  checks <- "checklist"
+  files <- create_readme(path = path)
+  checks <- c(
+    "checklist",
+    "filename conventions"[isTRUE(ask_yes_no("Check file name conventions?"))],
+    "lintr"[isTRUE(ask_yes_no("Check code style?"))],
+    "license"[
+      isTRUE(
+        ask_yes_no(
+          "Check the LICENSE file? The file will be created when missing."
+        )
+      )
+    ],
+    "spelling"[isTRUE(ask_yes_no("Check spelling?"))]
+  )
 
-  answer <- menu(c("yes", "no"), title = "Check file name conventions?")
-  checks <- c(checks, list("filename conventions", character(0))[[answer]])
-
-  answer <- menu(c("yes", "no"), title = "Check code style?")
-  checks <- c(checks, list("lintr", character(0))[[answer]])
-
-  answer <- menu(
+  answer <- menu_first(
     c("English", "Dutch", "French"), title = "Default language of the project?"
   )
   x$set_default(c("en-GB", "nl-BE", "fr-FR")[answer])
 
-  answer <- menu(c("yes", "no"), title = "Check spelling?")
-  checks <- c(checks, list("spelling", character(0))[[answer]])
-
-  answer <- menu(
-    c("yes", "no"),
-    title = "Check the LICENSE file? The file will be created when missing."
-  )
-  checks <- c(checks, list("license", character(0))[[answer]])
-  files <- c(files, list("LICENSE.md", character(0))[[answer]])
-  if (answer == 1 && !file_exists(path(path, "LICENSE.md"))) {
+  if ("license" %in% checks && !file_exists(path(path, "LICENSE.md"))) {
     insert_file(
       repo = repo, filename = "cc_by_4_0.md", template = "generic_template",
       target = path, new_name = "LICENSE.md"
@@ -59,22 +56,26 @@ setup_project <- function(path = ".") {
   if (is.null(repo)) {
     return(invisible(NULL))
   }
-  git_add(files, force = TRUE, repo = repo)
+  dir_ls(path, regexp = "Rproj$") |>
+    c("LICENSE.md"["license" %in% checks], files) |>
+    git_add(force = TRUE, repo = repo)
   return(invisible(NULL))
 }
 
 #' @importFrom fs dir_create file_copy file_exists is_file path
-#' @importFrom gert git_add git_find git_init
+#' @importFrom gert git_add git_find git_init git_remote_add
 setup_vc <- function(path) {
   if (is_repository(path)) {
     assert_that(is_workdir_clean(path))
     repo <- git_find(path)
   } else {
-    answer <- menu(c("yes", "no"), title = "Use version control?")
-    if (answer == 2) {
+    if (!isTRUE(ask_yes_no("Use version control?"))) {
       return(invisible(NULL))
     }
     repo <- git_init(path = path)
+    preferred_protocol() |>
+      sprintf(basename(path)) |>
+      git_remote_add(repo = repo)
   }
 
   # add .gitignore
@@ -102,28 +103,26 @@ setup_vc <- function(path) {
   )
 
   # Add code of conduct
-  if (!file_exists(path(path, ".github", "CODE_OF_CONDUCT.md"))) {
-    answer <- menu(c("yes", "no"), title = "Add a default code of conduct?")
-    if (answer == 1) {
-      target <- path(path, ".github")
-      insert_file(
-        repo = repo, filename = "CODE_OF_CONDUCT.md",
-        template = "generic_template", target = target
-      )
-    }
+  if (
+    !file_exists(path(path, ".github", "CODE_OF_CONDUCT.md")) &&
+    isTRUE(ask_yes_no("Add a default code of conduct?"))
+  ) {
+    target <- path(path, ".github")
+    insert_file(
+      repo = repo, filename = "CODE_OF_CONDUCT.md",
+      template = "generic_template", target = target
+    )
   }
 
   # Add contributing guidelines
-  if (!file_exists(path(path, ".github", "CONTRIBUTING.md"))) {
-    answer <- menu(
-      c("yes", "no"), title = "Add default contributing guidelines?"
+  if (
+    !file_exists(path(path, ".github", "CONTRIBUTING.md")) &&
+    isTRUE(ask_yes_no("Add default contributing guidelines?"))
+  ) {
+    insert_file(
+      repo = repo, filename = "CONTRIBUTING.md", template = "package_template",
+      target = target
     )
-    if (answer == 1) {
-      insert_file(
-        repo = repo, filename = "CONTRIBUTING.md",
-        template = "package_template", target = target
-      )
-    }
   }
 
   return(invisible(repo))
@@ -154,4 +153,111 @@ create_project <- function(path, project) {
   )
 
   setup_project(path(path, project))
+}
+
+create_readme <- function(path) {
+  if (file_exists(path(path, "README.md"))) {
+    return(character(0))
+  }
+  cat("Which person to use as author and contact person?\n")
+  author <- author2badge(role = c("aut", "cre"))
+  while (isTRUE(ask_yes_no("add another author?", default = FALSE))) {
+    extra <- author2badge()
+    attr(author, "footnote") |>
+      c(attr(extra, "footnote")) |>
+      unique() -> footnote
+    c(author, extra) |>
+      `attr<-`(which = "footnote", value = footnote) -> author
+  }
+  title <- readline(prompt = "Enter the title of the project?")
+  readline(prompt = "Enter one or more keywords separaterd by `;`") |>
+    strsplit(";") |>
+    unlist() |>
+    gsub(pattern = "^\\s+", replacement = "") |>
+    gsub(pattern = "\\s+$", replacement = "") |>
+    paste(collapse = "; ") |>
+    sprintf(fmt = "**keywords**: %s") -> keywords
+  c("[^cph]: copyright holder", "[^fnd]: funder", attr(author, "footnote")) |>
+    unique() -> footnote
+  if (!is_repository(path)) {
+    badges <- character(0)
+  } else {
+    remotes <- git_remote_list(repo = path)
+    remotes$url[remotes$name == "origin"] |>
+      gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
+      gsub(pattern = "\\.git$", replacement = "") -> repo_url
+    if (!grepl("github.com", repo_url)) {
+      badges <- character(0)
+    } else {
+      gsub("https://github.com/", "", repo_url) |>
+        sprintf(
+          fmt = paste0(
+            "![GitHub](https://img.shields.io/github/license/%1$s)\n",
+            "![GitHub Workflow Status](https://img.shields.io/github/workflow/",
+            "status/%1$s/check-project)\n",
+            "![GitHub repo size](https://img.shields.io/github/repo-size/%1$s)"
+          )
+        ) -> badges
+    }
+  }
+  c(
+    "<!-- badges: start -->", badges, "<!-- badges: end -->", "",
+    paste("#", title), "", author,
+    "Research Institute for Nature and Forest[^cph][^fnd]", "", footnote, "",
+    keywords, "", "<!-- community: inbo -->", "", "<!-- description: start -->",
+    "Replace this with a short description of the project.",
+    "It becomes the abstract of the project in the citation information.",
+    "And the project description at https://zenodo.org",
+    "<!-- description: end -->", "",
+    "Anything below here is visible in the README but not in the citation."
+  ) |>
+    writeLines(path(path, "README.md"))
+  return(path(path, "README.md"))
+}
+
+#' @importFrom fs dir_create path
+#' @importFrom tools R_user_dir
+#' @importFrom utils menu
+#' @importFrom yaml read_yaml write_yaml
+preferred_protocol <- function() {
+  R_user_dir("checklist", which = "config") |>
+    path("config.yml") -> config_file
+  if (file_exists(config_file)) {
+    config <- read_yaml(config_file)
+  } else {
+    config <- list()
+  }
+  if (
+    !has_name(config, "git") || !has_name(config$git, "protocol") ||
+    !has_name(config$git, "organisation")
+  ) {
+    config[["git"]][["organisation"]] <- readline(
+      "What is your default GitHub organisation. Leave empty for `inbo`."
+    )
+    if (config[["git"]][["organisation"]] == "") {
+      config[["git"]][["organisation"]] <- "inbo"
+    }
+    c("https (default)", "ssh") |>
+      menu_first(title = "Which protocol do you prefer") -> protocol
+    config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
+    dirname(config_file) |>
+      dir_create()
+    write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
+  }
+  ifelse(
+    config$git$protocol == "https", "https://github.com/%s/%%s.git",
+    "git@github.com:%s/%%s.git"
+  ) |>
+    sprintf(config$git$organisation)
+}
+
+#' @importFrom utils askYesNo
+ask_yes_no <- function(
+  msg, default = TRUE,
+  prompts = getOption("askYesNo", gettext(c("Yes", "No", "Cancel"))), ...
+) {
+  if (!interactive()) {
+    return(default)
+  }
+  askYesNo(msg = msg, default = default, prompts = prompts, ...)
 }
