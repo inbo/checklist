@@ -185,6 +185,7 @@ create_readme <- function(path) {
     remotes <- git_remote_list(repo = path)
     remotes$url[remotes$name == "origin"] |>
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
+      gsub(pattern = "https://.*?@", replacement = "https://") |>
       gsub(pattern = "\\.git$", replacement = "") -> repo_url
     if (!grepl("github.com", repo_url)) {
       badges <- character(0)

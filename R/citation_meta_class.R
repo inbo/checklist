@@ -225,7 +225,7 @@ citation_zenodo <- function(meta) {
     writeLines(citation_file)
   errors <- paste(
     citation_file, "is modified.",
-    "Run `checklist::citation_meta$new()` locally."[!interactive()],
+    "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
     !is_tracked_not_modified(
@@ -300,7 +300,7 @@ citation_cff <- function(meta) {
   write_yaml(x = cff, file = citation_file, fileEncoding = "UTF-8")
   errors <- paste(
     citation_file, "is modified.",
-    "Run `checklist::citation_meta$new()` locally."[!interactive()],
+    "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
     !is_tracked_not_modified(
@@ -408,7 +408,7 @@ citation_r <- function(meta) {
     writeLines(citation_file)
   errors <- paste(
     citation_file, "is modified.",
-    "Run `checklist::citation_meta$new()` locally."[!interactive()],
+    "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
     !is_tracked_not_modified(
