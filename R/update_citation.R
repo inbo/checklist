@@ -35,14 +35,8 @@ update_citation <- function(x = ".", quiet = FALSE) {
   x <- read_checklist(x = x)
   cit_meta <- citation_meta$new(x$get_path)
   print(cit_meta, quiet = quiet)
-  if (length(cit_meta$get_warnings) > 0) {
-    x$add_warnings(cit_meta$get_warnings, "CITATION")
-  }
-  if (length(cit_meta$get_errors) > 0) {
-    x$add_error(cit_meta$get_errors, item = "CITATION", keep = FALSE)
-  }
-  if (length(cit_meta$get_notes) > 0) {
-    x$add_notes(cit_meta$get_notes, item = "CITATION")
-  }
+  x$add_warnings(cit_meta$get_warnings, "CITATION")
+  x$add_error(cit_meta$get_errors, item = "CITATION", keep = FALSE)
+  x$add_notes(cit_meta$get_notes, item = "CITATION")
   return(invisible(x))
 }
