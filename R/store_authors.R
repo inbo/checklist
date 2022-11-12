@@ -40,7 +40,7 @@ store_authors <- function(x = ".") {
     new_author <- rbind(current, cit_meta)
   }
   aggregate(
-    x = usage ~ given + family + email + orcid + affiliation, FUN = sum,
+    usage ~ given + family + email + orcid + affiliation, FUN = sum,
     data = new_author
   ) |>
     write.table(
