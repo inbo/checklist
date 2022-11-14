@@ -2,7 +2,7 @@
 #' @importFrom fs path
 citation_readme <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  assert_that(meta$get_package == "project")
+  assert_that(meta$get_type == "project")
   readme_file <- path(meta$get_path, "README.md")
   if (!is_file(readme_file)) {
     return(

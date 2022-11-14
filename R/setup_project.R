@@ -35,7 +35,8 @@ setup_project <- function(path = ".") {
         )
       )
     ],
-    "spelling"[isTRUE(ask_yes_no("Check spelling?"))]
+    "spelling"[isTRUE(ask_yes_no("Check spelling?"))],
+    "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )
 
   answer <- menu_first(

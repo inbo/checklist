@@ -38,6 +38,11 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     x <- check_license(x = x)
   }
 
+  if ("CITATION" %in% x$get_required) {
+    quiet_cat("Checking the citation information\n", quiet = quiet)
+    x <- update_citation(x = x, quiet = quiet)
+  }
+
   print(x, quiet = quiet)
   if (!x$fail) {
     quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)
