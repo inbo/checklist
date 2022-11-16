@@ -33,8 +33,8 @@ citation_description <- function(meta) {
   }
   list(
     meta = cit_meta,
-    errors = c(urls$errors, keywords$errors, communities$errors),
-    warnings = character(0), notes = c(authors$notes, communities$notes)
+    errors = c(urls$errors, keywords$errors), warnings = communities$warnings,
+    notes = c(authors$notes, communities$notes)
   )
 }
 
@@ -140,7 +140,7 @@ description_communities <- function(communities) {
     return(
       list(
         meta = list(), notes = character(0),
-        errors = paste(
+        warnings = paste(
           "no communities found in `DESCRIPTION`.",
           "Please add them with `Config/checklist/communities: inbo; second`"
         )
@@ -151,6 +151,6 @@ description_communities <- function(communities) {
   notes <-
     "inbo not listed as community in `DESCRIPTION`"[!"inbo" %in% communities]
   list(
-    meta = list(community = communities), errors = character(0), notes = notes
+    meta = list(community = communities), warnings = character(0), notes = notes
   )
 }

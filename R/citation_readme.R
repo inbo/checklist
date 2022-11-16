@@ -296,8 +296,8 @@ readme_version <- function(text) {
 readme_community <- function(text) {
   community_regexp <- "<!-- community: (.*?) -->"
   community_line <- grep(community_regexp, text$text)
-  text$notes <- c(
-    text$notes,
+  text$warnings <- c(
+    text$warnings,
     "No community information found in README.md"[length(community_line) == 0]
   )
   if (length(community_line) > 0) {
