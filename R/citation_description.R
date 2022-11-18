@@ -12,11 +12,14 @@ citation_description <- function(meta) {
     description_communities() -> communities
   urls <- description_url(descript$get_urls())
   authors <- description_author(descript$get_authors())
+  descript$get_field("License") |>
+    gsub(pattern = " \\+ file LICENSE", replacement = "") |>
+    gsub(pattern = "^GPL-3$", replacement = "GPL-3.0") -> license
   list(
     title = sprintf(
       "%s: %s", descript$get_field("Package"), descript$get_field("Title")
     ),
-    version = descript$get_version(), license = descript$get_field("License"),
+    version = descript$get_version(), license = license,
     upload_type = "software", description = descript$get_field("Description")
   ) |>
     c(authors$meta, keywords$meta, communities$meta, urls$meta) -> cit_meta
