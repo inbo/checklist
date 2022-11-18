@@ -132,10 +132,35 @@ test_that("check_spelling() on a project", {
     }
   )
 
-  expect_is(
-    check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE),
-    "checklist"
+  expect_is({
+    x <- check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE)
+    }, "checklist"
   )
+  git_status(repo = path(path, "spelling"))$file |>
+    git_add(repo = path(path, "spelling"))
+  git_commit("initial commit", repo = path(path, "spelling"))
+  stub(
+    write_checklist, "x$add_motivation",
+    function(which = c("warnings", "notes")) {
+      which <- match.arg(which)
+      current <- get(which, envir = x$.__enclos_env__$private)
+      new_motivation <- rep("unit test", length(current))
+      new_allowed <- current
+      new_allowed <- lapply(
+        order(new_allowed),
+        function(i) {
+          list(motivation = new_motivation[i], value = new_allowed[i])
+        }
+      )
+      assign(
+        paste0("allowed_", which), new_allowed,
+        envir = x$.__enclos_env__$private
+      )
+      return(invisible(x))
+    }
+  )
+  write_checklist(x = x)
+
   hide_author <- tempfile(fileext = ".txt")
   on.exit(file_delete(hide_author), add = TRUE, after = TRUE)
   sink(hide_author)

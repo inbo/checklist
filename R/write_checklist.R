@@ -48,12 +48,10 @@
 write_checklist <- function(x = ".") {
   x <- suppressMessages(read_checklist(x = x))
 
-  if (x$package && "R CMD check" %in% x$get_checked) {
-    x$confirm_motivation("warnings")
-    x$confirm_motivation("notes")
-    x$add_motivation("warnings")
-    x$add_motivation("notes")
-  }
+  x$confirm_motivation("warnings")
+  x$confirm_motivation("notes")
+  x$add_motivation("warnings")
+  x$add_motivation("notes")
 
   path(x$get_path, "checklist.yml") |>
     write_yaml(x = x$template)
