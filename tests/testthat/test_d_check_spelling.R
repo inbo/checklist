@@ -136,6 +136,12 @@ test_that("check_spelling() on a project", {
     x <- check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE)
     }, "checklist"
   )
+  git_config_set(
+    name = "user.name", value = "junk", repo = path(path, "spelling")
+  )
+  git_config_set(
+    name = "user.email", value = "junk@inbo.be", repo = path(path, "spelling")
+  )
   git_status(repo = path(path, "spelling"))$file |>
     git_add(repo = path(path, "spelling"))
   git_commit("initial commit", repo = path(path, "spelling"))
