@@ -22,8 +22,21 @@ read_checklist <- function(x = ".") {
   checklist_file <- path(x, "checklist.yml")
   if (!is_file(checklist_file)) {
     # no check list file found
-    message("No `checklist.yml` found. Assuming this is a project.")
-    x <- checklist$new(x = x, language = "en-GB", package = FALSE)
+    desc_file <- path(x, "DESCRIPTION")
+    if (!is_file(desc_file)) {
+      message(
+        "No `checklist.yml` or `DESCRIPTION` found. ",
+        "Assuming this is a project."
+      )
+      x <- checklist$new(x = x, language = "en-GB", package = FALSE)
+      x <- x$allowed()
+      return(x)
+    }
+    message(
+      "No `checklist.yml` found and existing `DESCRIPTION`. ",
+      "Assuming this is a package."
+    )
+    x <- checklist$new(x = x, package = TRUE)
     x <- x$allowed()
     return(x)
   }

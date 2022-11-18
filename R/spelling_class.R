@@ -15,7 +15,13 @@ spelling <- R6Class(
       assert_that(is.string(base_path), noNA(base_path), dir_exists(base_path))
       private$path <- path_real(base_path)
       if (file_exists(path(base_path, "DESCRIPTION"))) {
-        desc_lang <- desc(base_path)$get_or_fail("Language")
+        desc_lang <- desc(base_path)$get_field("Language", default = NA)
+        assert_that(
+          !is.na(desc_lang), msg = paste(
+            "No `Language` field found in DESCRIPTION.",
+            "Please add `Language: en-GB` to DESCRIPTION."
+          )
+        )
         assert_that(
           missing(language) || language == desc_lang,
           msg = "different `language` found in DESCRIPTION"
