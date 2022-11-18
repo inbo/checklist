@@ -84,7 +84,7 @@ description_author_format <- function(i, x) {
     contributor = i,
     role = c(
       aut = "author", cre = "contact person", ctb = "contributor",
-      cph = "copyright holder", fnd = "funder"
+      cph = "copyright holder", fnd = "funder", rev = "reviewer"
     )[x[[i]]$role]
   )
   if (is.null(x[[i]]$comment)) {

@@ -180,7 +180,7 @@ readme_author <- function(text) {
   authors_aff <- authors
   authors_aff[!grepl("\\[\\^.*\\]", authors_aff)] <- ""
   gsub(".*?\\[\\^(.*?)\\]", "\\1;", authors_aff) |>
-    gsub(pattern = "(aut|cph|cre|ctb|fnd);", replacement = "") |>
+    gsub(pattern = "(aut|cph|cre|ctb|fnd|rev);", replacement = "") |>
     gsub(pattern = ";$", replacement = "") |>
     strsplit(split = ";") -> authors_aff
   data.frame(
@@ -203,6 +203,10 @@ readme_author <- function(text) {
       data.frame(
         contributor = grep("\\[\\^fnd\\]", authors),
         role = rep("funder", sum(grepl("\\[\\^fnd\\]", authors)))
+      ),
+      data.frame(
+        contributor = grep("\\[\\^rev\\]", authors),
+        role = rep("reviewer", sum(grepl("\\[\\^rev\\]", authors)))
       )
     ) -> text$meta$roles
   authors <- gsub("\\[\\^.*\\]", "", authors)

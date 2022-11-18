@@ -148,7 +148,7 @@ author2badge <- function(role = "aut") {
   }
   c(
     aut = "author", cre = "contact person", cph = "copyrightholder",
-    ctb = "contributor", fnd = "funder"
+    ctb = "contributor", fnd = "funder", rev = "reviewer"
   )[role] |>
     sprintf(fmt = "[^%2$s]: %1$s", role) -> attr(badge, "footnote")
   if (is.na(df$affiliation) || df$affiliation == "") {

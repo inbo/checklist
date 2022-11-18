@@ -169,14 +169,16 @@ citation_zenodo <- function(meta) {
   zenodo$roles$role <- factor(
     zenodo$roles$role,
     levels = c(
-      "author", "contact person", "contributor", "copyright holder", "funder"
+      "author", "contact person", "contributor", "copyright holder", "funder",
+      "reviewer"
     ),
     labels = c(
-      "author", "ContactPerson", "ProjectMember", "RightsHolder", "Funder"
+      "author", "ContactPerson", "ProjectMember", "RightsHolder", "Funder",
+      "Other"
     )
   )
   relevant <- zenodo$roles$role %in% c(
-    "ContactPerson", "ProjectMember", "RightsHolder"
+    "ContactPerson", "ProjectMember", "RightsHolder", "Other"
   )
   zenodo$contributors <- merge(
     zenodo$authors, zenodo$roles[relevant, ], by.x = "id", by.y = "contributor"
