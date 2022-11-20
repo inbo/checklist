@@ -1,7 +1,7 @@
 #!/bin/sh -l
 
 echo '\nGetting the code...\n'
-git clone https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY check
+git clone https://oauth2:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY check
 cd check
 git config advice.detachedHead false
 git checkout $GITHUB_SHA
