@@ -63,6 +63,18 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
     if (length(strsplit(new_incoming, "\n")[[1]]) == 2) {
       check_output$warnings <- check_output$warnings[!incoming]
     }
+  }
+  if (
+    length(check_output$notes) > 0 &&
+    any(grepl("Days since last update", check_output$notes))
+  ) {
+    last_update <- grep("Days since last update", check_output$notes)
+    check_output$notes[last_update] <- gsub(
+      "\n\nDays since last update: [0-9]+", "", check_output$notes[last_update]
+    )
+    if (length(strsplit(check_output$notes[last_update], "\n")[[1]]) == 2) {
+      check_output$notes <- check_output$notes[-last_update]
+    }
   } # nocov end
   x$add_rcmdcheck(
     errors = check_output$errors, warnings = check_output$warnings,
