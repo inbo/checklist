@@ -32,7 +32,8 @@ citation_description <- function(meta) {
     remotes$url[remotes$name == "origin"] |>
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
       gsub(pattern = "https://.*?@", replacement = "https://") |>
-      gsub(pattern = "\\.git$", replacement = "") -> cit_meta$source
+      gsub(pattern = "\\.git$", replacement = "") |>
+      paste0("/") -> cit_meta$source
   }
   list(
     meta = cit_meta,

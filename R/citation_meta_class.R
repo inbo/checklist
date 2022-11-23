@@ -387,8 +387,8 @@ citation_r <- function(meta) {
     ),
     author = sprintf("c(%s)", authors_bibtex),
     year = format(Sys.Date(), "%Y"),
-    url = c(cit_meta$source, cit_meta$url) |>
-      paste0(collapse = "; ") |>
+    url = c(cit_meta$url, cit_meta$source) |>
+      head(1) |>
       sprintf(fmt = "\"%s\""),
     abstract = paste0("\"", cit_meta$description, "\""),
     textVersion = sprintf(
