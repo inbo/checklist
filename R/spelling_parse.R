@@ -42,8 +42,9 @@ spelling_parse_r <- function(r_file, wordlist) {
 
   # remove the entire line for certain tags
   c(
-    "author", "docType", "export", "family", "importFrom", "inherit\\w*Params",
-    "keywords", "name", "rdname", "seealso", "title", "template"
+    "author", "docType", "export", "exportClass", "exportMethod", "family",
+    "importClassesFrom", "importFrom", "inherit\\w*Params", "keywords", "name",
+    "rdname", "seealso", "title", "template"
   ) |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s) .*") |>
