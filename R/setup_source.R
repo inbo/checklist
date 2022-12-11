@@ -13,6 +13,8 @@
 #' @export
 #' @family setup
 setup_source <- function(path = ".", language = "en-GB") {
+  # nocov start
   .Deprecated(new = "setup_project", package = "checklist")
   setup_project(path = path)
+  # nocov end
 }
