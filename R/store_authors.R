@@ -2,29 +2,13 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom desc description
-#' @importFrom fs dir_create is_dir is_file path
+#' @importFrom fs path
 #' @importFrom tools R_user_dir
-#' @importFrom utils read.table write.table
+#' @importFrom utils write.table
 #' @family utils
 store_authors <- function(x = ".") {
   root <- R_user_dir("checklist", which = "data")
-  if (is_dir(root)) {
-    if (is_file(path(root, "author.txt"))) {
-      path(root, "author.txt") |>
-        read.table(header = TRUE, sep = "\t") -> current
-    } else {
-      current <- data.frame(
-        given = character(0), family = character(0), email = character(0),
-        orcid = character(0), affiliation = character(0), usage = integer(0)
-      )
-    }
-  } else {
-    dir_create(root)
-    current <- data.frame(
-      given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0), usage = integer(0)
-    )
-  }
+  current <- stored_authors(root)
   if (file_exists(path(x, "DESCRIPTION"))) {
     this_desc <- description$new(file = path(x, "DESCRIPTION"))
     author <- this_desc$get_authors()
@@ -77,4 +61,31 @@ coalesce <- function(...) {
     i <- i + 1
   }
   return(NULL)
+}
+
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom fs dir_create is_dir is_file path
+#' @importFrom utils read.table
+stored_authors <- function(root) {
+  assert_that(is.string(root), noNA(root))
+  if (!is_dir(root)) {
+    dir_create(root)
+    return(
+      data.frame(
+        given = character(0), family = character(0), email = character(0),
+        orcid = character(0), affiliation = character(0), usage = integer(0)
+      )
+    )
+  }
+  if (is_file(path(root, "author.txt"))) {
+    path(root, "author.txt") |>
+      read.table(header = TRUE, sep = "\t") -> current
+    return(current)
+  }
+  return(
+    data.frame(
+      given = character(0), family = character(0), email = character(0),
+      orcid = character(0), affiliation = character(0), usage = integer(0)
+    )
+  )
 }

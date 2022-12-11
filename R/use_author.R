@@ -1,17 +1,9 @@
-#' @importFrom fs file_exists path
+#' @importFrom fs path
 #' @importFrom tools R_user_dir
-#' @importFrom utils menu read.table
+#' @importFrom utils write.table
 use_author <- function() {
   root <- R_user_dir("checklist", which = "data")
-  if (file_exists(path(root, "author.txt"))) {
-    path(root, "author.txt") |>
-      read.table(header = TRUE, sep = "\t") -> current
-  } else {
-    current <- data.frame(
-      given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0), usage = integer(0)
-    )
-  }
+  current <- stored_authors(root)
   assert_that(
     interactive() || nrow(current) > 0,
     msg = "No available authors in a non-interactive session."
