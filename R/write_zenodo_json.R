@@ -14,9 +14,9 @@
 #' @importFrom gert git_status
 #' @family package
 write_zenodo_json <- function(x = ".") {
-  .Deprecated(new = "update_citation", package = "checklist")
+  .Deprecated(new = "update_citation", package = "checklist") # nocov start
   x <- update_citation(x = x)
-  return(x)
+  return(x) # nocov end
 }
 
 lang_2_iso_639_3 <- function(lang) {

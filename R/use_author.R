@@ -49,7 +49,7 @@ menu_first <- function(choices, graphics = FALSE, title = NULL) {
 #' @importFrom utils menu write.table
 update_author <- function(current, selected, root) {
   original <- current
-  item <- c("given", "family", "e-mail", "orcid", "affiliation")
+  item <- c("given", "family", "email", "orcid", "affiliation")
   while (TRUE) {
     cat(
       "given name: ", current$given[selected],
@@ -93,7 +93,7 @@ new_author <- function(current, root) {
     affiliation = readline(prompt = "affiliation: "),
     usage = 0
   ) |>
-    cbind(current) -> current
+    rbind(current) -> current
   write.table(
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
@@ -103,7 +103,7 @@ new_author <- function(current, root) {
 
 author2person <- function(role = "aut") {
   df <- use_author()
-  if (df$email == "") {
+  if (is.na(df$email) || df$email == "") {
     email <- NULL
   } else {
     email <- df$email
