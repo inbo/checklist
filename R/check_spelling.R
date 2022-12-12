@@ -252,18 +252,18 @@ install_dutch <- function(lang) {
   )
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
-    "https://github.com/OpenTaal/opentaal-hunspell/raw/master/nl.dic",
-    path(target, "nl_BE.dic")
+    "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.dic",
+    path(target, "nl_NL.dic")
   )
   curl::curl_download(
-  "https://raw.githubusercontent.com/OpenTaal/opentaal-hunspell/master/nl.aff",
+  "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
     path(target, "nl_BE.aff")
   )
   file_copy(
-    path(target, "nl_BE.dic"), path(target, "nl_NL.dic"), overwrite = TRUE
+    path(target, "nl_NL.dic"), path(target, "nl_BE.dic"), overwrite = TRUE
   )
   file_copy(
-    path(target, "nl_BE.aff"), path(target, "nl_NL.aff"), overwrite = TRUE
+    path(target, "nl_NL.aff"), path(target, "nl_BE.aff"), overwrite = TRUE
   )
   return(TRUE)
 }
@@ -278,22 +278,20 @@ install_french <- function(lang) {
     requireNamespace("curl", quietly = TRUE),
     msg = "The `curl` package is missing"
   )
-  zipfile <- tempfile(fileext = ".zip")
-  curl::curl_download(
-    "http://grammalecte.net/download/fr/hunspell-french-dictionaries-v7.0.zip",
-    zipfile
-  )
   target <- system.file("dict", package = "hunspell")
-  unzip(
-    zipfile, files = paste0("fr-classique.", c("aff", "dic")), exdir = target
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.dic",
+    path(target, "nl_NL.dic")
   )
-  file_move(path(target, "fr-classique.aff"), path(target, "fr_FR.aff"))
-  file_move(path(target, "fr-classique.dic"), path(target, "fr_FR.dic"))
-  file_copy(
-    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.aff",
+    path(target, "nl_BE.aff")
   )
   file_copy(
     path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
+  )
+  file_copy(
+    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
   )
   return(TRUE)
 }
@@ -308,11 +306,14 @@ install_german <- function(lang) {
     requireNamespace("curl", quietly = TRUE),
     msg = "The `curl` package is missing"
   )
-  zipfile <- tempfile(fileext = ".zip")
-  curl::curl_download("https://j3e.de/hunspell/de_DE.zip", zipfile)
   target <- system.file("dict", package = "hunspell")
-  unzip(
-    zipfile, files = paste0("de_DE.", c("aff", "dic")), exdir = target
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/de_DE.dic",
+    path(target, "de_DE.dic")
+  )
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/de_DE.aff",
+    path(target, "de_DE.aff")
   )
   return(TRUE)
 }
