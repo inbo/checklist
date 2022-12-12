@@ -49,7 +49,7 @@
 #' @importFrom devtools build_readme document
 #' @importFrom fs is_file path
 #' @importFrom gert git_status
-#'
+#' @importFrom utils data
 #' @family package
 check_documentation <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
