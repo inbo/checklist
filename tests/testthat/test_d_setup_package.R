@@ -49,4 +49,11 @@ test_that("setup_package() works", {
     "package prepared for checklist::check_package()"
   )
   expect_true(all(file.exists(path(path, package, new_files))))
+
+  gert::git_commit_all("setup package", repo = repo)
+
+  expect_message(
+    setup_package(path(path, package)),
+    "package prepared for checklist::check_package()"
+  )
 })

@@ -24,7 +24,7 @@ test_that("check_spelling() on a package", {
   expect_is({
     z <- check_spelling(path(path, package))
   },
-    "checklist"
+  "checklist"
   )
   expect_identical(nrow(z$get_spelling), 0L)
   expect_invisible(print(z$get_spelling))
@@ -118,9 +118,11 @@ test_that("check_spelling() on a project", {
   dir_create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
 
-  system.file("DESCRIPTION", package = "checklist") |>
-    dirname() |>
-    store_authors()
+  r_user_dir <- tempfile("author")
+  dir.create(r_user_dir)
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  expect_output(new_author(current = data.frame(), root = r_user_dir))
+  stub(create_project, "R_user_dir", r_user_dir, depth = 5)
   stub(create_project, "readline", "test")
   expect_invisible(
     {
@@ -132,9 +134,12 @@ test_that("check_spelling() on a project", {
     }
   )
 
+  stub(store_authors, "R_user_dir", r_user_dir)
+  expect_invisible(store_authors(path(path, "spelling")))
+
   expect_is({
     x <- check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE)
-    }, "checklist"
+  }, "checklist"
   )
   git_config_set(
     name = "user.name", value = "junk", repo = path(path, "spelling")
@@ -227,6 +232,78 @@ test_that("check_spelling() on a project", {
     },
     "list"
   )
+
+  gert::git_commit_all(
+    message = "Initial commit", repo = path(path, "spelling")
+  )
+  stub(setup_project, "interactive", TRUE, depth = 2)
+  expect_output(setup_project(path(path, "spelling")))
+
+  path("generic_template", "gplv3.md") |>
+    system.file(package = "checklist") |>
+    file_copy(path(path, "spelling", "LICENSE.md"), overwrite = TRUE)
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_match(
+    z$.__enclos_env__$private$errors$CITATION, "LICENSE.md doesn't match"
+  )
+  path(path, "spelling", "LICENSE.md") |>
+    unlink()
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_match(
+    z$.__enclos_env__$private$errors$CITATION, "No LICENSE.md file found"
+  )
+  gert::git_reset_hard(repo = path(path, "spelling"))
+
+  path(path, "spelling", "README.md") |>
+    readLines() -> readme_old
+  writeLines(
+    readme_old[!grepl("badges: start", readme_old)],
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("Mismatch between", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  badge_end <- grep("badges: end", readme_old)
+  badge_doi <- paste0(
+    "[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4028303.svg)]",
+    "(https://doi.org/10.5281/zenodo.4028302)"
+  )
+  writeLines(
+    c(
+      head(readme_old, badge_end - 1), badge_doi,
+    "![r-universe name](https://inbo.r-universe.dev/badges/:name?color=c04384)",
+    readme_old[badge_end], "<!-- version: 0.1 -->", tail(readme_old, badge_end)
+    ),
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("different DOI", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  writeLines(
+    readme_old[!grepl("description: start", readme_old)],
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("Mismatch between", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  writeLines(
+    readme_old[!grepl("\\*\\*keywords\\*\\*:", readme_old)],
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("No keywords found", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  unlink(path(path, "spelling", "README.md"))
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_match(z$.__enclos_env__$private$errors$CITATION, "README.md not found")
 })
 
 test_that("check_spelling() works on a quarto project", {

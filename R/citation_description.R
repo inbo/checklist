@@ -15,12 +15,14 @@ citation_description <- function(meta) {
   descript$get_field("License") |>
     gsub(pattern = " \\+ file LICENSE", replacement = "") |>
     gsub(pattern = "^GPL-3$", replacement = "GPL-3.0") -> license
+  descript$get_field("Description") |>
+    gsub(pattern = "<((\\w|:|\\.|-|\\/)*?)>", replacement = "\\1") -> abstract
   list(
     title = sprintf(
       "%s: %s", descript$get_field("Package"), descript$get_field("Title")
     ),
     version = descript$get_version(), license = license,
-    upload_type = "software", description = descript$get_field("Description")
+    upload_type = "software", description = abstract
   ) |>
     c(authors$meta, keywords$meta, communities$meta, urls$meta) -> cit_meta
   lang <- descript$get_field("Language", default = "")
