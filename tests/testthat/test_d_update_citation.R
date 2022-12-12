@@ -14,11 +14,12 @@ test_that("update_citation() works", {
     language = "en-GB"
   )
 
-  expect_is({
-    x <- update_citation(path(path, package))
-  },
-  "checklist"
-  )
+  hide_output <- tempfile(fileext = ".txt")
+  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+  sink(hide_output)
+  expect_output(x <- update_citation(path(path, package)))
+  sink()
+  expect_is(x, "checklist")
 
   path(path, package, "inst", "CITATION") |>
     readLines() -> old_citation
@@ -27,7 +28,7 @@ test_that("update_citation() works", {
     path(path, package, "inst", "CITATION")
   )
   expect_is({
-    x <- update_citation(path(path, package))
+    x <- update_citation(path(path, package), quiet = TRUE)
   },
     "checklist"
   )
@@ -49,5 +50,5 @@ test_that("update_citation() works", {
   this_description$add_author(given = "test", family = "unit", role = "cph")
   this_description$write(path(path, package))
   file_delete(path(path, package, ".Rbuildignore"))
-  expect_is(update_citation(path(path, package)), "checklist")
+  expect_is(update_citation(path(path, package), quiet = TRUE), "checklist")
 })
