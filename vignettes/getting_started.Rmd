@@ -234,8 +234,8 @@ To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` file, i
         steps:
           - uses: inbo/actions/check_pkg@master
             with:
-              - token: ${{ secrets.PAT }}
-              - aptget: libudunits2-dev
+              token: ${{ secrets.PAT }}
+              aptget: libudunits2-dev
     ```
 
 Add, commit and push these changes so they take effect in the GHAs.
