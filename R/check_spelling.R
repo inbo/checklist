@@ -257,7 +257,7 @@ install_dutch <- function(lang) {
   )
   curl::curl_download(
   "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
-    path(target, "nl_BE.aff")
+    path(target, "nl_NL.aff")
   )
   file_copy(
     path(target, "nl_NL.dic"), path(target, "nl_BE.dic"), overwrite = TRUE
@@ -281,11 +281,11 @@ install_french <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.dic",
-    path(target, "nl_NL.dic")
+    path(target, "fr_FR.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.aff",
-    path(target, "nl_BE.aff")
+    path(target, "fr_FR.aff")
   )
   file_copy(
     path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
