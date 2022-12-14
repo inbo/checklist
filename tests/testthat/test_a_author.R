@@ -16,13 +16,17 @@ test_that("author tools", {
   expect_identical(current, stored_authors(root))
 
   stub(author2person, "R_user_dir", root, depth = 2)
-  expect_output({ap <- author2person()})
+  expect_output({
+    ap <- author2person()
+  })
   expect_is(ap, "person")
 
   stub(author2badge, "R_user_dir", root, depth = 2)
   badge <- "Doe, John[^aut]"
   attr(badge, "footnote") <- "[^aut]: author"
-  expect_output({ab <- author2badge()})
+  expect_output({
+    ab <- author2badge()
+  })
   expect_equal(ab, badge)
 
   stub(update_author, "menu", mock(4, 6))
@@ -35,7 +39,9 @@ test_that("author tools", {
     "11/orcid_16x16.png)](https://orcid.org/0000-0002-1825-0097)[^aut]"
   )
   attr(badge, "footnote") <- "[^aut]: author"
-  expect_output({ab <- author2badge()})
+  expect_output({
+    ab <- author2badge()
+  })
   expect_equal(ab, badge)
 
   stub(update_author, "menu", mock(3, 6))
@@ -54,9 +60,13 @@ test_that("author tools", {
     "11/orcid_16x16.png)](https://orcid.org/0000-0002-1825-0097)[^aut][^UL]"
   )
   attr(badge, "footnote") <- c("[^aut]: author", "[^UL]: University of Life")
-  expect_output({ab <- author2badge()})
+  expect_output({
+    ab <- author2badge()
+  })
   expect_equal(ab, badge)
-  expect_output({ap <- author2person()})
+  expect_output({
+    ap <- author2person()
+  })
   expect_is(ap, "person")
 
   expect_null(coalesce(NULL))
