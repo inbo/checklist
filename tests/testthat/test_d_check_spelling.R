@@ -172,9 +172,15 @@ test_that("check_spelling() on a project", {
   )
   write_checklist(x = x)
 
+  r_user_dir <- tempfile("author")
+  dir.create(r_user_dir)
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  expect_output(new_author(current = data.frame(), root = r_user_dir))
+
   hide_author <- tempfile(fileext = ".txt")
   on.exit(file_delete(hide_author), add = TRUE, after = TRUE)
   sink(hide_author)
+  stub(use_author, "R_user_dir", r_user_dir)
   aut <- use_author()
   c(aut$given, aut$family) |>
     strsplit(" ") |>
