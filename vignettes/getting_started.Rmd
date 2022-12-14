@@ -216,8 +216,7 @@ To diagnose if this is the case when an action failed, you can follow these step
   - `ERROR: package installation failed`
 - If this is the case, make a mental note of which package(s) failed to install
 - Next, open the raw logs by clicking on the gear icon and then `View raw logs`
-- Search the log (CTRL+F) using the name of the package
-  - Scroll down to the last found instance of the package name and make your way up
+- Search the log (CTRL+F) using the name of the package or more specifically search for `installing *source* package '<packagename>'`. Also try searching for `error:`, `failed` and `deb:`.
   - It is likely that you detect that it is actually a dependency R package that failed to install and that this failing installation was due to a missing _system_ dependency.
     - For instance, in the example above, the culprit was that the R package `units` - which is a dependency of `sf` - failed to install, because it depended on the _system_ dependency `libudunits2-dev`
     - The easiest way to detect this, is to search for `deb:`. Here is a snippet of what you might see:
