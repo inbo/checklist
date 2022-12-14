@@ -206,11 +206,11 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
 
 ## Failing status check `check package`
 
-Sometimes the check package GitHub Action (GHA) may fail for other reasons than failure of one or more of the checks executed by `checklist::check_package()`. This is likely due to a missing dependency when the action tries to install R packages.
-In that case, the GHAs `check_on_branch.yml` and `check_on_main.yml` files need to be modified so the missing dependency can be installed.
+Sometimes the check package GitHub Action (`GHA`) may fail for other reasons than failure of one or more of the checks executed by `checklist::check_package()`. This is likely due to a missing dependency when the action tries to install R packages.
+In that case, the `GHAs` `check_on_branch.yml` and `check_on_main.yml` files need to be modified so the missing dependency can be installed.
 To diagnose if this is the case when an action failed, you can follow these steps:
 
-- Go to the check package GHA with a red cross (indicating failure) and click on the `details` link. You will be directed to an overview of all steps that were taken in the action. The page will scroll automatically to where the final error occurs.
+- Go to the check package `GHA` with a red cross (indicating failure) and click on the `details` link. You will be directed to an overview of all steps that were taken in the action. The page will scroll automatically to where the final error occurs.
 - Check if you see an error that looks like:
   - `ERROR: dependency 'sf' is not available for package 'inborutils'`
   - `ERROR: package installation failed`
@@ -238,4 +238,4 @@ To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` file, i
               aptget: libudunits2-dev
     ```
 
-Add, commit and push these changes so they take effect in the GHAs.
+Add, commit and push these changes so they take effect in the `GHAs`.
