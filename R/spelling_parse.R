@@ -282,7 +282,7 @@ spelling_parse_md <- function(md_file, wordlist, x) {
       list(spelling_check(
         text = empty_text, raw_text = raw_text, filename = md_file,
         wordlist = spelling_wordlist(
-          lang = gsub("-", "_", lang), root = x$get_path
+          lang = gsub("-", "_", lang), root = x$get_path, package = x$package
         )
       ))
     }
