@@ -65,9 +65,27 @@ spelling_parse_r <- function(r_file, wordlist) {
     "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+", "", text
   )
 
+  # remove equations
+  text <- strip_eqn(text)
+
   list(spelling_check(
     text = text, filename = r_file, wordlist = wordlist
   ))
+}
+
+strip_eqn <- function(text) {
+  which_eqn <- which(grepl("\\\\eqn\\s*\\{.*?\\}", text))
+  if (length(which_eqn) == 0) {
+    return(text)
+  }
+  eqn <- text[which_eqn]
+  while (any(grepl("\\\\eqn\\s*\\{.*?\\}", eqn))) {
+    eqn <- gsub("(\\\\eqn.*?)(\\{[^\\{]*?\\})", "\\1", eqn, perl = TRUE)
+  }
+  eqn <- gsub("\\\\eqn(\\s*[^\\{]|$)", "", eqn)
+  ok <- !grepl("\\\\eqn\\s*\\{", eqn)
+  text[which_eqn[ok]] <- eqn[ok]
+  return(text)
 }
 
 #' @importFrom tools RdTextFilter
@@ -84,6 +102,8 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
   text <- gsub("\\s[/\\\\]\\s", " ", text)
   text <- gsub("\\s[/\\\\]$", " ", text)
   text <- gsub("^[/\\\\]\\s", " ", text)
+  # remove equations
+  text <- strip_eqn(text)
   list(spelling_check(
     text = text, filename = rd_file, wordlist = wordlist
   ))
