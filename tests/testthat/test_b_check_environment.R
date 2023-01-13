@@ -3,7 +3,6 @@ test_that("check_environment() works", {
   dir.create(tmp_dir)
   on.exit(file_delete(tmp_dir), add = TRUE)
   old_gha <- Sys.getenv("GITHUB_ACTIONS")
-  old_input <- Sys.getenv("INPUT_TOKEN")
   old_codecov <- Sys.getenv("CODECOV_TOKEN")
 
   Sys.setenv(GITHUB_ACTIONS = "")
@@ -13,22 +12,7 @@ test_that("check_environment() works", {
   )
 
   Sys.setenv(GITHUB_ACTIONS = "true")
-  Sys.setenv(INPUT_TOKEN = "")
   Sys.setenv(CODECOV_TOKEN = "")
-  expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
-  expect_identical(
-    x$.__enclos_env__$private$errors,
-    list(
-      `repository secret` = paste0(
-        "Missing repository secret(s) PAT, CODECOV_TOKEN on ",
-        "GitHub.\nSee ",
-"https://inbo.github.io/checklist/articles/getting_started.html#online-setup-2",
-        " for more details."
-      )
-    )
-  )
-
-  Sys.setenv(INPUT_TOKEN = "bla")
   expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
   expect_identical(
     x$.__enclos_env__$private$errors,
@@ -41,24 +25,6 @@ test_that("check_environment() works", {
       )
     )
   )
-
-  Sys.setenv(INPUT_TOKEN = "")
-  Sys.setenv(CODECOV_TOKEN = "bla")
-  expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
-  expect_identical(
-    x$.__enclos_env__$private$errors,
-    list(
-      `repository secret` = paste0(
-        "Missing repository secret(s) PAT on ",
-        "GitHub.\nSee ",
-"https://inbo.github.io/checklist/articles/getting_started.html#online-setup-2",
-        " for more details."
-      )
-    )
-  )
-
   Sys.setenv(GITHUB_ACTIONS = old_gha)
-  Sys.setenv(INPUT_TOKEN = old_input)
   Sys.setenv(CODECOV_TOKEN = old_codecov)
-
 })

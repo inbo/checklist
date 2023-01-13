@@ -35,7 +35,9 @@ check_spelling <- function(x = ".", quiet = FALSE) {
     md_files = md_files, rd_files = rd_files, macros = macros,
     FUN.VALUE = vector(mode = "list", length = 1),
     FUN = function(lang, root, r_files, md_files, rd_files, macros) {
-      wordlist <- spelling_wordlist(lang = gsub("-", "_", lang), root = root)
+      wordlist <- spelling_wordlist(
+        lang = gsub("-", "_", lang), root = root, package = x$package
+      )
       r_issues <- vapply(
         path(root, r_files$path[r_files$language == lang]),
         FUN = spelling_parse_r, FUN.VALUE = vector(mode = "list", length = 1),
@@ -75,11 +77,21 @@ check_spelling <- function(x = ".", quiet = FALSE) {
 #' @importFrom fs file_exists path
 #' @importFrom hunspell dictionary
 #' @importFrom renv dependencies
-spelling_wordlist <- function(lang = "en_GB", root = ".") {
+spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
   path("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
-    readLines() |>
-    c(unique(dependencies(root, progress = FALSE)$Package)) -> add_words
+    readLines() -> add_words
+  if (package) {
+    path(root, "DESCRIPTION") |>
+      description$new() -> descr
+    descr$get_authors() |>
+      format(include = c("given", "family")) |>
+      strsplit(split = " ") |>
+      unlist() |>
+      c(dependencies(root, progress = FALSE)$Package) |>
+      unique() |>
+      c(add_words) -> add_words
+  }
 
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
@@ -252,18 +264,18 @@ install_dutch <- function(lang) {
   )
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
-    "https://github.com/OpenTaal/opentaal-hunspell/raw/master/nl.dic",
-    path(target, "nl_BE.dic")
+    "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.dic",
+    path(target, "nl_NL.dic")
   )
   curl::curl_download(
-  "https://raw.githubusercontent.com/OpenTaal/opentaal-hunspell/master/nl.aff",
-    path(target, "nl_BE.aff")
+  "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
+    path(target, "nl_NL.aff")
   )
   file_copy(
-    path(target, "nl_BE.dic"), path(target, "nl_NL.dic"), overwrite = TRUE
+    path(target, "nl_NL.dic"), path(target, "nl_BE.dic"), overwrite = TRUE
   )
   file_copy(
-    path(target, "nl_BE.aff"), path(target, "nl_NL.aff"), overwrite = TRUE
+    path(target, "nl_NL.aff"), path(target, "nl_BE.aff"), overwrite = TRUE
   )
   return(TRUE)
 }
@@ -278,22 +290,20 @@ install_french <- function(lang) {
     requireNamespace("curl", quietly = TRUE),
     msg = "The `curl` package is missing"
   )
-  zipfile <- tempfile(fileext = ".zip")
-  curl::curl_download(
-    "http://grammalecte.net/download/fr/hunspell-french-dictionaries-v7.0.zip",
-    zipfile
-  )
   target <- system.file("dict", package = "hunspell")
-  unzip(
-    zipfile, files = paste0("fr-classique.", c("aff", "dic")), exdir = target
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.dic",
+    path(target, "fr_FR.dic")
   )
-  file_move(path(target, "fr-classique.aff"), path(target, "fr_FR.aff"))
-  file_move(path(target, "fr-classique.dic"), path(target, "fr_FR.dic"))
-  file_copy(
-    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.aff",
+    path(target, "fr_FR.aff")
   )
   file_copy(
     path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
+  )
+  file_copy(
+    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
   )
   return(TRUE)
 }
@@ -308,11 +318,14 @@ install_german <- function(lang) {
     requireNamespace("curl", quietly = TRUE),
     msg = "The `curl` package is missing"
   )
-  zipfile <- tempfile(fileext = ".zip")
-  curl::curl_download("https://j3e.de/hunspell/de_DE.zip", zipfile)
   target <- system.file("dict", package = "hunspell")
-  unzip(
-    zipfile, files = paste0("de_DE.", c("aff", "dic")), exdir = target
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/de_DE.dic",
+    path(target, "de_DE.dic")
+  )
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/de_DE.aff",
+    path(target, "de_DE.aff")
   )
   return(TRUE)
 }

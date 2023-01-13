@@ -25,23 +25,8 @@
 #' @export
 #' @family source
 check_source <- function(x = ".", fail = !interactive()) {
-  assert_that(is.flag(fail))
-  assert_that(noNA(fail))
-
-  cat("Checking code style\n")
-  x <- check_lintr(x)
-
-  cat("Checking filename conventions\n")
-  x <- check_filename(x)
-
-  print(x)
-  if (!x$fail) {
-    cat("\nNo problems found. Good job!\n\n")
-    return(invisible(x))
-  }
-  if (fail) {
-    stop("Checking the source code revealed some problems.")
-  }
-  cat("\nChecking the source code revealed some problems.\n\n")
-  return(invisible(x))
+  # nocov start
+  .Deprecated("check_project", package = "checklist")
+  check_project(x = x, fail = fail)
+  # nocov end
 }

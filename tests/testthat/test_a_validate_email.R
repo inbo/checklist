@@ -10,3 +10,7 @@ test_that("validate_email() works", {
     )
   )
 })
+
+test_that("checklist print error works", {
+  expect_match(checklist_format_error(c(junk = "test")), "junk: 1 error.*test")
+})

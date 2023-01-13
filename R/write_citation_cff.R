@@ -11,7 +11,9 @@
 #' @importFrom assertthat assert_that
 #' @family package
 write_citation_cff <- function(x = ".", roles) {
+  # nocov start
   .Deprecated(new = "update_citation", package = "checklist")
   x <- update_citation(x = x)
   return(invisible(x))
+  # nocov end
 }

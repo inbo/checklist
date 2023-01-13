@@ -169,14 +169,16 @@ citation_zenodo <- function(meta) {
   zenodo$roles$role <- factor(
     zenodo$roles$role,
     levels = c(
-      "author", "contact person", "contributor", "copyright holder", "funder"
+      "author", "contact person", "contributor", "copyright holder", "funder",
+      "reviewer"
     ),
     labels = c(
-      "author", "ContactPerson", "ProjectMember", "RightsHolder", "Funder"
+      "author", "ContactPerson", "ProjectMember", "RightsHolder", "Funder",
+      "Other"
     )
   )
   relevant <- zenodo$roles$role %in% c(
-    "ContactPerson", "ProjectMember", "RightsHolder"
+    "ContactPerson", "ProjectMember", "RightsHolder", "Other"
   )
   zenodo$contributors <- merge(
     zenodo$authors, zenodo$roles[relevant, ], by.x = "id", by.y = "contributor"
@@ -385,12 +387,15 @@ citation_r <- function(meta) {
     ),
     author = sprintf("c(%s)", authors_bibtex),
     year = format(Sys.Date(), "%Y"),
-    url = paste0("\"", cit_meta$url, "\""),
+    url = c(cit_meta$url, cit_meta$source) |>
+      head(1) |>
+      sprintf(fmt = "\"%s\""),
     abstract = paste0("\"", cit_meta$description, "\""),
     textVersion = sprintf(
       "\"%s (%s) %s. Version %s. %s\"",
       paste(authors_plain, collapse = "; "), format(Sys.Date(), "%Y"),
-      cit_meta$title, cit_meta$version, cit_meta$url
+      cit_meta$title, cit_meta$version,
+      paste0(paste(c(cit_meta$source, cit_meta$url), collapse = "; "), "")
     ),
     keywords = paste0("\"", paste(cit_meta$keywords, collapse = "; "), "\"")
   )

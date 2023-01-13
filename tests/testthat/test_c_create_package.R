@@ -22,6 +22,13 @@ test_that("create_package() works", {
 
   repo <- path(path, package)
 
+  r_user_dir <- tempfile("author")
+  dir.create(r_user_dir)
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  expect_output(new_author(current = data.frame(), root = r_user_dir))
+  stub(store_authors, "R_user_dir", r_user_dir)
+  expect_invisible(store_authors(repo))
+
   new_files <- c(
     "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
     "codecov.yml", "DESCRIPTION", "LICENSE.md", "NEWS.md", "README.Rmd",
@@ -46,11 +53,11 @@ test_that("create_package() works", {
   expect_true(all(is_file(path(path, package, new_files))))
 
   expect_is({
-      suppressWarnings({
-        x <- check_package(path(path, package), fail = FALSE, quiet = TRUE)
-      })
-    },
-    "checklist"
+    suppressWarnings({
+      x <- check_package(path(path, package), fail = FALSE, quiet = TRUE)
+    })
+  },
+  "checklist"
   )
   expect_true(is_file(path(path, package, ".zenodo.json")))
   expect_true(is_file(path(path, package, "CITATION.cff")))
@@ -63,20 +70,14 @@ test_that("create_package() works", {
 
   stub(x$add_motivation, "yesno", TRUE, depth = 2)
   stub(x$add_motivation, "readline", "junk", depth = 2)
-  expect_is(
-    x$add_motivation(which = "notes"),
-    "checklist"
-  )
+  expect_s3_class(x$add_motivation(which = "notes"), "checklist")
   expect_length(
     x$.__enclos_env__$private$allowed_notes,
     length(x$.__enclos_env__$private$notes)
   )
 
   stub(x$confirm_motivation, "yesno", TRUE, depth = 2)
-  expect_is(
-    x$confirm_motivation(which = "notes"),
-    "checklist"
-  )
+  expect_s3_class(x$confirm_motivation(which = "notes"), "checklist")
   expect_length(
     x$.__enclos_env__$private$allowed_notes,
     length(x$.__enclos_env__$private$notes)
@@ -94,16 +95,22 @@ test_that("create_package() works", {
   )
 
   stub(x$confirm_motivation, "yesno", FALSE, depth = 2)
-  expect_is(
-    x$confirm_motivation(which = "notes"),
-    "checklist"
-  )
+  expect_s3_class(x$confirm_motivation(which = "notes"), "checklist")
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
 
   writeLines("dummy<-function(){F}", path(path, package, "R", "dummy.R"))
-  expect_is(
+  expect_s3_class(
     x <- check_lintr(path(path, package), quiet = TRUE), "checklist"
   )
   expect_length(x$.__enclos_env__$private$linter, 6)
   expect_output(print(x), "6 linters found")
+
+  path(path, package, "NEWS.md") |>
+    readLines() -> news_old
+  tail(news_old, -1) |>
+    writeLines(path(path, package, "NEWS.md"))
+  expect_match(check_news(x), "No reference to a package version")
+
+  unlink(path(path, package, "NEWS.md"))
+  expect_equal(check_news(x), "Missing NEWS.md")
 })

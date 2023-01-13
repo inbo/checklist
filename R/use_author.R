@@ -1,17 +1,9 @@
-#' @importFrom fs file_exists path
+#' @importFrom fs path
 #' @importFrom tools R_user_dir
-#' @importFrom utils menu read.table
+#' @importFrom utils write.table
 use_author <- function() {
   root <- R_user_dir("checklist", which = "data")
-  if (file_exists(path(root, "author.txt"))) {
-    path(root, "author.txt") |>
-      read.table(header = TRUE, sep = "\t") -> current
-  } else {
-    current <- data.frame(
-      given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0), usage = integer(0)
-    )
-  }
+  current <- stored_authors(root)
   assert_that(
     interactive() || nrow(current) > 0,
     msg = "No available authors in a non-interactive session."
@@ -57,7 +49,7 @@ menu_first <- function(choices, graphics = FALSE, title = NULL) {
 #' @importFrom utils menu write.table
 update_author <- function(current, selected, root) {
   original <- current
-  item <- c("given", "family", "e-mail", "orcid", "affiliation")
+  item <- c("given", "family", "email", "orcid", "affiliation")
   while (TRUE) {
     cat(
       "given name: ", current$given[selected],
@@ -101,7 +93,7 @@ new_author <- function(current, root) {
     affiliation = readline(prompt = "affiliation: "),
     usage = 0
   ) |>
-    cbind(current) -> current
+    rbind(current) -> current
   write.table(
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
@@ -111,7 +103,7 @@ new_author <- function(current, root) {
 
 author2person <- function(role = "aut") {
   df <- use_author()
-  if (df$email == "") {
+  if (is.na(df$email) || df$email == "") {
     email <- NULL
   } else {
     email <- df$email
@@ -148,7 +140,7 @@ author2badge <- function(role = "aut") {
   }
   c(
     aut = "author", cre = "contact person", cph = "copyrightholder",
-    ctb = "contributor", fnd = "funder"
+    ctb = "contributor", fnd = "funder", rev = "reviewer"
   )[role] |>
     sprintf(fmt = "[^%2$s]: %1$s", role) -> attr(badge, "footnote")
   if (is.na(df$affiliation) || df$affiliation == "") {

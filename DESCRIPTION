@@ -56,5 +56,5 @@ Config/checklist/keywords: quality control; documentation; publication
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 SystemRequirements: Pandoc (>= 1.17.2)

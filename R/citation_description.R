@@ -12,12 +12,17 @@ citation_description <- function(meta) {
     description_communities() -> communities
   urls <- description_url(descript$get_urls())
   authors <- description_author(descript$get_authors())
+  descript$get_field("License") |>
+    gsub(pattern = " \\+ file LICENSE", replacement = "") |>
+    gsub(pattern = "^GPL-3$", replacement = "GPL-3.0") -> license
+  descript$get_field("Description") |>
+    gsub(pattern = "<((\\w|:|\\.|-|\\/)*?)>", replacement = "\\1") -> abstract
   list(
     title = sprintf(
       "%s: %s", descript$get_field("Package"), descript$get_field("Title")
     ),
-    version = descript$get_version(), license = descript$get_field("License"),
-    upload_type = "software", description = descript$get_field("Description")
+    version = descript$get_version(), license = license,
+    upload_type = "software", description = abstract
   ) |>
     c(authors$meta, keywords$meta, communities$meta, urls$meta) -> cit_meta
   lang <- descript$get_field("Language", default = "")
@@ -29,7 +34,8 @@ citation_description <- function(meta) {
     remotes$url[remotes$name == "origin"] |>
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
       gsub(pattern = "https://.*?@", replacement = "https://") |>
-      gsub(pattern = "\\.git$", replacement = "") -> cit_meta$source
+      gsub(pattern = "\\.git$", replacement = "") |>
+      paste0("/") -> cit_meta$source
   }
   list(
     meta = cit_meta,
@@ -81,7 +87,7 @@ description_author_format <- function(i, x) {
     contributor = i,
     role = c(
       aut = "author", cre = "contact person", ctb = "contributor",
-      cph = "copyright holder", fnd = "funder"
+      cph = "copyright holder", fnd = "funder", rev = "reviewer"
     )[x[[i]]$role]
   )
   if (is.null(x[[i]]$comment)) {

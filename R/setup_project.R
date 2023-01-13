@@ -188,7 +188,7 @@ create_readme <- function(path) {
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
       gsub(pattern = "https://.*?@", replacement = "https://") |>
       gsub(pattern = "\\.git$", replacement = "") -> repo_url
-    if (!grepl("github.com", repo_url)) {
+    if (length(repo_url) > 0 && !grepl("github.com", repo_url)) {
       badges <- character(0)
     } else {
       gsub("https://github.com/", "", repo_url) |>

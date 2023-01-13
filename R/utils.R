@@ -277,6 +277,7 @@ is_repository <- function(path = ".") {
 #'
 #' @inheritParams base::system
 #' @family utils
+#' @export
 execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
   old_wd <- setwd(path)
   on.exit(setwd(old_wd), add = TRUE)
@@ -306,7 +307,7 @@ execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
 #' @importFrom gert git_status git_ls
 #' @importFrom assertthat assert_that is.string
 #'
-#' @keywords internal
+#' @noRd
 is_tracked_not_modified <- function(file, repo = ".") {
   assert_that(is.string(file))
   tracked <- try(git_ls(repo = repo), silent = TRUE)

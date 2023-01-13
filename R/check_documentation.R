@@ -49,7 +49,7 @@
 #' @importFrom devtools build_readme document
 #' @importFrom fs is_file path
 #' @importFrom gert git_status
-#'
+#' @importFrom utils data
 #' @family package
 check_documentation <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
@@ -86,6 +86,20 @@ check_documentation <- function(x = ".", quiet = FALSE) {
     )[!detect_changes]
   )
 
+  namespace <- readLines(rd_files[1])
+  namespace[grepl("^export.*\\(", namespace)] |>
+    gsub(pattern = "export.*\\((.*)\\)", replacement = "\\1") -> exported
+  vapply(rd_files[-1], rd_extract_function, vector("list", 1L)) |>
+    unlist() |>
+    unique() |>
+    sort() -> documented
+  unexported <- documented[!documented %in% exported]
+  datasets <- data(package = desc(x$get_path)$get_field("Package"))
+  unexported <- unexported[!unexported %in% datasets$results[, "Item"]]
+  paste(unexported, collapse = ", ") |>
+    sprintf(fmt = "documented but unexported functions: %s") -> doc_warnings
+  doc_warnings <- doc_warnings[length(unexported) > 0]
+
   if (is_file(path(x$get_path, "README.Rmd"))) {
     build_readme(x$get_path, encoding = "UTF-8")
     doc_error <- c(
@@ -107,6 +121,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   doc_error <- c(doc_error, check_news(x))
 
   x$add_error(doc_error, item = "documentation", keep = FALSE)
+  x$add_warnings(doc_warnings, item = "documentation")
   return(x)
 }
 
@@ -195,4 +210,17 @@ See the details in ?pkgdown::build_news for the required format."
   )
 
   return(doc_error)
+}
+
+rd_extract_function <- function(rd_file) {
+  content <- readLines(rd_file)
+  if (any(grepl("^\\\\method\\{(.*)\\}", content))) {
+    return(list(character(0)))
+  }
+  rd_regexp <- "^\\\\(name|alias)\\{(.*?)(,.*)?\\}$"
+  content[grepl(rd_regexp, content)] |>
+    gsub(pattern = rd_regexp, replacement = "\\2") |>
+    unique() |>
+    gsub(pattern = "-class", replacement = "") |>
+    list()
 }

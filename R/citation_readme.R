@@ -26,7 +26,7 @@ citation_readme <- function(meta) {
     remotes$url[remotes$name == "origin"] |>
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
       gsub(pattern = "https://.*?@", replacement = "https://") |>
-      gsub(pattern = "\\.git$", replacement = "") -> cit_meta$meta$source
+      gsub(pattern = "\\.git$", replacement = "/") -> cit_meta$meta$source
   }
   cit_meta$meta$upload_type <- "software"
   license_file <- path(meta$get_path, "LICENSE.md")
@@ -180,7 +180,7 @@ readme_author <- function(text) {
   authors_aff <- authors
   authors_aff[!grepl("\\[\\^.*\\]", authors_aff)] <- ""
   gsub(".*?\\[\\^(.*?)\\]", "\\1;", authors_aff) |>
-    gsub(pattern = "(aut|cph|cre|ctb|fnd);", replacement = "") |>
+    gsub(pattern = "(aut|cph|cre|ctb|fnd|rev);", replacement = "") |>
     gsub(pattern = ";$", replacement = "") |>
     strsplit(split = ";") -> authors_aff
   data.frame(
@@ -203,6 +203,10 @@ readme_author <- function(text) {
       data.frame(
         contributor = grep("\\[\\^fnd\\]", authors),
         role = rep("funder", sum(grepl("\\[\\^fnd\\]", authors)))
+      ),
+      data.frame(
+        contributor = grep("\\[\\^rev\\]", authors),
+        role = rep("reviewer", sum(grepl("\\[\\^rev\\]", authors)))
       )
     ) -> text$meta$roles
   authors <- gsub("\\[\\^.*\\]", "", authors)

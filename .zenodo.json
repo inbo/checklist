@@ -1,7 +1,7 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
   "version": "0.2.7",
-  "license": "GPL-3",
+  "license": "GPL-3.0",
   "upload_type": "software",
   "description": "<p>An opinionated set of rules for R packages and R source code\nprojects.<\/p>",
   "keywords": [

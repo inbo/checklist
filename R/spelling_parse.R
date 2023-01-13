@@ -9,7 +9,7 @@ spelling_parse_r <- function(r_file, wordlist) {
   text <- ifelse(keep, raw_text, "")
 
   # remove multiline tags
-  c("examples", "importFrom") |>
+  c("examples", "importFrom", "aliases") |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s)") |>
     grep(text) -> multiline
@@ -22,8 +22,14 @@ spelling_parse_r <- function(r_file, wordlist) {
     multiline <- tail(multiline, -1)
   }
 
+  # remove tag only lines
+  c("export", "noRd") |>
+    paste(collapse = "|") |>
+    sprintf(fmt = "^#'\\s*@(%s)\\s*$") |>
+    gsub("", text) -> text
+
   # remove only the tag
-  c("concept", "description", "details", "export", "noRd") |>
+  c("concept", "description", "details") |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s)") |>
     gsub("", text) -> text
@@ -36,7 +42,8 @@ spelling_parse_r <- function(r_file, wordlist) {
 
   # remove the entire line for certain tags
   c(
-    "author", "export", "family", "importFrom", "inherit\\w*Params", "keywords",
+    "author", "docType", "export", "exportClass", "exportMethod", "family",
+    "importClassesFrom", "importFrom", "inherit\\w*Params", "keywords", "name",
     "rdname", "seealso", "title", "template"
   ) |>
     paste(collapse = "|") |>
@@ -58,9 +65,27 @@ spelling_parse_r <- function(r_file, wordlist) {
     "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+", "", text
   )
 
+  # remove equations
+  text <- strip_eqn(text)
+
   list(spelling_check(
     text = text, filename = r_file, wordlist = wordlist
   ))
+}
+
+strip_eqn <- function(text) {
+  which_eqn <- which(grepl("\\\\eqn\\s*\\{.*?\\}", text))
+  if (length(which_eqn) == 0) {
+    return(text)
+  }
+  eqn <- text[which_eqn]
+  while (any(grepl("\\\\eqn\\s*\\{.*?\\}", eqn))) {
+    eqn <- gsub("(\\\\eqn.*?)(\\{[^\\{]*?\\})", "\\1", eqn, perl = TRUE)
+  }
+  eqn <- gsub("\\\\eqn(\\s*[^\\{]|$)", "", eqn)
+  ok <- !grepl("\\\\eqn\\s*\\{", eqn)
+  text[which_eqn[ok]] <- eqn[ok]
+  return(text)
 }
 
 #' @importFrom tools RdTextFilter
@@ -77,6 +102,8 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
   text <- gsub("\\s[/\\\\]\\s", " ", text)
   text <- gsub("\\s[/\\\\]$", " ", text)
   text <- gsub("^[/\\\\]\\s", " ", text)
+  # remove equations
+  text <- strip_eqn(text)
   list(spelling_check(
     text = text, filename = rd_file, wordlist = wordlist
   ))
@@ -275,7 +302,7 @@ spelling_parse_md <- function(md_file, wordlist, x) {
       list(spelling_check(
         text = empty_text, raw_text = raw_text, filename = md_file,
         wordlist = spelling_wordlist(
-          lang = gsub("-", "_", lang), root = x$get_path
+          lang = gsub("-", "_", lang), root = x$get_path, package = x$package
         )
       ))
     }
