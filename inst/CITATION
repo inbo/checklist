@@ -4,10 +4,10 @@ citEntry(
   entry = "Manual",
   title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.2.7",
   author = c( author = c(person(given = "Thierry", family = "Onkelinx"))),
-  year = 2022,
+  year = 2023,
   url = "https://inbo.github.io/checklist/",
   abstract = "An opinionated set of rules for R packages and R source code projects.",
-  textVersion = "Onkelinx, Thierry (2022) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.2.7. https://github.com/inbo/checklist/; https://inbo.github.io/checklist/",
+  textVersion = "Onkelinx, Thierry (2023) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.2.7. https://github.com/inbo/checklist/; https://inbo.github.io/checklist/",
   keywords = "quality control; documentation; publication",
   doi = "10.5281/zenodo.4028303",
 )
