@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Were do you want to set-up `checklist`?
+Where do you want to set-up `checklist`?
 
 1. I want to create a [new R package](#create-package) from scratch.
 1. I want to use or update `checklist` in an [existing R package](#setup-package).
@@ -201,3 +201,56 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
         - `ubuntu-20.04 (oldrel)`
         - `ubuntu-20.04 (devel)`
         - `windows-latest (release)`
+
+# Troubleshooting
+
+## Failing status check `check package`
+
+Sometimes the check package GitHub Action (`GHA`) may fail for other reasons than failure of one or more of the checks executed by `checklist::check_package()`.
+This is likely due to a missing dependency when the action tries to install R packages.
+In that case, the `GHAs` `check_on_branch.yml` and `check_on_main.yml` files need to be modified so the missing dependency can be installed.
+To diagnose if this is the case when an action failed, you can follow these steps:
+
+- Go to the check package `GHA` with a red cross (indicating failure) and click on the `details` link.
+  You will be directed to an overview of all steps that were taken in the action.
+  The page will scroll automatically to where the final error occurs.
+- Check if you see an error that looks like:
+  - `ERROR: dependency 'sf' is not available for package 'inborutils'`
+  - `ERROR: package installation failed`
+- If this is the case, make a mental note of which package(s) failed to install.
+- Next, open the raw logs by clicking on the gear icon and then `View raw logs`.
+- Search the log (CTRL+F) using the name of the package or more specifically search for `installing *source* package '<packagename>'`.
+  Also try searching for `error:`, `failed` and `deb:`.
+  - It is likely that you detect that it is actually a dependency R package that failed to install and that this failing installation was due to a missing _system_ dependency.
+    - For instance, in the example above, the culprit was that the R package `units` - which is a dependency of `sf` - failed to install, because it depended on the _system_ dependency `libudunits2-dev`
+    - The easiest way to detect this, is to search for `deb:`.
+      Here is a snippet of what you might see:
+
+    ```
+    Configuration failed because libudunits2.so was not found. Try installing:
+     * deb: libudunits2-dev (Debian, Ubuntu, ...)
+     * rpm: udunits2-devel (Fedora, EPEL, ...)
+     * brew: udunits (OSX)
+    ```
+
+To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` file, install it with the `aptget` command:
+
+    ```
+        steps:
+          - uses: inbo/actions/check_pkg@master
+            with:
+              token: ${{ secrets.PAT }}
+              aptget: libudunits2-dev
+    ```
+
+In case you need multiple `aptget` dependencies, add them to a single `aptget` item separated with a space.
+
+    ```
+        steps:
+          - uses: inbo/actions/check_pkg@master
+            with:
+              token: ${{ secrets.PAT }}
+              aptget: libudunits2-dev libpoppler-cpp-dev
+    ```
+
+Add, commit and push these changes so they take effect in the `GHAs`.
