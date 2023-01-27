@@ -6,7 +6,7 @@ on:
   schedule:
     - cron: '6 0 15 * *'
 
-name: "check package on main"
+name: "check package on main with checklist"
 
 jobs:
   check-package:
@@ -15,6 +15,4 @@ jobs:
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
-      - uses: inbo/actions/check_pkg@master
-        with:
-          token: ${{ secrets.PAT }}
+      - uses: inbo/actions/check_pkg@v2

@@ -14,4 +14,4 @@ jobs:
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
-      - uses: inbo/actions/check_pkg@token
+      - uses: inbo/actions/check_pkg@v2

@@ -8,8 +8,6 @@ name: check-project
 jobs:
   check-src:
     runs-on: ubuntu-latest
-    name: "Run required package checks"
+    name: "check project with checklist"
     steps:
-      - uses: inbo/actions/check_project@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: inbo/actions/check_project@v2
