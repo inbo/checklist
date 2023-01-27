@@ -32,7 +32,7 @@ The goal of `checklist` is to provide an elaborate and strict set of checks for 
 
 ## Installation
 
-You can install the package from the [INBO universe](https://inbo.r-universe.dev/ui#builds) via
+You can install the package from the [INBO universe](https://inbo.r-universe.dev/ui/#builds) via
 
 ```{r universe}
 # Enable the INBO universe
