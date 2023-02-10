@@ -58,7 +58,7 @@ setup_project <- function(path = ".") {
     return(invisible(NULL))
   }
   dir_ls(path, regexp = "Rproj$") |>
-    c("LICENSE.md"["license" %in% checks], files) |>
+    c("LICENSE.md"["license" %in% checks], files, "checklist.yml") |>
     git_add(force = TRUE, repo = repo)
   return(invisible(NULL))
 }
@@ -102,6 +102,8 @@ setup_vc <- function(path) {
     repo = repo, filename = "check_project.yml", template = "project_template",
     target = target
   )
+  path(".github", "workflows", "check_project.yml") |>
+    git_add(force = TRUE, repo = repo)
 
   # Add code of conduct
   if (
@@ -113,6 +115,8 @@ setup_vc <- function(path) {
       repo = repo, filename = "CODE_OF_CONDUCT.md",
       template = "generic_template", target = target
     )
+    path(".github", "CODE_OF_CONDUCT.md") |>
+      git_add(force = TRUE, repo = repo)
   }
 
   # Add contributing guidelines
@@ -124,6 +128,8 @@ setup_vc <- function(path) {
       repo = repo, filename = "CONTRIBUTING.md", template = "package_template",
       target = target
     )
+    path(".github", "CONTRIBUTING.md") |>
+      git_add(force = TRUE, repo = repo)
   }
 
   return(invisible(repo))
@@ -214,7 +220,7 @@ create_readme <- function(path) {
     "Anything below here is visible in the README but not in the citation."
   ) |>
     writeLines(path(path, "README.md"))
-  return(path(path, "README.md"))
+  return("README.md")
 }
 
 #' @importFrom fs dir_create path
@@ -224,11 +230,7 @@ create_readme <- function(path) {
 preferred_protocol <- function() {
   R_user_dir("checklist", which = "config") |>
     path("config.yml") -> config_file
-  if (file_exists(config_file)) {
-    config <- read_yaml(config_file)
-  } else {
-    config <- list()
-  }
+  config <- ifelse(file_exists(config_file), read_yaml(config_file), list())
   if (
     !has_name(config, "git") || !has_name(config$git, "protocol") ||
     !has_name(config$git, "organisation")
