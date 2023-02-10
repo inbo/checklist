@@ -13,5 +13,8 @@ jobs:
     name: "check package"
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: read
     steps:
       - uses: inbo/actions/check_pkg@v2
