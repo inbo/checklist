@@ -1,8 +1,8 @@
 ---
-title: "Setting up checklist"
+title: "Setting up checklist for a package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Setting up checklist}
+  %\VignetteIndexEntry{Setting up checklist for a package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,7 +18,8 @@ Where do you want to set-up `checklist`?
 
 1. I want to create a [new R package](#create-package) from scratch.
 1. I want to use or update `checklist` in an [existing R package](#setup-package).
-1. I want to use or update `checklist` in an R project containing [only R scripts or markdown file](#setup-project).
+
+Go to `vignette("getting_started_project", package = "checklist")` when you want to use `checklist` on a project.
 
 ## Starting an R package from scratch {#create-package}
 
@@ -62,25 +63,12 @@ Where do you want to set-up `checklist`?
 
 ### Finalise online setup
 
-1. [Create](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) a personal access token for GitHub.
-Use the scope `public_repo` at minimum.
-If you want to reuse it later, then make sure to store it securely.
-Anyone with your personal access token can access GitHub on your behalf within the scope you gave the token.
-You can revoke old or compromised tokens.
-1. Go to your package repository on GitHub.
-Choose _Settings_ > _Secrets_.
-Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
-Save it by clicking the _Add secret_ button.
-1. Run `rorcid::orcid_auth()` in the R console and sign in with your [ORCID iD](https://orcid.org) if requested.
-Upon success, the function returns a string starting with `Bearer` followed by an alphanumeric UUID, e.g. `dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e`.
-Copy the alphanumeric UUID, without the `Bearer` prefix.
-Pro tip: store this UUID securely in a password manager like [KeePassXC](https://keepassxc.org/) for future use.
-Go back to your package repository on GitHub.
-Add a new repository secret with _name_ `ORCID_TOKEN` and the alphanumeric UUID as _value_.
 1. Go to https://about.codecov.io and login with your GitHub account.
 Search for your package repository in the INBO organisation.
 Copy the token.
-Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
+1. Go to your package repository on GitHub.
+Choose _Settings_ > _Secrets_.
+Add _New repository secret_ with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
 1. Wait for all tests to finish (either green thick or red cross).
 1. Go in your package GitHub repository to _Settings_ > _Branches_.
 _Add rule_ for _Branch name pattern_ `main` and select the following items and _Save changes_.
@@ -89,9 +77,9 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
     - _Status checks found in the last week for this repository_
         - `check package`
         - `macOS-latest (release)`
-        - `ubuntu-20.04 (oldrel)`
-        - `ubuntu-20.04 (devel)`
-        - `windows-latest (release)`
+        - `ubuntu (oldrel)`
+        - `ubuntu (devel)`
+        - `windows (release)`
 
 ## Get it working with an existing package or update the checklist {#setup-package}
 
@@ -123,19 +111,12 @@ This should run without returning an error.
 
 ### Online setup
 
-1. [Create](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) a personal access token for GitHub.
-Use the scope `public_repo` at minimum.
-If you want to reuse it later, then make sure to store it securely.
-Anyone with your personal access token can access GitHub on your behalf within the scope you gave the token.
-You can revoke old or compromised tokens.
-1. Go to your package repository on GitHub.
-Choose _Settings_ > _Secrets_.
-Add _New repository secret_ with _name_ `PAT` and copy your personal access token in the _value_.
-Save it by clicking the _Add secret_ button.
 1. Go to https://about.codecov.io and login with your GitHub account.
 Search for your package repository in the INBO organisation.
 Copy the token.
-Again we go back to GitHub and create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
+1. Go to your package repository on GitHub.
+Choose _Settings_ > _Secrets_.
+Create a new repository secret with _name_ `CODECOV_TOKEN` and the token you copied as _value_.
 1. Push changes from your local repository to GitHub.
 This will start the checks on GitHub.
 An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
@@ -146,61 +127,10 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
     - `Require branches to be up to date before merging`
     - _Status checks found in the last week for this repository_
         - `check package`
-        - `macOS-latest (release)`
-        - `ubuntu-20.04 (oldrel)`
-        - `ubuntu-20.04 (devel)`
-        - `windows-latest (release)`
-
-## Adding or updating checklist support to a project with R scripts {#setup-project}
-
-Below describes the legacy version using `setup_source()`.
-This functionality will gradually migrate into `setup_project()`.
-Use `setup_project()` when you want granular control on which checks to run.
-
-### Prerequisites
-
-1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
-1. The git status must be clean.
-You'll need to commit all changes first.
-It is OK to have Untracked files.
-1. You need a **public** remote git repository at https://github.com/inbo.
-
-### Local setup
-
-1. Install the checklist package with `remotes::install_github("inbo/checklist")`.
-1. Run `checklist::setup_source(language = "en-GB")`.
-Change the language to the one you want to use as default.
-See `vignette("spelling", package = "checklist")`.
-This will add and/or modify files.
-Inspect the modified files,
-especially if you are updating to a new `checklist` version and made some tweaks in the past.
-1. Commit the changes.
-1. Run `x <- checklist::check_source()` and fix any issues.
-Repeat this step until you have only issues that are not a problem.
-Commit any changes.
-1. Update the `checklist.yml` with `checklist::write_checklist(x, package = FALSE)`.
-This function will ask you which (if any) of the current allowed warnings and notes you want to keep.
-Then it asks which warnings and notes you want to allow.
-You'll need to motivate each of them.
-1. Run `x <- checklist::check_source()`.
-This should run without returning an error.
-
-### Online setup
-
-1. Push changes from your local repository to GitHub.
-This will start the checks on GitHub.
-An orange circle, green thick mark or red cross will appear next to the latest commit or PR.
-Wait for all tests to finish (either green thick or red cross).
-1. Go in your package GitHub repository to _Settings_ > _Branches_.
-_Add rule_ for _Branch name pattern_ `main` and select the following items and _Save changes_.
-    - `Require status checks to pass before merging`
-    - `Require branches to be up to date before merging`
-    - _Status checks found in the last week for this repository_
-        - `check package`
-        - `macOS-latest (release)`
-        - `ubuntu-20.04 (oldrel)`
-        - `ubuntu-20.04 (devel)`
-        - `windows-latest (release)`
+        - `macOS (release)`
+        - `ubuntu (oldrel)`
+        - `ubuntu (devel)`
+        - `windows (release)`
 
 # Troubleshooting
 
@@ -239,7 +169,6 @@ To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` file, i
         steps:
           - uses: inbo/actions/check_pkg@master
             with:
-              token: ${{ secrets.PAT }}
               aptget: libudunits2-dev
     ```
 
@@ -249,7 +178,6 @@ In case you need multiple `aptget` dependencies, add them to a single `aptget` i
         steps:
           - uses: inbo/actions/check_pkg@master
             with:
-              token: ${{ secrets.PAT }}
               aptget: libudunits2-dev libpoppler-cpp-dev
     ```
 
