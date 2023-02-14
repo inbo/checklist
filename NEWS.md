@@ -1,4 +1,4 @@
-# checklist 0.2.7
+# checklist 0.3.0
 
 * fixes a note about `"MIT"` license
 * the Dockerimage uses the same dictionaries as the local installation
