@@ -26,6 +26,7 @@ Other utils:
 \code{\link{new_branch}()},
 \code{\link{orcid2person}()},
 \code{\link{store_authors}()},
+\code{\link{use_author}()},
 \code{\link{yesno}()}
 }
 \concept{utils}

@@ -33,6 +33,7 @@ Other utils:
 \code{\link{is_workdir_clean}()},
 \code{\link{orcid2person}()},
 \code{\link{store_authors}()},
+\code{\link{use_author}()},
 \code{\link{validate_email}()},
 \code{\link{yesno}()}
 }

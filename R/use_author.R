@@ -1,6 +1,13 @@
+#' Which author to use
+#'
+#' Reuse existing author information or add a new author.
+#' Allows to update existing author information.
+#' @return A data.frame with author information.
 #' @importFrom fs path
 #' @importFrom tools R_user_dir
 #' @importFrom utils write.table
+#' @family utils
+#' @export
 use_author <- function() {
   root <- R_user_dir("checklist", which = "data")
   current <- stored_authors(root)
