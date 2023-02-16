@@ -141,7 +141,7 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
     if (license == "MIT") {
       writeLines(
         c(paste0("YEAR: ", format(Sys.Date(), "%Y")),
-          "COPYRIGHT HOLDER: Research Institute for Nature and Forest"
+          "COPYRIGHT HOLDER: Research Institute for Nature and Forest (INBO)"
         ),
         path(path, "LICENSE")
       )
@@ -149,7 +149,7 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
       mit <- readLines(path(path, "LICENSE.md"))
       mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
       mit[3] <- gsub("<COPYRIGHT HOLDERS>",
-                     "Research Institute for Nature and Forest",
+                     "Research Institute for Nature and Forest (INBO)",
                      mit[3])
       writeLines(mit, path(path, "LICENSE.md"))
     }

@@ -27,7 +27,7 @@ test_that("check_license() works", {
   expect_identical(
     mit[3],
     paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
-           " Research Institute for Nature and Forest")
+           " Research Institute for Nature and Forest (INBO)")
   )
   expect_identical(
     file.exists(path(repo, "LICENSE")),

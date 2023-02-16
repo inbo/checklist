@@ -9,7 +9,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="e.g. https://www.inbo.be/" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/inbo/checklist" \
-      org.label-schema.vendor="Research Institute for Nature and Forest" \
+      org.label-schema.vendor="Research Institute for Nature and Forest (INBO)" \
       maintainer="Thierry Onkelinx <thierry.onkelinx@inbo.be>"
 
 ## for apt to be noninteractive

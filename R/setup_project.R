@@ -211,8 +211,9 @@ create_readme <- function(path) {
   c(
     "<!-- badges: start -->", badges, "<!-- badges: end -->", "",
     paste("#", title), "", author,
-    "Research Institute for Nature and Forest[^cph][^fnd]", "", footnote, "",
-    keywords, "", "<!-- community: inbo -->", "", "<!-- description: start -->",
+    "Research Institute for Nature and Forest (INBO)[^cph][^fnd]", "", footnote,
+    "", keywords, "", "<!-- community: inbo -->", "",
+    "<!-- description: start -->",
     "Replace this with a short description of the project.",
     "It becomes the abstract of the project in the citation information.",
     "And the project description at https://zenodo.org",

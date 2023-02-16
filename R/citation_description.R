@@ -59,18 +59,18 @@ description_author <- function(authors) {
       by.y = "contributor"
     ) -> contributors
   contributors[
-    contributors$given == "Research Institute for Nature and Forest",
+    contributors$given == "Research Institute for Nature and Forest (INBO)",
   ] |>
     merge(
       roles[, c("contributor", "role")], by.x = "id", by.y = "contributor"
     ) -> inbo_roles
   notes <- c(
     paste(
-      "`Research Institute for Nature and Forest` not listed as copyright",
-      "holder in `DESCRIPTION`."
+      "`Research Institute for Nature and Forest (INBO)` not listed as",
+      "copyright holder in `DESCRIPTION`."
     )[!"copyright holder" %in% inbo_roles$role],
     paste(
-      "`Research Institute for Nature and Forest` not listed as funder",
+      "`Research Institute for Nature and Forest (INBO)` not listed as funder",
       "in `DESCRIPTION`."
     )[!"funder" %in% inbo_roles$role]
   )

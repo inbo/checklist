@@ -107,7 +107,7 @@ Title: %2$s
 Version: 0.0.0
 Authors@R:
   c(%3$s,
-    person(given = \"Research Institute for Nature and Forest\",
+    person(given = \"Research Institute for Nature and Forest (INBO)\",
            role = c(\"cph\", \"fnd\"),
            email = \"info@inbo.be\"))
 Description: %4$s
@@ -203,13 +203,13 @@ RoxygenNote: %5$s
     file_copy(license_file)
   if (license == "MIT") {
     paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
-      c("COPYRIGHT HOLDER: Research Institute for Nature and Forest") |>
+      c("COPYRIGHT HOLDER: Research Institute for Nature and Forest (INBO)") |>
       writeLines(path(path, "LICENSE"))
     git_add("LICENSE", repo = repo)
     mit <- readLines(license_file)
     mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
     mit[3] <- gsub("<COPYRIGHT HOLDER>",
-                   "Research Institute for Nature and Forest",
+                   "Research Institute for Nature and Forest (INBO)",
                    mit[3])
     writeLines(mit, license_file)
   }
