@@ -41,7 +41,7 @@ Use `setup_project()` when you want to change the settings later.
 - Do you want to check the coding style with `check_lintr()`?
 - What is the default language of the project?
 - Do you want to spell check the markdown content and R function documentation in your project with `check_spelling()`?
-  This uses the default language you set is the previous question.
+  This uses the default language you set in the previous question.
   Note that you can set a different language on specific files.
   See `vignette("spelling", package = "checklist")` for more details on that.
 - Do you want to set a license file?
