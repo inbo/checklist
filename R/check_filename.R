@@ -24,7 +24,7 @@
 #' @section Default rules for file names:
 #' - Base names should only contain lower case letters, numbers, dashes (`-`)
 #'   and underscores (`_`).
-#' - File extensions should only contains lower case letters and numbers.
+#' - File extensions should only contain lower case letters and numbers.
 #'   Exceptions: file extensions related to `R` must have an upper case `R` (
 #'   `.R`, `.Rd`, `.Rda`, `.Rnw`, `.Rmd`, `.Rproj`).
 #'   Exception to these exceptions: `R/sysdata.rda`.
