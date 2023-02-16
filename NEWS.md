@@ -1,6 +1,7 @@
 # checklist 0.3.0
 
-* Improved `create_project()` and `setup_project()`.
+* Improved `create_project()` and `setup_project()` which interactively guides
+  the user through the set-up.
 * Add `vignette("getting_started_project", package = "checklist")`.
 * Improved GitHub Actions.
   They use the built-in `GITHUB_TOKEN`.
