@@ -23,7 +23,7 @@ The sections below describe the default rules.
 We allow several exceptions when the community standard is different.
 E.g. a package stores the function scripts in the \code{R} folder, while our
 standard enforces lower case folder names.
-Use the community standard, even if it does conform with the \code{checklist}
+Use the community standard, even if it does not conform with the \code{checklist}
 rules.
 Most likely \code{checklist} will have an exception for the name.
 If not, you can file an \href{https://github.com/inbo/checklist/issues}{issue} and
@@ -43,7 +43,7 @@ and underscores (\verb{_}).
 \itemize{
 \item Base names should only contain lower case letters, numbers, dashes (\code{-})
 and underscores (\verb{_}).
-\item File extensions should only contains lower case letters and numbers.
+\item File extensions should only contain lower case letters and numbers.
 Exceptions: file extensions related to \code{R} must have an upper case \code{R} (
 \code{.R}, \code{.Rd}, \code{.Rda}, \code{.Rnw}, \code{.Rmd}, \code{.Rproj}).
 Exception to these exceptions: \code{R/sysdata.rda}.
