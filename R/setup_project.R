@@ -177,7 +177,7 @@ create_readme <- function(path) {
       `attr<-`(which = "footnote", value = footnote) -> author
   }
   title <- readline(prompt = "Enter the title of the project?")
-  readline(prompt = "Enter one or more keywords separaterd by `;`") |>
+  readline(prompt = "Enter one or more keywords separated by `;`") |>
     strsplit(";") |>
     unlist() |>
     gsub(pattern = "^\\s+", replacement = "") |>
@@ -242,7 +242,7 @@ preferred_protocol <- function() {
       config[["git"]][["organisation"]] <- "inbo"
     }
     c("https (default)", "ssh") |>
-      menu_first(title = "Which protocol do you prefer") -> protocol
+      menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
     dirname(config_file) |>
       dir_create()

@@ -310,7 +310,7 @@ readme_community <- function(text) {
     )
     text$notes <- c(
       text$notes,
-      "`inbo` no listed a community"[
+      "`inbo` not listed as a community"[
         !"inbo" %in% text$meta$community
       ]
     )

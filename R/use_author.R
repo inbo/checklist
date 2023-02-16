@@ -14,7 +14,7 @@ use_author <- function() {
   while (TRUE) {
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
-      menu_first("Which person information you want to use?") -> selected
+      menu_first("Which person information do you want to use?") -> selected
     cat(
       "given name: ", current$given[selected],
       "\nfamily name:", current$family[selected],
