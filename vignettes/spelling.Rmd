@@ -44,7 +44,7 @@ To change the setting for some of the files, the function gives an extra option 
 After updating the settings, you need to store them with `write_checklist(x)`.
 `check_spelling()` will now use the updated settings.
 
-```{r eval = FALSE}
+```{r example-update, eval = FALSE}
 # This code assumes your working directory is at the root of your project.
 # Pass the path to the project root to read_checklist() if that is not the case.
 x <- read_checklist()
@@ -89,7 +89,7 @@ Next store the output of `check_spelling()` in an object and use that object as 
 This will append to words to a `.dic` file in the `inst` folder.
 Running `check_spelling()` again should return an empty list of issues.
 
-```{r, eval = FALSE}
+```{r example-custom, eval = FALSE}
 issues <- check_spelling()
 custom_dictionary(issues)
 ```
@@ -106,7 +106,8 @@ What you can do is copy the `.dic` files from other projects.
 
 Rd files contain the information for the help files of functions in an R package.
 We recommend to use [Roxygen2](https://roxygen2.r-lib.org/) to write the documentation alongside the code of the functions.
-Building the package will generate the
+Building the package will generate the Rd files automatically.
+`check_spelling()` will check the Roxygen2 comments in the R script and ignore the matching Rd files.
 
 ## Quarto projects
 
