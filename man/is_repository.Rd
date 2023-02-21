@@ -26,6 +26,7 @@ Other utils:
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
 \code{\link{is_workdir_clean}()},
+\code{\link{menu_first}()},
 \code{\link{new_branch}()},
 \code{\link{orcid2person}()},
 \code{\link{store_authors}()},

@@ -18,6 +18,7 @@ Other utils:
 \code{\link{execshell}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
+\code{\link{menu_first}()},
 \code{\link{new_branch}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},
