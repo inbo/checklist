@@ -256,7 +256,11 @@ preferred_protocol <- function() {
     sprintf(config$git$organisation)
 }
 
+#' Function to ask a simple yes no question
+#' @inheritParams utils::askYesNo
 #' @importFrom utils askYesNo
+#' @export
+#' @family utils
 ask_yes_no <- function(
   msg, default = TRUE,
   prompts = getOption("askYesNo", gettext(c("Yes", "No", "Cancel"))), ...

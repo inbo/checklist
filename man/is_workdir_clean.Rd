@@ -22,6 +22,7 @@ A clean working directory has no staged, unstaged or untracked files.
 }
 \seealso{
 Other utils: 
+\code{\link{ask_yes_no}()},
 \code{\link{c_sort}()},
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},

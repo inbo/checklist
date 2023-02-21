@@ -19,6 +19,7 @@ Setting the locale before sorting ensures a stable sorting order
 }
 \seealso{
 Other utils: 
+\code{\link{ask_yes_no}()},
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},

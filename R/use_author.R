@@ -45,6 +45,10 @@ use_author <- function() {
   return(current[selected, ])
 }
 
+#' Improved version of menu()
+#' @inheritParams utils::menu
+#' @export
+#' @family utils
 menu_first <- function(choices, graphics = FALSE, title = NULL) {
   if (!interactive()) {
     return(1)
