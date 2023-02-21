@@ -18,4 +18,4 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
     steps:
-      - uses: inbo/actions/check_pkg@v2
+      - uses: inbo/actions/check_pkg@checklist-0.3.0
