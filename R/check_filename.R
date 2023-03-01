@@ -29,17 +29,7 @@
 #'   `.R`, `.Rd`, `.Rda`, `.Rnw`, `.Rmd`, `.Rproj`).
 #'   Exception to these exceptions: `R/sysdata.rda`.
 #'
-#' @section Exceptions for some file formats:
-#' Underscores (`_`) causes problems for graphical files when using LaTeX to
-#' create pdf output.
-#' This is how we generate pdf output from rmarkdown.
-#' Therefore you need to use a dash (`-`) as separator instead of
-#' an underscores (`_`).
-#' Applies to files with extensions `.csl`, `.eps`, `.jpg`, `.jpeg`, `.pdf`,
-#' `.png` and `.ps`.
-#'
-#' We ignore files with `.otf` or `.ttf` extensions.
-#' These are fonts files which often require their own file name scheme.
+#' @template graphics
 #'
 #' @inheritParams read_checklist
 #' @export
@@ -152,9 +142,7 @@ Fails: `%s`",
     )
   )
 
-  graphics_file <- extension %in% c(
-    "csl", "eps", "jpg", "jpeg", "pdf", "png", "ps", "svg"
-  )
+  graphics_file <- extension %in% c("csl", graphics_ext)
   warnings <- c(
     sprintf(
       "Use `-` as separator in the basename of graphics files.
