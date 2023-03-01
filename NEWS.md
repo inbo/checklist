@@ -5,7 +5,7 @@
 * Add `vignette("getting_started_project", package = "checklist")`.
 * Improved GitHub Actions.
   They use the built-in `GITHUB_TOKEN`.
-  They user only needs to set the `CODECOV_TOKEN` in case of a package.
+  The user only needs to set the `CODECOV_TOKEN` in case of a package.
 * Fixes a note about `"MIT"` license.
 * The Dockerimage uses the same dictionaries as the local installation.
 * Add a German dictionary?
