@@ -28,6 +28,7 @@
   `Config/checklist/communities` and `Config/checklist/keywords`.
 * Store author information to reuse when running `create_package()` or
   `create_project()`.
+* Add `check_folder()`.
 
 # checklist 0.2.6
 

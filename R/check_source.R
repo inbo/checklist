@@ -23,7 +23,7 @@
 #' @importFrom fs dir_exists file_exists path
 #' @importFrom utils file_test
 #' @export
-#' @family source
+#' @family project
 check_source <- function(x = ".", fail = !interactive()) {
   # nocov start
   .Deprecated("check_project", package = "checklist")

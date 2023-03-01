@@ -42,4 +42,7 @@ sprintf("`%s`", graphics_ext) |>
 #' These are fonts files which often require their own file name scheme.
 ") |>
   writeLines("man-roxygen/graphics.R")
-save(iso_639_3, email_regexp, graphics_ext, file = "R/sysdata.rda")
+open_data_ext <- c("csv", "gpkg", "tsv", "txt")
+save(
+  email_regexp, graphics_ext, iso_639_3, open_data_ext, file = "R/sysdata.rda"
+)

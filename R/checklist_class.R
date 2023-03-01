@@ -285,7 +285,7 @@ Please contact the maintainer of the `checklist` package."
     available_checks = c(
       "checklist", "CITATION", "DESCRIPTION", "documentation",
       "R CMD check", "codemeta", "license", "repository secret",
-      "filename conventions", "lintr", "spelling"
+      "filename conventions", "folder conventions", "lintr", "spelling"
     ),
     # stores a named logical vector of checked items.
     # names must match the available checks

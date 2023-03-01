@@ -31,10 +31,10 @@ reference:
   contents:
   - check_package
   - has_concept("package")
-- title: Functions relevant for checking scripts
+- title: Functions relevant for checking projects with R and Rmd scripts
   contents:
-  - has_concept("source")
-- title: Functions relevant for checking packages and scripts
+  - has_concept("project")
+- title: Functions relevant for checking packages and projects
   contents:
   - has_concept("both")
 - title: Setting up a project use the checklist package

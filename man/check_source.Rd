@@ -32,7 +32,8 @@ List of checks in order:
 }
 }
 \seealso{
-Other source: 
+Other project: 
+\code{\link{check_folder}()},
 \code{\link{check_project}()}
 }
-\concept{source}
+\concept{project}

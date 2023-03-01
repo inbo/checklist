@@ -6,7 +6,7 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom fs is_file
-#' @family source
+#' @family project
 check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   assert_that(
     inherits(x, "checklist") || is_file(path(x, "checklist.yml")),
