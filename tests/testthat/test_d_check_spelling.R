@@ -134,6 +134,11 @@ test_that("check_spelling() on a project", {
     }
   )
 
+  path(path, "spelling", "bookdown") |>
+    dir_create()
+  path(path, "spelling", "bookdown", c("_bookdown.yml", "test.Rproj")) |>
+    fs::file_create()
+
   stub(store_authors, "R_user_dir", r_user_dir)
   expect_invisible(store_authors(path(path, "spelling")))
 
