@@ -28,6 +28,11 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     x <- check_lintr(x = x, quiet = quiet)
   }
 
+  if ("folder conventions" %in% x$get_required) {
+    quiet_cat("Checking folders conventions\n", quiet = quiet)
+    x <- check_folder(x = x)
+  }
+
   if ("filename conventions" %in% x$get_required) {
     quiet_cat("Checking filename conventions\n", quiet = quiet)
     x <- check_filename(x = x)

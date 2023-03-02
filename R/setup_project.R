@@ -6,7 +6,7 @@
 #' @param path the project root folder
 #' @export
 #' @importFrom assertthat assert_that is.string
-#' @importFrom fs is_dir path path_real
+#' @importFrom fs dir_create is_dir path path_real
 #' @family setup
 setup_project <- function(path = ".") {
   assert_that(is.string(path), is_dir(path))
@@ -22,10 +22,13 @@ setup_project <- function(path = ".") {
     x$set_ignore(c(".github", "LICENSE.md"))
   }
 
+  dir_create(path, c("data", "media", "output", "source"))
+
   repo <- setup_vc(path = path)
   files <- create_readme(path = path)
   checks <- c(
     "checklist",
+    "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
     "filename conventions"[isTRUE(ask_yes_no("Check file name conventions?"))],
     "lintr"[isTRUE(ask_yes_no("Check code style?"))],
     "license"[

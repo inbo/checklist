@@ -62,6 +62,7 @@ check_package <- function(
   x <- check_codemeta(x)
 
   x <- check_environment(x)
+  x <- check_folder(x)
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")

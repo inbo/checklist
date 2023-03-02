@@ -40,6 +40,7 @@
 check_folder <- function(x = ".") {
   x <- read_checklist(x = x)
   if (x$package) {
+    x$add_warnings(character(0), item = "folder conventions")
     return(x)
   }
 
@@ -91,8 +92,10 @@ check_folder <- function(x = ".") {
     sprintf(fmt = "\\.(%s)$") -> graphics_regexp
   dir_ls(x$get_path, type = "file", recurse = TRUE, regexp = graphics_regexp) |>
     path_rel(x$get_path) -> graphics_files
-  paste0("_files.*", graphics_regexp) |>
-    dir_ls(x$get_path, type = "file", recurse = TRUE, regexp = _) |>
+  dir_ls(
+    x$get_path, type = "file", recurse = TRUE,
+    regexp = paste0("_files.*", graphics_regexp)
+  ) |>
     path_rel(x$get_path) -> ignore_graphics_files
   graphics_files <- graphics_files[!graphics_files %in% ignore_graphics_files]
   suppressWarnings(
@@ -132,24 +135,29 @@ check_folder <- function(x = ".") {
     dirname() |>
     c(source_1) |>
     vapply(check_data_media, vector(mode = "list", length = 1)) -> data_media_ok
-  vapply(data_media_ok, "[[", vector(mode = "list", length = 1), "data") |>
-    unlist() |>
-    path_rel(x$get_path) -> ignore_data_files
-  data_files <- data_files[!data_files %in% ignore_data_files]
-  vapply(data_media_ok, "[[", vector(mode = "list", length = 1), "cover") |>
-    unlist() |>
-    path_rel(x$get_path) -> ignore_cover_files
-  data_files <- data_files[!data_files %in% ignore_cover_files]
-  vapply(
-    data_media_ok, "[[", vector(mode = "list", length = 1), "extra_media"
-  ) |>
-    unlist() |>
-    path_rel(x$get_path) -> ignore_graphics_files
-  graphics_files <- graphics_files[!graphics_files %in% ignore_graphics_files]
-  vapply(data_media_ok, "[[", vector(mode = "list", length = 1), "media") |>
-    unlist() |>
-    path_rel(x$get_path) -> ignore_graphics_files
-  graphics_files <- graphics_files[!graphics_files %in% ignore_graphics_files]
+  if (length(data_media_ok) == 0) {
+    ignore_data_files <- character(0)
+    ignore_graphics_files <- character(0)
+  } else {
+    vapply(data_media_ok, "[[", vector(mode = "list", length = 1), "data") |>
+      unlist() |>
+      path_rel(x$get_path) -> ignore_data_files
+    data_files <- data_files[!data_files %in% ignore_data_files]
+    vapply(data_media_ok, "[[", vector(mode = "list", length = 1), "cover") |>
+      unlist() |>
+      path_rel(x$get_path) -> ignore_cover_files
+    data_files <- data_files[!data_files %in% ignore_cover_files]
+    vapply(
+      data_media_ok, "[[", vector(mode = "list", length = 1), "extra_media"
+    ) |>
+      unlist() |>
+      path_rel(x$get_path) -> ignore_graphics_files
+    graphics_files <- graphics_files[!graphics_files %in% ignore_graphics_files]
+    vapply(data_media_ok, "[[", vector(mode = "list", length = 1), "media") |>
+      unlist() |>
+      path_rel(x$get_path) -> ignore_graphics_files
+    graphics_files <- graphics_files[!graphics_files %in% ignore_graphics_files]
+  }
 
   dir_ls(x$get_path, recurse = TRUE, regexp = "_bookdown\\.yml$") |>
     dirname() |>
@@ -158,10 +166,12 @@ check_folder <- function(x = ".") {
     unname() |>
     c(
       paste(
-        "A project should only have `data`, `inst`, `output`, `renv` and ",
-        "`source` as main folder."
+        "A project should only have `data`, `inst`, `media`, `output`, `renv`",
+        "and `source` as main folder."
       )[
-        !all(root_dir %in% c("data", "inst", "output", "renv", "source"))
+        !all(
+          root_dir %in% c("data", "inst", "media", "output", "renv", "source")
+        )
       ],
       sprintf(
         "Data files found outside of a `data` folder:\n  %s",
