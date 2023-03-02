@@ -44,7 +44,7 @@ spelling_parse_r <- function(r_file, wordlist) {
   c(
     "author", "docType", "export", "exportClass", "exportMethod", "family",
     "importClassesFrom", "importFrom", "inherit\\w*Params", "keywords", "name",
-    "rdname", "seealso", "title", "template"
+    "rdname", "return", "seealso", "title", "template"
   ) |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s) .*") |>
