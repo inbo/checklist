@@ -13,7 +13,7 @@ Defaults to \code{.}.}
 \description{
 For the time being, this function only checks projects.
 Keep in mind that R packages have requirements for the folder structure.
-\code{check_cran()} checks those requirements.
+That is one of things that \code{check_cran()} checks.
 }
 \section{Recommended folder structure}{
 \itemize{

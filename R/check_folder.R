@@ -2,7 +2,7 @@
 #'
 #' For the time being, this function only checks projects.
 #' Keep in mind that R packages have requirements for the folder structure.
-#' `check_cran()` checks those requirements.
+#' That is one of things that `check_cran()` checks.
 #'
 #' # Recommended folder structure
 #'
@@ -211,31 +211,31 @@ check_data_media <- function(path) {
   cover_ok <- dir_ls(path, type = "file")
   cover_ok <- cover_ok[basename(cover_ok) == "cover.txt"]
 
+  paste(open_data_ext, collapse = "|") |>
+    sprintf(fmt = "\\.(%s)$") -> rg
   suppressWarnings(
-    paste(open_data_ext, collapse = "|") |>
-      sprintf(fmt = "\\.(%s)$") |>
-      dir_ls(
-        path = path(path, "data"), type = "file", recurse = TRUE, fail = FALSE,
-        regexp = _
-      ) -> data_ok
+    dir_ls(
+      path = path(path, "data"), type = "file", recurse = TRUE, fail = FALSE,
+      regexp = rg
+    ) -> data_ok
   )
 
+  paste(graphics_ext, collapse = "|") |>
+    sprintf(fmt = "\\.(%s)$") -> rg
   suppressWarnings(
-    paste(graphics_ext, collapse = "|") |>
-      sprintf(fmt = "\\.(%s)$") |>
-      dir_ls(
-        path = path(path, "media"), type = "file", recurse = TRUE, fail = FALSE,
-        regexp = _
-      ) -> media_ok
+    dir_ls(
+      path = path(path, "media"), type = "file", recurse = TRUE, fail = FALSE,
+      regexp = rg
+    ) -> media_ok
   )
 
+  paste(graphics_ext, collapse = "|") |>
+    sprintf(fmt = "\\.(%s)$") -> rg
   suppressWarnings(
-    paste(graphics_ext, collapse = "|") |>
-      sprintf(fmt = "\\.(%s)$") |>
-      dir_ls(
-        path = path(path, c("_book", "_extensions", "_freeze", "libs")),
-        type = "file", recurse = TRUE, regexp = _, fail = FALSE
-      ) -> extra_media_ok
+    dir_ls(
+      path = path(path, c("_book", "_extensions", "_freeze", "libs")),
+      type = "file", recurse = TRUE, regexp = rg, fail = FALSE
+    ) -> extra_media_ok
   )
 
   list(

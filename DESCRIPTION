@@ -18,7 +18,7 @@ URL: https://inbo.github.io/checklist/, https://github.com/inbo/checklist,
     https://doi.org/10.5281/zenodo.4028303
 BugReports: https://github.com/inbo/checklist/issues
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     assertthat,
     codemetar,
