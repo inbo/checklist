@@ -29,13 +29,13 @@ spelling_parse_r <- function(r_file, wordlist) {
     gsub("", text) -> text
 
   # remove only the tag
-  c("concept", "description", "details") |>
+  c("concept", "description", "details", "return") |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s)") |>
     gsub("", text) -> text
 
   # remove the tag and the first word
-  c("param", "reference", "return") |>
+  c("param", "reference") |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s)\\s+(\\w|\\.)+") |>
     gsub("", text, perl = TRUE) -> text
@@ -44,7 +44,7 @@ spelling_parse_r <- function(r_file, wordlist) {
   c(
     "author", "docType", "export", "exportClass", "exportMethod", "family",
     "importClassesFrom", "importFrom", "inherit\\w*Params", "keywords", "name",
-    "rdname", "return", "seealso", "title", "template"
+    "rdname", "seealso", "title", "template"
   ) |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s) .*") |>
