@@ -205,7 +205,7 @@ See the details in ?pkgdown::build_news for the required format."
       "Items in NEWS.md must start with `* ` or `    * `.",
       "Extra lines of items start with `  ` or `      `."
     )[
-      !all(grepl("^((( ){4})?\\*| ) \\S", news_file))
+      !all(grepl("^(\\s{4})?(\\*|\\s)\\s\\S+", news_file, perl = TRUE))
     ]
   )
 
