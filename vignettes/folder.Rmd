@@ -1,0 +1,88 @@
+---
+title: "Recommended folder structure"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Recommended folder structure}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## For a simple R project
+
+`checklist` assumes you have some main folder for your project.
+Within that main folder you create the `checklist` project which should contain all R related files (scripts and data).
+Place all non R related files in other folders under the main folder.
+
+The `checklist` project has a mandatory folder `source` where you place all the R and Rmarkdown files.
+The other folders are optional.
+The `data` folder holds all the data files for the analysis.
+The `output` folder holds the rendered files from the analysis.
+The `media` folder holds the images you want to incorporate in the Rmarkdown files.
+The `inst` folder stores some `checklist` specific data.
+
+While you can add other folders the root of your `checklist` project, we recommend to stick with the default folders.
+Having a non standard folder name results in a warning when running `check_folder()`.
+
+In case you want to use version control (strongly recommended), use the root of the R project as the root of the version control project.
+
+```
+─┬─ main_folder
+ ├─── folder_a
+ ├─── folder_b
+ └─┬─ r_project_name
+   ├─── data
+   ├─── inst
+   ├─── media
+   ├─── output
+   └─── source
+```
+
+## A more complex project
+
+We advise to use sub folders with `source`, `data` and / or `media` when the project is more complex.
+You are free create a relevant folder structure with these folders.
+E.g. `source/import` for scripts to import data; `source/analysis` for scripts to run the analysis and `source/report` for the `bookdown` report.
+
+```
+─┬─ main_folder
+ ├─── folder_a
+ ├─── folder_b
+ └─┬─ r_project_name
+   ├─┬─ data
+   │ ├─── raw
+   │ ├─── intermediate
+   │ └─── raw
+   ├─── inst
+   ├─┬─ media
+   │ ├─── collaborators
+   │ └─── report
+   ├─── output
+   └─┬─ source
+     ├─── import
+     ├─── analysis
+     └─── report
+```
+
+## A project with several reports with different data and media
+
+You can opt to use report specific `data` and/or `media` folders instead of common `data` and/or `media` folders.
+However, if you choose to have a report specific `data` folder, you no longer can have a common `data` folder.
+The same goes for a report specific `media` folder.
+Hence a `data` folder at the project root implies that the user can find all data in that folder.
+No `data` folder at the project root implies that the user needs to look for the data in the source folder of the report.
+
+```
+─┬─ main_folder
+ ├─── folder_a
+ ├─── folder_b
+ └─┬─ r_project_name
+   ├─── inst
+   ├─── output
+   └─┬─ source
+     ├─┬─ report_a
+     │ ├─── data
+     │ └─── media
+     └─┬─ report_b
+       ├─── data
+       └─── media
+```

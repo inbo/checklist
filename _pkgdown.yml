@@ -51,11 +51,11 @@ articles:
 - title: Getting started
   contents:
   - philosophy
+  - folder
   - getting_started
   - getting_started_project
   - spelling
   - zenodo
-
 
 authors:
   Thierry Onkelinx:
