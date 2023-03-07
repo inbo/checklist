@@ -22,7 +22,7 @@ Run `create_project(path, project)`.
 `path` must be an existing directory.
 `project` is the name of the project.
 `create_project()` creates the project as a subdirectory of `path` with name `project`.
-Then it guides you interactively through the process by asking questions on your preferences on the project.
+It then guides you interactively through the process by asking questions on your preferences on the project.
 We recommend to answer yes to all yes/no questions.
 Use `setup_project()` when you want to change the settings later.
 
@@ -65,7 +65,7 @@ In case of a previous set-up, it will take that into account.
 - Do you want to check the coding style with `check_lintr()`?
 - Do you want to add a license file?
     - Do you want to check the license file if set?
-- Do you want to `check_spelling()`.
+- Do you want to check spelling with `check_spelling()`.
 - Do you want to update the citation files?
 
 # To do once after activating version control

@@ -138,7 +138,7 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
 
 Sometimes the check package GitHub Action (`GHA`) may fail for other reasons than failure of one or more of the checks executed by `checklist::check_package()`.
 This is likely due to a missing dependency when the action tries to install R packages.
-In that case, the `GHAs` `check_on_branch.yml` and `check_on_main.yml` files need to be modified so the missing dependency can be installed.
+In that case, the `GHAs`, `check_on_branch.yml` and `check_on_main.yml` files need to be modified so the missing dependency can be installed.
 To diagnose if this is the case when an action failed, you can follow these steps:
 
 - Go to the check package `GHA` with a red cross (indicating failure) and click on the `details` link.
@@ -163,7 +163,7 @@ To diagnose if this is the case when an action failed, you can follow these step
      * brew: udunits (OSX)
     ```
 
-To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` file, install it with the `aptget` command:
+To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` files, install it with the `aptget` command:
 
     ```
         steps:

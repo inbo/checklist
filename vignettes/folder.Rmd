@@ -39,8 +39,8 @@ In case you want to use version control (strongly recommended), use the root of 
 
 ## A more complex project
 
-We advise to use sub folders with `source`, `data` and / or `media` when the project is more complex.
-You are free create a relevant folder structure with these folders.
+We advise to use subfolders with `source`, `data` and / or `media` when the project is more complex.
+You are free to create a relevant folder structure with these folders.
 E.g. `source/import` for scripts to import data; `source/analysis` for scripts to run the analysis and `source/report` for the `bookdown` report.
 
 ```
@@ -51,7 +51,7 @@ E.g. `source/import` for scripts to import data; `source/analysis` for scripts t
    ├─┬─ data
    │ ├─── raw
    │ ├─── intermediate
-   │ └─── raw
+   │ └─── processed
    ├─── inst
    ├─┬─ media
    │ ├─── collaborators
