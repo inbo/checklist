@@ -84,5 +84,7 @@ In case of a previous set-up, it will take that into account.
         - Add branch protection rule
             - branch name pattern: `main`
             - activate "Require a pull request before merging"
+                - in case a team works on the project consider to activate "Require approvals"
             - activate "Require status checks to pass before merging"
-                - 
+                - search and select "check project with checklist"
+                - activate Require "branches to be up to date before merging"

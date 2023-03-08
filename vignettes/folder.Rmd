@@ -21,7 +21,7 @@ The `media` folder holds the images you want to incorporate in the Rmarkdown fil
 The `inst` folder stores some `checklist` specific data.
 
 While you can add other folders the root of your `checklist` project, we recommend to stick with the default folders.
-Having a non standard folder name results in a warning when running `check_folder()`.
+Having a non-standard folder name results in a warning when running `check_folder()`.
 
 In case you want to use version control (strongly recommended), use the root of the R project as the root of the version control project.
 
@@ -29,7 +29,7 @@ In case you want to use version control (strongly recommended), use the root of 
 ─┬─ main_folder
  ├─── folder_a
  ├─── folder_b
- └─┬─ r_project_name
+ └─┬─ checklist_project_name
    ├─── data
    ├─── inst
    ├─── media

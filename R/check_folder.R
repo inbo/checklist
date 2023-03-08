@@ -24,7 +24,7 @@
 #' Simple projects in which `source` has no subfolders, place `data` at the
 #' root of the project.
 #' For more elaborate project you must choose between either `data` at the root
-#' of the project or `data` as sub folder of the sub folders of `source`.
+#' of the project or `data` as subfolder of the subfolders of `source`.
 #' E.g. `source/report/data`.
 #'
 #' Place the data in an open file format.

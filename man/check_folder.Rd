@@ -33,10 +33,10 @@ And create an RStudio project for that folder.
 }
 
 \section{\code{data}}{
-Simple projects in which \code{source} has no sub folders, place \code{data} at the
+Simple projects in which \code{source} has no subfolders, place \code{data} at the
 root of the project.
 For more elaborate project you must choose between either \code{data} at the root
-of the project or \code{data} as sub folder of the sub folders of \code{source}.
+of the project or \code{data} as subfolder of the subfolders of \code{source}.
 E.g. \code{source/report/data}.
 
 Place the data in an open file format.
