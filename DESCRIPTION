@@ -1,15 +1,15 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.2.6
+Version: 0.3.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-8804-4216")),
+           comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-3481-5684")),
+           comment = c(ORCID = "0000-0002-3481-5684", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Hans", "Van Calster", , "hans.vancalster@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0001-8595-8426")),
-    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+           comment = c(ORCID = "0000-0001-8595-8426", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: An opinionated set of rules for R packages and R source code
     projects.
@@ -18,7 +18,7 @@ URL: https://inbo.github.io/checklist/, https://github.com/inbo/checklist,
     https://doi.org/10.5281/zenodo.4028303
 BugReports: https://github.com/inbo/checklist/issues
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     assertthat,
     codemetar,
@@ -29,13 +29,13 @@ Imports:
     httr,
     hunspell,
     jsonlite,
+    knitr,
     lintr (>= 2.0.1.9000),
     pkgdown,
     R6,
     rcmdcheck,
     renv,
     rmarkdown,
-    rorcid,
     sessioninfo,
     utils,
     withr,
@@ -43,7 +43,6 @@ Imports:
 Suggests:
     covr,
     curl,
-    knitr,
     mockery,
     roxygen2,
     rstudioapi,
@@ -52,7 +51,10 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
+Config/checklist/communities: inbo
+Config/checklist/keywords: quality control; documentation; publication
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
+SystemRequirements: Pandoc (>= 1.17.2)

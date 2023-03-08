@@ -1,10 +1,10 @@
 #!/bin/sh -l
 
 export CI=TRUE
-export GITHUB_PAT=$INPUT_TOKEN
+export GITHUB_PAT=$GITHUB_TOKEN
 
 echo '\nGetting the code...\n'
-git clone https://$INPUT_TOKEN@github.com/$GITHUB_REPOSITORY check
+git clone https://oauth2:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY check
 cd check
 
 git config user.name "Checklist bot"

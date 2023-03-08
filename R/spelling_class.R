@@ -15,7 +15,13 @@ spelling <- R6Class(
       assert_that(is.string(base_path), noNA(base_path), dir_exists(base_path))
       private$path <- path_real(base_path)
       if (file_exists(path(base_path, "DESCRIPTION"))) {
-        desc_lang <- desc(base_path)$get_or_fail("Language")
+        desc_lang <- desc(base_path)$get_field("Language", default = NA)
+        assert_that(
+          !is.na(desc_lang), msg = paste(
+            "No `Language` field found in DESCRIPTION.",
+            "Please add `Language: en-GB` to DESCRIPTION."
+          )
+        )
         assert_that(
           missing(language) || language == desc_lang,
           msg = "different `language` found in DESCRIPTION"
@@ -30,7 +36,7 @@ spelling <- R6Class(
     print = function(...) {
       dots <- list(...)
       cat("Root:", private$path, "\n\n")
-      print(rbind(self$get_md, self$get_rd))
+      print(rbind(self$get_md, self$get_rd, self$get_r))
       return(invisible(NULL))
     },
     #' @description Define which files to ignore or to spell check in a
@@ -45,7 +51,7 @@ spelling <- R6Class(
     #' different language.
     set_exceptions = function() {
       exceptions <- change_language_interactive(
-        rbind(self$get_md, self$get_rd), main = private$main,
+        rbind(self$get_md, self$get_rd, self$get_r), main = private$main,
         ignore = private$ignore, other = private$other
       )
       private$ignore <- exceptions$ignore
@@ -87,6 +93,15 @@ spelling <- R6Class(
         all = TRUE
       )
       get_language(files = md_files, private = private)
+    },
+    #' @field get_r The R files within the project.
+    #' @importFrom fs dir_exists dir_ls
+    get_r = function() {
+      r_files <- dir_ls(
+        private$path, recurse = TRUE, type = "file", regexp = "\\.[R|r]$",
+        all = TRUE
+      )
+      get_language(files = r_files, private = private)
     },
     #' @field get_rd The Rd files within the project.
     #' @importFrom fs dir_exists dir_ls

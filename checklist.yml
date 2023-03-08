@@ -14,24 +14,28 @@ citation_roles:
 - cre
 required:
 - .zenodo.json
-- checklist
 - CITATION
 - CITATION.cff
-- codemeta
 - DESCRIPTION
+- R CMD check
+- checklist
+- codemeta
 - documentation
 - filename conventions
 - license
 - lintr
-- R CMD check
 - repository secret
+- spelling
 keywords:
-- quality control
 - R package
+- quality control
 spelling:
   default: en-GB
   ignore:
+  - .git
   - .github
   - LICENSE.md
-  - README.md
-  - inst/generic_template
+  - inst/generic_template/cc_by_4_0.md
+  - inst/generic_template/cc_by_sa_4_0.md
+  - inst/generic_template/gplv3.md
+  - inst/generic_template/mit.md

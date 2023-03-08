@@ -10,8 +10,7 @@ write_citation_cff(x = ".", roles)
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
-\item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
-Defaults to \code{c("aut", "cre")}.}
+\item{roles}{No longer used.}
 }
 \value{
 An invisible \code{checklist} object.
@@ -19,6 +18,7 @@ An invisible \code{checklist} object.
 \description{
 This file format contains the citation information.
 It is supported by GitHub, Zenodo and Zotero.
+This function is super-seeded by \code{update_citation()}.
 }
 \seealso{
 Other package: 

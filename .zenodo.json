@@ -1,45 +1,50 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "version": "0.2.6",
-  "description": "An opinionated set of rules for R packages and R source code projects.",
+  "version": "0.3.0",
+  "license": "GPL-3.0",
+  "upload_type": "software",
+  "description": "<p>An opinionated set of rules for R packages and R source code\nprojects.<\/p>",
+  "keywords": [
+    "quality control",
+    "documentation",
+    "publication"
+  ],
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Onkelinx, Thierry",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216",
+      "type": "ContactPerson"
+    },
+    {
+      "name": "Lommelen, Els",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0002-3481-5684",
+      "type": "ProjectMember"
+    },
+    {
+      "name": "Van Calster, Hans",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8595-8426",
+      "type": "ProjectMember"
+    },
+    {
+      "name": "Research Institute for Nature and Forest (INBO)",
+      "type": "RightsHolder"
+    }
+  ],
   "creators": [
     {
       "name": "Onkelinx, Thierry",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216"
     }
   ],
-  "upload_type": "software",
   "access_right": "open",
-  "license": "GPL-3.0",
   "communities": [
     {
       "identifier": "inbo"
     }
-  ],
-  "contributors": [
-    {
-      "name": "Lommelen, Els",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0002-3481-5684"
-    },
-    {
-      "name": "Van Calster, Hans",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0001-8595-8426"
-    },
-    {
-      "name": "Research Institute for Nature and Forest",
-      "type": "RightsHolder"
-    },
-    {
-      "name": "Onkelinx, Thierry",
-      "type": "ContactPerson",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
-    }
-  ],
-  "language": "eng",
-  "keywords": [
-    "R package",
-    "quality control"
   ]
 }

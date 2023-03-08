@@ -1,9 +1,14 @@
 EPSG
 GMRF
 Matérn
+OLRE
+Poisson
 SPDE
 geostatistical
 quantile
+stratified
+underdispersed
+underdispersion
 variogram
 variograms
 zero-inflated

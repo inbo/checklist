@@ -9,9 +9,11 @@ create_package(
   path = ".",
   title,
   description,
-  maintainer,
+  keywords,
   language = "en-GB",
-  license = c("GPL-3", "MIT")
+  license = c("GPL-3", "MIT"),
+  communities = character(0),
+  maintainer
 )
 }
 \arguments{
@@ -23,11 +25,7 @@ create_package(
 
 \item{description}{A single paragraph describing the package.}
 
-\item{maintainer}{The output of \code{\link[utils:person]{utils::person()}} or \code{\link[=orcid2person]{orcid2person()}}.
-If you use \code{\link[utils:person]{utils::person()}}, then you must provide \code{given}, \code{family},
-\code{role}, \code{email} and  \code{comment} with valid \code{ORCID}.
-When missing, the functions looks for \code{usethis.description} in the options.
-See \code{\link[usethis:use_description]{usethis::use_description()}} for more information.}
+\item{keywords}{A vector of keywords.}
 
 \item{language}{Language of the project in \code{xx-YY} format.
 \code{xx} is the two letter code for the language.
@@ -38,6 +36,12 @@ Belgian Dutch.}
 \item{license}{What type of license should be used?
 Choice between GPL-3 and MIT.
 Default GPL-3.}
+
+\item{communities}{An optional vector of Zenodo community id's.}
+
+\item{maintainer}{When missing, the function interactively lets you add the
+maintainer and other authors.
+Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
 }
 \description{
 Creates a package template in a new folder.
@@ -68,10 +72,6 @@ maintainer <- person(
   email = "thierry.onkelinx@inbo.be",
   comment = c(ORCID = "0000-0001-8804-4216")
 )
-# maintainer with `orcid2person()`
-\dontrun{
-maintainer <- orcid2person("0000-0001-8804-4216")
-}
 
 # creating the package
 path <- tempfile()
@@ -79,7 +79,7 @@ dir.create(path)
 create_package(
   path = path, package = "packagename", title = "package title",
   description = "A short description.", maintainer = maintainer,
-  language = "en-GB", license = "GPL-3"
+  language = "en-GB", license = "GPL-3", keywords = "keyword"
 )
 }
 \seealso{

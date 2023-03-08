@@ -6,7 +6,7 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom fs is_file
-#' @family source
+#' @family project
 check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   assert_that(
     inherits(x, "checklist") || is_file(path(x, "checklist.yml")),
@@ -28,6 +28,11 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     x <- check_lintr(x = x, quiet = quiet)
   }
 
+  if ("folder conventions" %in% x$get_required) {
+    quiet_cat("Checking folders conventions\n", quiet = quiet)
+    x <- check_folder(x = x)
+  }
+
   if ("filename conventions" %in% x$get_required) {
     quiet_cat("Checking filename conventions\n", quiet = quiet)
     x <- check_filename(x = x)
@@ -36,6 +41,11 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   if ("license" %in% x$get_required) {
     quiet_cat("Checking the license\n", quiet = quiet)
     x <- check_license(x = x)
+  }
+
+  if ("CITATION" %in% x$get_required) {
+    quiet_cat("Checking the citation information\n", quiet = quiet)
+    x <- update_citation(x = x, quiet = quiet)
   }
 
   print(x, quiet = quiet)

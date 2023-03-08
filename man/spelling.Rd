@@ -8,7 +8,8 @@ A class with the configuration for spell checking
 }
 \seealso{
 Other class: 
-\code{\link{checklist}}
+\code{\link{checklist}},
+\code{\link{citation_meta}}
 }
 \concept{class}
 \section{Active bindings}{
@@ -17,6 +18,8 @@ Other class:
 \item{\code{default}}{The default language of the project.}
 
 \item{\code{get_md}}{The markdown files within the project.}
+
+\item{\code{get_r}}{The R files within the project.}
 
 \item{\code{get_rd}}{The Rd files within the project.}
 

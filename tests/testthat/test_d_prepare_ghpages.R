@@ -13,16 +13,15 @@ test_that("create_package() works", {
   package <- "ghpages"
   expect_message(
     create_package(
-      path = path,
-      package = package,
+      path = path, package = package, keywords = "dummy", communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.",
-      maintainer = maintainer, language = "en-GB"
+      description = "A dummy package.", maintainer = maintainer,
+      language = "en-GB"
     ),
     regexp = sprintf("package created at `.*%s`", package)
   )
 
-  repo <- file.path(path, package)
+  repo <- path(path, package)
 
   git_config_set("user.name", "unit test", repo = repo)
   git_config_set("user.email", "unit@test.com", repo = repo)

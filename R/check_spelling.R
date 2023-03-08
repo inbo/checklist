@@ -11,6 +11,7 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom fs path
 #' @importFrom tools loadPkgRdMacros loadRdMacros
 #' @family both
 check_spelling <- function(x = ".", quiet = FALSE) {
@@ -19,23 +20,29 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   md_files <- x$get_md
   if (x$package) {
     rd_files <- x$get_rd
-    macros <- loadRdMacros(
-      file.path(R.home("share"), "Rd", "macros", "system.Rd"),
-      loadPkgRdMacros(x$get_path, macros = NULL)
-    )
+    macros <- path(R.home("share"), "Rd", "macros", "system.Rd") |>
+      loadRdMacros(loadPkgRdMacros(x$get_path, macros = NULL))
   } else {
     rd_files <- data.frame(language = character(0), path = character(0))
     macros <- NULL
   }
-  languages <- unique(c(md_files$language, rd_files$language))
+  r_files <- x$get_r
+  languages <- unique(c(md_files$language, rd_files$language, r_files$language))
   languages <- languages[languages != "ignore"]
   install_dictionary(languages)
   issues <- vapply(
-    languages, root = x$get_path,
+    languages, root = x$get_path, r_files = r_files,
     md_files = md_files, rd_files = rd_files, macros = macros,
     FUN.VALUE = vector(mode = "list", length = 1),
-    FUN = function(lang, root, md_files, rd_files, macros) {
-      wordlist <- spelling_wordlist(lang = gsub("-", "_", lang), root = root)
+    FUN = function(lang, root, r_files, md_files, rd_files, macros) {
+      wordlist <- spelling_wordlist(
+        lang = gsub("-", "_", lang), root = root, package = x$package
+      )
+      r_issues <- vapply(
+        path(root, r_files$path[r_files$language == lang]),
+        FUN = spelling_parse_r, FUN.VALUE = vector(mode = "list", length = 1),
+        wordlist = wordlist
+      )
       md_issues <- vapply(
         path(root, md_files$path[md_files$language == lang]),
         FUN = spelling_parse_md, FUN.VALUE = vector(mode = "list", length = 1),
@@ -46,7 +53,7 @@ check_spelling <- function(x = ".", quiet = FALSE) {
         FUN = spelling_parse_rd, FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist, macros = macros
       )
-      return(list(c(md_issues, rd_issues)))
+      return(list(c(md_issues, rd_issues, r_issues)))
     }
   )
   if (length(issues) == 0) {
@@ -70,11 +77,21 @@ check_spelling <- function(x = ".", quiet = FALSE) {
 #' @importFrom fs file_exists path
 #' @importFrom hunspell dictionary
 #' @importFrom renv dependencies
-spelling_wordlist <- function(lang = "en_GB", root = ".") {
+spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
   path("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
-    readLines() |>
-    c(unique(dependencies(root, progress = FALSE)$Package)) -> add_words
+    readLines() -> add_words
+  if (package) {
+    path(root, "DESCRIPTION") |>
+      description$new() -> descr
+    descr$get_authors() |>
+      format(include = c("given", "family")) |>
+      strsplit(split = " ") |>
+      unlist() |>
+      c(dependencies(root, progress = FALSE)$Package) |>
+      unique() |>
+      c(add_words) -> add_words
+  }
 
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
@@ -157,231 +174,6 @@ spelling_clean_problem <- function(problem) {
   return(problem)
 }
 
-#' @importFrom tools RdTextFilter
-spelling_parse_rd <- function(rd_file, macros, wordlist) {
-  text <- RdTextFilter(rd_file, macros = macros)
-  # remove e-mail
-  text <- gsub(email_regexp, "", text, perl = TRUE)
-  # remove functions
-  text <- gsub("[a-zA-Z0-9]+:{2,3}[\\w\\.]+\\(.*?\\)", "", text, perl = TRUE)
-  # remove forward and backward slashes surrounded by whitespace
-  text <- gsub("\\s[/\\\\]\\s", " ", text)
-  text <- gsub("\\s[/\\\\]$", " ", text)
-  text <- gsub("^[/\\\\]\\s", " ", text)
-  list(spelling_check(
-    text = text, filename = rd_file, wordlist = wordlist
-  ))
-}
-
-#' @importFrom assertthat assert_that
-spelling_parse_md <- function(md_file, wordlist, x) {
-  raw_text <- readLines(md_file)
-  text <- spelling_parse_md_yaml(text = raw_text)
-  # remove chunks
-  chunks <- grep("^\\s*```", text)
-  assert_that(
-    length(chunks) %% 2 == 0,
-    msg = paste("Odd number of chunk delimiters detected in", md_file)
-  )
-  while (length(chunks)) {
-    text[chunks[1]:chunks[2]] <- ""
-    chunks <- tail(chunks, -2)
-  }
-  # remove in line chunks
-  text <- gsub("\\`r .*?`", "", text)
-  # remove ignored sections
-  start <- grep("<!-- spell-check: ignore:start\\s*-->", text)
-  end <- grep("<!-- spell-check: ignore:end\\s*-->", text)
-  assert_that(
-    length(start) == length(end),
-    msg = paste(
-      "unmatched `spell-check: ignore:start` and `spell-check: ignore:end` in",
-      md_file
-    )
-  )
-  assert_that(
-    all(start < end),
-    msg = paste(
-      "`spell-check: ignore:end` appears before `spell-check: ignore:start`",
-      "found in", md_file
-    )
-  )
-  assert_that(
-    all(head(end, -1) < tail(start, -1)),
-    msg = paste(
-      "new `spell-check: ignore:start` found without closing the previous in",
-      md_file
-    )
-  )
-  while (length(start)) {
-    text[start[1]:end[1]] <- ""
-    start <- tail(start, -1)
-    end <- tail(end, -1)
-  }
-  # remove ignored lines
-  text <- gsub(".*<!-- spell-check: ignore\\s*-->.*", "", text)
-  # remove bookdown references
-  text <- gsub("\\\\@ref\\(.*?\\)", "", text)
-  # remove bookdown anchor
-  text <- gsub("\\{#.*?\\}", "", text)
-  # remove bookdown text references
-  text <- gsub("\\(ref:.*?\\)", "", text)
-  # remove stand alone math
-  text <- gsub("\\$\\$.*?\\$\\$", "", text)
-  # remove inline math
-  text <- gsub("\\$.*?\\$", "", text)
-  # remove citation
-  text <- gsub("\\S*@\\S+", "", text, perl = TRUE)
-  # replace non braking spaces
-  text <- gsub("&nbsp;", " ", text)
-  # remove LaTeX commands
-  text <- gsub("\\\\\\w+", "", text)
-  # remove Markdown figuren
-  text <- gsub(
-    "!\\[((.|\n)*?)\\]\\(.*?\\)(\\{.*?\\})?\\\\?", " \\1 ", text, perl = TRUE
-  )
-  # remove Markdown urls
-  text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub(
-    "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+", "", text, perl = TRUE
-  )
-  # remove e-mail
-  text <- gsub(email_regexp, "", text, perl = TRUE)
-  # remove text between matching back ticks on the same line
-  text <- gsub("`.+?`", "", text)
-  # remove markdown comments
-  text <- gsub("<!--.*?-->", "", text)
-  # remove markdown superscript
-  text <- gsub("\\^\\w*\\^", "", text)
-  # remove markdown subscript
-  text <- gsub("~\\w*~", "", text)
-  # remove markdown settings
-  text <- gsub("\\{\\.unnumbered\\}", "", text)
-  # remove HTML image with alt tag while keeping the alt tag
-  text <- gsub("<.*?alt ?= ?\"(.*?)\".*?>", "\"\\1\"", text)
-  # remove HTML image without alt tag
-  text <- gsub("<img.*?>", "", text)
-  # remove HTML script
-  text <- gsub("<script.*?>.*<\\/script>", "", text, ignore.case = TRUE)
-  start <- grep("<script.*?>", text)
-  end <- grep("<\\/script>", text)
-  assert_that(
-    length(start) == length(end),
-    msg = paste("unmatched `<script>` and `</script>` in", md_file)
-  )
-  assert_that(
-    all(start < end),
-    msg = paste("`</script>` appears before `<script>` found in", md_file)
-  )
-  assert_that(
-    all(head(end, -1) < tail(start, -1)),
-    msg = paste("new `<script>` found without closing the previous in", md_file)
-  )
-  while (length(start)) {
-    text[start[1]:end[1]] <- ""
-    start <- tail(start, -1)
-    end <- tail(end, -1)
-  }
-  # remove HTML div and p tags
-  text <- gsub("<\\/?(div|p).*?>", "", text, ignore.case = TRUE)
-  # remove forward and backward slashes surrounded by whitespace
-  text <- gsub("\\s[/\\\\]\\s", " ", text)
-  text <- gsub("\\s[/\\\\]$", " ", text)
-  text <- gsub("^[/\\\\]\\s", " ", text)
-  # remove quarto anchors
-  text <- gsub("\\{#.*?\\}", "", text)
-  # remove quarto caption options
-  text <- gsub("^: (.*)\\{.*?\\}", "\\1", text)
-
-  # extract other languages
-  assert_that(
-    length(
-      grep("(\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*){2,}", text)
-    ) == 0,
-    msg = paste("Multiple `[]{lang=}` on the same line found in", md_file)
-  )
-
-  other_languages <- data.frame(
-    line = integer(0), text = character(0), language = character(0)
-  )
-  inline_language <- grep("\\[.*?\\]\\{lang=[a-z]{2}(-[A-Z]{2})?\\}", text)
-  other_languages <- data.frame(
-    line = inline_language,
-    text = gsub(
-      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*", "\\1",
-      text[inline_language]
-    ),
-    language = gsub(
-      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*", "\\2",
-      text[inline_language]
-    )
-  )
-  text <- gsub("\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}", "", text)
-  other_lang_start <- grep("^::: \\{.*?lang=[a-z]{2}(-[A-Z]{2})?.*?\\}", text)
-  other_lang_end <- grep("^:::\\s*$", text)
-  while (length(other_lang_start)) {
-    other_lang_end <- other_lang_end[other_lang_end > min(other_lang_start)]
-    assert_that(
-      length(other_lang_end) >= length(other_lang_start),
-      msg = "`::: {lang=}` without matching `:::` found"
-    )
-    other_languages <- rbind(
-      other_languages,
-      data.frame(
-        line = seq(other_lang_start[1] + 1, other_lang_end[1] - 1),
-        text = text[seq(other_lang_start[1] + 1, other_lang_end[1] - 1)],
-        language = gsub(
-          ".*lang=([a-z]{2}(-[A-Z]{2})).*", "\\1", text[other_lang_start[1]]
-        )
-      )
-    )
-    text[seq(other_lang_start[1], other_lang_end[1])] <- ""
-    other_lang_start <- tail(other_lang_start, -1)
-  }
-  # remove quarto divs
-  divs <- grep("^:::", text)
-  assert_that(
-    length(divs) %% 2 == 0,
-    msg = paste("Odd number of div (`:::`) delimiters detected in", md_file)
-  )
-  while (length(divs)) {
-    text[c(divs[1], divs[2])] <- ""
-    divs <- tail(divs, -2)
-  }
-  main_language <- spelling_check(
-    text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
-  )
-  other_languages <- vapply(
-    unique(other_languages$language), empty_text = rep("", length(raw_text)),
-    FUN.VALUE = vector(mode = "list", length = 1), input = other_languages,
-    raw_text = raw_text, md_file = md_file,
-    FUN = function(lang, input, empty_text, raw_text, md_file) {
-      empty_text[input[input$language == lang, "line"]] <-
-        input[input$language == lang, "text"]
-        list(spelling_check(
-          text = empty_text, raw_text = raw_text, filename = md_file,
-          wordlist = spelling_wordlist(
-            lang = gsub("-", "_", lang), root = x$get_path
-          )
-        ))
-    }
-  )
-  list(do.call(rbind, c(other_languages, list(main_language))))
-}
-
-#' @importFrom utils head
-spelling_parse_md_yaml <- function(text) {
-  header <- head(grep("---", text), 2)
-  if (length(header) < 2) {
-    return(text)
-  }
-  header <- header[1]:header[2]
-  text[header][!grepl("(title|description)", text[header])] <- ""
-  text[header] <- gsub(".*?:(.*)", "\\1", text[header])
-  return(text)
-}
-
 #' Display a `checklist_spelling` summary
 #' @param x The `checklist_spelling` object
 #' @param ... currently ignored
@@ -458,6 +250,7 @@ install_dictionary <- function(lang) {
   }
   install_dutch(lang[!ok])
   install_french(lang[!ok])
+  install_german(lang[!ok])
 }
 
 #' @importFrom fs file_copy
@@ -471,18 +264,18 @@ install_dutch <- function(lang) {
   )
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
-    "https://github.com/OpenTaal/opentaal-hunspell/raw/master/nl.dic",
-    path(target, "nl_BE.dic")
+    "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.dic",
+    path(target, "nl_NL.dic")
   )
   curl::curl_download(
-  "https://raw.githubusercontent.com/OpenTaal/opentaal-hunspell/master/nl.aff",
-    path(target, "nl_BE.aff")
+  "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
+    path(target, "nl_NL.aff")
   )
   file_copy(
-    path(target, "nl_BE.dic"), path(target, "nl_NL.dic"), overwrite = TRUE
+    path(target, "nl_NL.dic"), path(target, "nl_BE.dic"), overwrite = TRUE
   )
   file_copy(
-    path(target, "nl_BE.aff"), path(target, "nl_NL.aff"), overwrite = TRUE
+    path(target, "nl_NL.aff"), path(target, "nl_BE.aff"), overwrite = TRUE
   )
   return(TRUE)
 }
@@ -497,22 +290,42 @@ install_french <- function(lang) {
     requireNamespace("curl", quietly = TRUE),
     msg = "The `curl` package is missing"
   )
-  zipfile <- tempfile(fileext = ".zip")
-  curl::curl_download(
-    "http://grammalecte.net/download/fr/hunspell-french-dictionaries-v7.0.zip",
-    zipfile
-  )
   target <- system.file("dict", package = "hunspell")
-  unzip(
-    zipfile, files = paste0("fr-classique.", c("aff", "dic")), exdir = target
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.dic",
+    path(target, "fr_FR.dic")
   )
-  file_move(path(target, "fr-classique.aff"), path(target, "fr_FR.aff"))
-  file_move(path(target, "fr-classique.dic"), path(target, "fr_FR.dic"))
-  file_copy(
-    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.aff",
+    path(target, "fr_FR.aff")
   )
   file_copy(
     path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
+  )
+  file_copy(
+    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
+  )
+  return(TRUE)
+}
+
+#' @importFrom fs file_copy file_move
+#' @importFrom utils unzip
+install_german <- function(lang) {
+  if (length(grep("^de", lang)) == 0) {
+    return(FALSE)
+  }
+  assert_that(
+    requireNamespace("curl", quietly = TRUE),
+    msg = "The `curl` package is missing"
+  )
+  target <- system.file("dict", package = "hunspell")
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/de_DE.dic",
+    path(target, "de_DE.dic")
+  )
+  curl::curl_download(
+    "https://github.com/inbo/hunspell-dict/raw/main/de_DE.aff",
+    path(target, "de_DE.aff")
   )
   return(TRUE)
 }

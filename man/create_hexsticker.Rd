@@ -6,7 +6,7 @@
 \usage{
 create_hexsticker(
   package_name,
-  filename = file.path("man", "figures", "logo.svg"),
+  filename = path("man", "figures", "logo.svg"),
   icon,
   x = 0,
   y = 0,
@@ -45,12 +45,17 @@ create_hexsticker("checklist", filename = output)
 }
 \seealso{
 Other utils: 
+\code{\link{ask_yes_no}()},
 \code{\link{c_sort}()},
 \code{\link{clean_git}()},
+\code{\link{execshell}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
+\code{\link{menu_first}()},
 \code{\link{new_branch}()},
 \code{\link{orcid2person}()},
+\code{\link{store_authors}()},
+\code{\link{use_author}()},
 \code{\link{validate_email}()},
 \code{\link{yesno}()}
 }

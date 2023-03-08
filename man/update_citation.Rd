@@ -2,33 +2,45 @@
 % Please edit documentation in R/update_citation.R
 \name{update_citation}
 \alias{update_citation}
-\title{Create or update the CITATION file}
+\title{Create or update the citation files}
 \usage{
-update_citation(x = ".", roles)
+update_citation(x = ".", quiet = FALSE)
 }
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
-\item{roles}{Roles to select the persons for the \code{DESCRIPTION}.
-Defaults to \code{c("aut", "cre")}.}
+\item{quiet}{Whether to print check output during checking.}
 }
 \value{
 An invisible \code{checklist} object.
 }
 \description{
-The function creates the file \code{inst/CITATION} is case is doesn't exist.
-Otherwise it will update the citation information indicated between
-\verb{# begin checklist entry} and \verb{# end checklist entry}.
-The remained of the file is left untouched.
+The function extracts citation meta data from the project.
+Then it checks the required meta data.
+Upon success, it writes several files.
 }
 \details{
-The content of \code{DESCRIPTION} determines the citation information.
+\itemize{
+\item \code{.zenodo.json} contains the citation information in the format that
+\href{https://zenodo.org}{Zenodo} requires.
+\item \code{CITATION.cff} provides the citation information in the format that
+\href{https://github.com}{GitHub} requires.
+\item \code{inst/CITATION} provides the citation information in the format that
+R packages require.
+It is only relevant for packages.
+}
+}
+\note{
+Source of the citation meta data:
+\itemize{
+\item package: \code{DESCRIPTION}
+\item project: \code{README.md}
+}
 
-When you don't want the update, then remove both \verb{# begin checklist entry}
-and \verb{# end checklist entry}.
-Note that this will result in a warning, which you can allow via
-\code{write_checklist()}.
+Should you want to add more information to the \code{inst/CITATION} file,
+add it to that file outside \verb{# begin checklist entry} and
+\verb{# end checklist entry}.
 }
 \seealso{
 Other package: 

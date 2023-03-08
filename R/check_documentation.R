@@ -2,7 +2,7 @@
 #'
 #' The function make sure that the documentation is up to date.
 #' Rules:
-#' - You must use [roxygen2](https://roxygen2.r-lib.org) to document the
+#' - You must use [`roxygen2`](https://roxygen2.r-lib.org) to document the
 #'   functions.
 #' - If you use a `README.Rmd`, it should be rendered.
 #'   You need at least a `README.md`.
@@ -11,7 +11,7 @@
 #'
 #' @details
 #'
-#' The function generates the help files from the roxygen2 tag in the R code.
+#' The function generates the help files from the `roxygen2` tag in the R code.
 #' Then it checks whether any of the help files changed.
 #' We use the same principle with the `README.Rmd`.
 #' If any file changed, the documentation does not match the code.
@@ -20,8 +20,8 @@
 #' A side effect of running `check_documentation()` locally, is that it
 #' generates all the documentation.
 #' So the only thing left for you to do, is to commit these changes.
-#' Pro tip: make sure RStudio renders the roxygen2 tags whenever you install and
-#' restart the package.
+#' Pro tip: make sure RStudio renders the `roxygen2` tags whenever you install
+#' and restart the package.
 #' We describe this in `vignette("getting_started")` under "Prepare local
 #' setup".
 #'
@@ -47,8 +47,9 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @export
 #' @importFrom devtools build_readme document
+#' @importFrom fs is_file path
 #' @importFrom gert git_status
-#'
+#' @importFrom utils data
 #' @family package
 check_documentation <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
@@ -60,9 +61,9 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   )
 
   rd_files <- c(
-    file.path(x$get_path, "NAMESPACE"),
+    path(x$get_path, "NAMESPACE"),
     list.files(
-      file.path(x$get_path, "man"), pattern = "Rd$", full.names = TRUE
+      path(x$get_path, "man"), pattern = "Rd$", full.names = TRUE
     )
   )
   start <- vapply(rd_files, readLines, character(1), n = 1)
@@ -79,44 +80,60 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   doc_error <- c(
     doc_error,
     sprintf(
-      "Running `devtools::document()` with roxygen2 %s %s",
+      "Running `checklist::check_documentation()` with roxygen2 %s %s",
       si$packages$loadedversion[si$packages$package == "roxygen2"],
       attr(detect_changes, "files")
     )[!detect_changes]
   )
 
-  if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
+  namespace <- readLines(rd_files[1])
+  namespace[grepl("^export.*\\(", namespace)] |>
+    gsub(pattern = "export.*\\((.*)\\)", replacement = "\\1") -> exported
+  vapply(rd_files[-1], rd_extract_function, vector("list", 1L)) |>
+    unlist() |>
+    unique() |>
+    sort() -> documented
+  unexported <- documented[!documented %in% exported]
+  datasets <- data(package = desc(x$get_path)$get_field("Package"))
+  unexported <- unexported[!unexported %in% datasets$results[, "Item"]]
+  paste(unexported, collapse = ", ") |>
+    sprintf(fmt = "documented but unexported functions: %s") -> doc_warnings
+  doc_warnings <- doc_warnings[length(unexported) > 0]
+
+  if (is_file(path(x$get_path, "README.Rmd"))) {
     build_readme(x$get_path, encoding = "UTF-8")
     doc_error <- c(
       doc_error,
-      "`README.Rmd` needs to be rendered. Run `devtools::build_readme()`"[
+      paste(
+        "Rendering `README.Rmd` updated `README.md`.",
+        "Run `checklist::check_documentation()` locally."[!interactive()],
+        "Please commit `README.md`. "
+      )[
         !is_tracked_not_modified("README.md", repo = repo)
       ]
     )
   }
 
-  md_files <- file.path(x$get_path, "README.md")
-  ok <- file_test("-f", md_files)
+  md_files <- path(x$get_path, "README.md")
+  ok <- is_file(md_files)
   doc_error <- c(doc_error, sprintf("Missing %s", basename(md_files[!ok])))
 
   doc_error <- c(doc_error, check_news(x))
 
   x$add_error(doc_error, item = "documentation", keep = FALSE)
+  x$add_warnings(doc_warnings, item = "documentation")
   return(x)
 }
 
+#' @importFrom fs is_file path
 check_news <- function(x) {
-  doc_error <- "Don't use NEWS.Rmd"[
-    file_test("-f", file.path(x$get_path, "NEWS.Rmd"))
-  ]
-  md_file <- file.path(x$get_path, "NEWS.md")
-  if (!file_test("-f", md_file)) {
+  doc_error <- "Don't use NEWS.Rmd"[is_file(path(x$get_path, "NEWS.Rmd"))]
+  md_file <- path(x$get_path, "NEWS.md")
+  if (!is_file(md_file)) {
     return(c(doc_error, "Missing NEWS.md"))
   }
 
-  description <- desc::description$new(
-    file = file.path(x$get_path, "DESCRIPTION")
-  )
+  description <- desc::description$new(file = path(x$get_path, "DESCRIPTION"))
   news_file <- readLines(md_file)
   version_location <- grep(paste0("#.*", description$get("Package")), news_file)
   if (length(version_location) == 0) {
@@ -157,7 +174,9 @@ See the details in ?pkgdown::build_news for the required format."
   )
 
   # remove URLs to avoid long line linters
-  news_file <- gsub("(http[a-zA-Z0-9:/\\._-]+)", "", news_file)
+  news_file <- gsub(
+    "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+", "", news_file
+  )
 
   headings <- grep("^#", news_file)
   blank_line_before <- news_file[tail(headings, -1) - 1] == ""
@@ -182,11 +201,26 @@ See the details in ?pkgdown::build_news for the required format."
     "NEWS.md has a line longer than 80 characters (excluding URLs)."[
       any(nchar(news_file) > 80)
     ],
-    "Item starts with `* ` or `    * `. Multiline items start with `  `.
-    "[
-      !all(grepl("^((( ){4})?\\*| ) \\S", news_file))
+    paste(
+      "Items in NEWS.md must start with `* ` or `    * `.",
+      "Extra lines of items start with `  ` or `      `."
+    )[
+      !all(grepl("^(\\s{4})?(\\*|\\s)\\s\\S+", news_file, perl = TRUE))
     ]
   )
 
   return(doc_error)
+}
+
+rd_extract_function <- function(rd_file) {
+  content <- readLines(rd_file)
+  if (any(grepl("^\\\\method\\{(.*)\\}", content))) {
+    return(list(character(0)))
+  }
+  rd_regexp <- "^\\\\(name|alias)\\{(.*?)(,.*)?\\}$"
+  content[grepl(rd_regexp, content)] |>
+    gsub(pattern = rd_regexp, replacement = "\\2") |>
+    unique() |>
+    gsub(pattern = "-class", replacement = "") |>
+    list()
 }

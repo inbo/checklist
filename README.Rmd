@@ -20,7 +20,7 @@ output: github_document
 <!-- badges: end --> 
 
 # The Checklist Package <img src="man/figures/logo.svg" align="right" alt="A hexagon with the word checklist" width="120" />
- 
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE, comment = "#>", fig.path = "man/figures/README-",
@@ -32,7 +32,7 @@ The goal of `checklist` is to provide an elaborate and strict set of checks for 
 
 ## Installation
 
-You can install the package from the [INBO universe](https://inbo.r-universe.dev/ui#builds) via
+You can install the package from the [INBO universe](https://inbo.r-universe.dev/ui/#builds) via
 
 ```{r universe}
 # Enable the INBO universe

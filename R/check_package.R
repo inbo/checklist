@@ -27,8 +27,8 @@
 #' session.
 #' @param quiet Whether to print check output during checking.
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom fs file_delete
 #' @importFrom pkgdown build_site
-#' @importFrom utils file_test
 #' @export
 #' @family package
 check_package <- function(
@@ -52,16 +52,17 @@ check_package <- function(
   quiet_cat("Checking description\n", quiet = quiet)
   x <- check_description(x)
 
-  quiet_cat("Updating citation\n", quiet = quiet)
-  x <- update_citation(x)
-
   quiet_cat("Checking documentation\n", quiet = quiet)
   x <- check_documentation(x, quiet = quiet)
+
+  quiet_cat("Updating citation\n", quiet = quiet)
+  x <- update_citation(x, quiet = quiet)
 
   quiet_cat("Checking code metadata\n", quiet = quiet)
   x <- check_codemeta(x)
 
   x <- check_environment(x)
+  x <- check_folder(x)
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")
@@ -75,7 +76,7 @@ check_package <- function(
     Sys.setenv(CI = TRUE)
     if (quiet) {
       junk <- tempfile(fileext = ".txt")
-      on.exit(file.remove(junk), add = TRUE, after = TRUE)
+      on.exit(file_delete(junk), add = TRUE, after = TRUE)
       sink(junk)
       build_site(x$get_path, preview = FALSE)
       sink()

@@ -13,20 +13,19 @@ test_that("check_description() works", {
   package <- "checkdescription"
   suppressMessages(
     create_package(
-      path = path,
-      package = package,
+      path = path, package = package, keywords = "dummy", communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.",
-      maintainer = maintainer, language = "en-GB"
+      description = "A dummy package.", maintainer = maintainer,
+      language = "en-GB"
     )
   )
-  repo <- file.path(path, package)
+  repo <- path(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
   this_desc <- desc::description$new(
-    file = file.path(path, package, "DESCRIPTION")
+    file = path(path, package, "DESCRIPTION")
   )
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
@@ -61,7 +60,7 @@ test_that("check_description() works", {
   )
 
   this_desc <- desc::description$new(
-    file = file.path(path, package, "DESCRIPTION")
+    file = path(path, package, "DESCRIPTION")
   )
   this_desc$del_remotes("inbo/INBOmd")
   this_desc$write()
@@ -74,17 +73,17 @@ test_that("check_description() works", {
   )
 
   gert::git_clone(
-    url = file.path(path, package),
-    path = file.path(path, "origin"),
+    url = path(path, package),
+    path = path(path, "origin"),
     bare = TRUE, verbose = FALSE
   )
   gert::git_remote_add(
-    url = file.path(path, "origin"), name = "origin", repo = repo
+    url = path(path, "origin"), name = "origin", repo = repo
   )
   git_fetch(remote = "origin", repo = repo, verbose = FALSE)
   git_branch_create(branch = "junk", ref = "HEAD", checkout = TRUE, repo = repo)
 
-  expect_is(x <- check_description(file.path(path, package)), "checklist")
+  expect_is(x <- check_description(path(path, package)), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION, "Package version not updated"
   )

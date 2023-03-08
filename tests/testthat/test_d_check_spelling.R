@@ -17,24 +17,24 @@ test_that("check_spelling() on a package", {
     create_package(
       path = path, package = package, maintainer = maintainer,
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.", language = "en-GB"
+      description = "A dummy package.", language = "en-GB", keywords = "dummy",
+      communities = "inbo",
     )
   )
   expect_is({
     z <- check_spelling(path(path, package))
   },
-    "checklist"
+  "checklist"
   )
   expect_identical(nrow(z$get_spelling), 0L)
   expect_invisible(print(z$get_spelling))
 
   writeLines(
-    "#' Een test functie
-#' @param x het enige argument
-#' @export
-dummy <- function(x) {
-  return(x)
-}",
+    c(
+      "#' Een voorbeeldfunctie", "#' @param x het enige argument",
+      "#' @examples", "#' print(1)",
+      "#' @export", "dummy <- function(x) {", "  return(x)", "}"
+    ),
     path(path, package, "R", "dummy.R")
   )
   suppressMessages(document(path(path, package), quiet = TRUE))
@@ -46,12 +46,24 @@ dummy <- function(x) {
     ),
     path(path, package, "README.Rmd")
   )
+  writeLines(
+    c("junk <- function(x) {", "  return(x)", "}"),
+    path(path, package, "R", "junk.R")
+  )
+  writeLines(
+    c(
+      "\\name{test}", "\\alias{test}", "\\title{Test function}",
+      "\\usage{test(x = 1)}", "\\arguments{\\item{x}{argument.}}",
+      "\\value{TRUE}", "\\description{Some words}"
+    ),
+    path(path, package, "man", "test.Rd")
+  )
   expect_is(
     {z <- check_spelling(path(path, package), quiet = TRUE)},
     "checklist"
   )
   expect_is(z$get_spelling, "checklist_spelling")
-  expect_identical(nrow(z$get_spelling), 6L)
+  expect_identical(nrow(z$get_spelling), 4L)
   expect_output(print(z$get_spelling), "Overview of words")
   expect_invisible(custom_dictionary(z))
   expect_is(
@@ -72,7 +84,7 @@ dummy <- function(x) {
     "checklist_language"
   )
   hide_output <- tempfile(fileext = ".txt")
-  on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
   sink(hide_output)
   expect_invisible(print(z, hide_ignore = TRUE))
   sink()
@@ -85,12 +97,13 @@ dummy <- function(x) {
   expect_false(install_dictionary("junk"))
   expect_true(install_dutch("nl-BE"))
   expect_true(install_french("fr-FR"))
+  expect_true(install_german("de-DE"))
 
   stub(change_language_interactive, "menu", 1, 2)
   expect_is(
     {
       hide_output2 <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output2), add = TRUE, after = TRUE)
       sink(hide_output2)
       z <- x$set_exceptions()
       sink()
@@ -104,18 +117,83 @@ test_that("check_spelling() on a project", {
   path <- tempfile("check_spelling")
   dir_create(path)
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
-  stub(create_project, "interactive", TRUE, depth = 2)
-  stub(create_project, "menu", 1, depth = 2)
-  stub(create_project, "interactive", TRUE, depth = 3)
-  stub(create_project, "menu", 1, depth = 3)
-  expect_invisible(create_project(path, "spelling"))
-  expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
-  dir_create(path(path, "spelling"), "source")
-  writeLines("# Een testfunctie", path(path, "spelling", "source", "dummy.Rmd"))
-  expect_is(
-    check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE),
-    "checklist"
+
+  r_user_dir <- tempfile("author")
+  dir.create(r_user_dir)
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  expect_output(new_author(current = data.frame(), root = r_user_dir))
+  stub(create_project, "R_user_dir", r_user_dir, depth = 5)
+  stub(create_project, "readline", "test")
+  expect_invisible(
+    {
+      hide_create <- tempfile(fileext = ".txt")
+      on.exit(file_delete(hide_create), add = TRUE, after = TRUE)
+      sink(hide_create)
+      z <- create_project(path, "spelling")
+      sink()
+    }
   )
+
+  path(path, "spelling", "bookdown") |>
+    dir_create()
+  path(path, "spelling", "bookdown", c("_bookdown.yml", "test.Rproj")) |>
+    fs::file_create()
+
+  stub(store_authors, "R_user_dir", r_user_dir)
+  expect_invisible(store_authors(path(path, "spelling")))
+
+  expect_is({
+    x <- check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE)
+  }, "checklist"
+  )
+  git_config_set(
+    name = "user.name", value = "junk", repo = path(path, "spelling")
+  )
+  git_config_set(
+    name = "user.email", value = "junk@inbo.be", repo = path(path, "spelling")
+  )
+  git_status(repo = path(path, "spelling"))$file |>
+    git_add(repo = path(path, "spelling"))
+  git_commit("initial commit", repo = path(path, "spelling"))
+  stub(
+    write_checklist, "x$add_motivation",
+    function(which = c("warnings", "notes")) {
+      which <- match.arg(which)
+      current <- get(which, envir = x$.__enclos_env__$private)
+      new_motivation <- rep("unit test", length(current))
+      new_allowed <- current
+      new_allowed <- lapply(
+        order(new_allowed),
+        function(i) {
+          list(motivation = new_motivation[i], value = new_allowed[i])
+        }
+      )
+      assign(
+        paste0("allowed_", which), new_allowed,
+        envir = x$.__enclos_env__$private
+      )
+      return(invisible(x))
+    }
+  )
+  write_checklist(x = x)
+
+  r_user_dir <- tempfile("author")
+  dir.create(r_user_dir)
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  expect_output(new_author(current = data.frame(), root = r_user_dir))
+
+  hide_author <- tempfile(fileext = ".txt")
+  on.exit(file_delete(hide_author), add = TRUE, after = TRUE)
+  sink(hide_author)
+  stub(use_author, "R_user_dir", r_user_dir)
+  aut <- use_author()
+  c(aut$given, aut$family) |>
+    strsplit(" ") |>
+    unlist() |>
+    unique() |>
+    add_words(path(path, "spelling", "inst", "en_gb"))
+  sink()
+  expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
 
   x <- read_checklist(path)
   stub(change_language_interactive, "menu", 3)
@@ -123,7 +201,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
       sink(hide_output)
       z <- change_language_interactive(
         data.frame(language = "en-GB", path = "a.Rmd")
@@ -138,7 +216,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output2 <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output2), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output2), add = TRUE, after = TRUE)
       sink(hide_output2)
       z <- change_language_interactive2(
         data.frame(language = "en-GB", path = "a.Rmd"), main = "en-GB",
@@ -154,7 +232,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output3 <- tempfile(fileext = ".txt")
-      on.exit(file.remove(hide_output3), add = TRUE, after = TRUE)
+      on.exit(file_delete(hide_output3), add = TRUE, after = TRUE)
       sink(hide_output3)
       z <- change_language_interactive2(
         data.frame(language = "en-GB", path = path("a", c("a.Rmd", "b.Rmd"))),
@@ -165,6 +243,78 @@ test_that("check_spelling() on a project", {
     },
     "list"
   )
+
+  gert::git_commit_all(
+    message = "Initial commit", repo = path(path, "spelling")
+  )
+  stub(setup_project, "interactive", TRUE, depth = 2)
+  expect_output(setup_project(path(path, "spelling")))
+
+  path("generic_template", "gplv3.md") |>
+    system.file(package = "checklist") |>
+    file_copy(path(path, "spelling", "LICENSE.md"), overwrite = TRUE)
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_match(
+    z$.__enclos_env__$private$errors$CITATION, "LICENSE.md doesn't match"
+  )
+  path(path, "spelling", "LICENSE.md") |>
+    unlink()
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_match(
+    z$.__enclos_env__$private$errors$CITATION, "No LICENSE.md file found"
+  )
+  gert::git_reset_hard(repo = path(path, "spelling"))
+
+  path(path, "spelling", "README.md") |>
+    readLines() -> readme_old
+  writeLines(
+    readme_old[!grepl("badges: start", readme_old)],
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("Mismatch between", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  badge_end <- grep("badges: end", readme_old)
+  badge_doi <- paste0(
+    "[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4028303.svg)]",
+    "(https://doi.org/10.5281/zenodo.4028302)"
+  )
+  writeLines(
+    c(
+      head(readme_old, badge_end - 1), badge_doi,
+    "![r-universe name](https://inbo.r-universe.dev/badges/:name?color=c04384)",
+    readme_old[badge_end], "<!-- version: 0.1 -->", tail(readme_old, badge_end)
+    ),
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("different DOI", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  writeLines(
+    readme_old[!grepl("description: start", readme_old)],
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("Mismatch between", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  writeLines(
+    readme_old[!grepl("\\*\\*keywords\\*\\*:", readme_old)],
+    path(path, "spelling", "README.md")
+  )
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_true(
+    any(grepl("No keywords found", z$.__enclos_env__$private$errors$CITATION))
+  )
+
+  unlink(path(path, "spelling", "README.md"))
+  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
+  expect_match(z$.__enclos_env__$private$errors$CITATION, "README.md not found")
 })
 
 test_that("check_spelling() works on a quarto project", {
@@ -199,16 +349,20 @@ test_that("check_spelling() works on a quarto project", {
   writeLines(
     c(
       "# Language", "::: {lang=nl-BE}", "vlinder [papillon]{lang=fr-FR}", ":::",
-      "wrongwords"
+      "wrongwords", ":::", "Other section", ":::"
     ),
     path(path, "source", "language.qmd")
   )
   expect_is({
-    z <- check_spelling(path)
+    z <- check_spelling(path, quiet = TRUE)
   }, "checklist"
   )
   stub(checklist_print, "interactive", TRUE, depth = 1)
+  hide_output <- tempfile(fileext = ".txt")
+  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+  sink(hide_output)
   expect_output(print(z))
+  sink()
 
   expect_output(quiet_cat("test", quiet = FALSE), "test")
   expect_silent(quiet_cat("test", quiet = TRUE))

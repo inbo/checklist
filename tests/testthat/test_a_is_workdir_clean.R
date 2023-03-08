@@ -8,7 +8,7 @@ test_that("is_workdir_clean", {
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
 
   # ignore untracked files
-  writeLines("foo", file.path(path, "junk.txt"))
+  writeLines("foo", path(path, "junk.txt"))
   expect_true(is_workdir_clean(repo = path))
 
   # staged file
@@ -24,6 +24,6 @@ test_that("is_workdir_clean", {
   expect_true(is_workdir_clean(repo = path))
 
   # modified file
-  writeLines("bar", file.path(path, "junk.txt"))
+  writeLines("bar", path(path, "junk.txt"))
   expect_false(is_workdir_clean(repo = path))
 })

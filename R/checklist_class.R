@@ -192,7 +192,8 @@ checklist <- R6Class(
     package = TRUE,
 
     #' @description Print the `checklist` object.
-    #' @param ... currently ignored.
+    #' Add `quiet = TRUE` to suppress printing.
+    #' @param ... See description.
     print = function(...) {
       dots <- list(...)
       if (!is.null(dots$quiet) && dots$quiet) {
@@ -207,14 +208,6 @@ checklist <- R6Class(
         allowed_notes = private$allowed_notes, linter = private$linter,
         errors = private$errors, spelling = private$spelling
       )
-    },
-
-    #' @description set roles
-    #' @param roles A vector with roles.
-    set_roles = function(roles) {
-      assert_that(is.character(roles), noNA(roles))
-      private$roles <- c_sort(unique(roles))
-      invisible(self)
     },
 
     #' @description set required checks
@@ -233,15 +226,6 @@ checklist <- R6Class(
         list(character(0), private$available_checks)[[self$package + 1]]
       )))
       return(invisible(self))
-    },
-
-    #' @description Update the keywords.
-    #' @param keywords a character vector with the new keywords.
-    #' The default empty vector (`character(0)`) will erase the keywords.
-    update_keywords = function(keywords = character(0)) {
-      assert_that(inherits(keywords, "character"))
-      private$keywords <- c_sort(keywords)
-      invisible(self)
     }
   ),
 
@@ -252,11 +236,6 @@ checklist <- R6Class(
       return(names(private$checked))
     },
 
-    #' @field get_keywords A vector with keywords.
-    get_keywords = function() {
-      return(private$keywords)
-    },
-
     #' @field get_path The path to the package.
     get_path = function() {
       return(private$path)
@@ -265,11 +244,6 @@ checklist <- R6Class(
     #' @field get_required A vector with the names of the required checks.
     get_required = function() {
       return(private$required)
-    },
-
-    #' @field get_roles The roles to select contributors for the `CITATION`.
-    get_roles = function() {
-      return(private$roles)
     },
 
     #' @field get_spelling Return the issues found by `check_spelling()`
@@ -299,8 +273,7 @@ Please contact the maintainer of the `checklist` package."
     template = function() {
       checklist_template(
         package = self$package, warnings = private$allowed_warnings,
-        notes = private$allowed_notes, citation_roles = private$roles,
-        keywords = private$keywords, spelling = super$settings,
+        notes = private$allowed_notes, spelling = super$settings,
         required = c_sort(unique(private$required))
       )
     }
@@ -311,8 +284,8 @@ Please contact the maintainer of the `checklist` package."
     allowed_warnings = list(),
     available_checks = c(
       "checklist", "CITATION", "DESCRIPTION", "documentation",
-      "R CMD check", "codemeta", "license", "CITATION.cff", ".zenodo.json",
-      "repository secret", "filename conventions", "lintr", "spelling"
+      "R CMD check", "codemeta", "license", "repository secret",
+      "filename conventions", "folder conventions", "lintr", "spelling"
     ),
     # stores a named logical vector of checked items.
     # names must match the available checks
@@ -321,11 +294,9 @@ Please contact the maintainer of the `checklist` package."
     # NA: check not required
     checked = logical(0),
     errors = list(),
-    keywords = character(0),
     linter = structure(list(), class = "lints", path = "."),
     notes = character(0),
     path = character(0),
-    roles = c("aut", "cre"),
     required = "checklist",
     spelling = structure(
       list(

@@ -8,55 +8,47 @@ test_that("update_citation() works", {
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   package <- "citation"
   create_package(
-    path = path, package = package,
+    path = path, package = package, keywords = "dummy", communities = "inbo",
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.", maintainer = maintainer,
     language = "en-GB"
   )
 
-  expect_is({
-    x <- update_citation(file.path(path, package))
-  },
-  "checklist"
-  )
-  expect_identical(x$get_roles, c("aut", "cre"))
+  hide_output <- tempfile(fileext = ".txt")
+  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+  sink(hide_output)
+  expect_output(x <- update_citation(path(path, package)))
+  sink()
+  expect_is(x, "checklist")
 
-  expect_is({
-    x <- update_citation(file.path(path, package), roles = c("aut"))
-  },
-    "checklist"
-  )
-  expect_identical(x$get_roles, c("aut"))
-
-  old_citation <- readLines(file.path(path, package, "inst", "CITATION"))
+  path(path, package, "inst", "CITATION") |>
+    readLines() -> old_citation
   writeLines(
     old_citation[!grepl("^# .* checklist entry", old_citation)],
-    file.path(path, package, "inst", "CITATION")
+    path(path, package, "inst", "CITATION")
   )
   expect_is({
-    x <- update_citation(file.path(path, package))
+    x <- update_citation(path(path, package), quiet = TRUE)
   },
     "checklist"
   )
-  expect_identical(
-    x$.__enclos_env__$private$warnings,
-    c(
-      paste(
-        "No `# begin checklist entry` found in `inst", "CITATION`", sep = "/"
-      ),
-      paste(
-        "No `# end checklist entry` found in `inst", "CITATION`", sep = "/"
-      )
-    )
+  expect_named(x$.__enclos_env__$private$errors, "CITATION")
+  expect_match(
+    paste(x$.__enclos_env__$private$errors$CITATION, collapse = " "),
+    "No `# begin checklist entry` found in `inst/CITATION`"
   )
-  writeLines(old_citation, file.path(path, package, "inst", "CITATION"))
+  expect_match(
+    paste(x$.__enclos_env__$private$errors$CITATION, collapse = " "),
+    "No `# end checklist entry` found in `inst/CITATION`"
+  )
+  writeLines(old_citation, path(path, package, "inst", "CITATION"))
 
-  this_description <- desc(file.path(path, package))
+  this_description <- desc(path(path, package))
   this_description$add_urls("https://doi.org/10.5281/zenodo.4028303")
-  this_description$del_author("Research Institute for Nature and Forest")
+  this_description$del_author("Research Institute for Nature and Forest (INBO)")
   this_description$add_author(given = "unit", family = "test", role = "ctb")
   this_description$add_author(given = "test", family = "unit", role = "cph")
-  this_description$write(file.path(path, package))
-  file.remove(file.path(path, package, ".Rbuildignore"))
-  expect_is(update_citation(file.path(path, package)), "checklist")
+  this_description$write(path(path, package))
+  file_delete(path(path, package, ".Rbuildignore"))
+  expect_is(update_citation(path(path, package), quiet = TRUE), "checklist")
 })

@@ -41,23 +41,19 @@
 #' That will result in an error when checking the package on an other machine
 #' (e.g. GitHub actions).
 #' @inheritParams read_checklist
+#' @importFrom fs path
 #' @importFrom yaml write_yaml
 #' @export
 #' @family both
 write_checklist <- function(x = ".") {
   x <- suppressMessages(read_checklist(x = x))
 
-  if (x$package && !"r package" %in% tolower(x$get_keywords)) {
-    x$update_keywords(unique(c(x$get_keywords, "R package")))
-  }
+  x$confirm_motivation("warnings")
+  x$confirm_motivation("notes")
+  x$add_motivation("warnings")
+  x$add_motivation("notes")
 
-  if (x$package && "R CMD check" %in% x$get_checked) {
-    x$confirm_motivation("warnings")
-    x$confirm_motivation("notes")
-    x$add_motivation("warnings")
-    x$add_motivation("notes")
-  }
-
-  write_yaml(x$template, file.path(x$get_path, "checklist.yml"))
+  path(x$get_path, "checklist.yml") |>
+    write_yaml(x = x$template)
   return(invisible(NULL))
 }

@@ -9,7 +9,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="e.g. https://www.inbo.be/" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/inbo/checklist" \
-      org.label-schema.vendor="Research Institute for Nature and Forest" \
+      org.label-schema.vendor="Research Institute for Nature and Forest (INBO)" \
       maintainer="Thierry Onkelinx <thierry.onkelinx@inbo.be>"
 
 ## for apt to be noninteractive
@@ -26,6 +26,9 @@ COPY docker/.Rprofile $R_HOME/etc/Rprofile.site
 ## install INLA
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("INLA", type = "source")'
 
+## install assertthat
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
+
 ## install covr
 RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
@@ -37,6 +40,18 @@ RUN apt-get update \
 ## install codemetar
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
 
+## install curl
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("curl")'
+
+## install desc
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
+
+## install devtools
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
+
+## install fs
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("fs")'
+
 ## install gert
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("gert")'
 
@@ -47,8 +62,17 @@ RUN apt-get update \
   && apt-get clean \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
 
+## install httr
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("httr")'
+
 ## install hunspell
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
+
+## install jsonlite
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("jsonlite")'
+
+## install knitr
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("knitr")'
 
 ## install lintr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
@@ -75,6 +99,15 @@ RUN  apt-get update \
        libtiff5-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
+## install R6
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
+
+## install rcmdcheck
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
+
+## install renv
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("renv")'
+
 ## install rgdal
 RUN apt-get update \
   && apt-get install  -y --no-install-recommends \
@@ -89,22 +122,34 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rmarkdown")'
 ## install rorcid
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rorcid")'
 
-## install spelling
-RUN apt-get update \
-  && apt-get install  -y --no-install-recommends \
-    hunspell-de-de \
-    hunspell-en-gb \
-    hunspell-fr \
-    hunspell-nl \
-  && apt-get clean \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
+## install roxygen2
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
 
-## install spelling
+## install rstudioapi
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("rstudioapi")'
+
+## install sessioninfo
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
+
+## install showtext
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("showtext")'
+
+## install sysfonts
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sysfonts")'
+
+## install testthat
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("testthat")'
+
+## install withr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("withr")'
+
+## install yaml
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
 
 ## install checklist
 COPY . /checklist/
 RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgrade = "always")'
+RUN Rscript --no-save --no-restore -e 'checklist:::install_dictionary(c("nl_BE", "fr_BE", "de_DE"))'
 
 COPY docker/entrypoint_package.sh /entrypoint_package.sh
 COPY docker/entrypoint_source.sh /entrypoint_source.sh

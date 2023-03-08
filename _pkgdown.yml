@@ -31,10 +31,10 @@ reference:
   contents:
   - check_package
   - has_concept("package")
-- title: Functions relevant for checking scripts
+- title: Functions relevant for checking projects with R and Rmd scripts
   contents:
-  - has_concept("source")
-- title: Functions relevant for checking packages and scripts
+  - has_concept("project")
+- title: Functions relevant for checking packages and projects
   contents:
   - has_concept("both")
 - title: Setting up a project use the checklist package
@@ -51,15 +51,16 @@ articles:
 - title: Getting started
   contents:
   - philosophy
+  - folder
   - getting_started
+  - getting_started_project
   - spelling
   - zenodo
-
 
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"
-  Research Institute for Nature and Forest:
+  Research Institute for Nature and Forest (INBO):
     href: "https://www.vlaanderen.be/inbo/en-gb"
     html: "<img src='https://inbo.github.io/checklist/reference/figures/logo-en.png' height=24>"
 

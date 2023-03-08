@@ -25,6 +25,7 @@
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
+#' @importFrom fs path
 #' @importFrom gert git_branch_list git_commit_id git_diff git_info
 #' git_log git_stat_files git_status
 #' @importFrom stats na.omit
@@ -40,7 +41,7 @@ check_description <- function(x = ".") {
   )
 
   repo <- x$get_path
-  this_desc <- description$new(file = file.path(x$get_path, "DESCRIPTION"))
+  this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
 
   version <- as.character(this_desc$get_version())
   "Incorrect version tag format. Use `0.0` or `0.0.0`"[
@@ -141,7 +142,7 @@ tidy_desc <- function(x = ".") {
   on.exit(options("crayon.enabled" = old_crayon), add = TRUE)
   options("crayon.enabled" = FALSE)
 
-  desc <- description$new(file.path(x$get_path, "DESCRIPTION"))
+  desc <- description$new(path(x$get_path, "DESCRIPTION"))
 
   # Alphabetise dependencies
   deps <- desc$get_deps()
@@ -160,7 +161,8 @@ tidy_desc <- function(x = ".") {
   # Normalize all fields (includes reordering)
   # Wrap in a try() so it always succeeds, even if user options are malformed
   try(desc$normalize(), silent = TRUE)
-  desc$write(file.path(x$get_path, "DESCRIPTION"))
+  path(x$get_path, "DESCRIPTION") |>
+    desc$write()
   return(desc)
 }
 
@@ -211,7 +213,7 @@ check_license <- function(x = ".") {
   x <- read_checklist(x = x)
   if (x$package) {
     this_desc <- description$new(
-      file = file.path(x$get_path, "DESCRIPTION")
+      file = path(x$get_path, "DESCRIPTION")
     )
 
     # check if the license is allowed
@@ -221,7 +223,7 @@ check_license <- function(x = ".") {
 Please send a pull request if you need support for this license.",
       this_desc$get_field("License")
     )[
-      !current_license %in% c("GPL-3", "MIT")
+      !current_license %in% c("GPL-3", "MIT + file LICENSE")
     ]
   } else {
     current_license <- "CC-BY"
@@ -237,21 +239,15 @@ Please send a pull request if you need support for this license.",
   }
 
   # check if LICENSE.md matches the official version
-  current <- switch(
-    current_license,
-    "GPL-3" = readLines(file.path(x$get_path, "LICENSE.md")),
-    "MIT" = readLines(file.path(x$get_path, "LICENSE.md")),
-    "CC-BY" = readLines(file.path(x$get_path, "LICENSE.md"))
-    )
+  path(x$get_path, "LICENSE.md") |>
+    readLines() -> current
   official <- switch(
-    current_license,
-    "GPL-3" = "gplv3.md",
-    "MIT" = "mit.md",
+    current_license, "GPL-3" = "gplv3.md", "MIT + file LICENSE" = "mit.md",
     "CC-BY" = "cc_by_4_0.md"
   )
   system.file("generic_template", official, package = "checklist") |>
     readLines() -> official
-  if (current_license == "MIT") {
+  if (current_license == "MIT + file LICENSE") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
     problems <- c(
@@ -285,16 +281,17 @@ Please send a pull request if you need support for this license.",
   return(x)
 }
 
+#' @importFrom utils person
 check_authors <- function(this_desc) {
   authors <- this_desc$get_authors()
   authors <- lapply(authors, unlist, recursive = FALSE)
   inbo <- person(
-    given = "Research Institute for Nature and Forest",
+    given = "Research Institute for Nature and Forest (INBO)",
     role = c("cph", "fnd"), email = "info@inbo.be"
   )
   problems <- paste(
-    "Research Institute for Nature and Forest must be listed as copyright",
-    "holder and funder and use info@inbo.be as email."
+    "`Research Institute for Nature and Forest (INBO)` must be listed as",
+    "copyright holder and funder and use info@inbo.be as email."
   )[!inbo %in% authors]
   authors <- authors[!authors %in% inbo]
   orcid <- sapply(authors, `[[`, "comment")

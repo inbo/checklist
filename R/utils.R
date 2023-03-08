@@ -1,6 +1,6 @@
 #' A function that asks a yes or no question to the user
 #' @author Hadley Wickham <Hadley@Rstudio.com>
-#' Largely based on devtools:::yesno().
+#' Largely based on `devtools:::yesno()`.
 #' The user gets three options in an random order: 2 for "no", 1 for "yes".
 #' The wording for "yes" and "no" is random as well.
 #' This forces the user to carefully read the question.
@@ -71,58 +71,6 @@ validate_email <- function(email) {
       "\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])"
     ),
     tolower(email)
-  )
-}
-
-#' Convert an ORCID to a `person` object.
-#'
-#' This function requires that your `ORCID_TOKEN` is set as an environment
-#' variable.
-#' First run `rorcid::orcid_auth()`.
-#' A browser window should open where you can log into `ORCID`.
-#' Run `rorcid::orcid_auth()`, which should return something like
-#' `"Bearer dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e"`.
-#' Copy this (not the `Bearer` part) and append it to your `.Renviron` as
-#' follows: `ORCID_TOKEN=dc0a6b6b-b4d4-4276-bc89-78c1e9ede56e`.
-#' Don't forget to append your UUID instead of the example given here.
-#' @param orcid The ORCID of the person.
-#' @param email An optional email of the person.
-#' Require when the ORCID record does not contain a public email.
-#' @param role The role of the person.
-#' See `utils::person` for all possible values.
-#' @export
-#' @importFrom assertthat assert_that is.string
-#' @importFrom rorcid as.orcid
-#' @importFrom utils person
-#' @family utils
-orcid2person <- function(orcid, email, role = c("aut", "cre")) {
-  assert_that(is.string(orcid))
-  assert_that(
-    nchar(orcid) == 19,
-    msg = "Please provide `orcid` in the `0000-0000-0000-0000` format."
-  )
-  assert_that(
-    Sys.getenv("ORCID_TOKEN") != "",
-    msg = "Please set ORCID_TOKEN. See ?orcid2person for instructions."
-  )
-  details <- as.orcid(orcid)
-  if (missing(email)) {
-    email <- details[[1]]$emails$email
-    assert_that(
-      length(email) > 0,
-      msg = "No public email found at ORCID. Please provide `email`."
-    )
-    email <- head(email$email, 1)
-  }
-  assert_that(is.string(email))
-  assert_that(validate_email(email))
-
-  person(
-    given = details[[1]]$name$`given-names`$value,
-    family = details[[1]]$name$`family-name`$value,
-    email = tolower(email),
-    role = role,
-    comment = c(ORCID = orcid)
   )
 }
 
@@ -268,19 +216,12 @@ checklist_summarise_spelling <- function(spelling) {
   paste(messages, collapse = rules("-"))
 }
 
-checklist_template <- function(
-  package, warnings, notes, citation_roles, keywords, spelling, required
-) {
+checklist_template <- function(package, warnings, notes, spelling, required) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
-    package = package,
-    allowed = list(warnings = warnings, notes = notes),
-    citation_roles = citation_roles,
+    package = package, allowed = list(warnings = warnings, notes = notes),
     required = required
   )
-  if (length(keywords) > 0) {
-    template$keywords <- keywords
-  }
   spelling$root <- NULL
   if (length(spelling$ignore) == 0) {
     spelling$ignore <- NULL
@@ -323,21 +264,20 @@ is_repository <- function(path = ".") {
 #' Pass command lines to a shell
 #'
 #' Cross-platform function to pass a command to the shell, using either
-#' \code{\link[base]{system}} or
-#' (Windows-only) \code{\link[base]{shell}}, depending on the operating system.
+#' [base::system()] or (Windows-only) `base::shell()`, depending on the
+#' operating system.
 #'
 #' @param commandstring
 #' The system command to be invoked, as a string.
 #' Multiple commands can be combined in this single string, e.g. with a
 #' multiline string.
 #' @param path The path from where the command string needs to be executed
-#' @param ... Other arguments passed to \code{\link[base]{system}} or
-#' \code{\link[base]{shell}}.
+#' @param ... Other arguments passed to [base::system()] or
+#' `base::shell()`.
 #'
 #' @inheritParams base::system
-#'
-#' @keywords internal
-#'
+#' @family utils
+#' @export
 execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
   old_wd <- setwd(path)
   on.exit(setwd(old_wd), add = TRUE)
@@ -365,18 +305,20 @@ execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
 #' @param repo path to the repository
 #'
 #' @importFrom gert git_status git_ls
-#' @importFrom assertthat assert_that
+#' @importFrom assertthat assert_that is.string
 #'
-#' @keywords internal
-is_tracked_not_modified <- function(
-  file,
-  repo = "."
-) {
-  assert_that(!missing(file))
-  assert_that(is.character(file))
-  tracked <- git_ls(repo = repo)
+#' @noRd
+is_tracked_not_modified <- function(file, repo = ".") {
+  assert_that(is.string(file))
+  tracked <- try(git_ls(repo = repo), silent = TRUE)
+  if (inherits(tracked, "try-error")) {
+    if (grepl("could not find repository", tracked)) {
+      return(TRUE)
+    }
+    stop(tracked)
+  }
   is_tracked <- file %in% tracked$path
   status <- git_status(repo = repo)
   is_not_modified <- !file %in% status$file[status$status == "modified"]
-  return(is_tracked & is_not_modified)
+  return(is_tracked && is_not_modified)
 }
