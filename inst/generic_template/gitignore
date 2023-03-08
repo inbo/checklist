@@ -4,5 +4,17 @@
 .RData
 .Ruserdata
 .httr-oauth
+*.dbf
+*.doc*
+*.gddoc
+*.gdsheet
+*.gpkg
 *.html
+*.mdb
+*.shp*
+*.shx
+*.xls*
+*_files
 docs
+libs
+output
