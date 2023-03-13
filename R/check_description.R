@@ -250,8 +250,7 @@ Please send a pull request if you need support for this license.",
   if (current_license == "MIT + file LICENSE") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
-    cph <- gsub("\\(", "\\\\(", cph)
-    cph <- gsub("\\)", "\\\\)", cph)
+    cph <- gsub("([\\(\\)\\.\\\\\\|\\[\\{\\^\\$\\*\\+\\?⁠])", "\\\\\\1", cph)
     problems <- c(
       problems,
       "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION"[
