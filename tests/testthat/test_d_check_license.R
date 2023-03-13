@@ -33,6 +33,12 @@ test_that("check_license() works", {
     file.exists(path(repo, "LICENSE")),
     TRUE
   )
+  x <- check_license(repo)
+  expect_identical(
+    x$.__enclos_env__$private$errors$license,
+    character(0)
+  )
+
   # copyright holder mismatch
   mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
                    " INBO")
