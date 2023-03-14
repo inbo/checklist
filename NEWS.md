@@ -1,3 +1,9 @@
+# checklist 0.3.1
+
+* Fixes two bugs in case `MIT` license was chosen
+* GitHub Actions now uses the latest version of checklist as default when
+  checking packages or projects.
+
 # checklist 0.3.0
 
 * Improved `create_project()` and `setup_project()` which interactively guides
