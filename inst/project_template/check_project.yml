@@ -14,4 +14,4 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: inbo/actions/check_project@v2
+      - uses: inbo/actions/check_project@main
