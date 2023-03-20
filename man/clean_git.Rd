@@ -29,6 +29,7 @@ the main branch.
 \seealso{
 Other utils: 
 \code{\link{ask_yes_no}()},
+\code{\link{bookdown_zenodo}()},
 \code{\link{c_sort}()},
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},

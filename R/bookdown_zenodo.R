@@ -1,0 +1,102 @@
+#' Render a `bookdown` and upload to Zenodo.
+#'
+#' First clear all the existing files in the `output_dir` set in
+#' `_bookdown_.yml`.
+#' Then render all required output formats.
+#' @param path The root folder of the report
+#' @param zip_format A vector with output formats that generate multiple files.
+#' The function will bundle all the files in a zip file for every format.
+#' @param single_format A vector with output formats that generate a singe
+#' output file.
+#' The output will remain as is.
+#' @family utils
+#' @export
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom fs dir_create dir_delete dir_ls file_delete is_dir is_file
+#' path_rel
+#' @importFrom rmarkdown clean_site render_site yaml_front_matter
+#' @importFrom utils zip
+bookdown_zenodo <- function(
+  path, zip_format = c("bookdown::gitbook", "INBOmd::gitbook"),
+  single_format = c(
+    "bookdown::pdf_book", "bookdown::epub_book", "INBOmd::pdf_report",
+    "INBOmd::epub_book"
+  )
+) {
+  assert_that(
+    is.string(path), noNA(path), inherits(zip_format, "character"),
+    noNA(zip_format), inherits(single_format, "character"), noNA(single_format)
+  )
+  assert_that(is_dir(path), msg = "`path` is not an existing directory")
+  assert_that(
+    is_file(path(path, "index.Rmd")), msg = "index.Rmd not found in `path`"
+  )
+  assert_that(
+    is_file(path(path, "_bookdown.yml")),
+    msg = "_bookdown.yml not found in `path`"
+  )
+
+  path(path, "_bookdown.yml") |>
+    file(encoding = "UTF-8") -> con
+  bookdown_yml <- readLines(con)
+  close(con)
+  bookname <- bookdown_yml[grepl("book_filename", bookdown_yml)]
+  gsub("book_filename:\\s*\"(.*)\"", "\\1", bookname) |>
+    path_ext_remove() -> bookname
+  bookdown_yml[grepl("output_dir:", bookdown_yml)] |>
+    gsub(pattern = "output_dir: \"(.*)\"", replacement = "\\1") -> output_dir
+  stopifnot(
+    "no `output_dir:` found in `_bookdown.yml`" = length(output_dir) > 0,
+    "multiple `output_dir:` found in `_bookdown.yml`" = length(output_dir) < 2
+  )
+
+  yml <- yaml_front_matter(path(path, "index.Rmd"))
+  formats <- names(yml[["output"]])
+  assert_that(
+    any(formats %in% c(zip_format, single_format)), msg = "No formats to render"
+  )
+  zip_format <- zip_format[zip_format %in% formats]
+  single_format <- single_format[single_format %in% formats]
+
+  cit <- citation_meta$new(path)
+  if (length(cit$get_errors) > 0) {
+    return(cit)
+  }
+  cit$print()
+
+  file_scope <- getOption("bookdown.render.file_scope")
+  options(bookdown.render.file_scope = FALSE)
+  on.exit(options(bookdown.render.file_scope = file_scope), add = TRUE)
+  old_wd <- getwd()
+  on.exit(setwd(old_wd), add = TRUE)
+
+  setwd(path)
+  clean_site(preview = FALSE)
+
+  for (zip_i in seq_along(zip_format)) {
+    # render report
+    render_site(output_format = zip_format[zip_i], encoding = "UTF-8")
+    # pack report into a zip archive
+    dir_ls(output_dir, recurse = TRUE) |>
+      path_rel(output_dir) -> files
+    setwd(output_dir)
+    path(
+      output_dir, paste(c(bookname, letters[zip_i - 1]), collapse = "_"),
+      ext = "zip"
+    ) |>
+      zip(files = files)
+    # remove output except zip archive
+    dir_ls(output_dir, type = "dir") |>
+      dir_delete()
+    dir_ls(output_dir, type = "file", regexp = "\\.zip", invert = TRUE) |>
+      file_delete()
+    setwd(path)
+  }
+  for (output_format in single_format) {
+    render_site(output_format = output_format, encoding = "UTF-8")
+  }
+  dir_ls(output_dir, regexp = "reference-keys.txt") |>
+    file_delete()
+
+  return(invisible(NULL))
+}
