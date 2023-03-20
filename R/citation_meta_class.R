@@ -244,7 +244,11 @@ citation_zenodo <- function(meta) {
 format_zenodo <- function(x, i) {
   formatted <- list(
     name = ifelse(
-      x$family[i] == "", x$given[i], paste(x$family[i], x$given[i], sep = ", ")
+      x$family[i] == "", x$given[i],
+      ifelse(
+        x$given[i] == "", x$family[i],
+        paste(x$family[i], x$given[i], sep = ", ")
+      )
     )
   )
   if (x$affiliation[i] != "") {

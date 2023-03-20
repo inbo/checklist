@@ -1,3 +1,11 @@
+# checklist 0.3.2
+
+* `citation_meta()` gains support for [`bookdown`](https://pkgs.rstudio.com/bookdown/) reports.
+* Add `bookdown_zenodo()` which first extracts the citation metadata from the
+  yaml header.
+  Then it cleans the output folder and renders the required output formats.
+  Finally it uploads the rendered files to a draft deposit on [Zenodo](https://zenodo.org).
+
 # checklist 0.3.1
 
 * Fixes two bugs in case `MIT` license was chosen

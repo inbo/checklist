@@ -9,6 +9,15 @@
 #' @param single_format A vector with output formats that generate a singe
 #' output file.
 #' The output will remain as is.
+#' @param token the user token for Zenodo.
+#' By default an attempt will be made to retrieve token using `zenodo_pat()`.
+#' @param sandbox When `TRUE`, upload a test version to
+#' https://sandbox.zenodo.org.
+#' When `FALSE`, upload the final version to https://zenodo.org.
+#' @param logger Type of logger for Zenodo upload.
+#' Defaults to `"INFO"` which provides minimal logs.
+#' Use `NULL` to hide the logs.
+#' `"DEBUG"` provides the full log.
 #' @family utils
 #' @export
 #' @importFrom assertthat assert_that is.string noNA
@@ -21,7 +30,7 @@ bookdown_zenodo <- function(
   single_format = c(
     "bookdown::pdf_book", "bookdown::epub_book", "INBOmd::pdf_report",
     "INBOmd::epub_book"
-  )
+  ), token, sandbox = TRUE, logger = "INFO"
 ) {
   assert_that(
     is.string(path), noNA(path), inherits(zip_format, "character"),
@@ -98,5 +107,10 @@ bookdown_zenodo <- function(
   dir_ls(output_dir, regexp = "reference-keys.txt") |>
     file_delete()
 
-  return(invisible(NULL))
+  path(path, ".zenodo.json") |>
+    file_copy(output_dir, overwrite = TRUE)
+
+  upload_zenodo(
+    path = output_dir, token = token, sandbox = sandbox, logger = logger
+  )
 }

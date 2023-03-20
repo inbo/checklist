@@ -8,7 +8,10 @@ bookdown_zenodo(
   path,
   zip_format = c("bookdown::gitbook", "INBOmd::gitbook"),
   single_format = c("bookdown::pdf_book", "bookdown::epub_book", "INBOmd::pdf_report",
-    "INBOmd::epub_book")
+    "INBOmd::epub_book"),
+  token,
+  sandbox = TRUE,
+  logger = "INFO"
 )
 }
 \arguments{
@@ -20,6 +23,18 @@ The function will bundle all the files in a zip file for every format.}
 \item{single_format}{A vector with output formats that generate a singe
 output file.
 The output will remain as is.}
+
+\item{token}{the user token for Zenodo.
+By default an attempt will be made to retrieve token using \code{zenodo_pat()}.}
+
+\item{sandbox}{When \code{TRUE}, upload a test version to
+https://sandbox.zenodo.org.
+When \code{FALSE}, upload the final version to https://zenodo.org.}
+
+\item{logger}{Type of logger for Zenodo upload.
+Defaults to \code{"INFO"} which provides minimal logs.
+Use \code{NULL} to hide the logs.
+\code{"DEBUG"} provides the full log.}
 }
 \description{
 First clear all the existing files in the \code{output_dir} set in

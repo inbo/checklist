@@ -147,7 +147,9 @@ yaml_author_format <- function(person) {
       given = paste0(person$name$given, ""),
       family = paste0(person$name$family, ""), orcid = paste0(person$orcid, ""),
       affiliation = paste0(person$affiliation, ""),
-      contact = ifelse(is.null(person$corresponding), FALSE, person$corresponding)
+      contact = ifelse(
+        is.null(person$corresponding), FALSE, person$corresponding
+      )
     )
   } else {
     person_df <- data.frame(
