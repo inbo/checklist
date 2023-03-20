@@ -9,6 +9,7 @@
     "documentation",
     "publication"
   ],
+  "access_right": "open",
   "language": "eng",
   "contributors": [
     {
@@ -41,7 +42,6 @@
       "orcid": "0000-0001-8804-4216"
     }
   ],
-  "access_right": "open",
   "communities": [
     {
       "identifier": "inbo"

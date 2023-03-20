@@ -24,7 +24,10 @@ citation_description <- function(meta) {
     version = descript$get_version(), license = license,
     upload_type = "software", description = abstract
   ) |>
-    c(authors$meta, keywords$meta, communities$meta, urls$meta) -> cit_meta
+    c(
+      authors$meta, keywords$meta, communities$meta, urls$meta,
+      access_right = "open"
+    ) -> cit_meta
   lang <- descript$get_field("Language", default = "")
   if (lang != "") {
     cit_meta$language <- lang

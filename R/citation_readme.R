@@ -126,6 +126,7 @@ readme_badges <- function(text) {
   if (length(website_line) == 1) {
     meta$url <- gsub(website_regexp, "\\2", badges[website_line])
   }
+  meta$access_right <- "open"
   list(
     errors = errors, notes = notes, meta = meta,
     text = text[-badges_start:-badges_end], warnings = character(0)
