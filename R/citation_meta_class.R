@@ -121,7 +121,7 @@ citation_print <- function(errors, meta, notes, path, warnings) {
     cat("\n  affiliation:", meta$authors$affiliation[i])
     cat("\n  orcid:", meta$authors$orcid[i])
     cat(
-      "\n  roles: ",
+      "\n  roles:",
       paste(
         meta$roles$role[meta$roles$contributor == meta$authors$id[i]],
         collapse = "; "
