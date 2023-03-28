@@ -1,12 +1,12 @@
-#' Render a `bookdown` and upload to Zenodo.
+#' Render a `bookdown` and upload to Zenodo
 #'
-#' First clear all the existing files in the `output_dir` set in
+#' First clears all the existing files in the `output_dir` set in
 #' `_bookdown_.yml`.
-#' Then render all required output formats.
+#' Then renders all required output formats and uploads them to Zenodo.
 #' @param path The root folder of the report
 #' @param zip_format A vector with output formats that generate multiple files.
 #' The function will bundle all the files in a zip file for every format.
-#' @param single_format A vector with output formats that generate a singe
+#' @param single_format A vector with output formats that generate a single
 #' output file.
 #' The output will remain as is.
 #' @param token the user token for Zenodo.
