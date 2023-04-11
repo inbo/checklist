@@ -3,7 +3,11 @@ name: Releases
 on:
   push:
     tags:
-      - 'v*'
+      - v*
+  workflow_run:
+    workflows: ["check package on main"]
+    types:
+      - completed
 
 jobs:
 

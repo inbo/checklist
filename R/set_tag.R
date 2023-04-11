@@ -79,8 +79,7 @@ set_tag <- function(x = ".") {
 
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
   git_tag_create(
-    name = paste0("v", version),
-    message = tag_message,
-    repo = repo)
+    name = paste0("v", version), message = tag_message, repo = repo
+  )
   return(invisible(NULL))
 }
