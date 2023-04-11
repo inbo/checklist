@@ -2,7 +2,7 @@
 % Please edit documentation in R/bookdown_zenodo.R
 \name{bookdown_zenodo}
 \alias{bookdown_zenodo}
-\title{Render a \code{bookdown} and upload to Zenodo.}
+\title{Render a \code{bookdown} and upload to Zenodo}
 \usage{
 bookdown_zenodo(
   path,
@@ -20,7 +20,7 @@ bookdown_zenodo(
 \item{zip_format}{A vector with output formats that generate multiple files.
 The function will bundle all the files in a zip file for every format.}
 
-\item{single_format}{A vector with output formats that generate a singe
+\item{single_format}{A vector with output formats that generate a single
 output file.
 The output will remain as is.}
 
@@ -37,9 +37,9 @@ Use \code{NULL} to hide the logs.
 \code{"DEBUG"} provides the full log.}
 }
 \description{
-First clear all the existing files in the \code{output_dir} set in
+First clears all the existing files in the \code{output_dir} set in
 \verb{_bookdown_.yml}.
-Then render all required output formats.
+Then renders all required output formats and uploads them to Zenodo.
 }
 \seealso{
 Other utils: 
