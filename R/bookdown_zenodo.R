@@ -22,7 +22,7 @@
 #' @export
 #' @importFrom assertthat assert_that is.string noNA
 #' @importFrom fs dir_create dir_delete dir_ls file_delete is_dir is_file
-#' path_rel
+#' path_abs path_ext_remove path_rel
 #' @importFrom rmarkdown clean_site render_site yaml_front_matter
 #' @importFrom utils zip
 bookdown_zenodo <- function(
@@ -34,7 +34,8 @@ bookdown_zenodo <- function(
 ) {
   assert_that(
     is.string(path), noNA(path), inherits(zip_format, "character"),
-    noNA(zip_format), inherits(single_format, "character"), noNA(single_format)
+    noNA(zip_format), inherits(single_format, "character"), noNA(single_format),
+    assert_that(requireNamespace("bookdown", quietly = TRUE))
   )
   assert_that(is_dir(path), msg = "`path` is not an existing directory")
   assert_that(
@@ -71,7 +72,9 @@ bookdown_zenodo <- function(
   if (length(cit$get_errors) > 0) {
     return(cit)
   }
-  cit$print()
+  if (!is.null(logger)) {
+    cit$print()
+  }
 
   file_scope <- getOption("bookdown.render.file_scope")
   options(bookdown.render.file_scope = FALSE)
@@ -80,20 +83,24 @@ bookdown_zenodo <- function(
   on.exit(setwd(old_wd), add = TRUE)
 
   setwd(path)
-  clean_site(preview = FALSE)
+  clean_site(path)
 
+  output_dir <- path_abs(output_dir)
   for (zip_i in seq_along(zip_format)) {
     # render report
-    render_site(output_format = zip_format[zip_i], encoding = "UTF-8")
+    render_site(
+      output_format = zip_format[zip_i], encoding = "UTF-8",
+      quiet = is.null(logger)
+    )
     # pack report into a zip archive
-    dir_ls(output_dir, recurse = TRUE) |>
+    dir_ls(output_dir, recurse = TRUE, regexp = "\\.zip", invert = TRUE) |>
       path_rel(output_dir) -> files
     setwd(output_dir)
     path(
       output_dir, paste(c(bookname, letters[zip_i - 1]), collapse = "_"),
       ext = "zip"
     ) |>
-      zip(files = files)
+      zip(files = files, flags = "-r9XqT")
     # remove output except zip archive
     dir_ls(output_dir, type = "dir") |>
       dir_delete()
@@ -102,7 +109,9 @@ bookdown_zenodo <- function(
     setwd(path)
   }
   for (output_format in single_format) {
-    render_site(output_format = output_format, encoding = "UTF-8")
+    render_site(
+      output_format = output_format, encoding = "UTF-8", quiet = is.null(logger)
+    )
   }
   dir_ls(output_dir, regexp = "reference-keys.txt") |>
     file_delete()

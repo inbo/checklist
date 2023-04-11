@@ -31,7 +31,7 @@ Imports:
     jsonlite,
     knitr,
     lintr (>= 2.0.1.9000),
-    pkgdown,
+    pkgdown (>= 2.0.7),
     R6,
     rcmdcheck,
     renv,
@@ -41,6 +41,7 @@ Imports:
     withr,
     yaml
 Suggests:
+    bookdown,
     covr,
     curl,
     mockery,
@@ -49,9 +50,10 @@ Suggests:
     showtext,
     sysfonts,
     testthat,
-    zen4R
+    zen4R (>= 0.9)
 VignetteBuilder: 
     knitr
+Additional_repositories: https://inbo.r-universe.dev
 Config/checklist/communities: inbo
 Config/checklist/keywords: quality control; documentation; publication
 Encoding: UTF-8

@@ -142,22 +142,37 @@ yaml_author <- function(yaml) {
 
 #' @inheritParams assertthat has_name is.flag
 yaml_author_format <- function(person) {
-  if (is.list(person$name)) {
-    person_df <- data.frame(
-      given = paste0(person$name$given, ""),
-      family = paste0(person$name$family, ""), orcid = paste0(person$orcid, ""),
-      affiliation = paste0(person$affiliation, ""),
-      contact = ifelse(
-        is.null(person$corresponding), FALSE, person$corresponding
-      )
-    )
-  } else {
-    person_df <- data.frame(
-      given = "", family = "", orcid = "", affiliation = "", contact = FALSE
-    )
+  person_df <- data.frame(
+    given = character(0), family = character(0), orcid = character(0),
+    affiliation = character(0), contact = logical(0)
+  )
+  if (!is.list(person)) {
+    attr(person_df, "errors") <- list("person must be a list")
+    attr(person_df, "notes") <- list(character(0))
+    return(list(person_df))
   }
+  if (!has_name(person, "name") || !is.list(person$name)) {
+    c(
+      "person has no `name` element"[
+        !has_name(person, "name")
+      ],
+      "person `name` element is not a list"[
+        has_name(person, "name") && !is.list(person$name)
+      ]
+    ) |>
+      list() -> attr(person_df, "errors")
+    attr(person_df, "notes") <- list(character(0))
+    return(list(person_df))
+  }
+  person_df <- data.frame(
+    given = paste0(person$name$given, ""),
+    family = paste0(person$name$family, ""), orcid = paste0(person$orcid, ""),
+    affiliation = paste0(person$affiliation, ""),
+    contact = ifelse(
+      is.null(person$corresponding), FALSE, person$corresponding
+    )
+  )
   c(
-    "person has no `name` element"[!has_name(person, "name")],
     "person `name` element is missing a `given` element"[
       !has_name(person$name, "given")
     ],
