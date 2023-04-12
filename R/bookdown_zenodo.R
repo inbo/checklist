@@ -82,10 +82,12 @@ bookdown_zenodo <- function(
   old_wd <- getwd()
   on.exit(setwd(old_wd), add = TRUE)
 
+  output_dir <- path_abs(output_dir)
+  dir_create(output_dir)
+
   setwd(path)
   clean_site(path)
 
-  output_dir <- path_abs(output_dir)
   for (zip_i in seq_along(zip_format)) {
     # render report
     render_site(
