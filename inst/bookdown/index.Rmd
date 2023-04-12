@@ -24,7 +24,6 @@ rightsholder: Research Institute for Nature and Forest (INBO)
 site: bookdown::bookdown_site
 output:
   bookdown::gitbook: default
-  bookdown::pdf_book: default
   bookdown::epub_book: default
 ---
 
