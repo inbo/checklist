@@ -151,7 +151,7 @@ readme_title <- function(text) {
   text$errors <- c(
     text$errors,
     paste(
-      "Title line must be just below the badges section in README.md",
+    "Title line must be just below the (optional) badges section in README.md",
       "The title in README.md must start with `# `"
     )[!grepl("^ *# +", title)]
   )
@@ -174,6 +174,10 @@ strip_markdown <- function(text) {
 #' @importFrom stats setNames
 readme_author <- function(text) {
   text$text <- remove_empty_line(text$text, top = TRUE)
+  if (length(text$text) == 0) {
+    text$errors <- c(text$errors, "No author information in README.md")
+    return(text)
+  }
   grep("^\\s*$", text$text) |>
     head(1) -> empty_line
   text$text[seq_len(empty_line - 1)] |>
