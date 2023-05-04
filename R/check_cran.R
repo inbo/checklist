@@ -76,6 +76,7 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
       check_output$notes <- check_output$notes[-last_update]
     }
   } # nocov end
+  check_output$notes <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$notes)
   x$add_rcmdcheck(
     errors = check_output$errors, warnings = check_output$warnings,
     notes = check_output$notes
