@@ -113,18 +113,6 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
 spelling_parse_md <- function(md_file, wordlist, x) {
   raw_text <- readLines(md_file)
   text <- spelling_parse_md_yaml(text = raw_text)
-  # remove chunks
-  chunks <- grep("^\\s*```", text)
-  assert_that(
-    length(chunks) %% 2 == 0,
-    msg = paste("Odd number of chunk delimiters detected in", md_file)
-  )
-  while (length(chunks)) {
-    text[chunks[1]:chunks[2]] <- ""
-    chunks <- tail(chunks, -2)
-  }
-  # remove in line chunks
-  text <- gsub("\\`r .*?`", "", text)
   # remove ignored sections
   start <- grep("<!-- spell-check: ignore:start\\s*-->", text)
   end <- grep("<!-- spell-check: ignore:end\\s*-->", text)
@@ -154,6 +142,18 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     start <- tail(start, -1)
     end <- tail(end, -1)
   }
+  # remove chunks
+  chunks <- grep("^\\s*```", text)
+  assert_that(
+    length(chunks) %% 2 == 0,
+    msg = paste("Odd number of chunk delimiters detected in", md_file)
+  )
+  while (length(chunks)) {
+    text[chunks[1]:chunks[2]] <- ""
+    chunks <- tail(chunks, -2)
+  }
+  # remove in line chunks
+  text <- gsub("\\`r .*?`", "", text)
   # remove ignored lines
   text <- gsub(".*<!-- spell-check: ignore\\s*-->.*", "", text)
   # remove bookdown references
@@ -161,15 +161,42 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   # remove bookdown anchor
   text <- gsub("\\{#.*?\\}", "", text)
   # remove bookdown text references
-  text <- gsub("\\(ref:.*?\\)", "", text)
+  text <- gsub("\\(ref:.+?\\)", "", text)
   # remove stand alone math
-  text <- gsub("\\$\\$.*?\\$\\$", "", text)
+  text <- gsub("\\$\\$.+?\\$\\$", "", text)
   # remove inline math
-  text <- gsub("\\$.*?\\$", "", text)
+  text <- gsub("\\$.+?\\$", "", text)
   # remove citation
   text <- gsub("\\S*@\\S+", "", text, perl = TRUE)
   # replace non braking spaces
   text <- gsub("&nbsp;", " ", text)
+  # remove LaTeX equation environments
+  start <- grep("^\\s*\\\\begin\\{equation\\}\\s*$", text)
+  end <- grep("^\\s*\\\\end\\{equation\\}\\s*$", text)
+  assert_that(
+    length(start) == length(end),
+    msg = paste(
+      "unmatched `\\begin{equation}` and `\\end{equation}` in", md_file
+    )
+  )
+  assert_that(
+    all(start < end),
+    msg = paste(
+      "`\\end{equation}` appears before `\\begin{equation}` found in", md_file
+    )
+  )
+  assert_that(
+    all(head(end, -1) < tail(start, -1)),
+    msg = paste(
+      "new `\\begin{equation}` found without closing the previous one in",
+      md_file
+    )
+  )
+  while (length(start)) {
+    text[start[1]:end[1]] <- ""
+    start <- tail(start, -1)
+    end <- tail(end, -1)
+  }
   # remove LaTeX commands
   text <- gsub("\\\\\\w+", "", text)
   # remove Markdown figuren
@@ -193,7 +220,8 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   # remove markdown subscript
   text <- gsub("~\\w*~", "", text)
   # remove markdown settings
-  text <- gsub("\\{\\.unnumbered\\}", "", text)
+  text <- gsub("\\{.*?\\.[unnumbered|allowframebreaks].*?\\}", "", text)
+  text <- gsub("\\{-.*?}", "", text)
   # remove HTML image with alt tag while keeping the alt tag
   text <- gsub("<.*?alt ?= ?\"(.*?)\".*?>", "\"\\1\"", text)
   # remove HTML image without alt tag
