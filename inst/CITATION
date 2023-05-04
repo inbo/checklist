@@ -1,7 +1,7 @@
 citHeader("To cite `checklist` in publications please use:")
 # begin checklist entry
-citEntry(
-  entry = "Manual",
+bibentry(
+  bibtype = "Manual",
   title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.3.2",
   author = c( author = c(person(given = "Thierry", family = "Onkelinx"))),
   year = 2023,

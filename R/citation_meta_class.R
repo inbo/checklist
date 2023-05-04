@@ -392,7 +392,7 @@ citation_r <- function(meta) {
     sprintf(fmt = "  author = c(%s)") -> authors_bibtex
   sprintf("%s%s", authors$fam2, authors$given) -> authors_plain
   package_citation <- c(
-    entry = "\"Manual\"",
+    bibtype = "\"Manual\"",
     title = sprintf(
       "\"%s. Version %s\"", cit_meta$title, cit_meta$version
     ),
@@ -420,7 +420,7 @@ citation_r <- function(meta) {
   package_citation <- sprintf(
     "  %s = %s,", names(package_citation), package_citation
   )
-  c(head(cit, start), "citEntry(", package_citation, ")", tail(cit, 1 - end)) |>
+  c(head(cit, start), "bibentry(", package_citation, ")", tail(cit, 1 - end)) |>
     writeLines(citation_file)
   errors <- paste(
     citation_file, "is modified.",
