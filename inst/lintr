@@ -9,20 +9,20 @@ linters: list(
     function_left_parentheses_linter(),
     infix_spaces_linter(exclude_operators = NULL, allow_multiple_spaces = TRUE),
     line_length_linter(length = 80L),
-    no_tab_linter(),
     object_length_linter(length = 30L),
     object_name_linter(styles = "snake_case"),
     object_usage_linter(interpret_glue = TRUE),
     paren_body_linter(),
     pipe_continuation_linter(),
+    quotes_linter(delimiter = "\""),
     semicolon_linter(allow_compound = FALSE, allow_trailing = FALSE),
     seq_linter(),
-    single_quotes_linter(),
     spaces_inside_linter(),
     spaces_left_parentheses_linter(),
     T_and_F_symbol_linter(),
     trailing_blank_lines_linter(),
     trailing_whitespace_linter(allow_empty_lines = FALSE),
-    vector_logic_linter()
+    vector_logic_linter(),
+    whitespace_linter()
   )
 exclusions: list("renv", "packrat")

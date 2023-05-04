@@ -30,7 +30,7 @@ Imports:
     hunspell,
     jsonlite,
     knitr,
-    lintr (>= 2.0.1.9000),
+    lintr (>= 3.0.2.9000),
     pkgdown (>= 2.0.7),
     R6,
     rcmdcheck,
