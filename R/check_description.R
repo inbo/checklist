@@ -286,7 +286,6 @@ Please send a pull request if you need support for this license.",
 #' @importFrom utils person
 check_authors <- function(this_desc) {
   authors <- this_desc$get_authors()
-  authors <- lapply(authors, unlist, recursive = FALSE)
   inbo <- person(
     given = "Research Institute for Nature and Forest (INBO)",
     role = c("cph", "fnd"), email = "info@inbo.be"
@@ -295,6 +294,7 @@ check_authors <- function(this_desc) {
     "`Research Institute for Nature and Forest (INBO)` must be listed as",
     "copyright holder and funder and use info@inbo.be as email."
   )[!inbo %in% authors]
+  authors <- lapply(authors, unlist, recursive = FALSE)
   authors <- authors[!authors %in% inbo]
   orcid <- sapply(authors, `[[`, "comment")
   c(
