@@ -26,8 +26,8 @@ test_that("check_license() works", {
   path <- tempfile("check_license")
   dir.create(path)
   oldwd <- setwd(path)
-  on.exit(setwd(oldwd), add = TRUE)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(setwd(oldwd))
+  defer(unlink(path, recursive = TRUE))
 
   package <- "checklicense"
   suppressMessages(

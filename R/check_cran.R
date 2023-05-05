@@ -12,7 +12,7 @@
 #' @importFrom httr HEAD
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
-#' @importFrom withr with_path
+#' @importFrom withr defer with_path
 #' @export
 #' @family package
 check_cran <- function(x = ".", quiet = FALSE) {
@@ -25,7 +25,7 @@ check_cran <- function(x = ".", quiet = FALSE) {
 
   # don't use fancy Quotes when checking
   old_options <- options()
-  on.exit(options(old_options), add = TRUE)
+  defer(options(old_options))
   options(useFancyQuotes = FALSE)
 
   # test if the worlds clock is available

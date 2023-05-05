@@ -5,7 +5,7 @@ test_that("update_citation() works", {
   )
   path <- tempfile("citation")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
   package <- "citation"
   create_package(
     path = path, package = package, keywords = "dummy", communities = "inbo",
@@ -15,7 +15,7 @@ test_that("update_citation() works", {
   )
 
   hide_output <- tempfile(fileext = ".txt")
-  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+  defer(file_delete(hide_output))
   sink(hide_output)
   expect_output(x <- update_citation(path(path, package)))
   sink()

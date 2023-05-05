@@ -1,7 +1,7 @@
 test_that("is_tracked_not_modified() works", {
   path <- tempfile("tracked_not_modified")
   dir_create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   git_init(path = path)
   git_config_set(name = "user.name", value = "junk", repo = path)

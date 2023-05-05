@@ -6,9 +6,9 @@ test_that("create_package() works", {
   )
   path <- tempfile("ghpages")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
   origin_repo <- git_init(tempfile("ghpages_origin"), bare = TRUE)
-  on.exit(unlink(origin_repo, recursive = TRUE), add = TRUE)
+  defer(unlink(origin_repo, recursive = TRUE))
 
   package <- "ghpages"
   expect_message(

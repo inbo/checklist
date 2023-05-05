@@ -8,7 +8,7 @@ test_that("setup_package() works", {
   )
   path <- tempfile("setup_package")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   package <- "setuppackage"
   create_package(

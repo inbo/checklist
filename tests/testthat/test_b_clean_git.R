@@ -1,14 +1,14 @@
 test_that("clean_git with `main` as main branch", {
   origin_repo <- git_init(tempfile("clean_git_origin"), bare = TRUE)
-  on.exit(unlink(origin_repo, recursive = TRUE), add = TRUE)
+  defer(unlink(origin_repo, recursive = TRUE))
   repo <- gert::git_clone(
     url = origin_repo, path = tempfile("clean_git"), verbose = FALSE
   )
-  on.exit(unlink(repo, recursive = TRUE), add = TRUE)
+  defer(unlink(repo, recursive = TRUE))
   repo2 <- gert::git_clone(
     url = origin_repo, path = tempfile("clean_git2"), verbose = FALSE
   )
-  on.exit(unlink(repo2, recursive = TRUE), add = TRUE)
+  defer(unlink(repo2, recursive = TRUE))
 
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)

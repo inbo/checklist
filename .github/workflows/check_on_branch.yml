@@ -1,7 +1,6 @@
 on:
   push:
     branches-ignore:
-      - master
       - main
       - ghpages
 
@@ -18,4 +17,4 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: inbo/actions/check_pkg@checklist-0.3.0
+      - uses: inbo/actions/check_pkg@checklist-0.3.2

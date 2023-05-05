@@ -14,13 +14,14 @@
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom lintr lint_dir lint_package
+#' @importFrom withr defer
 #' @family both
 check_lintr <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
   options(lintr.linter_file = system.file("lintr", package = "checklist"))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
   options(lintr.rstudio_source_markers = interactive())
-  on.exit(options(lintr.rstudio_source_markers = old_lint_option), add = TRUE)
+  defer(options(lintr.rstudio_source_markers = old_lint_option))
   x <- read_checklist(x = x)
 
   if (x$package) {

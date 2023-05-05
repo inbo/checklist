@@ -1,11 +1,11 @@
 test_that("new_branch() creates a branch from the main branch", {
   origin_path <- tempfile("new_branch_origin")
   dir.create(origin_path)
-  on.exit(unlink(origin_path, recursive = TRUE), add = TRUE)
+  defer(unlink(origin_path, recursive = TRUE))
 
   path <- tempfile("new_branch")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   origin_repo <- git_init(path = origin_path, bare = TRUE)
   repo <- gert::git_clone(url = origin_path, path = path, verbose = FALSE)

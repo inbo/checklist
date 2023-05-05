@@ -25,6 +25,7 @@
 #' path_abs path_ext_remove path_rel
 #' @importFrom rmarkdown clean_site render_site yaml_front_matter
 #' @importFrom utils zip
+#' @importFrom withr defer
 bookdown_zenodo <- function(
   path, zip_format = c("bookdown::gitbook", "INBOmd::gitbook"),
   single_format = c(
@@ -78,9 +79,9 @@ bookdown_zenodo <- function(
 
   file_scope <- getOption("bookdown.render.file_scope")
   options(bookdown.render.file_scope = FALSE)
-  on.exit(options(bookdown.render.file_scope = file_scope), add = TRUE)
+  defer(options(bookdown.render.file_scope = file_scope))
   old_wd <- getwd()
-  on.exit(setwd(old_wd), add = TRUE)
+  defer(setwd(old_wd))
 
   path(path, output_dir) |>
     path_abs(output_dir) -> output_dir

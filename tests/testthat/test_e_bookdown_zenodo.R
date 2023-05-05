@@ -1,4 +1,6 @@
 test_that("bookdown_zenodo() works", {
+  skip_if_not_installed("zen4R")
+  skip_if_not_installed("bookdown")
   expect_match(Sys.getenv("ZENODO_SANDBOX"), "^\\w{60}$")
   sandbox_token <- Sys.getenv("ZENODO_SANDBOX")
 
@@ -19,7 +21,7 @@ test_that("bookdown_zenodo() works", {
   system.file("generic_template", "cc_by_4_0.md", package = "checklist") |>
     file_copy(path(root, "LICENSE.md"))
   zenodo_out <- tempfile(fileext = ".txt")
-  on.exit(file_delete(zenodo_out), add = TRUE, after = TRUE)
+  defer(file_delete(zenodo_out))
   sink(zenodo_out)
   suppressMessages(
     x <- bookdown_zenodo(
