@@ -5,6 +5,7 @@
   yaml header.
   Then it cleans the output folder and renders the required output formats.
   Finally it uploads the rendered files to a draft deposit on [Zenodo](https://zenodo.org).
+* `setup_project()` and `create_project()` provides support for [`renv`](https://pkgs.rstudio.com/renv/).
 
 # checklist 0.3.1
 
