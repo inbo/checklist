@@ -61,7 +61,7 @@ fi
 echo '\nUpdating tag...\n';
 git rev-parse --abbrev-ref origin/HEAD | sed 's/origin\///' | xargs git checkout
 Rscript --no-save --no-restore -e 'checklist::set_tag()';
-git push --follow-tags
+git push --tags
 
 echo '\nPush pkgdown website...\n'
 cp -R docs ../docs

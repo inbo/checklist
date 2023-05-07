@@ -1,6 +1,6 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "GPL-3.0",
   "upload_type": "software",
   "description": "<p>An opinionated set of rules for R packages and R source code\nprojects.<\/p>",
@@ -9,6 +9,7 @@
     "documentation",
     "publication"
   ],
+  "access_right": "open",
   "language": "eng",
   "contributors": [
     {
@@ -41,7 +42,6 @@
       "orcid": "0000-0001-8804-4216"
     }
   ],
-  "access_right": "open",
   "communities": [
     {
       "identifier": "inbo"

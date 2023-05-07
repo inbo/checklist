@@ -1,7 +1,7 @@
 test_that("check_environment() works", {
   tmp_dir <- tempfile()
   dir.create(tmp_dir)
-  on.exit(file_delete(tmp_dir), add = TRUE)
+  defer(file_delete(tmp_dir))
   old_gha <- Sys.getenv("GITHUB_ACTIONS")
   old_codecov <- Sys.getenv("CODECOV_TOKEN")
 

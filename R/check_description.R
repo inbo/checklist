@@ -133,13 +133,14 @@ from the web. More info on https://github.com/github/renaming"[
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom desc description
+#' @importFrom withr defer
 #' @family package
 tidy_desc <- function(x = ".") {
   x <- read_checklist(x = x)
 
   # turn crayon off
   old_crayon <- getOption("crayon.enabled")
-  on.exit(options("crayon.enabled" = old_crayon), add = TRUE)
+  defer(options("crayon.enabled" = old_crayon))
   options("crayon.enabled" = FALSE)
 
   desc <- description$new(path(x$get_path, "DESCRIPTION"))
@@ -286,7 +287,6 @@ Please send a pull request if you need support for this license.",
 #' @importFrom utils person
 check_authors <- function(this_desc) {
   authors <- this_desc$get_authors()
-  authors <- lapply(authors, unlist, recursive = FALSE)
   inbo <- person(
     given = "Research Institute for Nature and Forest (INBO)",
     role = c("cph", "fnd"), email = "info@inbo.be"
@@ -295,6 +295,7 @@ check_authors <- function(this_desc) {
     "`Research Institute for Nature and Forest (INBO)` must be listed as",
     "copyright holder and funder and use info@inbo.be as email."
   )[!inbo %in% authors]
+  authors <- lapply(authors, unlist, recursive = FALSE)
   authors <- authors[!authors %in% inbo]
   orcid <- sapply(authors, `[[`, "comment")
   c(

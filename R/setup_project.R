@@ -6,13 +6,12 @@
 #' @param path the project root folder
 #' @export
 #' @importFrom assertthat assert_that is.string
-#' @importFrom fs dir_create is_dir path path_real
+#' @importFrom fs dir_create file_copy is_dir path path_real path_rel
 #' @family setup
 setup_project <- function(path = ".") {
   assert_that(is.string(path), is_dir(path))
   path <- path_real(path)
-  files <- c("checklist.yml")
-  checklist_file <- path(path, files)
+  checklist_file <- path(path, "checklist.yml")
 
   if (is_file(checklist_file)) {
     x <- read_checklist(path)
@@ -24,7 +23,13 @@ setup_project <- function(path = ".") {
 
   dir_create(path, c("data", "media", "output", "source"))
 
+  if (!file_exists(path(path, "source", "checklist.R"))) {
+    path("project_template", "checklist.R") |>
+      system.file(package = "checklist") |>
+      file_copy(path(path, "source", "checklist.R"))
+  }
   repo <- setup_vc(path = path)
+  renv_activate(path = path)
   files <- create_readme(path = path)
   checks <- c(
     "checklist",
@@ -61,8 +66,12 @@ setup_project <- function(path = ".") {
     return(invisible(NULL))
   }
   dir_ls(path, regexp = "Rproj$") |>
-    c("LICENSE.md"["license" %in% checks], files, "checklist.yml") |>
-    git_add(force = TRUE, repo = repo)
+    path_rel(path) |>
+    c(
+      "LICENSE.md"["license" %in% checks], files, "checklist.yml",
+      path("source", "checklist.R"), "renv", "renv.lock"
+    ) |>
+    git_add(repo = repo)
   return(invisible(NULL))
 }
 
@@ -163,6 +172,12 @@ create_project <- function(path, project) {
   )
 
   setup_project(path(path, project))
+
+  if (!interactive() || !requireNamespace("rstudioapi", quietly = TRUE)) {
+    return(invisible(NULL))
+  }
+  path(path, project) |>
+    rstudioapi::openProject(newSession = TRUE)
 }
 
 create_readme <- function(path) {
@@ -245,7 +260,7 @@ preferred_protocol <- function() {
     if (config[["git"]][["organisation"]] == "") {
       config[["git"]][["organisation"]] <- "inbo"
     }
-    c("https (default)", "ssh") |>
+    c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
     dirname(config_file) |>
@@ -272,4 +287,25 @@ ask_yes_no <- function(
     return(default)
   }
   askYesNo(msg = msg, default = default, prompts = prompts, ...)
+}
+
+#' @importFrom fs file_exists path
+renv_activate <- function(path) {
+  if (file_exists(path(path, "renv.lock"))) {
+    return(invisible(NULL))
+  }
+  if (
+    isFALSE(
+      ask_yes_no(
+        "Use `renv` to lock package versions with the project?",
+        default = !identical(Sys.getenv("TESTTHAT"), "true")
+      )
+    )
+  ) {
+    return(invisible(NULL))
+  }
+  # nocov start
+  sprintf("Rscript -e 'renv::init(\"%s\", restart = FALSE)'", path) |>
+    execshell()
+  # nocov end
 }

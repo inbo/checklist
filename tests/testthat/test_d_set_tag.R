@@ -9,7 +9,7 @@ test_that("set_tag() works", {
   )
   path <- tempfile("settag")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   package <- "settag"
   create_package(
@@ -37,13 +37,13 @@ test_that("set_tag() works", {
 
   # not on GITHUB or main
   current_ref <- Sys.getenv("GITHUB_REF")
-  on.exit(Sys.setenv(GITHUB_REF = current_ref), add = TRUE)
+  defer(Sys.setenv(GITHUB_REF = current_ref))
   Sys.setenv(GITHUB_REF = "")
   current_actions <- Sys.getenv("GITHUB_ACTIONS")
-  on.exit(Sys.setenv(GITHUB_ACTIONS = current_actions), add = TRUE)
+  defer(Sys.setenv(GITHUB_ACTIONS = current_actions))
   Sys.setenv(GITHUB_ACTIONS = "")
   current_event <- Sys.getenv("GITHUB_EVENT_NAME")
-  on.exit(Sys.setenv(GITHUB_EVENT_NAME = current_event), add = TRUE)
+  defer(Sys.setenv(GITHUB_EVENT_NAME = current_event))
   Sys.setenv(GITHUB_EVENT_NAME = "")
   expect_message(
     set_tag(path(path, package)),

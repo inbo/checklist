@@ -9,32 +9,29 @@ allowed:
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
-citation_roles:
-- aut
-- cre
+
+      Availability using Additional_repositories specification:
+        ?   ?   https://inbo.r-universe.dev
 required:
-- .zenodo.json
 - CITATION
-- CITATION.cff
 - DESCRIPTION
 - R CMD check
 - checklist
 - codemeta
 - documentation
 - filename conventions
+- folder conventions
 - license
 - lintr
 - repository secret
 - spelling
-keywords:
-- R package
-- quality control
 spelling:
   default: en-GB
   ignore:
   - .git
   - .github
   - LICENSE.md
+  - inst/bookdown
   - inst/generic_template/cc_by_4_0.md
   - inst/generic_template/cc_by_sa_4_0.md
   - inst/generic_template/gplv3.md

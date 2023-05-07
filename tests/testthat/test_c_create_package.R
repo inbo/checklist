@@ -1,5 +1,6 @@
 library(mockery)
 test_that("create_package() works", {
+  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   maintainer <- person(
     given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
@@ -7,7 +8,7 @@ test_that("create_package() works", {
   )
   path <- tempfile("create_package")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   package <- "create"
   expect_message(

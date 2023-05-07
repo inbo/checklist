@@ -1,7 +1,6 @@
 on:
   push:
     branches-ignore:
-      - master
       - main
       - ghpages
 
@@ -14,7 +13,8 @@ jobs:
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
     permissions:
       contents: read
     steps:
-      - uses: inbo/actions/check_pkg@checklist-0.3.0
+      - uses: inbo/actions/check_pkg@checklist-0.3.2

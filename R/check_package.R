@@ -29,6 +29,7 @@
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom fs file_delete
 #' @importFrom pkgdown build_site
+#' @importFrom withr defer
 #' @export
 #' @family package
 check_package <- function(
@@ -66,17 +67,16 @@ check_package <- function(
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")
-    on.exit({
+    defer({
       Sys.unsetenv("CI")
       if (old_ci != "") {
         Sys.setenv(CI = old_ci)
       }
-    }, add = TRUE
-    )
+    })
     Sys.setenv(CI = TRUE)
     if (quiet) {
       junk <- tempfile(fileext = ".txt")
-      on.exit(file_delete(junk), add = TRUE, after = TRUE)
+      defer(file_delete(junk))
       sink(junk)
       build_site(x$get_path, preview = FALSE)
       sink()

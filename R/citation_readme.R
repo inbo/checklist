@@ -26,7 +26,8 @@ citation_readme <- function(meta) {
     remotes$url[remotes$name == "origin"] |>
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
       gsub(pattern = "https://.*?@", replacement = "https://") |>
-      gsub(pattern = "\\.git$", replacement = "/") -> cit_meta$meta$source
+      gsub(pattern = "\\.git$", replacement = "") |>
+      paste0("/") -> cit_meta$meta$source
   }
   cit_meta$meta$upload_type <- "software"
   license_file <- path(meta$get_path, "LICENSE.md")
@@ -126,6 +127,7 @@ readme_badges <- function(text) {
   if (length(website_line) == 1) {
     meta$url <- gsub(website_regexp, "\\2", badges[website_line])
   }
+  meta$access_right <- "open"
   list(
     errors = errors, notes = notes, meta = meta,
     text = text[-badges_start:-badges_end], warnings = character(0)
@@ -150,7 +152,7 @@ readme_title <- function(text) {
   text$errors <- c(
     text$errors,
     paste(
-      "Title line must be just below the badges section in README.md",
+    "Title line must be just below the (optional) badges section in README.md",
       "The title in README.md must start with `# `"
     )[!grepl("^ *# +", title)]
   )
@@ -173,6 +175,10 @@ strip_markdown <- function(text) {
 #' @importFrom stats setNames
 readme_author <- function(text) {
   text$text <- remove_empty_line(text$text, top = TRUE)
+  if (length(text$text) == 0) {
+    text$errors <- c(text$errors, "No author information in README.md")
+    return(text)
+  }
   grep("^\\s*$", text$text) |>
     head(1) -> empty_line
   text$text[seq_len(empty_line - 1)] |>

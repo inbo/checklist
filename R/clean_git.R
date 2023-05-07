@@ -13,6 +13,7 @@
 #' @importFrom gert git_ahead_behind git_branch git_branch_checkout
 #' git_branch_create git_branch_delete git_branch_list git_fetch git_pull
 #' git_remote_list
+#' @importFrom withr defer
 #' @export
 #' @family utils
 clean_git <- function(repo =  ".", verbose = TRUE) {
@@ -103,7 +104,7 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
             git_pull(repo = repo, verbose = TRUE)
           } else {
             hide_output <- tempfile(fileext = ".txt")
-            on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+            defer(file_delete(hide_output))
             sink(hide_output)
             git_pull(repo = repo, verbose = FALSE)
             sink()

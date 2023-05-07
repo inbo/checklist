@@ -8,7 +8,7 @@ test_that("check_description() works", {
   )
   path <- tempfile("check_description")
   dir.create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   package <- "checkdescription"
   suppressMessages(

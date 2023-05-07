@@ -12,7 +12,7 @@
 #' @importFrom httr HEAD
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
-#' @importFrom withr with_path
+#' @importFrom withr defer with_path
 #' @export
 #' @family package
 check_cran <- function(x = ".", quiet = FALSE) {
@@ -25,7 +25,7 @@ check_cran <- function(x = ".", quiet = FALSE) {
 
   # don't use fancy Quotes when checking
   old_options <- options()
-  on.exit(options(old_options), add = TRUE)
+  defer(options(old_options))
   options(useFancyQuotes = FALSE)
 
   # test if the worlds clock is available
@@ -76,6 +76,8 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
       check_output$notes <- check_output$notes[-last_update]
     }
   } # nocov end
+  check_output$warnings <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$warnings)
+  check_output$notes <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$notes)
   x$add_rcmdcheck(
     errors = check_output$errors, warnings = check_output$warnings,
     notes = check_output$notes

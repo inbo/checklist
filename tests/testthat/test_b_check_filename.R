@@ -2,7 +2,7 @@ library(mockery)
 test_that("check_filename() works", {
   path <- tempfile("check_filename")
   dir_create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   # fail on white space in folder names
   dir_create(path(path, "with space"))

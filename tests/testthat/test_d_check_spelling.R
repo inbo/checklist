@@ -2,7 +2,7 @@ library(mockery)
 test_that("check_spelling() on a package", {
   old_option <- getOption("checklist.rstudio_source_markers", TRUE)
   options("checklist.rstudio_source_markers" = FALSE)
-  on.exit(options("checklist.rstudio_source_markers" = old_option), add = TRUE)
+  defer(options("checklist.rstudio_source_markers" = old_option))
   maintainer <- person(
     given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
@@ -10,7 +10,7 @@ test_that("check_spelling() on a package", {
   )
   path <- tempfile("check_spelling")
   dir_create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   package <- "spelling"
   suppressMessages(
@@ -21,11 +21,13 @@ test_that("check_spelling() on a package", {
       communities = "inbo",
     )
   )
+  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   expect_is({
     z <- check_spelling(path(path, package))
   },
   "checklist"
   )
+  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   expect_identical(nrow(z$get_spelling), 0L)
   expect_invisible(print(z$get_spelling))
 
@@ -84,7 +86,7 @@ test_that("check_spelling() on a package", {
     "checklist_language"
   )
   hide_output <- tempfile(fileext = ".txt")
-  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+  defer(file_delete(hide_output))
   sink(hide_output)
   expect_invisible(print(z, hide_ignore = TRUE))
   sink()
@@ -103,7 +105,7 @@ test_that("check_spelling() on a package", {
   expect_is(
     {
       hide_output2 <- tempfile(fileext = ".txt")
-      on.exit(file_delete(hide_output2), add = TRUE, after = TRUE)
+      defer(file_delete(hide_output2))
       sink(hide_output2)
       z <- x$set_exceptions()
       sink()
@@ -114,9 +116,10 @@ test_that("check_spelling() on a package", {
 })
 
 test_that("check_spelling() on a project", {
+  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   path <- tempfile("check_spelling")
   dir_create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
 
   r_user_dir <- tempfile("author")
   dir.create(r_user_dir)
@@ -127,7 +130,7 @@ test_that("check_spelling() on a project", {
   expect_invisible(
     {
       hide_create <- tempfile(fileext = ".txt")
-      on.exit(file_delete(hide_create), add = TRUE, after = TRUE)
+      defer(file_delete(hide_create))
       sink(hide_create)
       z <- create_project(path, "spelling")
       sink()
@@ -183,7 +186,7 @@ test_that("check_spelling() on a project", {
   expect_output(new_author(current = data.frame(), root = r_user_dir))
 
   hide_author <- tempfile(fileext = ".txt")
-  on.exit(file_delete(hide_author), add = TRUE, after = TRUE)
+  defer(file_delete(hide_author))
   sink(hide_author)
   stub(use_author, "R_user_dir", r_user_dir)
   aut <- use_author()
@@ -201,7 +204,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output <- tempfile(fileext = ".txt")
-      on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+      defer(file_delete(hide_output))
       sink(hide_output)
       z <- change_language_interactive(
         data.frame(language = "en-GB", path = "a.Rmd")
@@ -216,7 +219,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output2 <- tempfile(fileext = ".txt")
-      on.exit(file_delete(hide_output2), add = TRUE, after = TRUE)
+      defer(file_delete(hide_output2))
       sink(hide_output2)
       z <- change_language_interactive2(
         data.frame(language = "en-GB", path = "a.Rmd"), main = "en-GB",
@@ -232,7 +235,7 @@ test_that("check_spelling() on a project", {
   expect_is(
     {
       hide_output3 <- tempfile(fileext = ".txt")
-      on.exit(file_delete(hide_output3), add = TRUE, after = TRUE)
+      defer(file_delete(hide_output3))
       sink(hide_output3)
       z <- change_language_interactive2(
         data.frame(language = "en-GB", path = path("a", c("a.Rmd", "b.Rmd"))),
@@ -318,9 +321,10 @@ test_that("check_spelling() on a project", {
 })
 
 test_that("check_spelling() works on a quarto project", {
+  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   path <- tempfile("quarto")
   dir_create(path)
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+  defer(unlink(path, recursive = TRUE))
   dir_create(path, "source")
   writeLines(
     c("project:", "  type: book"),
@@ -359,7 +363,7 @@ test_that("check_spelling() works on a quarto project", {
   )
   stub(checklist_print, "interactive", TRUE, depth = 1)
   hide_output <- tempfile(fileext = ".txt")
-  on.exit(file_delete(hide_output), add = TRUE, after = TRUE)
+  defer(file_delete(hide_output))
   sink(hide_output)
   expect_output(print(z))
   sink()

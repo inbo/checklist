@@ -16,21 +16,26 @@ citation_meta <- R6Class(
     initialize = function(path = ".") {
       assert_that(is.string(path), noNA(path))
       path <- path_real(path)
-      stopifnot(
-        "path is not an existing directory" = is_dir(path),
-        "no `checklist.yml` found. See ?write_checklist " = is_file(
-          path(path, "checklist.yml")
-        )
-      )
-      read_checklist(x = path) |>
-        citation_rbuildignore() -> x
+      assert_that(is_dir(path), msg = "path is not an existing directory")
+
       private$path <- path
-      private$type <- ifelse(x$package, "package", "project")
-      meta <- switch(
-        private$type, package = citation_description(self),
-        citation_readme(self)
-      )
-      meta$meta$language <- x$default
+      if (is_file(path(path, "_bookdown.yml"))) {
+        private$type <- "bookdown"
+        meta <- citation_bookdown(self)
+      } else {
+        assert_that(
+          is_file(path(path, "checklist.yml")),
+          msg = "no `checklist.yml` found. See ?write_checklist "
+        )
+        read_checklist(x = path) |>
+          citation_rbuildignore() -> x
+        private$type <- ifelse(x$package, "package", "project")
+        meta <- switch(
+          private$type, package = citation_description(self),
+          citation_readme(self)
+        )
+        meta$meta$language <- x$default
+      }
       private$meta <- meta$meta
       private$errors <- meta$errors
       private$notes <- meta$notes
@@ -116,7 +121,7 @@ citation_print <- function(errors, meta, notes, path, warnings) {
     cat("\n  affiliation:", meta$authors$affiliation[i])
     cat("\n  orcid:", meta$authors$orcid[i])
     cat(
-      "\n  roles: ",
+      "\n  roles:",
       paste(
         meta$roles$role[meta$roles$contributor == meta$authors$id[i]],
         collapse = "; "
@@ -197,7 +202,6 @@ citation_zenodo <- function(meta) {
   )
   zenodo$roles <- NULL
   zenodo$authors <- NULL
-  zenodo$access_right <- "open"
   zenodo$keywords <- as.list(zenodo$keywords)
   if (has_name(zenodo, "community")) {
     zenodo$communities <- vapply(
@@ -240,7 +244,11 @@ citation_zenodo <- function(meta) {
 format_zenodo <- function(x, i) {
   formatted <- list(
     name = ifelse(
-      x$family[i] == "", x$given[i], paste(x$family[i], x$given[i], sep = ", ")
+      x$family[i] == "", x$given[i],
+      ifelse(
+        x$given[i] == "", x$family[i],
+        paste(x$family[i], x$given[i], sep = ", ")
+      )
     )
   )
   if (x$affiliation[i] != "") {
@@ -257,6 +265,9 @@ format_zenodo <- function(x, i) {
 
 citation_cff <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
+  if (!meta$get_type %in% c("package", "project")) {
+    return(character(0))
+  }
   assert_that(length(meta$get_errors) == 0)
   input <- meta$get_meta
   relevant <- input$roles$role == "author"
@@ -381,7 +392,7 @@ citation_r <- function(meta) {
     sprintf(fmt = "  author = c(%s)") -> authors_bibtex
   sprintf("%s%s", authors$fam2, authors$given) -> authors_plain
   package_citation <- c(
-    entry = "\"Manual\"",
+    bibtype = "\"Manual\"",
     title = sprintf(
       "\"%s. Version %s\"", cit_meta$title, cit_meta$version
     ),
@@ -409,7 +420,7 @@ citation_r <- function(meta) {
   package_citation <- sprintf(
     "  %s = %s,", names(package_citation), package_citation
   )
-  c(head(cit, start), "citEntry(", package_citation, ")", tail(cit, 1 - end)) |>
+  c(head(cit, start), "bibentry(", package_citation, ")", tail(cit, 1 - end)) |>
     writeLines(citation_file)
   errors <- paste(
     citation_file, "is modified.",

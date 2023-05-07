@@ -36,6 +36,7 @@ Function to ask a simple yes no question
 }
 \seealso{
 Other utils: 
+\code{\link{bookdown_zenodo}()},
 \code{\link{c_sort}()},
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},

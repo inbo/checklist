@@ -277,10 +277,11 @@ is_repository <- function(path = ".") {
 #'
 #' @inheritParams base::system
 #' @family utils
+#' @importFrom withr defer
 #' @export
 execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
   old_wd <- setwd(path)
-  on.exit(setwd(old_wd), add = TRUE)
+  defer(setwd(old_wd))
 
   if (.Platform$OS.type == "windows") {
     res <- shell(commandstring, intern = TRUE, ...) # nolint

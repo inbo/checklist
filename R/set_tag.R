@@ -14,6 +14,7 @@
 #' @importFrom fs path
 #' @importFrom gert git_config git_config_set git_info git_tag_create
 #' git_tag_list
+#' @importFrom withr defer
 #' @family package
 set_tag <- function(x = ".") {
   if (
@@ -54,19 +55,17 @@ set_tag <- function(x = ".") {
     return(invisible(NULL))
   }
   old_config <- git_config(repo = repo)
-  on.exit(
+  defer(
     git_config_set(
       "user.name",
       old_config$value[old_config$name == "user.name"],
-      repo = repo),
-    add = TRUE
+      repo = repo)
   )
-  on.exit(
+  defer(
     git_config_set(
       "user.email",
       old_config$value[old_config$name == "user.email"],
-      repo = repo),
-    add = TRUE
+      repo = repo)
   )
   git_config_set(
     "user.name", "Checklist bot",
@@ -79,8 +78,7 @@ set_tag <- function(x = ".") {
 
   tag_message <- paste(news[seq(start[current], end[current])], collapse = "\n")
   git_tag_create(
-    name = paste0("v", version),
-    message = tag_message,
-    repo = repo)
+    name = paste0("v", version), message = tag_message, repo = repo
+  )
   return(invisible(NULL))
 }

@@ -6,6 +6,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom codemetar give_opinions
 #' @importFrom gert git_status
+#' @importFrom withr defer
 #' @export
 #' @family package
 check_codemeta <- function(x = ".") {
@@ -19,7 +20,7 @@ check_codemeta <- function(x = ".") {
   repo <- x$get_path
   status_before <- git_status(repo = repo)
   old_wd <- getwd()
-  on.exit(setwd(old_wd), add = TRUE)
+  defer(setwd(old_wd))
   setwd(x$get_path)
   opinions <- give_opinions(x$get_path)
   x$add_error(
