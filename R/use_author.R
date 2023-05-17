@@ -22,6 +22,9 @@ use_author <- function() {
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
+    if (selected > nrow(current)) {
+      current <- new_author(current = current, root = root)
+    }
     cat(
       "given name: ", current$given[selected],
       "\nfamily name:", current$family[selected],
@@ -37,11 +40,12 @@ use_author <- function() {
       next
     }
   }
-  current$usage[selected] <- current$usage[selected] + 1
+  current$usage[selected] <- pmax(current$usage[selected], 0) + 1
   write.table(
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
   )
+  message("author information stored at ", path(root, "author.txt"))
   return(current[selected, ])
 }
 
@@ -91,6 +95,7 @@ update_author <- function(current, selected, root) {
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
   )
+  message("author information stored at ", path(root, "author.txt"))
   return(current)
 }
 
@@ -99,16 +104,28 @@ new_author <- function(current, root) {
   data.frame(
     given = readline(prompt = "given name:  "),
     family = readline(prompt = "family name: "),
-    email = readline(prompt = "e-mail:      "),
-    orcid = readline(prompt = "orcid:       "),
-    affiliation = readline(prompt = "affiliation: "),
-    usage = 0
-  ) |>
-    rbind(current) -> current
+    email = readline(prompt = "e-mail:      ")
+  ) -> extra
+  if (grepl("inbo.be$", extra$email, ignore.case = TRUE)) {
+    extra$orcid <- readline(prompt = "orcid:       ")
+    while (is.na(extra$orcid) || extra$orcid == "") {
+      cat("An ORCID is required for INBO staff")
+      extra$orcid <- readline(prompt = "orcid:       ")
+    }
+    names(inbo_affiliation) |>
+      menu_first(title = "Which default language for the affiliation?") -> lang
+    extra$affiliation <- inbo_affiliation[lang]
+  } else {
+    extra$orcid <- readline(prompt = "orcid:       ")
+    extra$affiliation <- readline(prompt = "affiliation: ")
+  }
+  extra$usage <- 0
+  rbind(current, extra) -> current
   write.table(
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
   )
+  message("author information stored at ", path(root, "author.txt"))
   return(current)
 }
 
