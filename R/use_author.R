@@ -30,7 +30,9 @@ use_author <- function() {
       "\nfamily name:", current$family[selected],
       "\ne-mail:     ", current$email[selected],
       "\norcid:      ", current$orcid[selected],
-      "\naffiliation:", current$affiliation[selected])
+      "\naffiliation:", current$affiliation[selected]
+    )
+    current <- validate_inbo_author(current = current, selected = selected)
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
       break
@@ -73,6 +75,7 @@ update_author <- function(current, selected, root) {
       "\norcid:      ", current$orcid[selected],
       "\naffiliation:", current$affiliation[selected]
     )
+    current <- validate_inbo_author(current = current, selected = selected)
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
       title = "\nWhich item to update?"
@@ -183,4 +186,24 @@ author2badge <- function(role = "aut") {
         attr(badge, "footnote"), sprintf("[^%s]: %s", aff, df$affiliation)
       )
     )
+}
+
+validate_inbo_author <- function(current, selected) {
+  if (!grepl("inbo.be$", current$email[selected], ignore.case = TRUE)) {
+    return(current)
+  }
+  while (is.na(current$orcid[selected]) || current$orcid[selected] == "") {
+    cat("\nAn ORCID is required for INBO staff")
+    current$orcid[selected] <- readline(prompt = "orcid:       ")
+  }
+  if (current$affiliation[selected] %in% inbo_affiliation) {
+    return(current)
+  }
+  names(inbo_affiliation) |>
+    menu_first(
+      title = "\nNon standard affiliation for INBO staff.
+Which default language for the affiliation?"
+    ) -> lang
+  current$affiliation[selected] <- inbo_affiliation[lang]
+  return(current)
 }
