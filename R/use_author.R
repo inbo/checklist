@@ -19,6 +19,13 @@ use_author <- function() {
     order(-current$usage, current$family, current$given, current$orcid),
   ]
   while (TRUE) {
+    invalid <- !validate_orcid(current$orcid)
+    if (any(invalid)) {
+      cat(
+        "", "Invalid ORCiD for",
+        paste(current$given[invalid], current$family[invalid]), sep = "\n"
+      )
+    }
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
@@ -107,19 +114,18 @@ new_author <- function(current, root) {
   data.frame(
     given = readline(prompt = "given name:  "),
     family = readline(prompt = "family name: "),
-    email = readline(prompt = "e-mail:      ")
+    email = readline(prompt = "e-mail:      "),
+    orcid = ask_orcid(prompt = "orcid:       ")
   ) -> extra
   if (grepl("inbo.be$", extra$email, ignore.case = TRUE)) {
-    extra$orcid <- readline(prompt = "orcid:       ")
-    while (is.na(extra$orcid) || extra$orcid == "") {
+    while (extra$orcid == "") {
       cat("An ORCID is required for INBO staff")
-      extra$orcid <- readline(prompt = "orcid:       ")
+      extra$orcid <- ask_orcid(prompt = "orcid: ")
     }
     names(inbo_affiliation) |>
       menu_first(title = "Which default language for the affiliation?") -> lang
     extra$affiliation <- inbo_affiliation[lang]
   } else {
-    extra$orcid <- readline(prompt = "orcid:       ")
     extra$affiliation <- readline(prompt = "affiliation: ")
   }
   extra$usage <- 0
@@ -194,7 +200,7 @@ validate_inbo_author <- function(current, selected) {
   }
   while (is.na(current$orcid[selected]) || current$orcid[selected] == "") {
     cat("\nAn ORCID is required for INBO staff")
-    current$orcid[selected] <- readline(prompt = "orcid:       ")
+    current$orcid[selected] <- ask_orcid(prompt = "orcid: ")
   }
   if (current$affiliation[selected] %in% inbo_affiliation) {
     return(current)
@@ -206,4 +212,48 @@ Which default language for the affiliation?"
     ) -> lang
   current$affiliation[selected] <- inbo_affiliation[lang]
   return(current)
+}
+
+
+#' Validate the structure of an ORCiD id
+#'
+#' Checks whether the ORCiD has the proper format and the checksum.
+#' @param orcid A vector of ORCiD
+#' @returns A logical vector with the same length as the input vector.
+#' @export
+#' @importFrom assertthat assert_that noNA
+validate_orcid <- function(orcid) {
+  assert_that(is.character(orcid), noNA(orcid))
+  format_ok <- grepl("^(\\d{4}-){3}\\d{3}[\\dX]$", orcid, perl = TRUE)
+  if (all(!format_ok)) {
+    return(orcid == "" | format_ok)
+  }
+  gsub("-", "", orcid[format_ok]) |>
+    strsplit(split = "") |>
+    do.call(what = cbind) -> digits
+  checksum <- digits[16, ]
+  seq_len(15) |>
+    rev() |>
+    matrix(ncol = 1) -> powers
+  apply(digits[-16, , drop = FALSE], 1, as.integer, simplify = FALSE) |>
+    do.call(what = rbind) |>
+    crossprod(2 ^ powers) |>
+    as.vector() -> total
+  remainder <- (12 - (total %% 11)) %% 11
+  remainder <- as.character(remainder)
+  remainder[remainder == "10"] <- "X"
+  format_ok[format_ok] <- remainder == checksum
+  return(orcid == "" | format_ok)
+}
+
+ask_orcid <- function(prompt = "orcid: ") {
+  orcid <- readline(prompt = prompt)
+  if (orcid == "") {
+    return(orcid)
+  }
+  while (!validate_orcid(orcid)) {
+    cat("\nPlease provide a valid ORCiD in the format `0000-0000-0000-0000`\n")
+    orcid <- readline(prompt = prompt)
+  }
+  return(orcid)
 }
