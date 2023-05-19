@@ -14,9 +14,12 @@ organisation <- R6Class(
     #' @param ... currently ignored.
     print = function(...) {
       dots <- list(...)
-      c("rightsholder: %s", "funder:       %s", "email domain settings") |>
+      c(
+        "rightsholder: %s", "funder:       %s", "organisation email: %s",
+        "email domain settings"
+      ) |>
         paste(collapse = "\n") |>
-        sprintf(self$get_rightsholder, self$get_funder) |>
+        sprintf(self$get_rightsholder, self$get_funder, self$get_email) |>
         cat()
       org <- self$get_organisation
       for (domain in names(org)) {
@@ -33,6 +36,10 @@ organisation <- R6Class(
     }
   ),
   active = list(
+    #' @field get_email The default organisation email.
+    get_email = function() {
+      private$email
+    },
     #' @field get_funder The default funder.
     get_funder = function() {
       private$funder
@@ -47,6 +54,7 @@ organisation <- R6Class(
     }
   ),
   private = list(
+    email = "info@inbo.be",
     funder = "Research Institute for Nature and Forest (INBO)",
     organisation = list(
       "inbo.be" = list(

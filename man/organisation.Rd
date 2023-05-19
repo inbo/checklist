@@ -16,6 +16,8 @@ Other class:
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{get_email}}{The default organisation email.}
+
 \item{\code{get_funder}}{The default funder.}
 
 \item{\code{get_organisation}}{The organisation requirements.}
