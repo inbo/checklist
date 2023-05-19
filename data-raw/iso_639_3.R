@@ -43,13 +43,6 @@ sprintf("`%s`", graphics_ext) |>
 ") |>
   writeLines("man-roxygen/graphics.R")
 open_data_ext <- c("csv", "gpkg", "tsv", "txt")
-inbo_affiliation <- c(
-  en = "Research Institute for Nature and Forest (INBO)",
-  nl = "Instituut voor Natuur- en Bosonderzoek (INBO)",
-  fr = "Institut de Recherche sur la Nature et les For\u00eats (INBO)",
-  de = "Institut f\u00fcr Natur- und Waldforschung (INBO)"
-)
 save(
-  email_regexp, graphics_ext, inbo_affiliation, iso_639_3, open_data_ext,
-  file = "R/sysdata.rda"
+  email_regexp, graphics_ext, iso_639_3, open_data_ext, file = "R/sysdata.rda"
 )

@@ -39,7 +39,7 @@ use_author <- function() {
       "\norcid:      ", current$orcid[selected],
       "\naffiliation:", current$affiliation[selected]
     )
-    current <- validate_inbo_author(current = current, selected = selected)
+    current <- validate_author(current = current, selected = selected)
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
       break
@@ -82,7 +82,7 @@ update_author <- function(current, selected, root) {
       "\norcid:      ", current$orcid[selected],
       "\naffiliation:", current$affiliation[selected]
     )
-    current <- validate_inbo_author(current = current, selected = selected)
+    current <- validate_author(current = current, selected = selected)
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
       title = "\nWhich item to update?"
@@ -117,14 +117,19 @@ new_author <- function(current, root) {
     email = readline(prompt = "e-mail:      "),
     orcid = ask_orcid(prompt = "orcid:       ")
   ) -> extra
-  if (grepl("inbo.be$", extra$email, ignore.case = TRUE)) {
-    while (extra$orcid == "") {
-      cat("An ORCID is required for INBO staff")
+  org <- organisation$new()$get_organisation
+  gsub(".*@", "", extra$email) |>
+    grepl(names(org), ignore.case = TRUE) |>
+    which() -> which_org
+  if (extra$email != "" && length(which_org) > 0) {
+    org <- org[which_org]
+    while (org[[1]]$orcid && extra$orcid == "") {
+      cat("An ORCID is required for", names(org))
       extra$orcid <- ask_orcid(prompt = "orcid: ")
     }
-    names(inbo_affiliation) |>
+    names(org[[1]]$affiliation) |>
       menu_first(title = "Which default language for the affiliation?") -> lang
-    extra$affiliation <- inbo_affiliation[lang]
+    extra$affiliation <- org[[1]]$affiliation[lang]
   } else {
     extra$affiliation <- readline(prompt = "affiliation: ")
   }
@@ -194,26 +199,37 @@ author2badge <- function(role = "aut") {
     )
 }
 
-validate_inbo_author <- function(current, selected) {
-  if (!grepl("inbo.be$", current$email[selected], ignore.case = TRUE)) {
+validate_author <- function(current, selected) {
+  org <- organisation$new()$get_organisation
+  names(org) |>
+    gsub(pattern = "\\.", replacement = "\\\\.") |>
+    paste(collapse = "|") |>
+    sprintf(fmt = "@%s$") -> rg
+  if (!grepl(rg, current$email[selected], ignore.case = TRUE)) {
     return(current)
   }
-  while (is.na(current$orcid[selected]) || current$orcid[selected] == "") {
-    cat("\nAn ORCID is required for INBO staff")
+  this_org <- org[gsub(".*@", "", current$email[selected])]
+  while (
+    this_org[[1]]$orcid &&
+    (is.na(current$orcid[selected]) || current$orcid[selected] == "")
+  ) {
+    cat("\nAn ORCID is required for", names(this_org))
     current$orcid[selected] <- ask_orcid(prompt = "orcid: ")
   }
-  if (current$affiliation[selected] %in% inbo_affiliation) {
+  if (current$affiliation[selected] %in% this_org[[1]]$affiliation) {
     return(current)
   }
-  names(inbo_affiliation) |>
+  names(this_org[[1]]$affiliation) |>
     menu_first(
-      title = "\nNon standard affiliation for INBO staff.
-Which default language for the affiliation?"
+      title = sprintf(
+        "\nNon standard affiliation for `%s`.\n
+Which default language for the affiliation?",
+        names(this_org)
+      )
     ) -> lang
-  current$affiliation[selected] <- inbo_affiliation[lang]
+  current$affiliation[selected] <- this_org[[1]]$affiliation[lang]
   return(current)
 }
-
 
 #' Validate the structure of an ORCiD id
 #'
