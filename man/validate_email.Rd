@@ -30,6 +30,7 @@ Other utils:
 \code{\link{orcid2person}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},
+\code{\link{validate_orcid}()},
 \code{\link{yesno}()}
 }
 \concept{utils}

@@ -2,16 +2,35 @@
 % Please edit documentation in R/use_author.R
 \name{validate_orcid}
 \alias{validate_orcid}
-\title{Validate the structure of an ORCiD id}
+\title{Validate the structure of an ORCID id}
 \usage{
 validate_orcid(orcid)
 }
 \arguments{
-\item{orcid}{A vector of ORCiD}
+\item{orcid}{A vector of ORCID}
 }
 \value{
 A logical vector with the same length as the input vector.
 }
 \description{
-Checks whether the ORCiD has the proper format and the checksum.
+Checks whether the ORCID has the proper format and the checksum.
 }
+\seealso{
+Other utils: 
+\code{\link{ask_yes_no}()},
+\code{\link{bookdown_zenodo}()},
+\code{\link{c_sort}()},
+\code{\link{clean_git}()},
+\code{\link{create_hexsticker}()},
+\code{\link{execshell}()},
+\code{\link{is_repository}()},
+\code{\link{is_workdir_clean}()},
+\code{\link{menu_first}()},
+\code{\link{new_branch}()},
+\code{\link{orcid2person}()},
+\code{\link{store_authors}()},
+\code{\link{use_author}()},
+\code{\link{validate_email}()},
+\code{\link{yesno}()}
+}
+\concept{utils}

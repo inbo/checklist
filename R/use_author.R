@@ -231,13 +231,14 @@ Which default language for the affiliation?",
   return(current)
 }
 
-#' Validate the structure of an ORCiD id
+#' Validate the structure of an ORCID id
 #'
-#' Checks whether the ORCiD has the proper format and the checksum.
-#' @param orcid A vector of ORCiD
+#' Checks whether the ORCID has the proper format and the checksum.
+#' @param orcid A vector of ORCID
 #' @returns A logical vector with the same length as the input vector.
 #' @export
 #' @importFrom assertthat assert_that noNA
+#' @family utils
 validate_orcid <- function(orcid) {
   assert_that(is.character(orcid), noNA(orcid))
   format_ok <- grepl("^(\\d{4}-){3}\\d{3}[\\dX]$", orcid, perl = TRUE)

@@ -30,7 +30,8 @@ Other utils:
 \code{\link{orcid2person}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},
-\code{\link{validate_email}()}
+\code{\link{validate_email}()},
+\code{\link{validate_orcid}()}
 }
 \author{
 Hadley Wickham \href{mailto:Hadley@Rstudio.com}{Hadley@Rstudio.com}
