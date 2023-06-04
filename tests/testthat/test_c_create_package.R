@@ -4,7 +4,10 @@ test_that("create_package() works", {
   maintainer <- person(
     given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
-    comment = c(ORCID = "0000-0001-8804-4216")
+    comment = c(
+      ORCID = "0000-0001-8804-4216",
+      affiliation = "Research Institute for Nature and Forest (INBO)"
+    )
   )
   path <- tempfile("create_package")
   dir.create(path)
@@ -25,7 +28,8 @@ test_that("create_package() works", {
 
   r_user_dir <- tempfile("author")
   dir.create(r_user_dir)
-  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
+  stub(new_author, "ask_orcid", mock(""))
   expect_output(new_author(current = data.frame(), root = r_user_dir))
   stub(store_authors, "R_user_dir", r_user_dir)
   expect_invisible(store_authors(repo))

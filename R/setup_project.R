@@ -254,11 +254,14 @@ preferred_protocol <- function() {
     !has_name(config, "git") || !has_name(config$git, "protocol") ||
     !has_name(config$git, "organisation")
   ) {
-    config[["git"]][["organisation"]] <- readline(
-      "What is your default GitHub organisation. Leave empty for `inbo`."
-    )
+    org <- organisation$new()
+    sprintf(
+      "What is your default GitHub organisation. Leave empty for `%s`.",
+      org$get_github
+    ) |>
+      readline() -> config[["git"]][["organisation"]]
     if (config[["git"]][["organisation"]] == "") {
-      config[["git"]][["organisation"]] <- "inbo"
+      config[["git"]][["organisation"]] <- org$get_github
     }
     c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
@@ -297,8 +300,7 @@ renv_activate <- function(path) {
   if (
     isFALSE(
       ask_yes_no(
-        "Use `renv` to lock package versions with the project?",
-        default = !identical(Sys.getenv("TESTTHAT"), "true")
+        "Use `renv` to lock package versions with the project?", default = FALSE
       )
     )
   ) {

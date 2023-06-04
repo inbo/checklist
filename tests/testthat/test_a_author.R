@@ -58,9 +58,9 @@ test_that("author tools", {
   expect_identical(current, stored_authors(root))
   badge <- paste0(
     "[Doe, John![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/",
-    "11/orcid_16x16.png)](https://orcid.org/0000-0002-1825-0097)[^aut][^UL]"
+    "11/orcid_16x16.png)](https://orcid.org/0000-0002-1825-0097)[^aut][^UnoL]"
   )
-  attr(badge, "footnote") <- c("[^aut]: author", "[^UL]: University of Life")
+  attr(badge, "footnote") <- c("[^aut]: author", "[^UnoL]: University of Life")
   expect_output({
     ab <- author2badge()
   })

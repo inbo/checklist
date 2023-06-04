@@ -167,6 +167,7 @@ author2person <- function(role = "aut") {
   )
 }
 
+#' @importFrom utils tail
 author2badge <- function(role = "aut") {
   df <- use_author()
   sprintf("[^%s]", role) |>
@@ -188,8 +189,20 @@ author2badge <- function(role = "aut") {
   if (is.na(df$affiliation) || df$affiliation == "") {
     return(badge)
   }
+  org <- organisation$new()$get_organisation
+  vapply(
+    names(org), FUN.VALUE = vector(mode = "list", length = 1L),
+    FUN = function(x) {
+      data.frame(domain = x, affiliation = org[[x]]$affiliation) |>
+        list()
+    }
+  ) |>
+    do.call(what = rbind) -> aff_domain
+  aff <- aff_domain$domain[aff_domain$affiliation == df$affiliation]
   gsub(".*\\((.+)\\).*", "\\1", df$affiliation) |>
-    gsub(pattern = "[a-z]*\\s*", replacement = "") -> aff
+    abbreviate() |>
+    c(aff) |>
+    tail(1) -> aff
   sprintf("%s[^%s]", badge, aff) |>
     `attr<-`(
       which = "footnote",

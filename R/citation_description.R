@@ -25,7 +25,7 @@ citation_description <- function(meta) {
     upload_type = "software", description = abstract
   ) |>
     c(
-      authors$meta, keywords$meta, communities$meta, urls$meta,
+      authors, keywords$meta, communities$meta, urls$meta,
       access_right = "open"
     ) -> cit_meta
   lang <- descript$get_field("Language", default = "")
@@ -58,31 +58,10 @@ description_author <- function(authors) {
     family = format(authors, include = "family")
   ) |>
     merge(
-      unique(roles[, c("contributor", "orcid", "affiliation")]), by.x = "id",
-      by.y = "contributor"
+      unique(roles[, c("contributor", "orcid", "affiliation", "organisation")]),
+      by.x = "id", by.y = "contributor"
     ) -> contributors
-  contributors[
-    contributors$given == "Research Institute for Nature and Forest (INBO)",
-  ] |>
-    merge(
-      roles[, c("contributor", "role")], by.x = "id", by.y = "contributor"
-    ) -> inbo_roles
-  notes <- c(
-    paste(
-      "`Research Institute for Nature and Forest (INBO)` not listed as",
-      "copyright holder in `DESCRIPTION`."
-    )[!"copyright holder" %in% inbo_roles$role],
-    paste(
-      "`Research Institute for Nature and Forest (INBO)` not listed as funder",
-      "in `DESCRIPTION`."
-    )[!"funder" %in% inbo_roles$role]
-  )
-  list(
-    meta = list(
-      authors = contributors, roles = roles[, c("contributor", "role")]
-    ),
-    notes = notes
-  )
+  list(authors = contributors, roles = roles[, c("contributor", "role")])
 }
 
 description_author_format <- function(i, x) {
@@ -92,6 +71,9 @@ description_author_format <- function(i, x) {
       aut = "author", cre = "contact person", ctb = "contributor",
       cph = "copyright holder", fnd = "funder", rev = "reviewer"
     )[x[[i]]$role]
+  )
+  formatted$organisation <- ifelse(
+    is.null(x[[i]]), "", gsub(".*@", "", x[[i]]$email)
   )
   if (is.null(x[[i]]$comment)) {
     formatted$orcid <- ""
@@ -104,7 +86,32 @@ description_author_format <- function(i, x) {
   formatted$affiliation <- ifelse(
     is.na(x[[i]]$comment["affiliation"]), "", x[[i]]$comment["affiliation"]
   )
+  if (formatted$organisation[1] == "" && formatted$affiliation[1] != "") {
+    formatted$organisation <- known_affiliation(formatted$affiliation[1])
+  }
   return(list(formatted))
+}
+
+#' @importFrom assertthat assert_that
+known_affiliation <- function(target) {
+  target <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", target)
+  org <- organisation$new()$get_organisation
+  vapply(
+    names(org), FUN.VALUE = logical(1), target = target, org = org,
+    FUN = function(x, org, target) {
+      grepl(target, org[[x]]$affiliation) |>
+        any()
+    }
+  ) -> org
+  assert_that(
+    sum(org) < 2,
+    msg = paste(
+      "multiple matching organisations:",
+      paste(names(org)[org], collapse = "; ")
+    )
+  )
+  c(names(org)[org], "") |>
+    head(1)
 }
 
 description_url <- function(urls) {

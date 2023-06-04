@@ -17,7 +17,6 @@ citation_meta <- R6Class(
       assert_that(is.string(path), noNA(path))
       path <- path_real(path)
       assert_that(is_dir(path), msg = "path is not an existing directory")
-
       private$path <- path
       if (is_file(path(path, "_bookdown.yml"))) {
         private$type <- "bookdown"
@@ -40,10 +39,15 @@ citation_meta <- R6Class(
       private$errors <- meta$errors
       private$notes <- meta$notes
       private$warnings <- meta$warnings
+      if (length(private$errors) == 0) {
+        validated <- validate_citation(self)
+        private$errors <- c(private$errors, validated$errors)
+        private$notes <- c(private$notes, validated$notes)
+      }
       if (length(private$errors) > 0) {
         warning(
           "Errors found parsing citation meta data. ",
-          "Citation files not updated."
+          "Citation files not updated.", call. = FALSE, noBreaks. = TRUE
         )
         return(invisible(self))
       }
@@ -158,6 +162,59 @@ citation_print <- function(errors, meta, notes, path, warnings) {
     cat(notes, sep = "\n")
     cat(rules())
   }
+}
+
+#' @importFrom assertthat assert_that
+validate_citation <- function(meta) {
+  assert_that(inherits(meta, "citation_meta"))
+  org <- organisation$new()
+  roles <- meta$get_meta$roles
+  authors <- meta$get_meta$authors
+  rightsholder_id <- roles$contributor[roles$role == "copyright holder"]
+  funder_id <- roles$contributor[roles$role == "funder"]
+  notes <- c(
+    sprintf("rightsholder differs from `%s`", org$get_rightsholder)[
+      authors$given[authors$id == rightsholder_id] != org$get_rightsholder
+    ],
+    sprintf("funder differs from `%s`", org$get_funder)[
+      authors$given[authors$id == funder_id] != org$get_funder
+    ]
+  )
+  errors <- sprintf("invalid ORCID for %s %s", authors$given, authors$family)[
+    !validate_orcid(authors$orcid)
+  ]
+  authors <- authors[authors$given != org$get_rightsholder, ]
+  authors <- authors[authors$given != org$get_funder, ]
+  authors <- authors[authors$organisation %in% names(org$get_organisation), ]
+  vapply(
+    seq_along(authors$organisation),
+    FUN.VALUE = vector(mode = "list", length = 1), org = org$get_organisation,
+    FUN = function(i, org) {
+      paste(
+        "Non standard affiliation for %s %s as member of `%s`. ",
+        "Please use any of the following", collapse = ""
+      ) |>
+        sprintf(
+          authors$given[i], authors$family[i], authors$organisation[i]
+        ) -> error
+      error <- error[
+        !authors$affiliation[i] %in% org[[authors$organisation[i]]]$affiliation
+      ]
+      if (org[[authors$organisation[i]]]$orcid) {
+        error <- c(
+          error,
+          sprintf(
+            "No ORCID for %s %s. This is required for `%s`", authors$given[i],
+            authors$family[i], authors$organisation[i]
+          )[is.na(authors$orcid[i]) || authors$orcid[i] == ""]
+        )
+      }
+      return(list(error))
+    }
+  ) |>
+    unlist() |>
+    c(errors) -> errors
+  list(notes = notes, errors = errors)
 }
 
 #' @importFrom assertthat assert_that has_name

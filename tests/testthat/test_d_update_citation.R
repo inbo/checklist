@@ -1,7 +1,11 @@
 test_that("update_citation() works", {
   maintainer <- person(
     given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be"
+    email = "thierry.onkelinx@inbo.be",
+    comment = c(
+      ORCID = "0000-0001-8804-4216",
+      affiliation = "Research Institute for Nature and Forest (INBO)"
+    )
   )
   path <- tempfile("citation")
   dir.create(path)

@@ -183,12 +183,12 @@ readme_author <- function(text) {
     head(1) -> empty_line
   text$text[seq_len(empty_line - 1)] |>
     gsub(pattern = ";\\s*$", replacement = "") -> authors
-  authors_aff <- authors
-  authors_aff[!grepl("\\[\\^.*\\]", authors_aff)] <- ""
-  gsub(".*?\\[\\^(.*?)\\]", "\\1;", authors_aff) |>
+  orgs <- authors
+  orgs[!grepl("\\[\\^.*\\]", orgs)] <- ""
+  gsub(".*?\\[\\^(.*?)\\]", "\\1;", orgs) |>
     gsub(pattern = "(aut|cph|cre|ctb|fnd|rev);", replacement = "") |>
     gsub(pattern = ";$", replacement = "") |>
-    strsplit(split = ";") -> authors_aff
+    strsplit(split = ";") -> orgs
   data.frame(
     contributor = grep("\\[\\^aut\\]", authors),
     role = rep("author", , sum(grepl("\\[\\^aut\\]", authors)))
@@ -233,7 +233,7 @@ readme_author <- function(text) {
   affiliations <- text$text[grepl("\\[\\^.*?\\]:", text$text)]
   aff_code <- gsub(".*\\[\\^(.*?)\\]:.*", "\\1", affiliations)
   aff_code_check <- vapply(
-    authors_aff, FUN.VALUE = logical(1), aff_code = aff_code,
+    orgs, FUN.VALUE = logical(1), aff_code = aff_code,
     FUN = function(z, aff_code) {
       all(z %in% aff_code)
     }
@@ -241,7 +241,7 @@ readme_author <- function(text) {
   gsub("\\[\\^(.*?)\\]:\\s*(.*)", "\\2", affiliations) |>
     setNames(aff_code) -> affiliations
   authors_aff <- vapply(
-    authors_aff, FUN.VALUE = character(1), z = affiliations,
+    orgs, FUN.VALUE = character(1), z = affiliations,
     FUN = function(y, z) {
       paste(z[y], collapse = "; ")
     }
@@ -275,11 +275,13 @@ readme_author <- function(text) {
     ]
   )
 
+  orgs[vapply(orgs, length, integer(1)) == 0] <- NA
   text$text <- text$text[!grepl("\\[\\^.*?\\]:", text$text)]
   text$meta$authors <- data.frame(
     id = seq_along(authors), given = gsub(".*,\\s*(.*)", "\\1", authors),
     family = ifelse(grepl(",", authors), gsub("(.*),.*", "\\1", authors), ""),
-    affiliation = authors_aff, orcid = authors_orcid
+    affiliation = authors_aff, orcid = authors_orcid,
+    organisation = unlist(orgs)
   )
   return(text)
 }

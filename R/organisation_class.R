@@ -16,11 +16,12 @@ organisation <- R6Class(
       dots <- list(...)
       c(
         "rightsholder:  %s", "funder:        %s", "organisation email:  %s",
-        "GitHub organisation: %s", "email domain settings",
+        "GitHub organisation: %s", "email domain settings"
       ) |>
         paste(collapse = "\n") |>
         sprintf(
-          self$get_rightsholder, self$get_funder, self$get_email, self$get_github
+          self$get_rightsholder, self$get_funder, self$get_email,
+          self$get_github
         ) |>
         cat()
       org <- self$get_organisation
