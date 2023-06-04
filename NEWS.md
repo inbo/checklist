@@ -1,3 +1,16 @@
+# checklist 0.3.3
+
+* New `organisation()` class to hold the requirements of the organisation.
+  For the time being this is hard-coded to the Research Institute for Nature
+  and Forest (INBO).
+* Author affiliations must match one of the affiliations set in
+  `organisation()`.
+  The membership of an author is determined by their e-mail or their
+  affiliation.
+  This is checked when creating or using author information and when updating
+  citation information.
+* `validate_orcid()` checks the format and the checksum of the ORCID.
+
 # checklist 0.3.2
 
 * `citation_meta()` gains support for [`bookdown`](https://pkgs.rstudio.com/bookdown/) reports.
