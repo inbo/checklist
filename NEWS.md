@@ -9,6 +9,8 @@
   affiliation.
   This is checked when creating or using author information and when updating
   citation information.
+* `read_checklist()` looks for `checklist.yml` in parent folders when it can't
+  find it in the provided path.
 * `validate_orcid()` checks the format and the checksum of the ORCID.
 
 # checklist 0.3.2

@@ -4,12 +4,16 @@
 #' file in the root of a project.
 #' This function reads this configuration.
 #' It is mainly used by the other functions inside the package.
+#' If no `checklist.yml` file is found at the path,
+#' the function walks the directory structure upwards until it finds such file.
+#' The function returns an error when it reaches the root of the disk without
+#' finding a `checklist.yml` file.
 #' @param x Either a `checklist` object or a path to the source code.
 #' Defaults to `.`.
 #' @return A `checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
-#' @importFrom fs is_dir is_file path path_real
+#' @importFrom fs is_dir is_file path path_real path_split
 #' @importFrom yaml read_yaml
 #' @family both
 read_checklist <- function(x = ".") {
@@ -18,28 +22,17 @@ read_checklist <- function(x = ".") {
   }
 
   assert_that(is.string(x), is_dir(x))
-  x <- path_real(x)
-  checklist_file <- path(x, "checklist.yml")
-  if (!is_file(checklist_file)) {
-    # no check list file found
-    desc_file <- path(x, "DESCRIPTION")
-    if (!is_file(desc_file)) {
-      message(
-        "No `checklist.yml` or `DESCRIPTION` found. ",
-        "Assuming this is a project."
-      )
-      x <- checklist$new(x = x, language = "en-GB", package = FALSE)
-      x <- x$allowed()
-      return(x)
-    }
-    message(
-      "No `checklist.yml` found and existing `DESCRIPTION`. ",
-      "Assuming this is a package."
-    )
-    x <- checklist$new(x = x, package = TRUE)
-    x <- x$allowed()
-    return(x)
+  current <- path_real(x)
+  checklist_file <- path(current, "checklist.yml")
+  while (!is_file(checklist_file) && length(path_split(current)[[1]]) > 1) {
+    path(current, "..") |>
+      path_real() -> current
+    checklist_file <- path(current, "checklist.yml")
   }
+  assert_that(
+    is_file(checklist_file),
+    msg = sprintf("no checklist.yml found `%s` or its parents", x)
+  )
 
   # read existing check list file
   allowed <- read_yaml(checklist_file)
@@ -48,7 +41,12 @@ read_checklist <- function(x = ".") {
     allowed$spelling <- list(default = "en-GB")
   }
   if (allowed$package) {
-    x <- checklist$new(x = x, package = TRUE)
+    x <- checklist$new(
+      x = x, package = TRUE,
+      language = ifelse(
+        has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
+      )
+    )
   } else {
     x <- checklist$new(
       x = x, package = FALSE,

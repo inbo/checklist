@@ -201,7 +201,8 @@ test_that("check_spelling() on a project", {
   sink()
   expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
 
-  x <- read_checklist(path)
+  path(path, "spelling") |>
+    read_checklist() -> x
   stub(change_language_interactive, "menu", 3)
   stub(change_language_interactive2, "menu", 1, 2)
   expect_is(
@@ -328,6 +329,8 @@ test_that("check_spelling() works on a quarto project", {
   path <- tempfile("quarto")
   dir_create(path)
   defer(unlink(path, recursive = TRUE))
+  checklist$new(path, language = "en-GB", package = FALSE) |>
+    write_checklist()
   dir_create(path, "source")
   writeLines(
     c("project:", "  type: book"),

@@ -18,6 +18,10 @@ The checklist package stores configuration information in the \code{checklist.ym
 file in the root of a project.
 This function reads this configuration.
 It is mainly used by the other functions inside the package.
+If no \code{checklist.yml} file is found at the path,
+the function walks the directory structure upwards until it finds such file.
+The function returns an error when it reaches the root of the disk without
+finding a \code{checklist.yml} file.
 }
 \seealso{
 Other both: 
