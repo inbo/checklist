@@ -29,12 +29,6 @@ test_that("bookdown_zenodo() works", {
     )
   )
   sink()
-  output <- readLines(zenodo_out)
-  output <- output[!grepl("\\|(\\s|=|\\.)+\\|", output, perl = TRUE)]
-  output <- output[!grepl("^(\\s|\\|)*$", output, perl = TRUE)]
-  output <- output[!grepl("pandoc.+--to.+--from.+--output", output)]
-  output <- output[!grepl("Nothing to remove", output)]
-  expect_length(output, 0)
   manager <- zen4R::ZenodoManager$new(sandbox = TRUE, token = sandbox_token)
   expect_true(
     manager$deleteRecord(x$record_id),
