@@ -12,6 +12,7 @@
 * `read_checklist()` looks for `checklist.yml` in parent folders when it can't
   find it in the provided path.
 * `validate_orcid()` checks the format and the checksum of the ORCID.
+* Add `vignette("folder", package = "checklist")`.
 
 # checklist 0.3.2
 
