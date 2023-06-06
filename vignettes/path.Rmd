@@ -47,7 +47,7 @@ A single `..` points in this case at `source`.
 Then we need to move up into the `data` folder by using `../../data`.
 
 Another option is to use the `get_path` method on the `checklist` object to get this location.
-The use that information to define the absolute location of the files within the project.
+Then use that information to define the absolute location of the files within the project.
 
 ```{r checklist, eval = FALSE}
 library(checklist)
@@ -62,7 +62,7 @@ E.g. because several projects share the same data.
 In such case you can place the projects and the data in a shared folder structure.
 Then you still can rely on relative paths to point to the common data outside of the project.
 Note that this requires that every user complies to use the same structure.
-The maintainer should document this structure and give the user instruction on how to set up a project.
+The maintainer should document this structure and give the user instructions on how to set up a project.
 A good example can be found in the [data storage vignette](https://inbo.github.io/n2khab/articles/v020_datastorage.html) of the [`n2khab`](https://inbo.github.io/n2khab/index.html) package.
 
 ```
@@ -105,8 +105,8 @@ project_a
 ```
 
 The R code chunk illustrates how to read and use the system variable.
-Beside writing good documentation, you should check the content of the system variable.
-Your code should provide helpful errors when the user failed to set the correct system variable.
+Besides writing good documentation, you should check the content of the system variable.
+Your code should provide helpful errors when the user fails to set the correct system variable.
 In the example below we use `stopifnot()`.
 This function uses named expressions.
 Every expression must yield a single `TRUE` or `FALSE`.

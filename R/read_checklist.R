@@ -5,7 +5,7 @@
 #' This function reads this configuration.
 #' It is mainly used by the other functions inside the package.
 #' If no `checklist.yml` file is found at the path,
-#' the function walks the directory structure upwards until it finds such file.
+#' the function walks upwards through the directory structure until it finds such file.
 #' The function returns an error when it reaches the root of the disk without
 #' finding a `checklist.yml` file.
 #' @param x Either a `checklist` object or a path to the source code.
