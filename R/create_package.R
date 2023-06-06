@@ -194,14 +194,12 @@ create_package <- function(
     file_copy(license_file)
   if (license == "MIT") {
     paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
-      c("COPYRIGHT HOLDER: Research Institute for Nature and Forest (INBO)") |>
+      c(sprintf("COPYRIGHT HOLDER: %s", org$get_rightsholder)) |>
       writeLines(path(path, "LICENSE"))
     git_add("LICENSE", repo = repo)
     mit <- readLines(license_file)
     mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
-    mit[3] <- gsub("<COPYRIGHT HOLDER>",
-                   "Research Institute for Nature and Forest (INBO)",
-                   mit[3])
+    mit[3] <- gsub("<COPYRIGHT HOLDER>", org$get_rightsholder, mit[3])
     writeLines(mit, license_file)
   }
   git_add("LICENSE.md", repo = repo)

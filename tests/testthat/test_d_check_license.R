@@ -42,11 +42,13 @@ test_that("check_license() works", {
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
+  org <- organisation$new()
   mit <- readLines(path(repo, "LICENSE.md"))
   expect_identical(
     mit[3],
-    paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
-           " Research Institute for Nature and Forest (INBO)")
+    sprintf(
+      "Copyright (c) %s %s", format(Sys.Date(), "%Y"), org$get_rightsholder
+    )
   )
   expect_identical(
     file.exists(path(repo, "LICENSE")),

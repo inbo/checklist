@@ -310,17 +310,13 @@ readme_community <- function(text) {
   community_line <- grep(community_regexp, text$text)
   text$warnings <- c(
     text$warnings,
-    "No community information found in README.md"[length(community_line) == 0]
+    "No Zenodo community information found in README.md"[
+      length(community_line) == 0
+    ]
   )
   if (length(community_line) > 0) {
     text$meta$community <- gsub(
       community_regexp, "\\1", text$text[community_line]
-    )
-    text$notes <- c(
-      text$notes,
-      "`inbo` not listed as a community"[
-        !"inbo" %in% text$meta$community
-      ]
     )
     text$text <- text$text[-community_line]
   }

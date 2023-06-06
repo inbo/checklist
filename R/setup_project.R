@@ -226,12 +226,16 @@ create_readme <- function(path) {
         ) -> badges
     }
   }
+  org <- organisation$new()
   c(
     "<!-- badges: start -->", badges, "<!-- badges: end -->", "",
     paste("#", title), "", author,
-    "Research Institute for Nature and Forest (INBO)[^cph][^fnd]", "", footnote,
-    "", keywords, "", "<!-- community: inbo -->", "",
-    "<!-- description: start -->",
+    paste0(org$get_rightsholder, "[^cph][^fnd]"), "", footnote,
+    "", keywords, "",
+    sprintf(
+      "<!-- community: %s -->", paste(org$get_community, collapse = "; ")
+    ),
+    "", "<!-- description: start -->",
     "Replace this with a short description of the project.",
     "It becomes the abstract of the project in the citation information.",
     "And the project description at https://zenodo.org",
@@ -247,9 +251,12 @@ create_readme <- function(path) {
 #' @importFrom utils menu
 #' @importFrom yaml read_yaml write_yaml
 preferred_protocol <- function() {
+  config <- list()
   R_user_dir("checklist", which = "config") |>
     path("config.yml") -> config_file
-  config <- ifelse(file_exists(config_file), read_yaml(config_file), list())
+  if (file_exists(config_file)) {
+    config <- read_yaml(config_file)
+  }
   if (
     !has_name(config, "git") || !has_name(config$git, "protocol") ||
     !has_name(config$git, "organisation")

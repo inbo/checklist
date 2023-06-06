@@ -18,6 +18,8 @@ Other class:
 \describe{
 \item{\code{as_person}}{The default organisation funder and rightsholder.}
 
+\item{\code{get_community}}{The default organisation Zenodo communities.}
+
 \item{\code{get_email}}{The default organisation email.}
 
 \item{\code{get_funder}}{The default funder.}

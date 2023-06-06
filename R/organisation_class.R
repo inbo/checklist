@@ -16,7 +16,8 @@ organisation <- R6Class(
       dots <- list(...)
       c(
         "rightsholder:  %s", "funder:        %s", "organisation email:  %s",
-        "GitHub organisation: %s", "email domain settings"
+        "GitHub organisation: %s", "Zenodo community:    %s",
+        "email domain settings"
       ) |>
         paste(collapse = "\n") |>
         sprintf(
@@ -47,6 +48,10 @@ organisation <- R6Class(
         role = c("cph", "fnd")
       )
     },
+    #' @field get_community The default organisation Zenodo communities.
+    get_community = function() {
+      private$community
+    },
     #' @field get_email The default organisation email.
     get_email = function() {
       private$email
@@ -69,6 +74,7 @@ organisation <- R6Class(
     }
   ),
   private = list(
+    community = "inbo",
     email = "info@inbo.be",
     funder = "Research Institute for Nature and Forest (INBO)",
     github = "inbo",

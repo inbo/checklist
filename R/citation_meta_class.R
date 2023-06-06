@@ -180,9 +180,14 @@ validate_citation <- function(meta) {
       authors$given[authors$id == funder_id] != org$get_funder
     ]
   )
-  errors <- sprintf("invalid ORCID for %s %s", authors$given, authors$family)[
-    !validate_orcid(authors$orcid)
-  ]
+  errors <- c(
+    sprintf("invalid ORCID for %s %s", authors$given, authors$family)[
+      !validate_orcid(authors$orcid)
+    ],
+    sprintf("missing required Zenodo community `%s`", org$get_community)[
+      !org$get_community %in% meta$get_meta$community
+    ]
+  )
   authors <- authors[authors$given != org$get_rightsholder, ]
   authors <- authors[authors$given != org$get_funder, ]
   authors <- authors[authors$organisation %in% names(org$get_organisation), ]

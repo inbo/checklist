@@ -43,7 +43,7 @@ citation_description <- function(meta) {
   list(
     meta = cit_meta,
     errors = c(urls$errors, keywords$errors), warnings = communities$warnings,
-    notes = c(authors$notes, communities$notes)
+    notes = authors$notes
   )
 }
 
@@ -153,20 +153,19 @@ description_keywords <- function(keywords) {
 
 description_communities <- function(communities) {
   if (length(communities) == 0) {
+    org <- organisation$new()
     return(
       list(
-        meta = list(), notes = character(0),
+        meta = list(),
         warnings = paste(
           "no communities found in `DESCRIPTION`.",
-          "Please add them with `Config/checklist/communities: inbo; second`"
+          "Please add them with `Config/checklist/communities:",
+          org$get_community
         )
       )
     )
   }
-  communities <- strsplit(communities, "; ")[[1]]
-  notes <-
-    "inbo not listed as community in `DESCRIPTION`"[!"inbo" %in% communities]
   list(
-    meta = list(community = communities), warnings = character(0), notes = notes
+    meta = list(community = communities), warnings = character(0)
   )
 }
