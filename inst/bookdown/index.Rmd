@@ -2,7 +2,7 @@
 title: Dummy report for unit testing
 author:
   - name:
-      given: Josiah 
+      given: Josiah
       family: Carberry
     email: carberry@junk.com
     orcid: 0000-0002-1825-0097

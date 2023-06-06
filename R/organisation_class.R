@@ -22,7 +22,7 @@ organisation <- R6Class(
         paste(collapse = "\n") |>
         sprintf(
           self$get_rightsholder, self$get_funder, self$get_email,
-          self$get_github
+          self$get_github, self$get_community
         ) |>
         cat()
       org <- self$get_organisation

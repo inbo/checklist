@@ -19,16 +19,13 @@ use_author <- function() {
     order(-current$usage, current$family, current$given, current$orcid),
   ]
   while (TRUE) {
-    invalid <- !validate_orcid(current$orcid)
-    if (any(invalid)) {
-      cat(
-        "", "Invalid ORCiD for",
-        paste(current$given[invalid], current$family[invalid]), sep = "\n"
-      )
-    }
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
+    if (selected < 1) {
+      cat("You must select a person\n")
+      next
+    }
     if (selected > nrow(current)) {
       current <- new_author(current = current, root = root)
     }
