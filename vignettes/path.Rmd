@@ -15,7 +15,7 @@ opts_chunk$set(collapse = TRUE, comment = "#>")
 ## Do not use absolute file paths
 
 An absolute file path defines the location of a file or folder starting from the root of a disk.
-E.g. `C:\tmp\test.txt` a Windows machine or `/tmp/test.txt` on a Unix machine.
+For example `C:\tmp\test.txt` on a Windows machine or `/tmp/test.txt` on a Unix machine.
 Using an absolute path in your code will likely break the code as soon as you run it on a different machine.
 Because that file or folder is probably located somewhere else on the other machine.
 
@@ -26,7 +26,7 @@ This check is optional (but strongly recommended) with `check_project()` and man
 
 In `vignette("folder", package = "checklist")` we recommend what folder structure to use in an R project.
 
-We expect user to run the scripts with the base RStudio project as working directory.
+We expect users to run the scripts with the base RStudio project as working directory.
 The base RStudio project is the one containing the `checklist.yml` file.
 Make every path relative to the location of this file.
 
@@ -38,7 +38,7 @@ Let's illustrate this with an example.
 We assume a base RStudio project with a `checklist.yml` file at its root.
 Suppose the main Rmarkdown file is `source/bookdown/index.Rmd`.
 We have an RStudio project at `source/bookdown`, so that the working directory is by default at this location.
-In one of the code chunk you want to read `data/observations.txt`.
+In one of the code chunks you want to read `data/observations.txt`.
 Then point the read function to `../../data/observations.txt`.
 `..` moves one step towards the root of the disk.
 The working directory within the Rmarkdown files will be `source/bookdown`.
@@ -57,10 +57,10 @@ file.path(x$get_path, "data", "observations.txt")
 
 ## Alternative solution: use relative paths between projects
 
-Sometime you need to store the data outside of the project.
-E.g. because several projects share the same data.
+Sometimes you need to store the data outside of the project.
+For example because several projects share the same data.
 In such case you can place the projects and the data in a shared folder structure.
-Then you still can rely on relative paths to point to the common data outside of the project.
+Then you can still rely on relative paths to point to the common data outside of the project.
 Note that this requires that every user complies to use the same structure.
 The maintainer should document this structure and give the user instructions on how to set up a project.
 A good example can be found in the [data storage vignette](https://inbo.github.io/n2khab/articles/v020_datastorage.html) of the [`n2khab`](https://inbo.github.io/n2khab/index.html) package.
@@ -104,7 +104,7 @@ project_a
   |-- script.R
 ```
 
-The R code chunk illustrates how to read and use the system variable.
+The following R code chunk illustrates how to read and use the system variable.
 Besides writing good documentation, you should check the content of the system variable.
 Your code should provide helpful errors when the user fails to set the correct system variable.
 In the example below we use `stopifnot()`.
