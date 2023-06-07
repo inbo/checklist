@@ -20,7 +20,7 @@ jobs:
       - name: Get tag message
         run: |
           TAG=$(git tag --contains $(git rev-parse HEAD))
-          TAG_BODY=$(git tag --contains {{ github.sha }} -n100 | awk '(NR>1)')
+          TAG_BODY=$(git tag --contains $(git rev-parse HEAD) -n100 | awk '(NR>2)')
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
           echo "TAG_BODY=$TAG_BODY" >> $GITHUB_OUTPUT
         id: tag-body
