@@ -25,6 +25,7 @@
 #' @param communities An optional vector of Zenodo community id's.
 #' @export
 #' @importFrom assertthat assert_that is.string
+#' @importFrom desc description
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
 #' @importFrom tools toTitleCase
@@ -64,8 +65,10 @@ create_package <- function(
       maintainer <- c(maintainer, author2person())
     }
   }
-
   assert_that(inherits(maintainer, "person"))
+  org <- organisation$new()
+  maintainer <- c(maintainer, org$as_person)
+
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
@@ -90,44 +93,32 @@ create_package <- function(
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
-  if (length(communities)) {
-    communities <- sprintf(
-      "Config/checklist/communities: %s\n",
-      paste(communities, collapse = "; ")
-    )
-  } else {
-    communities <- ""
-  }
 
   # create DESCRIPTION
-  sprintf(
-"Type: Package
-Package: %1$s
-Title: %2$s
-Version: 0.0.0
-Authors@R:
-  c(%3$s,
-    person(given = \"Research Institute for Nature and Forest (INBO)\",
-           role = c(\"cph\", \"fnd\"),
-           email = \"info@inbo.be\"))
-Description: %4$s
-License: %7$s
-URL: https://github.com/inbo/%1$s
-BugReports: https://github.com/inbo/%1$s/issues
-%9$sConfig/checklist/keywords: %8$s
-Encoding: UTF-8
-Language: %6$s
-Roxygen: list(markdown = TRUE)
-RoxygenNote: %5$s
-",
-    package, toTitleCase(title),
-    paste(format(maintainer, style = "R"), collapse = "\n"),
-    description, installed.packages()["roxygen2", "Version"], language,
-    ifelse(license == "MIT", "MIT + file LICENSE", license),
-    paste(keywords, collapse = "; "), communities
-  ) |>
-    writeLines(path(path, "DESCRIPTION"))
-  tidy_desc(path)
+  desc <- desc::description$new("!new")
+  desc$set("Package", package)
+  desc$set("Title", toTitleCase(title))
+  desc$set_version("0.0.0")
+  desc$set_authors(maintainer)
+  desc$set("Description", description)
+  desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
+  desc$set_urls(sprintf("https://github.com/%s/%s", org$get_github, package))
+  desc$set(
+    "BugReports",
+    sprintf("https://github.com/%s/%s/issues", org$get_github, package)
+  )
+  if (length(communities)) {
+    desc$set(
+      "Config/checklist/communities", paste(communities, collapse = "; ")
+    )
+  }
+  desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
+  desc$set("Encoding", "UTF-8")
+  desc$set("Language", language)
+  desc$set("Roxygen", "list(markdown = TRUE)")
+  desc$set("RoxygenNote", installed.packages()["roxygen2", "Version"])
+  desc$del("Maintainer")
+  desc$write(path(path, "DESCRIPTION"))
   git_add("DESCRIPTION", repo = repo)
 
   # create NAMESPACE
@@ -203,14 +194,12 @@ RoxygenNote: %5$s
     file_copy(license_file)
   if (license == "MIT") {
     paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
-      c("COPYRIGHT HOLDER: Research Institute for Nature and Forest (INBO)") |>
+      c(sprintf("COPYRIGHT HOLDER: %s", org$get_rightsholder)) |>
       writeLines(path(path, "LICENSE"))
     git_add("LICENSE", repo = repo)
     mit <- readLines(license_file)
     mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
-    mit[3] <- gsub("<COPYRIGHT HOLDER>",
-                   "Research Institute for Nature and Forest (INBO)",
-                   mit[3])
+    mit[3] <- gsub("<COPYRIGHT HOLDER>", org$get_rightsholder, mit[3])
     writeLines(mit, license_file)
   }
   git_add("LICENSE.md", repo = repo)

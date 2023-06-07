@@ -33,6 +33,15 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
 
   assert_that(is_workdir_clean(repo = path))
 
+  # add checklist.yml
+  if (!file_exists(path(path, "checklist.yml"))) {
+    x <- checklist$new(x = path, language = "en-GB", package = TRUE)
+    x$set_required()
+    x$set_ignore(c(".github", "LICENSE.md"))
+    write_checklist(x)
+    git_add("checklist.yml", force = TRUE, repo = path)
+  }
+
   # make DESCRIPTION tidy
   suppressMessages(tidy_desc(path))
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
@@ -72,16 +81,6 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
       target = path, new_name = ".Rbuildignore"
     )
   }
-
-  # add checklist.yml
-  suppressMessages({
-    x <- read_checklist(x = path)
-  })
-  x$package <- TRUE
-  x$set_required()
-  x$set_ignore(c(".github", "LICENSE.md"))
-  write_checklist(x)
-  git_add("checklist.yml", force = TRUE, repo = path)
 
   # add codecov.yml
   insert_file(

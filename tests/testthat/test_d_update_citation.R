@@ -1,7 +1,11 @@
 test_that("update_citation() works", {
   maintainer <- person(
     given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be"
+    email = "thierry.onkelinx@inbo.be",
+    comment = c(
+      ORCID = "0000-0001-8804-4216",
+      affiliation = "Research Institute for Nature and Forest (INBO)"
+    )
   )
   path <- tempfile("citation")
   dir.create(path)
@@ -45,7 +49,8 @@ test_that("update_citation() works", {
 
   this_description <- desc(path(path, package))
   this_description$add_urls("https://doi.org/10.5281/zenodo.4028303")
-  this_description$del_author("Research Institute for Nature and Forest (INBO)")
+  org <- organisation$new()
+  this_description$del_author(org$get_rightsholder)
   this_description$add_author(given = "unit", family = "test", role = "ctb")
   this_description$add_author(given = "test", family = "unit", role = "cph")
   this_description$write(path(path, package))

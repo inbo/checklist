@@ -39,6 +39,7 @@ Other utils:
 \code{\link{store_authors}()},
 \code{\link{use_author}()},
 \code{\link{validate_email}()},
+\code{\link{validate_orcid}()},
 \code{\link{yesno}()}
 }
 \concept{utils}

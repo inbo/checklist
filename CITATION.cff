@@ -25,4 +25,4 @@ identifiers:
   value: 10.5281/zenodo.4028303
 - type: url
   value: https://inbo.github.io/checklist/
-version: 0.3.2
+version: 0.3.3

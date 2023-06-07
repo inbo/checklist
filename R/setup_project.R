@@ -226,12 +226,16 @@ create_readme <- function(path) {
         ) -> badges
     }
   }
+  org <- organisation$new()
   c(
     "<!-- badges: start -->", badges, "<!-- badges: end -->", "",
     paste("#", title), "", author,
-    "Research Institute for Nature and Forest (INBO)[^cph][^fnd]", "", footnote,
-    "", keywords, "", "<!-- community: inbo -->", "",
-    "<!-- description: start -->",
+    paste0(org$get_rightsholder, "[^cph][^fnd]"), "", footnote,
+    "", keywords, "",
+    sprintf(
+      "<!-- community: %s -->", paste(org$get_community, collapse = "; ")
+    ),
+    "", "<!-- description: start -->",
     "Replace this with a short description of the project.",
     "It becomes the abstract of the project in the citation information.",
     "And the project description at https://zenodo.org",
@@ -247,18 +251,24 @@ create_readme <- function(path) {
 #' @importFrom utils menu
 #' @importFrom yaml read_yaml write_yaml
 preferred_protocol <- function() {
+  config <- list()
   R_user_dir("checklist", which = "config") |>
     path("config.yml") -> config_file
-  config <- ifelse(file_exists(config_file), read_yaml(config_file), list())
+  if (file_exists(config_file)) {
+    config <- read_yaml(config_file)
+  }
   if (
     !has_name(config, "git") || !has_name(config$git, "protocol") ||
     !has_name(config$git, "organisation")
   ) {
-    config[["git"]][["organisation"]] <- readline(
-      "What is your default GitHub organisation. Leave empty for `inbo`."
-    )
+    org <- organisation$new()
+    sprintf(
+      "What is your default GitHub organisation. Leave empty for `%s`.",
+      org$get_github
+    ) |>
+      readline() -> config[["git"]][["organisation"]]
     if (config[["git"]][["organisation"]] == "") {
-      config[["git"]][["organisation"]] <- "inbo"
+      config[["git"]][["organisation"]] <- org$get_github
     }
     c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
@@ -297,8 +307,7 @@ renv_activate <- function(path) {
   if (
     isFALSE(
       ask_yes_no(
-        "Use `renv` to lock package versions with the project?",
-        default = !identical(Sys.getenv("TESTTHAT"), "true")
+        "Use `renv` to lock package versions with the project?", default = FALSE
       )
     )
   ) {

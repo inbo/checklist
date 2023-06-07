@@ -287,21 +287,31 @@ Please send a pull request if you need support for this license.",
 #' @importFrom utils person
 check_authors <- function(this_desc) {
   authors <- this_desc$get_authors()
-  inbo <- person(
-    given = "Research Institute for Nature and Forest (INBO)",
-    role = c("cph", "fnd"), email = "info@inbo.be"
+  org <- organisation$new()
+  stopifnot(
+    "TO DO: handle funder not equal to rightsholder" =
+      org$get_rightsholder == org$get_funder
   )
-  problems <- paste(
-    "`Research Institute for Nature and Forest (INBO)` must be listed as",
-    "copyright holder and funder and use info@inbo.be as email."
-  )[!inbo %in% authors]
-  authors <- lapply(authors, unlist, recursive = FALSE)
-  authors <- authors[!authors %in% inbo]
-  orcid <- sapply(authors, `[[`, "comment")
-  c(
-    problems,
-    "Every author and contributor must have an ORCID"[
-      any(names(orcid) != "ORCID")
-    ]
+  rightsholder <- person(
+    given = org$get_rightsholder, role = c("cph", "fnd"), email = org$get_email
   )
+  problems <- sprintf(
+    "`%s` must be listed as copyright holder and funder and use `%s` as email.",
+    org$get_rightsholder, org$get_email
+  )[!rightsholder %in% authors]
+  authors <- authors[!authors %in% rightsholder]
+  vapply(
+    authors, FUN.VALUE = vector(mode = "list", length = 1L),
+    FUN = function(author) {
+      email <- format(author, include = "email", braces = list(email = ""))
+      this_org <- org$get_organisation[[gsub(".*@", "", email)]]
+      format(author, include = c("given", "family")) |>
+        sprintf(fmt = "ORCID required for `%s`") -> problem
+      list(
+        problem[isTRUE(this_org$orcid) && !has_name(author$comment, "ORCID")]
+      )
+    }
+  ) |>
+    unlist() |>
+    c(problems)
 }

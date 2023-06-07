@@ -22,12 +22,21 @@ use_author <- function() {
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
+    if (selected < 1) {
+      cat("You must select a person\n")
+      next
+    }
+    if (selected > nrow(current)) {
+      current <- new_author(current = current, root = root)
+    }
     cat(
       "given name: ", current$given[selected],
       "\nfamily name:", current$family[selected],
       "\ne-mail:     ", current$email[selected],
       "\norcid:      ", current$orcid[selected],
-      "\naffiliation:", current$affiliation[selected])
+      "\naffiliation:", current$affiliation[selected]
+    )
+    current <- validate_author(current = current, selected = selected)
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
       break
@@ -37,11 +46,12 @@ use_author <- function() {
       next
     }
   }
-  current$usage[selected] <- current$usage[selected] + 1
+  current$usage[selected] <- pmax(current$usage[selected], 0) + 1
   write.table(
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
   )
+  message("author information stored at ", path(root, "author.txt"))
   return(current[selected, ])
 }
 
@@ -69,6 +79,7 @@ update_author <- function(current, selected, root) {
       "\norcid:      ", current$orcid[selected],
       "\naffiliation:", current$affiliation[selected]
     )
+    current <- validate_author(current = current, selected = selected)
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
       title = "\nWhich item to update?"
@@ -91,6 +102,7 @@ update_author <- function(current, selected, root) {
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
   )
+  message("author information stored at ", path(root, "author.txt"))
   return(current)
 }
 
@@ -100,15 +112,31 @@ new_author <- function(current, root) {
     given = readline(prompt = "given name:  "),
     family = readline(prompt = "family name: "),
     email = readline(prompt = "e-mail:      "),
-    orcid = readline(prompt = "orcid:       "),
-    affiliation = readline(prompt = "affiliation: "),
-    usage = 0
-  ) |>
-    rbind(current) -> current
+    orcid = ask_orcid(prompt = "orcid:       ")
+  ) -> extra
+  org <- organisation$new()$get_organisation
+  gsub(".*@", "", extra$email) |>
+    grepl(names(org), ignore.case = TRUE) |>
+    which() -> which_org
+  if (extra$email != "" && length(which_org) > 0) {
+    org <- org[which_org]
+    while (org[[1]]$orcid && extra$orcid == "") {
+      cat("An ORCID is required for", names(org))
+      extra$orcid <- ask_orcid(prompt = "orcid: ")
+    }
+    names(org[[1]]$affiliation) |>
+      menu_first(title = "Which default language for the affiliation?") -> lang
+    extra$affiliation <- org[[1]]$affiliation[lang]
+  } else {
+    extra$affiliation <- readline(prompt = "affiliation: ")
+  }
+  extra$usage <- 0
+  rbind(current, extra) -> current
   write.table(
     current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
     fileEncoding = "UTF8"
   )
+  message("author information stored at ", path(root, "author.txt"))
   return(current)
 }
 
@@ -136,6 +164,7 @@ author2person <- function(role = "aut") {
   )
 }
 
+#' @importFrom utils tail
 author2badge <- function(role = "aut") {
   df <- use_author()
   sprintf("[^%s]", role) |>
@@ -157,8 +186,20 @@ author2badge <- function(role = "aut") {
   if (is.na(df$affiliation) || df$affiliation == "") {
     return(badge)
   }
+  org <- organisation$new()$get_organisation
+  vapply(
+    names(org), FUN.VALUE = vector(mode = "list", length = 1L),
+    FUN = function(x) {
+      data.frame(domain = x, affiliation = org[[x]]$affiliation) |>
+        list()
+    }
+  ) |>
+    do.call(what = rbind) -> aff_domain
+  aff <- aff_domain$domain[aff_domain$affiliation == df$affiliation]
   gsub(".*\\((.+)\\).*", "\\1", df$affiliation) |>
-    gsub(pattern = "[a-z]*\\s*", replacement = "") -> aff
+    abbreviate() |>
+    c(aff) |>
+    tail(1) -> aff
   sprintf("%s[^%s]", badge, aff) |>
     `attr<-`(
       which = "footnote",
@@ -166,4 +207,80 @@ author2badge <- function(role = "aut") {
         attr(badge, "footnote"), sprintf("[^%s]: %s", aff, df$affiliation)
       )
     )
+}
+
+validate_author <- function(current, selected) {
+  org <- organisation$new()$get_organisation
+  names(org) |>
+    gsub(pattern = "\\.", replacement = "\\\\.") |>
+    paste(collapse = "|") |>
+    sprintf(fmt = "@%s$") -> rg
+  if (!grepl(rg, current$email[selected], ignore.case = TRUE)) {
+    return(current)
+  }
+  this_org <- org[gsub(".*@", "", current$email[selected])]
+  while (
+    this_org[[1]]$orcid &&
+    (is.na(current$orcid[selected]) || current$orcid[selected] == "")
+  ) {
+    cat("\nAn ORCID is required for", names(this_org))
+    current$orcid[selected] <- ask_orcid(prompt = "orcid: ")
+  }
+  if (current$affiliation[selected] %in% this_org[[1]]$affiliation) {
+    return(current)
+  }
+  names(this_org[[1]]$affiliation) |>
+    menu_first(
+      title = sprintf(
+        "\nNon standard affiliation for `%s`.\n
+Which default language for the affiliation?",
+        names(this_org)
+      )
+    ) -> lang
+  current$affiliation[selected] <- this_org[[1]]$affiliation[lang]
+  return(current)
+}
+
+#' Validate the structure of an ORCID id
+#'
+#' Checks whether the ORCID has the proper format and the checksum.
+#' @param orcid A vector of ORCID
+#' @returns A logical vector with the same length as the input vector.
+#' @export
+#' @importFrom assertthat assert_that noNA
+#' @family utils
+validate_orcid <- function(orcid) {
+  assert_that(is.character(orcid), noNA(orcid))
+  format_ok <- grepl("^(\\d{4}-){3}\\d{3}[\\dX]$", orcid, perl = TRUE)
+  if (all(!format_ok)) {
+    return(orcid == "" | format_ok)
+  }
+  gsub("-", "", orcid[format_ok]) |>
+    strsplit(split = "") |>
+    do.call(what = cbind) -> digits
+  checksum <- digits[16, ]
+  seq_len(15) |>
+    rev() |>
+    matrix(ncol = 1) -> powers
+  apply(digits[-16, , drop = FALSE], 1, as.integer, simplify = FALSE) |>
+    do.call(what = rbind) |>
+    crossprod(2 ^ powers) |>
+    as.vector() -> total
+  remainder <- (12 - (total %% 11)) %% 11
+  remainder <- as.character(remainder)
+  remainder[remainder == "10"] <- "X"
+  format_ok[format_ok] <- remainder == checksum
+  return(orcid == "" | format_ok)
+}
+
+ask_orcid <- function(prompt = "orcid: ") {
+  orcid <- readline(prompt = prompt)
+  if (orcid == "") {
+    return(orcid)
+  }
+  while (!validate_orcid(orcid)) {
+    cat("\nPlease provide a valid ORCiD in the format `0000-0000-0000-0000`\n")
+    orcid <- readline(prompt = prompt)
+  }
+  return(orcid)
 }

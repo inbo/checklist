@@ -123,7 +123,8 @@ test_that("check_spelling() on a project", {
 
   r_user_dir <- tempfile("author")
   dir.create(r_user_dir)
-  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
+  stub(new_author, "ask_orcid", mock(""))
   expect_output(new_author(current = data.frame(), root = r_user_dir))
   stub(create_project, "R_user_dir", r_user_dir, depth = 5)
   stub(create_project, "readline", "test")
@@ -137,9 +138,10 @@ test_that("check_spelling() on a project", {
     }
   )
 
-  path(path, "spelling", "bookdown") |>
+  path(path, "spelling", "source", "bookdown") |>
     dir_create()
-  path(path, "spelling", "bookdown", c("_bookdown.yml", "test.Rproj")) |>
+  path |>
+    path("spelling", "source", "bookdown", c("_bookdown.yml", "test.Rproj")) |>
     fs::file_create()
 
   stub(store_authors, "R_user_dir", r_user_dir)
@@ -182,7 +184,8 @@ test_that("check_spelling() on a project", {
 
   r_user_dir <- tempfile("author")
   dir.create(r_user_dir)
-  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", "", ""))
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
+  stub(new_author, "ask_orcid", mock(""))
   expect_output(new_author(current = data.frame(), root = r_user_dir))
 
   hide_author <- tempfile(fileext = ".txt")
@@ -198,7 +201,8 @@ test_that("check_spelling() on a project", {
   sink()
   expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
 
-  x <- read_checklist(path)
+  path(path, "spelling") |>
+    read_checklist() -> x
   stub(change_language_interactive, "menu", 3)
   stub(change_language_interactive2, "menu", 1, 2)
   expect_is(
@@ -325,6 +329,8 @@ test_that("check_spelling() works on a quarto project", {
   path <- tempfile("quarto")
   dir_create(path)
   defer(unlink(path, recursive = TRUE))
+  checklist$new(path, language = "en-GB", package = FALSE) |>
+    write_checklist()
   dir_create(path, "source")
   writeLines(
     c("project:", "  type: book"),

@@ -121,8 +121,8 @@ yaml_author <- function(yaml) {
     data.frame(contributor = nrow(author) + 1, role = "funder") |>
       rbind(roles) -> roles
     data.frame(
-      id = nrow(author) + 1, given = "", family = yaml$funder, orcid = "",
-      affiliation = ""
+      id = nrow(author) + 1, given = yaml$funder, family = "", orcid = "",
+      affiliation = "", organisation = known_affiliation(yaml$funder)
     ) |>
       rbind(author) -> author
   }
@@ -130,8 +130,9 @@ yaml_author <- function(yaml) {
     data.frame(contributor = nrow(author) + 1, role = "copyright holder") |>
       rbind(roles) -> roles
     data.frame(
-      id = nrow(author) + 1, given = "", family = yaml$rightsholder,
-      orcid = "", affiliation = ""
+      id = nrow(author) + 1, given = yaml$rightsholder, family = "",
+      orcid = "", affiliation = "",
+      organisation = known_affiliation(yaml$rightsholder)
     ) |>
       rbind(author) -> author
   }
@@ -144,7 +145,8 @@ yaml_author <- function(yaml) {
 yaml_author_format <- function(person) {
   person_df <- data.frame(
     given = character(0), family = character(0), orcid = character(0),
-    affiliation = character(0), contact = logical(0)
+    affiliation = character(0), contact = logical(0),
+    organisation = character(0)
   )
   if (!is.list(person)) {
     attr(person_df, "errors") <- list("person must be a list")
@@ -170,7 +172,8 @@ yaml_author_format <- function(person) {
     affiliation = paste0(person$affiliation, ""),
     contact = ifelse(
       is.null(person$corresponding), FALSE, person$corresponding
-    )
+    ),
+    organisation = known_affiliation(paste0(person$affiliation, ""))
   )
   c(
     "person `name` element is missing a `given` element"[

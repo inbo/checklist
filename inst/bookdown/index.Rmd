@@ -2,7 +2,7 @@
 title: Dummy report for unit testing
 author:
   - name:
-      given: Josiah 
+      given: Josiah
       family: Carberry
     email: carberry@junk.com
     orcid: 0000-0002-1825-0097
@@ -16,8 +16,8 @@ reviewer:
     orcid: 0000-0002-1825-0097
     affiliation: Wesleyan University
 lang: nl
-keywords: "checklist; unit test"
-community: "inbo"
+keywords: checklist; unit test
+community: inbo
 publication_type: report
 funder: Research Institute for Nature and Forest (INBO)
 rightsholder: Research Institute for Nature and Forest (INBO)

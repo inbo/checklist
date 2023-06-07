@@ -1,7 +1,9 @@
 test_that("read_checklist works", {
   target <- tempfile("checklist")
-  dir.create(target)
-  # no checklist.yml
+  dir_create(target)
+  defer(dir_delete(target))
+  checklist$new(target, language = "en-GB", package = FALSE) |>
+    write_checklist()
   suppressMessages(expect_is(x <- read_checklist(target), "checklist"))
   expect_identical(read_checklist(x), x)
   expect_identical(x$get_path, path_real(target))
@@ -11,5 +13,4 @@ test_that("read_checklist works", {
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
   expect_length(x$.__enclos_env__$private$allowed_warnings, 0)
   expect_identical(x$default, "en-GB")
-  unlink(target, recursive = TRUE)
 })

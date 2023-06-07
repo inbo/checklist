@@ -1,7 +1,8 @@
 .DS_Store
-.Rproj.user
-.Rhistory
 .RData
+.Renviron
+.Rhistory
+.Rproj.user
 .Ruserdata
 .httr-oauth
 *.dbf
