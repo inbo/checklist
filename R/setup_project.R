@@ -258,18 +258,8 @@ preferred_protocol <- function() {
     config <- read_yaml(config_file)
   }
   if (
-    !has_name(config, "git") || !has_name(config$git, "protocol") ||
-    !has_name(config$git, "organisation")
+    !has_name(config, "git") || !has_name(config$git, "protocol")
   ) {
-    org <- organisation$new()
-    sprintf(
-      "What is your default GitHub organisation. Leave empty for `%s`.",
-      org$get_github
-    ) |>
-      readline() -> config[["git"]][["organisation"]]
-    if (config[["git"]][["organisation"]] == "") {
-      config[["git"]][["organisation"]] <- org$get_github
-    }
     c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
@@ -277,6 +267,9 @@ preferred_protocol <- function() {
       dir_create()
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
+  org <- organisation$new()
+  sprintf("Which GitHub organisation. Leave empty for `%s`.", org$get_github) |>
+    readline() -> config[["git"]][["organisation"]]
   ifelse(
     config$git$protocol == "https", "https://github.com/%s/%%s.git",
     "git@github.com:%s/%%s.git"
