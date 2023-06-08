@@ -1,3 +1,9 @@
+# checklist 0.3.4
+
+* Ask which GitHub organisation to use when create a new project.
+  Default equals the organisation's default.
+* Fix release GitHub Action.
+
 # checklist 0.3.3
 
 * New `organisation()` class to hold the requirements of the organisation.
