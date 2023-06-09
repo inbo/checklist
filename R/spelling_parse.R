@@ -261,6 +261,15 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   # remove markdown footnotes
   text <- gsub("\\[\\^.*?\\]", "", text)
 
+  # remove dates in number formats
+  text <- gsub("\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}", "", text, perl = TRUE)
+  text <- gsub("\\d+\\/\\d+", "", text, perl = TRUE)
+
+  # remove numbers
+  text <- gsub(
+    "€?[\\s\\(\"][\\+-]?\\d+([\\.,]\\d+)*[\\s%\\)\"]", " ", text, perl = TRUE
+  )
+
   # extract other languages
   assert_that(
     length(
