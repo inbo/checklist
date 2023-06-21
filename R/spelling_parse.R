@@ -266,8 +266,10 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("\\d+\\/\\d+", "", text, perl = TRUE)
 
   # remove numbers
+  # \u20ac is the Euro symbol in UTF-8 notation
   text <- gsub(
-    "€?[\\s\\(\"][\\+-]?\\d+([\\.,]\\d+)*[\\s%\\)\"]", " ", text, perl = TRUE
+    "\u20ac?[\\s\\(\"][\\+-]?\\d+([\\.,]\\d+)*[\\s%\\)\"]", " ", text,
+    perl = TRUE
   )
 
   # extract other languages
