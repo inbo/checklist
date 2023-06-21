@@ -23,21 +23,73 @@ RUN apt-get update \
 
 COPY docker/.Rprofile $R_HOME/etc/Rprofile.site
 
-## install INLA
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("INLA", type = "source")'
-
 ## install assertthat
 RUN  apt update \
   && apt install -y --no-install-recommends r-cran-assertthat \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("assertthat")'
 
-## install codemetar
+## install desc
 RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-bookdown \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("bookdown")'
+  && apt install -y --no-install-recommends r-cran-desc \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
 
-## install codemetar
-RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
+## install fs
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-fs \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("fs")'
+
+## install jsonlite
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-jsonlite \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("jsonlite")'
+
+## install hunspell
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-hunspell \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
+
+## install R6
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-r6 \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
+
+## install httr
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-httr \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("httr")'
+
+## install gert
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-gert \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("gert")'
+
+## install knitr
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-knitr \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("knitr")'
+
+## install sessioninfo
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-sessioninfo \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
+
+## install withr
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-withr \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("withr")'
+
+## install yaml
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-yaml \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
+
+## install curl
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-curl \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("curl")'
+
+## install renv
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("renv")'
 
 ## install covr
 RUN apt-get update \
@@ -48,63 +100,31 @@ RUN apt-get update \
   && apt-get clean \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("covr")'
 
-## install curl
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-curl \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("curl")'
-
-## install desc
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-desc \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("desc")'
-
-## install devtools
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-devtools \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
-
-## install fs
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-fs \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("fs")'
-
-## install gert
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-gert \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("gert")'
-
-## install hexSticker
-RUN apt-get update \
-  && apt-get install  -y --no-install-recommends \
-    libmagick++-dev \
-  && apt-get clean \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
-
-## install httr
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-httr \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("httr")'
-
-## install hunspell
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-hunspell \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("hunspell")'
-
-## install jsonlite
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-jsonlite \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("jsonlite")'
-
-## install knitr
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-knitr \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("knitr")'
-
 ## install lintr
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("lintr")'
 
-## install microbenchmark
-RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
+## install rcmdcheck
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-rcmdcheck \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
+
+## install rmarkdown
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-rmarkdown \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("rmarkdown")'
+
+## install roxygen2
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-roxygen2 \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
+
+## install INLA
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("INLA", type = "source")'
+
+## install bookdown
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-bookdown \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("bookdown")'
 
 ## install mockery
 RUN  apt update \
@@ -118,6 +138,19 @@ RUN  apt-get update \
        r-cran-pdftools \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("pdftools")'
 
+## install rstudioapi
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-rstudioapi \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("rstudioapi")'
+
+## install codemetar
+RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("codemetar")'
+
+## install testthat
+RUN  apt update \
+  && apt install -y --no-install-recommends r-cran-testthat \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("testthat")'
+
 ## install pkgdown
 RUN  apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -128,73 +161,31 @@ RUN  apt-get update \
        libtiff5-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("pkgdown")'
 
-## install R6
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-r6 \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("R6")'
-
-## install rcmdcheck
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-rcmdcheck \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("rcmdcheck")'
-
-## install renv
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("renv")'
-
-## install rgdal
-RUN apt-get update \
-  && apt-get install  -y --no-install-recommends \
-    libgdal-dev \
-    libproj-dev \
-    r-cran-rgdal \
-  && apt-get clean \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("rgdal")'
-
-## install rmarkdown
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-rmarkdown \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("rmarkdown")'
-
-## install roxygen2
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-roxygen2 \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("roxygen2")'
-
-## install rstudioapi
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-rstudioapi \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("rstudioapi")'
-
-## install sessioninfo
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-sessioninfo \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("sessioninfo")'
+## install sysfonts
+RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sysfonts")'
 
 ## install showtext
 RUN Rscript --no-save --no-restore -e 'remotes::install_cran("showtext")'
 
-## install sysfonts
-RUN Rscript --no-save --no-restore -e 'remotes::install_cran("sysfonts")'
+## install hexSticker
+RUN apt-get update \
+  && apt-get install  -y --no-install-recommends \
+    libmagick++-dev \
+  && apt-get clean \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("hexSticker")'
 
-## install testthat
+## install devtools
 RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-testthat \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("testthat")'
-
-## install withr
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-withr \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("withr")'
-
-## install yaml
-RUN  apt update \
-  && apt install -y --no-install-recommends r-cran-yaml \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("yaml")'
+  && apt install -y --no-install-recommends r-cran-devtools \
+  && Rscript --no-save --no-restore -e 'remotes::install_cran("devtools")'
 
 ## install zen4R
 RUN  apt update \
   && apt install -y --no-install-recommends libsecret-1-dev \
   && Rscript --no-save --no-restore -e 'remotes::install_cran("zen4R")'
+
+## install microbenchmark
+RUN  Rscript --no-save --no-restore -e 'remotes::install_cran("microbenchmark")'
 
 ## install checklist
 COPY . /checklist/

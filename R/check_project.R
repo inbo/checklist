@@ -8,11 +8,6 @@
 #' @importFrom fs is_file
 #' @family project
 check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
-  assert_that(
-    inherits(x, "checklist") || is_file(path(x, "checklist.yml")),
-    msg = "Please initialise the project first with `setup_project()`"
-  )
-
   x <- read_checklist(x = x)
   if (x$package) {
     return(check_package(x = x, fail = fail, quiet = quiet))

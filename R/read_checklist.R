@@ -43,14 +43,14 @@ read_checklist <- function(x = ".") {
   }
   if (allowed$package) {
     x <- checklist$new(
-      x = x, package = TRUE,
+      x = current, package = TRUE,
       language = ifelse(
         has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
       )
     )
   } else {
     x <- checklist$new(
-      x = x, package = FALSE,
+      x = current, package = FALSE,
       language = ifelse(
         has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
       )
