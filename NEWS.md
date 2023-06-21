@@ -1,7 +1,12 @@
 # checklist 0.3.4
 
+* `check_spelling()` ignores numbers.
 * Ask which GitHub organisation to use when create a new project.
   Default equals the organisation's default.
+* GitHub Action for project allow to install package prior to checking the
+  project.
+  Use this in case `check_lintr()` returns an error about global variables in a
+  function and you did `require()` the package.
 * Fix release GitHub Action.
 
 # checklist 0.3.3
