@@ -279,7 +279,9 @@ ask_orcid <- function(prompt = "orcid: ") {
     return(orcid)
   }
   while (!validate_orcid(orcid)) {
-    cat("\nPlease provide a valid ORCiD in the format `0000-0000-0000-0000`\n")
+    message(
+      "\nPlease provide a valid ORCiD in the format `0000-0000-0000-0000`\n"
+    )
     orcid <- readline(prompt = prompt)
   }
   return(orcid)
