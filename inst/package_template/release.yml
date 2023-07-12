@@ -5,27 +5,33 @@ on:
     tags:
       - v*
   workflow_run:
-    workflows: ["check package on main"]
+    workflows: ["check package on main with checklist"]
     types:
       - completed
 
 jobs:
-
-  build:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.gettag.outputs.tag }}
+      body: ${{ steps.gettag.outputs.body }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get tag
+        run: |
+          git fetch --tags --force
+          TAG=$(git tag --contains $(git rev-parse HEAD))
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "body=$TAG_BODY" >> "$GITHUB_OUTPUT"
+        id: gettag
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    needs: prepare
     steps:
-      - uses: actions/checkout@v3
-      - name: Get tag message
-        run: |
-          TAG=$(git tag --contains $(git rev-parse HEAD))
-          TAG_BODY=$(git tag --contains $(git rev-parse HEAD) -n100 | awk '(NR>2)')
-          echo "TAG=$TAG" >> $GITHUB_OUTPUT
-          echo "TAG_BODY=$TAG_BODY" >> $GITHUB_OUTPUT
-        id: tag-body
       - uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ steps.tag-body.outputs.TAG }}
-          tag: ${{ steps.tag-body.outputs.TAG }}
-          body: ${{ steps.tag-body.outputs.TAG_BODY }}
+          name: Release ${{needs.prepare.outputs.tag}}
+          tag: ${{needs.prepare.outputs.tag}}
+          body: ${{needs.prepare.outputs.body}}
