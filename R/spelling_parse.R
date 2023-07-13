@@ -9,7 +9,7 @@ spelling_parse_r <- function(r_file, wordlist) {
   text <- ifelse(keep, raw_text, "")
 
   # remove multiline tags
-  c("examples", "importFrom", "aliases") |>
+  c("aliases", "examples", "importFrom", "importMethodsFrom") |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s)") |>
     grep(text) -> multiline
@@ -35,7 +35,7 @@ spelling_parse_r <- function(r_file, wordlist) {
     gsub("", text) -> text
 
   # remove the tag and the first word
-  c("param", "reference") |>
+  c("param", "reference", "slot") |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s)\\s+(\\w|\\.)+") |>
     gsub("", text, perl = TRUE) -> text
@@ -43,8 +43,8 @@ spelling_parse_r <- function(r_file, wordlist) {
   # remove the entire line for certain tags
   c(
     "author", "docType", "export", "exportClass", "exportMethod", "family",
-    "importClassesFrom", "importFrom", "inherit\\w*Params", "keywords", "name",
-    "rdname", "seealso", "title", "template"
+    "importClassesFrom", "importFrom", "include", "inherit\\w*Params",
+    "keywords", "name", "method", "rdname", "seealso", "title", "template"
   ) |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s) .*") |>
