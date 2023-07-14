@@ -7,7 +7,7 @@ bibentry(
   year = 2023,
   url = "https://inbo.github.io/checklist/",
   abstract = "An opinionated set of rules for R packages and R source code projects.",
-  textVersion = "Onkelinx, Thierry (2023) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.3.4. https://github.com/inbo/checklist/; https://inbo.github.io/checklist/",
+  textVersion = "Onkelinx, Thierry (2023) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.3.5. https://inbo.github.io/checklist/",
   keywords = "quality control; documentation; publication",
   doi = "10.5281/zenodo.4028303",
 )
