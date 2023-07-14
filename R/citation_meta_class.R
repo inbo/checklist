@@ -468,7 +468,10 @@ citation_r <- function(meta) {
       "\"%s (%s) %s. Version %s. %s\"",
       paste(authors_plain, collapse = "; "), format(Sys.Date(), "%Y"),
       cit_meta$title, cit_meta$version,
-      paste0(paste(c(cit_meta$source, cit_meta$url), collapse = "; "), "")
+      ifelse(
+        length(cit_meta$url), paste(cit_meta$url, collapse = "; "),
+        cit_meta$source
+      )
     ),
     keywords = paste0("\"", paste(cit_meta$keywords, collapse = "; "), "\"")
   )

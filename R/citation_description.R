@@ -73,7 +73,7 @@ description_author_format <- function(i, x) {
     )[x[[i]]$role]
   )
   formatted$organisation <- ifelse(
-    is.null(x[[i]]), "", gsub(".*@", "", x[[i]]$email)
+    is.null(x[[i]]$email), "", gsub(".*@", "", x[[i]]$email)
   )
   if (is.null(x[[i]]$comment)) {
     formatted$orcid <- ""

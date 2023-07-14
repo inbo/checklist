@@ -3,7 +3,7 @@ test_that("author tools", {
   stub(ask_orcid, "readline", mock(""))
   expect_equal(ask_orcid(), "")
   stub(ask_orcid, "readline", mock("junk", "0000-0002-1825-0097"))
-  expect_equal(ask_orcid(), "0000-0002-1825-0097")
+  expect_equal(suppressMessages(ask_orcid()), "0000-0002-1825-0097")
 
   root <- tempfile("author")
   expect_false(is_dir(root))

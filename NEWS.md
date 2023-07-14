@@ -1,3 +1,10 @@
+# checklist 0.3.5
+
+* Fix release GitHub Action.
+* Bugfix in `update_citation()` on a `DESCRIPTION`.
+* `check_spelling()` handles Roxygen2 tags `@aliases`, `@importMethodsFrom`,
+  `@include`, `@keywords`, `@method`, `@name`, `@slot`
+
 # checklist 0.3.4
 
 * `check_spelling()` ignores numbers.
