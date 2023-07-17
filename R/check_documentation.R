@@ -96,6 +96,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   unexported <- documented[!documented %in% exported]
   datasets <- data(package = desc(x$get_path)$get_field("Package"))
   unexported <- unexported[!unexported %in% datasets$results[, "Item"]]
+  unexported <- unexported[unexported != "reexports"]
   paste(unexported, collapse = ", ") |>
     sprintf(fmt = "documented but unexported functions: %s") -> doc_warnings
   doc_warnings <- doc_warnings[length(unexported) > 0]
