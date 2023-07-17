@@ -88,7 +88,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
 
   namespace <- readLines(rd_files[1])
   namespace[grepl("^export.*\\(", namespace)] |>
-    gsub(pattern = "export.*\\((.*)\\)", replacement = "\\1") -> exported
+    gsub(pattern = "export.*\\(\"?(.*?)\"?\\)", replacement = "\\1") -> exported
   vapply(rd_files[-1], rd_extract_function, vector("list", 1L)) |>
     unlist() |>
     unique() |>
