@@ -1,3 +1,9 @@
+# checklist 0.3.6
+
+* Put double quotes around the title and abstract fields of `CITATION.cff`.
+* `check_documentation()` handles assignment functions and re-exported functions
+  correctly.
+
 # checklist 0.3.5
 
 * Fix release GitHub Action.
