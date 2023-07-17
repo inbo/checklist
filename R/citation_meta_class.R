@@ -353,7 +353,7 @@ citation_cff <- function(meta) {
   } else {
     identifiers <- list()
   }
-  if (has_name(input, "url")) {
+  if (has_name(input, "url") && length(input$url) > 0) {
     identifiers <- c(identifiers, list(list(type = "url", value = input$url)))
   }
   cff <- list(
