@@ -365,6 +365,8 @@ citation_cff <- function(meta) {
     abstract = strip_markdown(input$description) |>
       paste(collapse = "\n")
   )
+  attr(cff$title, "quoted") <- TRUE
+  attr(cff$abstract, "quoted") <- TRUE
   if (length(identifiers) > 0) {
     cff$identifiers <- identifiers
   }
