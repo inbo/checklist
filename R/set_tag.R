@@ -70,9 +70,9 @@ set_tag <- function(x = ".") {
   git_config_set("user.name", "Checklist bot", repo = repo)
   git_config_set("user.email", "checklist@inbo.be", repo = repo)
 
-  tag_message <- paste(
-    news[seq(start[current] + 2, end[current])], collapse = "\n"
-  )
+  body <- news[seq(start[current], end[current])]
+  body[nchar(body) > 0] |>
+    paste(collapse = "\n") -> tag_message
   git_tag_create(
     name = paste0("v", version), message = tag_message, repo = repo
   )
