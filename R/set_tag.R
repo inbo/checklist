@@ -43,12 +43,13 @@ set_tag <- function(x = ".") {
   path(x$get_path, "NEWS.md") |>
     readLines() -> news
   regex <- sprintf(
-    "^# %s [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$",
+    "^# `?%s`? [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$",
     description$get("Package")
   )
   start <- grep(regex, news)
   end <- c(tail(start, -1) - 1, length(news))
-  current <- grepl(paste("#", description$get("Package"), version), news[start])
+  sprintf("# `?%s`? %s", description$get("Package"), version) |>
+    grepl(news[start]) -> current
   assert_that(any(current), msg = "Current version not found in NEWS.md")
   if (paste0("v", version) %in% git_tag_list(repo = repo)$name) {
     message("tag v", version, " already exists.")
@@ -57,24 +58,17 @@ set_tag <- function(x = ".") {
   old_config <- git_config(repo = repo)
   defer(
     git_config_set(
-      "user.name",
-      old_config$value[old_config$name == "user.name"],
-      repo = repo)
+      "user.name", old_config$value[old_config$name == "user.name"], repo = repo
+    )
   )
   defer(
     git_config_set(
-      "user.email",
-      old_config$value[old_config$name == "user.email"],
-      repo = repo)
+      "user.email", old_config$value[old_config$name == "user.email"],
+      repo = repo
+    )
   )
-  git_config_set(
-    "user.name", "Checklist bot",
-    repo = repo
-  )
-  git_config_set(
-    "user.email", "checklist@inbo.be",
-    repo = repo
-  )
+  git_config_set("user.name", "Checklist bot", repo = repo)
+  git_config_set("user.email", "checklist@inbo.be", repo = repo)
 
   tag_message <- paste(
     news[seq(start[current] + 2, end[current])], collapse = "\n"
