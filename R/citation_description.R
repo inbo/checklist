@@ -43,7 +43,7 @@ citation_description <- function(meta) {
   list(
     meta = cit_meta,
     errors = c(urls$errors, keywords$errors), warnings = communities$warnings,
-    notes = authors$notes
+    notes = character(0)
   )
 }
 
