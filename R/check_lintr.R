@@ -27,7 +27,7 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   if (x$package) {
     linter <- lint_package(path = x$get_path)
   } else {
-    linter <- lint_dir(x$get_path, pattern = "\\.R(md|nw)?$")
+    linter <- lint_dir(x$get_path, pattern = "\\.(R|q)(md|nw)?$")
   }
   if (!quiet && length(linter) > 0) {
     print(linter)
