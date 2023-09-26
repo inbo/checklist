@@ -273,7 +273,11 @@ create_package <- function(
   )
 
   message("package created at `", path, "`")
-  return(invisible(NULL))
+
+  if (!interactive() || !requireNamespace("rstudioapi", quietly = TRUE)) {
+    return(invisible(NULL))
+  }
+  rstudioapi::openProject(path, newSession = TRUE)
 }
 
 valid_package_name <- function(x) {
