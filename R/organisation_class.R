@@ -180,6 +180,14 @@ organisation <- R6Class(
     #' @field get_rightsholder The default rightsholder.
     get_rightsholder = function() {
       private$rightsholder
+    },
+    #' @field template A list for a check list template.
+    template = function() {
+      list(
+        community = private$community, email = private$email,
+        github = private$github, funder = private$funder,
+        rightsholder = private$rightsholder, organisation = private$organisation
+      )
     }
   ),
   private = list(

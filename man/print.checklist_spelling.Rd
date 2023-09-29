@@ -21,6 +21,8 @@ Other both:
 \code{\link{check_spelling}()},
 \code{\link{custom_dictionary}()},
 \code{\link{read_checklist}()},
-\code{\link{write_checklist}()}
+\code{\link{read_organisation}()},
+\code{\link{write_checklist}()},
+\code{\link{write_organisation}()}
 }
 \concept{both}

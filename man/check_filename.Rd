@@ -70,6 +70,8 @@ Other both:
 \code{\link{custom_dictionary}()},
 \code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
-\code{\link{write_checklist}()}
+\code{\link{read_organisation}()},
+\code{\link{write_checklist}()},
+\code{\link{write_organisation}()}
 }
 \concept{both}

@@ -11,5 +11,6 @@
 ^docs$
 ^LICENSE.md$
 ^man-roxygen$
+^organisation.yml$
 ^pkgdown$
 ^README\.Rmd$

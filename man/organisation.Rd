@@ -29,6 +29,8 @@ Other class:
 \item{\code{get_organisation}}{The organisation requirements.}
 
 \item{\code{get_rightsholder}}{The default rightsholder.}
+
+\item{\code{template}}{A list for a check list template.}
 }
 \if{html}{\out{</div>}}
 }
