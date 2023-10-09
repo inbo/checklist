@@ -12,13 +12,16 @@ test_that("author tools", {
   expect_is(stored_authors(root), "data.frame")
   stub(new_author, "readline", mock("John", "Doe", "", ""))
   stub(new_author, "ask_orcid", "")
-  expect_output(new_author(current = data.frame(), root = root))
+  org <- read_organisation()
+  expect_output(new_author(current = data.frame(), root = root, org = org))
   expect_true(file_exists(path(root, "author.txt")))
   current <- stored_authors(root)
 
   stub(update_author, "interactive", TRUE)
   stub(update_author, "menu", 7)
-  expect_output(update_author(current = current, selected = 1, root = root))
+  expect_output(
+    update_author(current = current, selected = 1, root = root, org = org)
+  )
   expect_identical(current, stored_authors(root))
 
   stub(author2person, "R_user_dir", root, depth = 2)
@@ -31,13 +34,17 @@ test_that("author tools", {
   badge <- "Doe, John[^aut]"
   attr(badge, "footnote") <- "[^aut]: author"
   expect_output({
-    ab <- author2badge()
+    ab <- author2badge(org = read_organisation())
   })
   expect_equal(ab, badge)
 
   stub(update_author, "menu", mock(4, 6))
   stub(update_author, "readline", "0000-0002-1825-0097", depth = 2)
-  expect_output(update_author(current = current, selected = 1, root = root))
+  expect_output(
+    update_author(
+      current = current, selected = 1, root = root, org = read_organisation()
+    )
+  )
   current$orcid <- "0000-0002-1825-0097"
   expect_identical(current, stored_authors(root))
   badge <- paste0(
@@ -46,17 +53,18 @@ test_that("author tools", {
   )
   attr(badge, "footnote") <- "[^aut]: author"
   expect_output({
-    ab <- author2badge()
+    ab <- author2badge(org = org)
   })
   expect_equal(ab, badge)
 
-  org <- organisation$new()
   stub(update_author, "menu", mock(5, 6))
   stub(
     update_author, "readline", org$get_organisation[["inbo.be"]]$affiliation[1],
     depth = 2
   )
-  expect_output(update_author(current = current, selected = 1, root = root))
+  expect_output(
+    update_author(current = current, selected = 1, root = root, org = org)
+  )
   current$affiliation <- org$get_organisation[["inbo.be"]]$affiliation[1]
   expect_identical(current, stored_authors(root))
   badge <- paste0(
@@ -69,7 +77,7 @@ test_that("author tools", {
     paste("[^inbo.be]:", org$get_organisation[["inbo.be"]]$affiliation[1])
   )
   expect_output({
-    ab <- author2badge()
+    ab <- author2badge(org = org)
   })
   expect_equal(ab, badge)
   expect_output({
@@ -79,7 +87,9 @@ test_that("author tools", {
 
   stub(update_author, "menu", mock(3, 6))
   stub(update_author, "readline", "noreply@inbo.be", depth = 2)
-  expect_output(update_author(current = current, selected = 1, root = root))
+  expect_output(
+    update_author(current = current, selected = 1, root = root, org = org)
+  )
   current$email <- "noreply@inbo.be"
   expect_identical(current, stored_authors(root))
   expect_output({
@@ -94,5 +104,5 @@ test_that("author tools", {
 
   stub(new_author, "readline", mock("Jane", "Doe", "noreply@inbo.be"))
   stub(new_author, "ask_orcid", mock("", "0000-0002-1825-0097"))
-  expect_output(new_author(current, root = root))
+  expect_output(new_author(current, root = root, org = org))
 })

@@ -66,14 +66,14 @@ create_package <- function(
     }
   }
   assert_that(inherits(maintainer, "person"))
-  org <- organisation$new()
-  maintainer <- c(maintainer, org$as_person)
 
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
   assert_that(is.character(keywords), length(keywords) > 0)
   assert_that(is.character(communities))
+  org <- read_organisation(path)
+  maintainer <- c(maintainer, org$as_person)
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,

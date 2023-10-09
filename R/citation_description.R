@@ -6,12 +6,15 @@ citation_description <- function(meta) {
   assert_that(meta$get_type == "package")
   path(meta$get_path, "DESCRIPTION") |>
     description$new() -> descript
+  org <- read_organisation(meta$get_path)
   descript$get_field("Config/checklist/keywords", default = character(0)) |>
     description_keywords() -> keywords
   descript$get_field("Config/checklist/communities", default = character(0)) |>
-    description_communities() -> communities
+    description_communities(org = org) -> communities
   urls <- description_url(descript$get_urls())
-  authors <- description_author(descript$get_authors())
+  authors <- description_author(
+    descript$get_authors(), org = org$get_organisation
+  )
   descript$get_field("License") |>
     gsub(pattern = " \\+ file LICENSE", replacement = "") |>
     gsub(pattern = "^GPL-3$", replacement = "GPL-3.0") -> license
@@ -47,10 +50,10 @@ citation_description <- function(meta) {
   )
 }
 
-description_author <- function(authors) {
+description_author <- function(authors, org) {
   vapply(
     seq_along(authors), FUN = description_author_format, x = authors,
-    FUN.VALUE = vector("list", 1)
+    org = org, FUN.VALUE = vector("list", 1)
   ) |>
     do.call(what = "rbind") -> roles
   data.frame(
@@ -64,7 +67,7 @@ description_author <- function(authors) {
   list(authors = contributors, roles = roles[, c("contributor", "role")])
 }
 
-description_author_format <- function(i, x) {
+description_author_format <- function(i, x, org) {
   formatted <- data.frame(
     contributor = i,
     role = c(
@@ -87,17 +90,20 @@ description_author_format <- function(i, x) {
     is.na(x[[i]]$comment["affiliation"]), "", x[[i]]$comment["affiliation"]
   )
   if (formatted$organisation[1] == "" && formatted$affiliation[1] != "") {
-    formatted$organisation <- known_affiliation(formatted$affiliation[1])
+    formatted$organisation <- known_affiliation(
+      formatted$affiliation[1], org = org
+    )
   }
   return(list(formatted))
 }
 
 #' @importFrom assertthat assert_that
-known_affiliation <- function(target) {
+known_affiliation <- function(target, org) {
+  assert_that(inherits(org, "organisation"))
   target <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", target)
-  org <- organisation$new()$get_organisation
   vapply(
-    names(org), FUN.VALUE = logical(1), target = target, org = org,
+    names(org), FUN.VALUE = logical(1), target = target,
+    org = org$get_organisation,
     FUN = function(x, org, target) {
       grepl(target, org[[x]]$affiliation) |>
         any()
@@ -151,16 +157,17 @@ description_keywords <- function(keywords) {
   )
 }
 
-description_communities <- function(communities) {
-  if (length(communities) == 0) {
-    org <- organisation$new()
+#' @importFrom assertthat assert_that
+description_communities <- function(communities, org) {
+  assert_that(inherits(org, "organisation"))
+  if (length(communities) == 0 && any(!is.na(org$get_community))) {
     return(
       list(
         meta = list(),
         warnings = paste(
           "no communities found in `DESCRIPTION`.",
           "Please add them with `Config/checklist/communities:",
-          org$get_community
+          paste(org$get_community, collapse = "; ")
         )
       )
     )

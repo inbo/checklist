@@ -28,9 +28,10 @@ setup_project <- function(path = ".") {
       system.file(package = "checklist") |>
       file_copy(path(path, "source", "checklist.R"))
   }
-  repo <- setup_vc(path = path)
+  org <- read_organisation(path)
+  repo <- setup_vc(path = path, org = org)
   renv_activate(path = path)
-  files <- create_readme(path = path)
+  files <- create_readme(path = path, org = org)
   checks <- c(
     "checklist",
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
@@ -77,7 +78,7 @@ setup_project <- function(path = ".") {
 
 #' @importFrom fs dir_create file_copy file_exists is_file path
 #' @importFrom gert git_add git_find git_init git_remote_add
-setup_vc <- function(path) {
+setup_vc <- function(path, org) {
   if (is_repository(path)) {
     assert_that(is_workdir_clean(path))
     repo <- git_find(path)
@@ -86,7 +87,7 @@ setup_vc <- function(path) {
       return(invisible(NULL))
     }
     repo <- git_init(path = path)
-    preferred_protocol() |>
+    preferred_protocol(org) |>
       sprintf(basename(path)) |>
       git_remote_add(repo = repo)
   }
@@ -180,14 +181,15 @@ create_project <- function(path, project) {
     rstudioapi::openProject(newSession = TRUE)
 }
 
-create_readme <- function(path) {
+#' @importFrom fs file_exists path
+create_readme <- function(path, org) {
   if (file_exists(path(path, "README.md"))) {
     return(character(0))
   }
   cat("Which person to use as author and contact person?\n")
-  author <- author2badge(role = c("aut", "cre"))
+  author <- author2badge(role = c("aut", "cre"), org = org)
   while (isTRUE(ask_yes_no("add another author?", default = FALSE))) {
-    extra <- author2badge()
+    extra <- author2badge(org = org)
     attr(author, "footnote") |>
       c(attr(extra, "footnote")) |>
       unique() -> footnote
@@ -226,7 +228,6 @@ create_readme <- function(path) {
         ) -> badges
     }
   }
-  org <- organisation$new()
   c(
     "<!-- badges: start -->", badges, "<!-- badges: end -->", "",
     paste("#", title), "", author,
@@ -246,11 +247,13 @@ create_readme <- function(path) {
   return("README.md")
 }
 
+#' @importFrom assertthat assert_that
 #' @importFrom fs dir_create path
 #' @importFrom tools R_user_dir
 #' @importFrom utils menu
 #' @importFrom yaml read_yaml write_yaml
-preferred_protocol <- function() {
+preferred_protocol <- function(org) {
+  assert_that(inherits(org, "organisation"))
   config <- list()
   R_user_dir("checklist", which = "config") |>
     path("config.yml") -> config_file
@@ -267,7 +270,6 @@ preferred_protocol <- function() {
       dir_create()
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
-  org <- organisation$new()
   sprintf("Which GitHub organisation. Leave empty for `%s`.", org$get_github) |>
     readline() -> config[["git"]][["organisation"]]
   ifelse(

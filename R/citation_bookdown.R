@@ -14,7 +14,8 @@ citation_bookdown <- function(meta) {
     )
   }
   yaml <- yaml_front_matter(index_file)
-  cit_meta <- yaml_author(yaml)
+  read_organisation(meta$get_path) |>
+    yaml_author(yaml = yaml) -> cit_meta
   description <- bookdown_description(meta$get_path)
   cit_meta$meta$description <- description$description
   cit_meta$errors <- c(cit_meta$errors, description$errors)
@@ -82,10 +83,13 @@ citation_bookdown <- function(meta) {
 }
 
 #' @inheritParams assertthat has_name
-yaml_author <- function(yaml) {
-  author <- vapply(yaml$author, yaml_author_format, vector(mode = "list", 1))
+yaml_author <- function(yaml, org) {
+  author <- vapply(
+    X = yaml$author, FUN = yaml_author_format,
+    FUN.VALUE = vector(mode = "list", 1), org = org
+  )
   yaml$reviewer |>
-    vapply(yaml_author_format, vector(mode = "list", 1)) -> reviewer
+    vapply(yaml_author_format, vector(mode = "list", 1), org = org) -> reviewer
   c(author, reviewer) |>
     vapply(attr, vector(mode = "list", 1), which = "errors") |>
     unlist() |>
@@ -122,7 +126,7 @@ yaml_author <- function(yaml) {
       rbind(roles) -> roles
     data.frame(
       id = nrow(author) + 1, given = yaml$funder, family = "", orcid = "",
-      affiliation = "", organisation = known_affiliation(yaml$funder)
+      affiliation = "", organisation = known_affiliation(yaml$funder, org = org)
     ) |>
       rbind(author) -> author
   }
@@ -132,7 +136,7 @@ yaml_author <- function(yaml) {
     data.frame(
       id = nrow(author) + 1, given = yaml$rightsholder, family = "",
       orcid = "", affiliation = "",
-      organisation = known_affiliation(yaml$rightsholder)
+      organisation = known_affiliation(yaml$rightsholder, org = org)
     ) |>
       rbind(author) -> author
   }
@@ -142,7 +146,7 @@ yaml_author <- function(yaml) {
 }
 
 #' @inheritParams assertthat has_name is.flag
-yaml_author_format <- function(person) {
+yaml_author_format <- function(person, org) {
   person_df <- data.frame(
     given = character(0), family = character(0), orcid = character(0),
     affiliation = character(0), contact = logical(0),
@@ -173,7 +177,7 @@ yaml_author_format <- function(person) {
     contact = ifelse(
       is.null(person$corresponding), FALSE, person$corresponding
     ),
-    organisation = known_affiliation(paste0(person$affiliation, ""))
+    organisation = known_affiliation(paste0(person$affiliation, ""), org = org)
   )
   c(
     "person `name` element is missing a `given` element"[

@@ -167,17 +167,19 @@ citation_print <- function(errors, meta, notes, path, warnings) {
 #' @importFrom assertthat assert_that
 validate_citation <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  org <- organisation$new()
+  org <- read_organisation(meta$get_path)
   roles <- meta$get_meta$roles
   authors <- meta$get_meta$authors
   rightsholder_id <- roles$contributor[roles$role == "copyright holder"]
   funder_id <- roles$contributor[roles$role == "funder"]
   notes <- c(
     sprintf("rightsholder differs from `%s`", org$get_rightsholder)[
-      authors$given[authors$id == rightsholder_id] != org$get_rightsholder
+      !is.na(org$get_rightsholder) &&
+        authors$given[authors$id == rightsholder_id] != org$get_rightsholder
     ],
     sprintf("funder differs from `%s`", org$get_funder)[
-      authors$given[authors$id == funder_id] != org$get_funder
+      !is.na(org$get_funder) &&
+        authors$given[authors$id == funder_id] != org$get_funder
     ]
   )
   errors <- c(
@@ -185,7 +187,8 @@ validate_citation <- function(meta) {
       !validate_orcid(authors$orcid)
     ],
     sprintf("missing required Zenodo community `%s`", org$get_community)[
-      !org$get_community %in% meta$get_meta$community
+      !is.na(org$get_community) &&
+        !org$get_community %in% meta$get_meta$community
     ]
   )
   authors <- authors[authors$given != org$get_rightsholder, ]

@@ -1,10 +1,11 @@
 #' Write organisation settings
 #'
 #' Store the organisation rules into `organisation.yml` file.
-#' First run `org <- checklist::organisation$new()` with the appropriate argument.
-#' Next you can store the configuration with
-#' `checklist::write_organisation(org)`.
+#' First run `org <- organisation$new()` with the appropriate argument.
+#' Next you can store the configuration with `write_organisation(org)`.
 #'
+#' @param org An `organisation` object.
+#' Create it with `organisation$new()`.
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
 #' @importFrom fs path

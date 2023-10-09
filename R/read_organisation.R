@@ -10,11 +10,20 @@
 #' @importFrom yaml read_yaml
 #' @family both
 read_organisation <- function(x = ".") {
-  x <- read_checklist(x = x)
-  organisation_file <- path(x$get_path, "organisation.yml")
-  if (!is_file(organisation_file)) {
-    return(organisation$new())
+  checklist <- try(read_checklist(x = x), silent = TRUE)
+  if (inherits(checklist, "checklist")) {
+    organisation_file <- path(checklist$get_path, "organisation.yml")
+    if (is_file(organisation_file)) {
+      read_yaml(organisation_file) |>
+        do.call(what = organisation$new) -> org
+      return(org)
+    }
   }
-  read_yaml(organisation_file) |>
-    do.call(what = organisation$new)
+  organisation_file <- path(x, "organisation.yml")
+  if (is_file(organisation_file)) {
+    read_yaml(organisation_file) |>
+      do.call(what = organisation$new) -> org
+    return(org)
+  }
+  return(organisation$new())
 }
