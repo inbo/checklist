@@ -64,18 +64,8 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
       check_output$warnings <- check_output$warnings[!incoming]
     }
   }
-  if (
-    length(check_output$notes) > 0 &&
-    any(grepl("Days since last update", check_output$notes))
-  ) {
-    last_update <- grep("Days since last update", check_output$notes)
-    check_output$notes[last_update] <- gsub(
-      "\n\nDays since last update: [0-9]+", "", check_output$notes[last_update]
-    )
-    if (length(strsplit(check_output$notes[last_update], "\n")[[1]]) == 2) {
-      check_output$notes <- check_output$notes[-last_update]
-    }
-  } # nocov end
+  # nocov end
+  check_output$notes <- clean_incoming(check_output$notes)
   check_output$warnings <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$warnings)
   check_output$notes <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$notes)
   # remove timing output from warnings and notes
@@ -86,4 +76,27 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
     notes = check_output$notes
   )
   return(x)
+}
+
+clean_incoming <- function(issues) {
+  if (length(issues) == 0) {
+    return(issues)
+  }
+  if (any(grepl("Days since last update", issues))) {
+    last_update <- grep("Days since last update", issues) # nocov start
+    issues[last_update] <- gsub(
+      "\n\nDays since last update: [0-9]+", "", issues[last_update]
+    )
+    if (length(strsplit(issues[last_update], "\n")[[1]]) == 2) {
+      issues <- issues[-last_update]
+    } # nocov end
+  }
+  if (any(grepl("New maintainer", issues))) {
+    # nocov start
+    issues <- gsub("\n\nNew maintainer:.*Old maintainer.*?<.*?>", "", issues)
+    if (length(strsplit(issues, "\n")[[1]]) == 2) {
+      issues <- character(0)
+    } # nocov end
+  }
+  return(issues)
 }
