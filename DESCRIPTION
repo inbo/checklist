@@ -53,7 +53,6 @@ Suggests:
     zen4R (>= 0.9)
 VignetteBuilder: 
     knitr
-Additional_repositories: https://inbo.r-universe.dev
 Config/checklist/communities: inbo
 Config/checklist/keywords: quality control; documentation; publication
 Encoding: UTF-8
