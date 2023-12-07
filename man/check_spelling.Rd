@@ -23,6 +23,7 @@ details.
 }
 \seealso{
 Other both: 
+\code{\link{add_badges}()},
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
 \code{\link{custom_dictionary}()},

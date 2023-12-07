@@ -16,6 +16,7 @@ Display a \code{checklist_spelling} summary
 }
 \seealso{
 Other both: 
+\code{\link{add_badges}()},
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
 \code{\link{check_spelling}()},

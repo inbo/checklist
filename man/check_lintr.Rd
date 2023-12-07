@@ -23,6 +23,7 @@ Please have a look at \code{vignette("philosophy")} for more details on the rule
 }
 \seealso{
 Other both: 
+\code{\link{add_badges}()},
 \code{\link{check_filename}()},
 \code{\link{check_spelling}()},
 \code{\link{custom_dictionary}()},

@@ -65,6 +65,7 @@ These are fonts files which often require their own file name scheme.
 
 \seealso{
 Other both: 
+\code{\link{add_badges}()},
 \code{\link{check_lintr}()},
 \code{\link{check_spelling}()},
 \code{\link{custom_dictionary}()},
