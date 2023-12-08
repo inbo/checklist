@@ -3,12 +3,16 @@
 #' Reuse existing author information or add a new author.
 #' Allows to update existing author information.
 #' @return A data.frame with author information.
+#' @param email An optional email address.
+#' When given and it matches with a single person, the function immediately
+#' returns the information of that person.
+#' @importFrom assertthat assert_that is.string noNA
 #' @importFrom fs path
 #' @importFrom tools R_user_dir
 #' @importFrom utils write.table
 #' @family utils
 #' @export
-use_author <- function() {
+use_author <- function(email) {
   root <- R_user_dir("checklist", which = "data")
   org <- read_organisation()
   current <- stored_authors(root)
@@ -19,7 +23,13 @@ use_author <- function() {
   current <- current[
     order(-current$usage, current$family, current$given, current$orcid),
   ]
-  while (TRUE) {
+  run_loop <- TRUE
+  if (!missing(email)) {
+    assert_that(is.string(email), noNA(email))
+    selected <- which(current$email == email)
+    run_loop <- length(selected) != 1
+  }
+  while (run_loop) {
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
