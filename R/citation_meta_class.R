@@ -300,6 +300,7 @@ citation_zenodo <- function(meta) {
     "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
+    is_repository(meta$get_path) &&
     !is_tracked_not_modified(
       path_rel(citation_file, git_find(meta$get_path)), meta$get_path
     )
