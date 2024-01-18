@@ -1,5 +1,5 @@
 test_that("bookdown_zenodo() works", {
-  skip_if_not_installed("zen4R")
+  skip_if_not_installed("zen4R", minimum_version = "0.10")
   skip_if_not_installed("bookdown")
   skip_if(Sys.getenv("MY_UNIVERSE") != "") # skip test on r-universe.dev
   expect_match(Sys.getenv("ZENODO_SANDBOX"), "^\\w{60}$")
