@@ -284,7 +284,7 @@ valid_package_name <- function(x) {
   grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
 }
 
-#' @importFrom assertthat `on_failure<-`
+#' @importFrom assertthat on_failure<-
 on_failure(valid_package_name) <- function(call, env) {
   paste(deparse(call$x), "is not a valid package name.")
 }
