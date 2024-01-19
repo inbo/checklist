@@ -14,6 +14,7 @@
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom lintr lint_dir lint_package
+#' @importFrom fs dir_ls
 #' @importFrom withr defer
 #' @family both
 check_lintr <- function(x = ".", quiet = FALSE) {
@@ -27,7 +28,14 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   if (x$package) {
     linter <- lint_package(path = x$get_path)
   } else {
-    linter <- lint_dir(x$get_path, pattern = "\\.(R|q)(md|nw)?$")
+    dir_ls(
+      path = x$get_path, recurse = TRUE, regexp = "/renv$", type = "directory"
+    ) |>
+      as.list() |>
+      unname() -> exclude_renv
+    linter <- lint_dir(
+      x$get_path, pattern = "\\.(R|q)(md|nw)?$", exclusions = exclude_renv
+    )
   }
   if (!quiet && length(linter) > 0) {
     print(linter)
