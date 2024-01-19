@@ -21,6 +21,7 @@ Other both:
 \code{\link{check_lintr}()},
 \code{\link{check_spelling}()},
 \code{\link{custom_dictionary}()},
+\code{\link{default_organisation}()},
 \code{\link{read_checklist}()},
 \code{\link{read_organisation}()},
 \code{\link{write_checklist}()},

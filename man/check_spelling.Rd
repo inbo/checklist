@@ -27,6 +27,7 @@ Other both:
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
 \code{\link{custom_dictionary}()},
+\code{\link{default_organisation}()},
 \code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{read_organisation}()},

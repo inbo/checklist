@@ -18,6 +18,7 @@ Other both:
 \code{\link{check_filename}()},
 \code{\link{check_lintr}()},
 \code{\link{check_spelling}()},
+\code{\link{default_organisation}()},
 \code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{read_organisation}()},
