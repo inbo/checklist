@@ -3,7 +3,7 @@
 #' - `doi`: add a DOI badge
 #' - `url`: add a website badge
 #' @inheritParams read_checklist
-#' @param ... Aditional arguments
+#' @param ... Additional arguments
 #' @importFrom assertthat assert_that
 #' @importFrom fs dir_ls path
 #' @export

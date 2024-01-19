@@ -10,7 +10,7 @@ add_badges(x = ".", ...)
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
-\item{...}{Aditional arguments}
+\item{...}{Additional arguments}
 }
 \description{
 \itemize{
