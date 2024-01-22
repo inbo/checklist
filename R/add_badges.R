@@ -12,6 +12,8 @@
 #' \dontrun{
 #'   add_badges(url = "https://www.inbo.be")
 #'   add_badges(doi = "10.5281/zenodo.8063503")
+#'   add_badges(check_project = "inbo/checklist")
+#'   add_badges(check_package = "inbo/checklist")
 #'   add_badges(url = "https://www.inbo.be", doi = "10.5281/zenodo.8063503")
 #' }
 add_badges <- function(x = ".", ...) {
@@ -30,7 +32,15 @@ add_badges <- function(x = ".", ...) {
     url =
       "[![website](https://img.shields.io/badge/website-%1$s-c04384)](%1$s)",
     doi =
-"[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)](https://doi.org/%1$s)"
+"[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)](https://doi.org/%1$s)",
+    check_package = paste0(
+      "[![R build status](https://github.com/%1$s/workflows/",
+      "check%20package%20on%20main/badge.svg)](https://github.com/%1$s/actions)"
+    ),
+    check_project = paste0(
+      "![GitHub Workflow Status](https://img.shields.io/github/actions/",
+      "workflow/status/%1$s/check_project.yml)"
+    )
   )
   dots <- dots[names(formats)]
   formats <- formats[names(dots)]
@@ -43,6 +53,6 @@ add_badges <- function(x = ".", ...) {
     }
   ) -> new_badge
   head(text, badges_start) |>
-    c(new_badge, tail(text, - badges_start)) |>
+    c(new_badge, tail(text, -badges_start)) |>
     writeLines(readme)
 }

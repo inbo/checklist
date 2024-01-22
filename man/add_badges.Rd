@@ -22,6 +22,8 @@ Defaults to \code{.}.}
 \dontrun{
   add_badges(url = "https://www.inbo.be")
   add_badges(doi = "10.5281/zenodo.8063503")
+  add_badges(check_project = "inbo/checklist")
+  add_badges(check_package = "inbo/checklist")
   add_badges(url = "https://www.inbo.be", doi = "10.5281/zenodo.8063503")
 }
 }
