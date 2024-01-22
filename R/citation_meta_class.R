@@ -229,6 +229,7 @@ validate_citation <- function(meta) {
 #' @importFrom fs path
 #' @importFrom jsonlite toJSON
 #' @importFrom knitr pandoc
+#' @importFrom gert git_find
 citation_zenodo <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
   assert_that(length(meta$get_errors) == 0)
@@ -299,8 +300,9 @@ citation_zenodo <- function(meta) {
     "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
+    is_repository(meta$get_path) &&
     !is_tracked_not_modified(
-      path_rel(citation_file, meta$get_path), meta$get_path
+      path_rel(citation_file, git_find(meta$get_path)), meta$get_path
     )
   ]
   return(errors)
