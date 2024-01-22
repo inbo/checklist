@@ -174,7 +174,10 @@ create_project <- function(path, project) {
 
   setup_project(path(path, project))
 
-  if (!interactive() || !requireNamespace("rstudioapi", quietly = TRUE)) {
+  if (
+    !interactive() || !requireNamespace("rstudioapi", quietly = TRUE) ||
+      !rstudioapi::isAvailable()
+  ) {
     return(invisible(NULL))
   }
   path(path, project) |>
