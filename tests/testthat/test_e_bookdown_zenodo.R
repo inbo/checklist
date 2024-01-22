@@ -1,10 +1,6 @@
 test_that("bookdown_zenodo() works", {
-  skip_if_not_installed("zen4R", minimum_version = "0.10")
   skip_if_not_installed("bookdown")
   skip_if(Sys.getenv("MY_UNIVERSE") != "") # skip test on r-universe.dev
-  expect_match(Sys.getenv("ZENODO_SANDBOX"), "^\\w{60}$")
-  sandbox_token <- Sys.getenv("ZENODO_SANDBOX")
-
   root <- tempfile("bookdown")
   dir_create(root)
   system.file("bookdown", package = "checklist") |>
@@ -19,6 +15,9 @@ test_that("bookdown_zenodo() works", {
   expect_is(x, "citation_meta")
   expect_identical(x$get_errors, "No LICENSE.md file found")
 
+  skip_if_not_installed("zen4R", minimum_version = "0.10")
+  expect_match(Sys.getenv("ZENODO_SANDBOX"), "^\\w{60}$")
+  sandbox_token <- Sys.getenv("ZENODO_SANDBOX")
   system.file("generic_template", "cc_by_4_0.md", package = "checklist") |>
     file_copy(path(root, "LICENSE.md"))
   zenodo_out <- tempfile(fileext = ".txt")
