@@ -7,8 +7,6 @@ on:
     branches:
       - main
       - master
-  schedule:
-    - cron: '6 0 * * 1'
 
 name: R-CMD-check-OS
 
@@ -22,17 +20,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release', skip_test: 'false'}
-          - {os: windows-latest, r: 'release', skip_test: 'true'}
-          - {os: ubuntu-22.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest", skip_test: 'false'}
-          - {os: ubuntu-22.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest", skip_test: 'false'}
+          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-22.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"}
+          - {os: ubuntu-22.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       _R_CHECK_SYSTEM_CLOCK_: false
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
 
     steps:
       - uses: actions/checkout@v3
@@ -44,26 +41,7 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - name: linux dependencies
-        if: runner.os == 'linux'
-        run: |
-          sudo apt update
-          sudo apt install -y --no-install-recommends libcurl4-openssl-dev \
-            libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev \
-            libjpeg-dev libmagick++-dev libpng-dev libpoppler-cpp-dev \
-            libsecret-1-dev libtiff5-dev
-          sudo apt install -y --no-install-recommends r-cran-assertthat \
-            r-cran-bookdown r-cran-covr r-cran-curl r-cran-desc \
-            r-cran-devtools r-cran-fs r-cran-gert r-cran-httr r-cran-hunspell \
-            r-cran-jsonlite r-cran-knitr r-cran-mockery r-cran-pdftools \
-            r-cran-r6 r-cran-rcmdcheck r-cran-remotes r-cran-rmarkdown \
-            r-cran-roxygen2 r-cran-rstudioapi r-cran-sessioninfo \
-            r-cran-testthat r-cran-withr r-cran-yaml
-          Rscript --no-save --no-restore -e 'install.packages("remotes")'
-          Rscript --no-save --no-restore -e 'remotes::install_cran(c("assertthat", "bookdown", "codemetar", "covr", "curl", "desc", "devtools", "fs", "gert", "hexSticker", "httr", "hunspell", "jsonlite", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
-
       - uses: r-lib/actions/setup-r-dependencies@v2
-        if: runner.os != 'linux'
         with:
           extra-packages: any::rcmdcheck
           needs: check
@@ -71,6 +49,3 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           error-on: '"error"'
-        env:
-          ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
-          SKIP_TEST: ${{ matrix.config.skip_test }}

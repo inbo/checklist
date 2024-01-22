@@ -3,12 +3,10 @@ on:
     branches:
       - main
       - master
-  schedule:
-    - cron: '6 0 15 * *'
-
-name: "check package on main"
 permissions:
   contents: write
+
+name: "check package on main with checklist"
 
 jobs:
   check-package:
