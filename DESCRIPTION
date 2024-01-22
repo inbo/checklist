@@ -21,6 +21,7 @@ Depends:
     R (>= 4.1.0)
 Imports:
     assertthat,
+    cli,
     codemetar,
     desc,
     devtools (> 2.4.0),
