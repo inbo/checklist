@@ -221,8 +221,8 @@ create_readme <- function(path, org) {
         sprintf(
           fmt = paste0(
             "![GitHub](https://img.shields.io/github/license/%1$s)\n",
-            "![GitHub Workflow Status](https://img.shields.io/github/workflow/",
-            "status/%1$s/check-project)\n",
+            "![GitHub Workflow Status](https://img.shields.io/github/actions/",
+            "workflow/status/%1$s/check-project)\n",
             "![GitHub repo size](https://img.shields.io/github/repo-size/%1$s)"
           )
         ) -> badges
