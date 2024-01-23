@@ -82,7 +82,7 @@ citation_bookdown <- function(meta) {
   return(cit_meta)
 }
 
-#' @inheritParams assertthat has_name
+#' @importFrom assertthat has_name
 yaml_author <- function(yaml, org) {
   author <- vapply(
     X = yaml$author, FUN = yaml_author_format,
@@ -145,7 +145,7 @@ yaml_author <- function(yaml, org) {
   )
 }
 
-#' @inheritParams assertthat has_name is.flag
+#' @importFrom assertthat has_name is.flag
 yaml_author_format <- function(person, org) {
   person_df <- data.frame(
     given = character(0), family = character(0), orcid = character(0),

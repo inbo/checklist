@@ -42,7 +42,7 @@ add_badges <- function(x = ".", ...) {
       "workflow/status/%1$s/check_project.yml)"
     )
   )
-  dots <- dots[names(formats)]
+  dots <- dots[names(dots) %in% names(formats)]
   formats <- formats[names(dots)]
   vapply(
     names(dots), FUN.VALUE = character(1), formats = formats, dots = dots,

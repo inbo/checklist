@@ -6,6 +6,24 @@ test_that("bookdown_zenodo() works", {
   system.file("bookdown", package = "checklist") |>
     dir_ls() |>
     file_copy(root)
+  path(root, "index.Rmd") |>
+    file_delete()
+  expect_error(
+    x <- bookdown_zenodo(
+      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+    ),
+    "index.Rmd not found"
+  )
+  expect_warning(
+    meta <- citation_meta$new(root),
+    "Errors found parsing citation meta data. Citation files not updated."
+  )
+  expect_s3_class(meta, c("citation_meta", "R6"))
+  expect_true(grepl("index.Rmd not found", meta$get_errors))
+
+  system.file("bookdown", package = "checklist") |>
+    dir_ls() |>
+    file_copy(root, overwrite = TRUE)
   expect_warning(
     x <- bookdown_zenodo(
       root, logger = NULL, sandbox = TRUE, token = sandbox_token
@@ -15,11 +33,33 @@ test_that("bookdown_zenodo() works", {
   expect_is(x, "citation_meta")
   expect_identical(x$get_errors, "No LICENSE.md file found")
 
+  skip_if_not_installed("zen4R")
+  system.file("generic_template", "mit.md", package = "checklist") |>
+    file_copy(path(root, "LICENSE.md"))
+  expect_warning(
+    x <- bookdown_zenodo(root, logger = NULL, sandbox = TRUE, token = "junk"),
+    "Errors found parsing citation meta data. Citation files not updated."
+  )
+  expect_equal(x$get_errors, "LICENSE.md doesn't match with CC-BY-4.0 license")
+
+  system.file("generic_template", "cc_by_4_0.md", package = "checklist") |>
+    file_copy(path(root, "LICENSE.md"), overwrite = TRUE)
+  path(root, "index.Rmd") |>
+    readLines() |>
+    tail(-2) -> index
+  c("---", "embargo: 2024-01-23", index) |>
+    writeLines(path(root, "index.Rmd"))
+  zenodo_out <- tempfile(fileext = ".txt")
+  defer(file_delete(zenodo_out))
+  sink(zenodo_out)
+  expect_error(
+    bookdown_zenodo(root, logger = NULL, sandbox = TRUE, token = "junk")
+  )
+  sink()
+
   skip_if_not_installed("zen4R", minimum_version = "0.10")
   expect_match(Sys.getenv("ZENODO_SANDBOX"), "^\\w{60}$")
   sandbox_token <- Sys.getenv("ZENODO_SANDBOX")
-  system.file("generic_template", "cc_by_4_0.md", package = "checklist") |>
-    file_copy(path(root, "LICENSE.md"))
   zenodo_out <- tempfile(fileext = ".txt")
   defer(file_delete(zenodo_out))
   sink(zenodo_out)
@@ -95,4 +135,13 @@ test_that("bookdown_zenodo() works", {
     x <- citation_meta$new(root), "Errors found parsing citation meta data"
   )
   expect_match(x$get_errors, "index.Rmd not found")
+})
+
+test_that("yaml_author_format", {
+  x <- yaml_author_format(person = "me")
+  expect_identical(class(x), "list")
+  expect_identical(attr(x[[1]], "errors")[[1]], "person must be a list")
+  x <- yaml_author_format(person = list("me"))
+  expect_identical(class(x), "list")
+  expect_identical(attr(x[[1]], "errors")[[1]], "person has no `name` element")
 })

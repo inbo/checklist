@@ -18,7 +18,7 @@ test_that("check_spelling() on a package", {
       path = path, package = package, maintainer = maintainer,
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.", language = "en-GB", keywords = "dummy",
-      communities = "inbo",
+      communities = "inbo"
     )
   )
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))

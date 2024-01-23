@@ -105,4 +105,13 @@ test_that("author tools", {
   stub(new_author, "readline", mock("Jane", "Doe", "noreply@inbo.be"))
   stub(new_author, "ask_orcid", mock("", "0000-0002-1825-0097"))
   expect_output(new_author(current, root = root, org = org))
+
+  stub(use_author, "R_user_dir", root)
+  zenodo_out <- tempfile(fileext = ".txt")
+  defer(file_delete(zenodo_out))
+  sink(zenodo_out)
+  expect_s3_class(x <- use_author("noreply@inbo.be"), "data.frame")
+  sink()
+  expect_equal(x$given, "Jane")
+  expect_equal(x$family, "Doe")
 })
