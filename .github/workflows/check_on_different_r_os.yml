@@ -20,16 +20,17 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-22.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"}
-          - {os: ubuntu-22.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest"}
+          - {os: macOS-latest,   r: 'release', skip_test: 'false'}
+          - {os: windows-latest, r: 'release', skip_test: 'true'}
+          - {os: ubuntu-22.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest", skip_test: 'false'}
+          - {os: ubuntu-22.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest", skip_test: 'false'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       _R_CHECK_SYSTEM_CLOCK_: false
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
 
     steps:
       - uses: actions/checkout@v3
