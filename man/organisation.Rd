@@ -61,6 +61,9 @@ See the details.}
 }
 \subsection{Details}{
 \itemize{
+\item \code{github}: the name of the github organisation.
+Set to \code{NA_character_} in case you don't want a mandatory github
+organisation.
 \item \code{community}: the mandatory Zenodo community.
 Defaults to \code{"inbo"}.
 Set to \code{NA_character_} in case you don't want a mandatory community.

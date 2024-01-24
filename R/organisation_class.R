@@ -10,6 +10,9 @@ organisation <- R6Class(
     #' @param ... The organisation settings.
     #' See the details.
     #' @details
+    #' - `github`: the name of the github organisation.
+    #'   Set to `NA_character_` in case you don't want a mandatory github
+    #'   organisation.
     #' - `community`: the mandatory Zenodo community.
     #'   Defaults to `"inbo"`.
     #'   Set to `NA_character_` in case you don't want a mandatory community.
