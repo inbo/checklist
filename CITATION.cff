@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: If you use this software, please cite it using these metadata.
-title: 'checklist: A Thorough and Strict Set of Checks for R Packages and Source Code'
+title: "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code"
 authors:
 - given-names: Thierry
   family-names: Onkelinx
@@ -19,10 +19,10 @@ doi: 10.5281/zenodo.4028303
 license: GPL-3.0
 repository-code: https://github.com/inbo/checklist/
 type: software
-abstract: An opinionated set of rules for R packages and R source code projects.
+abstract: "An opinionated set of rules for R packages and R source code projects."
 identifiers:
 - type: doi
   value: 10.5281/zenodo.4028303
 - type: url
   value: https://inbo.github.io/checklist/
-version: 0.3.5
+version: 0.3.6

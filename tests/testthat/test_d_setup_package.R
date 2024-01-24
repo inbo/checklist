@@ -56,4 +56,13 @@ test_that("setup_package() works", {
     setup_package(path(path, package)),
     "package prepared for checklist::check_package()"
   )
+
+  path(path, package, "README.Rmd") |>
+    readLines() -> old_readme
+  expect_equal(length(grep("10.5281/zenodo.8063503", old_readme)), 0)
+  expect_null(add_badges(path(path, package), doi = "10.5281/zenodo.8063503"))
+  path(path, package, "README.Rmd") |>
+    readLines() -> new_readme
+  expect_equal(length(grep("10.5281/zenodo.8063503", new_readme)), 1)
+  expect_equal(length(old_readme) + 1, length(new_readme))
 })

@@ -167,17 +167,19 @@ citation_print <- function(errors, meta, notes, path, warnings) {
 #' @importFrom assertthat assert_that
 validate_citation <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  org <- organisation$new()
+  org <- read_organisation(meta$get_path)
   roles <- meta$get_meta$roles
   authors <- meta$get_meta$authors
   rightsholder_id <- roles$contributor[roles$role == "copyright holder"]
   funder_id <- roles$contributor[roles$role == "funder"]
   notes <- c(
     sprintf("rightsholder differs from `%s`", org$get_rightsholder)[
-      authors$given[authors$id == rightsholder_id] != org$get_rightsholder
+      !is.na(org$get_rightsholder) &&
+        authors$given[authors$id == rightsholder_id] != org$get_rightsholder
     ],
     sprintf("funder differs from `%s`", org$get_funder)[
-      authors$given[authors$id == funder_id] != org$get_funder
+      !is.na(org$get_funder) &&
+        authors$given[authors$id == funder_id] != org$get_funder
     ]
   )
   errors <- c(
@@ -185,7 +187,8 @@ validate_citation <- function(meta) {
       !validate_orcid(authors$orcid)
     ],
     sprintf("missing required Zenodo community `%s`", org$get_community)[
-      !org$get_community %in% meta$get_meta$community
+      !is.na(org$get_community) &&
+        !org$get_community %in% meta$get_meta$community
     ]
   )
   authors <- authors[authors$given != org$get_rightsholder, ]
@@ -226,6 +229,7 @@ validate_citation <- function(meta) {
 #' @importFrom fs path
 #' @importFrom jsonlite toJSON
 #' @importFrom knitr pandoc
+#' @importFrom gert git_find
 citation_zenodo <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
   assert_that(length(meta$get_errors) == 0)
@@ -296,8 +300,9 @@ citation_zenodo <- function(meta) {
     "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
+    is_repository(meta$get_path) &&
     !is_tracked_not_modified(
-      path_rel(citation_file, meta$get_path), meta$get_path
+      path_rel(citation_file, git_find(meta$get_path)), meta$get_path
     )
   ]
   return(errors)
@@ -353,7 +358,7 @@ citation_cff <- function(meta) {
   } else {
     identifiers <- list()
   }
-  if (has_name(input, "url")) {
+  if (has_name(input, "url") && length(input$url) > 0) {
     identifiers <- c(identifiers, list(list(type = "url", value = input$url)))
   }
   cff <- list(
@@ -365,6 +370,8 @@ citation_cff <- function(meta) {
     abstract = strip_markdown(input$description) |>
       paste(collapse = "\n")
   )
+  attr(cff$title, "quoted") <- TRUE
+  attr(cff$abstract, "quoted") <- TRUE
   if (length(identifiers) > 0) {
     cff$identifiers <- identifiers
   }

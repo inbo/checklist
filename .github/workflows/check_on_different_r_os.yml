@@ -2,13 +2,9 @@ on:
   push:
     branches:
       - main
-      - master
   pull_request:
     branches:
       - main
-      - master
-  schedule:
-    - cron: '6 0 * * 1'
 
 name: R-CMD-check-OS
 
@@ -43,6 +39,7 @@ jobs:
           extra-repositories: https://inbo.r-universe.dev
 
       - uses: r-lib/actions/setup-pandoc@v2
+
 
       - name: linux dependencies
         if: runner.os == 'linux'

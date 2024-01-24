@@ -18,7 +18,7 @@ test_that("check_spelling() on a package", {
       path = path, package = package, maintainer = maintainer,
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.", language = "en-GB", keywords = "dummy",
-      communities = "inbo",
+      communities = "inbo"
     )
   )
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
@@ -125,7 +125,10 @@ test_that("check_spelling() on a project", {
   dir.create(r_user_dir)
   stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
   stub(new_author, "ask_orcid", mock(""))
-  expect_output(new_author(current = data.frame(), root = r_user_dir))
+  org <- read_organisation()
+  expect_output(
+    new_author(current = data.frame(), root = r_user_dir, org = org)
+  )
   stub(create_project, "R_user_dir", r_user_dir, depth = 5)
   stub(create_project, "readline", "test")
   expect_invisible(
@@ -186,7 +189,9 @@ test_that("check_spelling() on a project", {
   dir.create(r_user_dir)
   stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
   stub(new_author, "ask_orcid", mock(""))
-  expect_output(new_author(current = data.frame(), root = r_user_dir))
+  expect_output(
+    new_author(current = data.frame(), root = r_user_dir, org = org)
+  )
 
   hide_author <- tempfile(fileext = ".txt")
   defer(file_delete(hide_author))
@@ -376,4 +381,8 @@ test_that("check_spelling() works on a quarto project", {
 
   expect_output(quiet_cat("test", quiet = FALSE), "test")
   expect_silent(quiet_cat("test", quiet = TRUE))
+})
+
+test_that("strip_eqn() works", {
+  expect_equal(strip_eqn("\\eqn{\\alpha}"), "")
 })

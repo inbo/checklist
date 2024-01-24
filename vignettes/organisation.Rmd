@@ -1,0 +1,78 @@
+---
+title: "Organisations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Organisations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## What is an `organisation` in the `checklist` context
+
+The `organisation` object defines rules about the organisation related to the project (or package).
+`checklist` assumes by default that a project is a part of the [Research Institute for Nature and Forest (INBO)](https://www.vlaanderen.be/inbo/).
+And it will enforce to mention INBO as copyright holder and funder.
+
+Such a rule limits to use of `checklist` outside of INBO.
+Therefore we added the `organisation` object.
+It contains the following elements:
+
+- [GitHub](https://github.com) organisation
+- copyright holder
+- funder
+- organisation e-mail
+- [Zenodo](https://zenodo.org) community
+- a list of organisation affiliations
+
+The organisation affiliations must be a named list using the email domain names as names.
+Every element is a list containing the elements `affiliation` and `orcid`.
+`affiliation` is a character vector with one or more allowed organisation names.
+Use multiple values to add optional translations of the organisation name.
+`orcid` must be either `TRUE` or `FALSE`.
+Setting `orcid` to `TRUE` requires every author with matching e-mail to have an [ORCID](https://orcid.org/) number.
+
+## Defining a specific `organisation` for a project
+
+First generate the object with `organisation$new()`.
+The store this object in your project with `write_organisation()`.
+The function stores the information in `organisation.yml`, a plain text file in YAML format.
+
+```{r}
+library(checklist)
+# create a dummy project
+my_project_path <- tempfile("my_project")
+dir.create(my_project_path)
+# create an organisation object
+org <- organisation$new(
+  rightsholder = "Vlaamse overheid", funder = "Vlaamse overheid",
+  email = "info@vlaanderen.be", github = "vlaanderen",
+  community = NA_character_,
+  organisation = list(
+    "vlaanderen.be" = list(
+      affiliation = "Vlaamse overheid", orcid = FALSE
+    )
+  )
+)
+# store the organisation in the dummy project
+write_organisation(org, my_project_path)
+```
+
+## Defining a default `organisation` object for your machine
+
+Store the organisation as a default with `default_organisation(org = org)`.
+
+Whenever `checklist` needs the `organisation` information, it will retrieve it with `read_organisation()`.
+It first looks at project root folder for the `organisation.yml` file.
+When missing it looks for the machines default `organisation.yml`.
+In this case it will copy the machines default `organisation.yml` into the project.
+Hence the `organisation` information is a part of the project, which is required to use the information during checks on other machines.
+When `read_organisation()` find neither a project `organisation.yml` nor a machines default `organisation.yml`, it reverts to the INBO `organisation`.

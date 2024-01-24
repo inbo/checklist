@@ -120,7 +120,9 @@ from the web. More info on https://github.com/github/renaming"[
 
   x$add_error(desc_error, item = "DESCRIPTION", keep = FALSE)
   x$add_notes(notes, item = "DESCRIPTION")
-  x$add_warnings(check_authors(this_desc), item = "DESCRIPTION")
+  read_organisation(x$get_path) |>
+    check_authors(this_desc = this_desc) |>
+    x$add_warnings(item = "DESCRIPTION")
 
   check_license(x = x)
 }
@@ -284,13 +286,15 @@ Please send a pull request if you need support for this license.",
   return(x)
 }
 
+#' @importFrom assertthat assert_that
 #' @importFrom utils person
-check_authors <- function(this_desc) {
+check_authors <- function(this_desc, org) {
+  assert_that(inherits(org, "organisation"))
   authors <- this_desc$get_authors()
-  org <- organisation$new()
   stopifnot(
     "TO DO: handle funder not equal to rightsholder" =
-      org$get_rightsholder == org$get_funder
+      (is.na(org$get_rightsholder) && is.na(org$get_funder)) ||
+        (org$get_rightsholder == org$get_funder)
   )
   rightsholder <- person(
     given = org$get_rightsholder, role = c("cph", "fnd"), email = org$get_email
@@ -298,7 +302,7 @@ check_authors <- function(this_desc) {
   problems <- sprintf(
     "`%s` must be listed as copyright holder and funder and use `%s` as email.",
     org$get_rightsholder, org$get_email
-  )[!rightsholder %in% authors]
+  )[!is.na(org$get_rightsholder) && !rightsholder %in% authors]
   authors <- authors[!authors %in% rightsholder]
   vapply(
     authors, FUN.VALUE = vector(mode = "list", length = 1L),

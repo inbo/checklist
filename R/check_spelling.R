@@ -139,6 +139,16 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
           text = text, i = i,
           FUN = function(word, text, i) {
             detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
+            if (min(detect) == -1) {
+              return(
+                list(
+                  data.frame(
+                    line = integer(0), column = integer(0),
+                    message = character(0)
+                  )
+                )
+              )
+            }
             list(
               data.frame(line = i, column = as.vector(detect), message = word)
             )

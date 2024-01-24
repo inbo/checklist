@@ -4,7 +4,12 @@
 \alias{use_author}
 \title{Which author to use}
 \usage{
-use_author()
+use_author(email)
+}
+\arguments{
+\item{email}{An optional email address.
+When given and it matches with a single person, the function immediately
+returns the information of that person.}
 }
 \value{
 A data.frame with author information.

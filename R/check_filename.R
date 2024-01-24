@@ -33,7 +33,7 @@
 #'
 #' @inheritParams read_checklist
 #' @export
-#' @importFrom fs path
+#' @importFrom fs path path_split
 #' @importFrom gert git_ls
 #' @family both
 check_filename <- function(x = ".") {
@@ -56,8 +56,9 @@ check_filename <- function(x = ".") {
   ignored_dirs <- vapply(
     dirs,
     function(x) {
-     x[1] %in% c("", ".", ".git", ".Rproj.user") |
-        identical(x[1:4], c("inst", "local_tex", "fonts", "opentype"))
+     x[1] %in% c("", ".", ".git", ".Rproj.user") ||
+        identical(x[1:4], c("inst", "local_tex", "fonts", "opentype")) ||
+        "_freeze" %in% x
     },
     logical(1)
   )
@@ -90,6 +91,7 @@ check_filename <- function(x = ".") {
 
   # ignore git and RStudio files
   files <- files[!grepl("\\.(git|Rproj.user)/.*", files)]
+  files <- files[!grepl("_freeze/.*", files)]
   # ignore some standardised files
   re <- sprintf(
     "^(%s)$",
@@ -100,7 +102,8 @@ check_filename <- function(x = ".") {
         "README\\.R?md", "NEWS\\.md",
         "CODE_OF_CONDUCT\\.md", "CONTRIBUTING\\.md", "LICENSE(\\.md)?",
         "SUPPORT\\.md", "SECURITY\\.md", "FUNDING\\.yml",
-        "Dockerfile", "WORDLIST.*", "docker-compose.*\\.yml"
+        "Dockerfile", "WORDLIST.*", "docker-compose.*\\.yml",
+        "REVIEWING.md", "_redirects"
       ),
       collapse = "|"
     )
