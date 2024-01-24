@@ -382,3 +382,7 @@ test_that("check_spelling() works on a quarto project", {
   expect_output(quiet_cat("test", quiet = FALSE), "test")
   expect_silent(quiet_cat("test", quiet = TRUE))
 })
+
+test_that("strip_eqn() works", {
+  expect_equal(strip_eqn("\\eqn{\\alpha}"), "")
+})
