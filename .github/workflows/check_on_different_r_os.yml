@@ -2,11 +2,9 @@ on:
   push:
     branches:
       - main
-      - master
   pull_request:
     branches:
       - main
-      - master
 
 name: R-CMD-check-OS
 
@@ -42,7 +40,27 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+
+      - name: linux dependencies
+        if: runner.os == 'linux'
+        run: |
+          sudo apt update
+          sudo apt install -y --no-install-recommends libcurl4-openssl-dev \
+            libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev \
+            libjpeg-dev libmagick++-dev libpng-dev libpoppler-cpp-dev \
+            libsecret-1-dev libtiff5-dev
+          sudo apt install -y --no-install-recommends r-cran-assertthat \
+            r-cran-bookdown r-cran-covr r-cran-curl r-cran-desc \
+            r-cran-devtools r-cran-fs r-cran-gert r-cran-httr r-cran-hunspell \
+            r-cran-jsonlite r-cran-knitr r-cran-mockery r-cran-pdftools \
+            r-cran-r6 r-cran-rcmdcheck r-cran-remotes r-cran-rmarkdown \
+            r-cran-roxygen2 r-cran-rstudioapi r-cran-sessioninfo \
+            r-cran-testthat r-cran-withr r-cran-yaml
+          Rscript --no-save --no-restore -e 'install.packages("remotes")'
+          Rscript --no-save --no-restore -e 'remotes::install_cran(c("assertthat", "bookdown", "codemetar", "covr", "curl", "desc", "devtools", "fs", "gert", "hexSticker", "httr", "hunspell", "jsonlite", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
+
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os != 'linux'
         with:
           extra-packages: any::rcmdcheck
           needs: check
@@ -50,3 +68,6 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           error-on: '"error"'
+        env:
+          ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
+          SKIP_TEST: ${{ matrix.config.skip_test }}
