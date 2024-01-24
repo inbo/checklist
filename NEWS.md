@@ -1,8 +1,13 @@
 # checklist 0.3.6
 
+* Add an `organisation` class to store organisation rules different from those
+  of the Research Institute for Nature and Forest (INBO).
+  See `vignette("organisation", package = "checklist")` for more information.
+* `add_badges()` helps to add badges to the `README`.
 * Put double quotes around the title and abstract fields of `CITATION.cff`.
 * `check_documentation()` handles assignment functions and re-exported functions
   correctly.
+* `check_lintr()` ignores `renv` subdirectories (#118).
 
 # checklist 0.3.5
 
