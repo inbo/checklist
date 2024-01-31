@@ -18,7 +18,7 @@ Go to `vignette("getting_started", package = "checklist")` when you want to use 
 
 # Starting a new project from scratch
 
-Run `create_project(path, project)`.
+Open RStudio and run `create_project(path, project)`.
 `path` must be an existing directory.
 `project` is the name of the project.
 `create_project()` creates the project as a subdirectory of `path` with name `project`.
