@@ -167,7 +167,7 @@ author2person <- function(role = "aut") {
   if (is.na(df$orcid) || df$orcid == "") {
     comment <- character(0)
   } else {
-    comment <- c(orcid = df$orcid)
+    comment <- c(ORCID = df$orcid)
   }
   if (!is.na(df$affiliation) && df$affiliation != "") {
     comment <- c(comment, affiliation = df$affiliation)
