@@ -291,7 +291,8 @@ citation_zenodo <- function(meta) {
   suppressMessages(pandoc(desc, format = "html"))
   gsub("\\.md", ".html", desc) |>
     readLines() |>
-    paste(collapse = "\n") -> zenodo$description
+    paste(collapse = " ") |>
+    gsub(pattern = " +", replacement = " ") -> zenodo$description
   citation_file <- path(meta$get_path, ".zenodo.json")
   toJSON(zenodo, pretty = TRUE, auto_unbox = TRUE) |>
     writeLines(citation_file)

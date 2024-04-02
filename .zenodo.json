@@ -3,7 +3,7 @@
   "version": "0.3.6",
   "license": "GPL-3.0",
   "upload_type": "software",
-  "description": "<p>An opinionated set of rules for R packages and R source code\nprojects.<\/p>",
+  "description": "<p>An opinionated set of rules for R packages and R source code projects.<\/p>",
   "keywords": [
     "quality control",
     "documentation",
