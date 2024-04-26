@@ -88,9 +88,11 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
       format(include = c("given", "family")) |>
       strsplit(split = " ") |>
       unlist() |>
-      c(dependencies(root, progress = FALSE)$Package) |>
-      unique() |>
-      c(add_words) -> add_words
+      c(
+        dependencies(root, progress = FALSE)$Package, add_words,
+        descr$get_field("Package")
+      ) |>
+      unique() -> add_words
   }
 
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
