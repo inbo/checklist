@@ -22,7 +22,7 @@ The `organisation` object defines rules about the organisation related to the pr
 `checklist` assumes by default that a project is a part of the [Research Institute for Nature and Forest (INBO)](https://www.vlaanderen.be/inbo/).
 And it will enforce to mention INBO as copyright holder and funder.
 
-Such a rule limits to use of `checklist` outside of INBO.
+Such a rule limits the use of `checklist` outside of INBO.
 Therefore we added the `organisation` object.
 It contains the following elements:
 
@@ -43,7 +43,7 @@ Setting `orcid` to `TRUE` requires every author with matching e-mail to have an 
 ## Defining a specific `organisation` for a project
 
 First generate the object with `organisation$new()`.
-The store this object in your project with `write_organisation()`.
+Then store this object in your project with `write_organisation()`.
 The function stores the information in `organisation.yml`, a plain text file in YAML format.
 
 ```{r}
@@ -75,4 +75,4 @@ It first looks at project root folder for the `organisation.yml` file.
 When missing it looks for the machines default `organisation.yml`.
 In this case it will copy the machines default `organisation.yml` into the project.
 Hence the `organisation` information is a part of the project, which is required to use the information during checks on other machines.
-When `read_organisation()` find neither a project `organisation.yml` nor a machines default `organisation.yml`, it reverts to the INBO `organisation`.
+When `read_organisation()` finds neither a project `organisation.yml` nor a machines default `organisation.yml`, it reverts to the INBO `organisation`.
