@@ -57,10 +57,17 @@ citation_bookdown <- function(meta) {
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
   publication_type <- c(
-    "annotationcollection", "book", "section", "conferencepaper",
-    "datamanagementplan", "article", "patent", "preprint", "deliverable",
-    "milestone", "proposal", "report", "softwaredocumentation",
-    "taxonomictreatment", "technicalnote", "thesis", "workingpaper", "other"
+    "publication", "publication-annotationcollection", "publication-article",
+    "publication-book", "publication-conferencepaper",
+    "publication-conferenceproceeding", "publication-datamanagementplan",
+    "publication-datapaper", "publication-deliverable",
+    "publication-dissertation", "publication-journal", "publication-milestone",
+    "publication-other", "publication-patent", "publication-peerreview",
+    "publication-preprint", "publication-proposal", "publication-report",
+    "publication-section", "publication-softwaredocumentation",
+    "publication-standard", "publication-taxonomictreatment",
+    "publication-technicalnote", "publication-thesis",
+    "publication-workingpaper"
   )
   c(
     "no `keywords` element found"[!has_name(yaml, "keywords")],

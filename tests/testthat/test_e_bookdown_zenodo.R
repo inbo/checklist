@@ -46,8 +46,8 @@ test_that("bookdown_zenodo() works", {
     file_copy(path(root, "LICENSE.md"), overwrite = TRUE)
   path(root, "index.Rmd") |>
     readLines() |>
-    tail(-2) -> index
-  c("---", "embargo: 2024-01-23", index) |>
+    tail(-1) -> index
+  c("---", "embargo: 2030-01-23", index) |>
     writeLines(path(root, "index.Rmd"))
   zenodo_out <- tempfile(fileext = ".txt")
   defer(file_delete(zenodo_out))
@@ -57,12 +57,11 @@ test_that("bookdown_zenodo() works", {
   )
   sink()
 
-  skip_if_not_installed("zen4R", minimum_version = "0.10")
   expect_match(Sys.getenv("ZENODO_SANDBOX"), "^\\w{60}$")
   sandbox_token <- Sys.getenv("ZENODO_SANDBOX")
-  zenodo_out <- tempfile(fileext = ".txt")
-  defer(file_delete(zenodo_out))
-  sink(zenodo_out)
+  zenodo_out2 <- tempfile(fileext = ".txt")
+  defer(file_delete(zenodo_out2))
+  sink(zenodo_out2)
   suppressMessages(
     x <- bookdown_zenodo(
       root, logger = NULL, sandbox = TRUE, token = sandbox_token
@@ -71,14 +70,14 @@ test_that("bookdown_zenodo() works", {
   sink()
   manager <- zen4R::ZenodoManager$new(sandbox = TRUE, token = sandbox_token)
   expect_true(
-    manager$deleteRecord(x$record_id),
-    label = paste("Remove Zenodo sandbox record", x$links$html)
+    manager$deleteRecord(x$id),
+    label = paste("Remove Zenodo sandbox record", x$links$self_html)
   )
 
   path(root, "index.Rmd") |>
     readLines() -> index
-  head(index, 3) |>
-    c("  - Josiah Carberry", tail(index, -10)) |>
+  head(index, 4) |>
+    c("  - Josiah Carberry", tail(index, -11)) |>
     writeLines(path(root, "index.Rmd"))
   expect_warning(
     x <- citation_meta$new(root),
@@ -88,7 +87,7 @@ test_that("bookdown_zenodo() works", {
     x$get_errors,
     c("no author with `corresponding: true`", "person must be a list")
   )
-  head(index, 3) |>
+  head(index, 4) |>
     c("  - name: Josiah Carberry", tail(index, -10)) |>
     writeLines(path(root, "index.Rmd"))
   expect_warning(

@@ -51,7 +51,7 @@ Suggests:
     showtext,
     sysfonts,
     testthat,
-    zen4R (>= 0.9)
+    zen4R (>= 0.10)
 VignetteBuilder: 
     knitr
 Config/checklist/communities: inbo
