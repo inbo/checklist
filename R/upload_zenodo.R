@@ -81,7 +81,9 @@ zen_upload <- function(zenodo, zen_rec, path) {
     msg = ifelse(
       zen_rec$status == "400",
       "Problem authenticating to Zenodo. Check the Zenodo token.",
-      zen_rec$message %||% "Error uploading to Zenodo without error message."
+      first_non_null(
+        zen_rec$message, "Error uploading to Zenodo without error message."
+      )
     )
   )
 
@@ -97,4 +99,15 @@ zen_upload <- function(zenodo, zen_rec, path) {
     browseURL(zen_rec$links$self_html)
   }
   return(zen_rec)
+}
+
+first_non_null <- function(...) {
+  dots <- list(...)
+  if (length(dots) == 0) {
+    return(NULL)
+  }
+  if (!is.null(dots[[1]])) {
+    return(dots[[1]])
+  }
+  do.call(first_non_null, tail(dots, -1))
 }

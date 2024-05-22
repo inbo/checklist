@@ -16,23 +16,23 @@
       "name": "Onkelinx, Thierry",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0001-8804-4216",
-      "type": "ContactPerson"
+      "type": "contactperson"
     },
     {
       "name": "Lommelen, Els",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0002-3481-5684",
-      "type": "ProjectMember"
+      "type": "projectmember"
     },
     {
       "name": "Van Calster, Hans",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0001-8595-8426",
-      "type": "ProjectMember"
+      "type": "projectmember"
     },
     {
       "name": "Research Institute for Nature and Forest (INBO)",
-      "type": "RightsHolder"
+      "type": "rightsholder"
     }
   ],
   "creators": [
