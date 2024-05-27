@@ -26,8 +26,7 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   zen_rec$setLicense(tolower(cit_meta$license), sandbox = sandbox)
   zen_rec$addLanguage(cit_meta$language)
   zen_creator(zen_rec, cit_meta$creator) |>
-    zen_contributor(cit_meta$contributors) |>
-    zen_communities(cit_meta$communities, sandbox = sandbox) -> zen_rec
+    zen_contributor(cit_meta$contributors) -> zen_rec
   zen_rec$setSubjects(cit_meta$keywords)
   zen_rec$setResourceType(cit_meta$publication_type)
   if (has_name(cit_meta, "doi")) {
@@ -60,14 +59,8 @@ zen_contributor <- function(zen_rec, contributors) {
   return(zen_rec)
 }
 
-zen_communities <- function(zen_rec, communities, sandbox) {
-  for (x in communities) {
-    zen_rec$addCommunity(x$identifier, sandbox = sandbox)
-  }
-  return(zen_rec)
-}
-
 #' @importFrom assertthat assert_that has_name
+#' @importFrom cli cli_alert_info cli_alert_warning
 #' @importFrom fs dir_ls
 #' @importFrom utils browseURL
 zen_upload <- function(zenodo, zen_rec, path) {
@@ -91,9 +84,14 @@ zen_upload <- function(zenodo, zen_rec, path) {
   for (filename in to_upload) {
     zenodo$uploadFile(filename, record = zen_rec)
   }
-  message(
-    "Draft uploaded to Zenodo. Please visit ", zen_rec$links$self_html,
-    " to publish."
+  c(
+    "Draft uploaded to Zenodo.",
+    "Please visit {zen_rec$links$self_html} to publish."
+  ) |>
+    paste(collapse = " ") |>
+    cli_alert_info()
+  cli_alert_warning(
+    "Remember to add the publication to the relevant communities."
   )
   if (interactive()) {
     browseURL(zen_rec$links$self_html)
