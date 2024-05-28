@@ -3,6 +3,9 @@
 #' First clears all the existing files in the `output_dir` set in
 #' `_bookdown_.yml`.
 #' Then renders all required output formats and uploads them to Zenodo.
+#' `bookdown_zenodo()` creates a draft record when you don't specify a community
+#' in the yaml.
+#' Otherwise it creates a review request for the first community.
 #' @param path The root folder of the report
 #' @param zip_format A vector with output formats that generate multiple files.
 #' The function will bundle all the files in a zip file for every format.

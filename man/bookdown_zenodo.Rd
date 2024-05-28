@@ -40,6 +40,9 @@ Use \code{NULL} to hide the logs.
 First clears all the existing files in the \code{output_dir} set in
 \verb{_bookdown_.yml}.
 Then renders all required output formats and uploads them to Zenodo.
+\code{bookdown_zenodo()} creates a draft record when you don't specify a community
+in the yaml.
+Otherwise it creates a review request for the first community.
 }
 \seealso{
 Other utils: 

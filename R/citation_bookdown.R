@@ -94,7 +94,19 @@ citation_bookdown <- function(meta) {
     "No `publication_type` element found"[!has_name(yaml, "publication_type")]
   ) |>
     c(cit_meta$notes) -> cit_meta$notes
+  cit_meta$meta$community <- split_community(cit_meta$meta$community)
   return(cit_meta)
+}
+
+#' @importFrom assertthat assert_that
+split_community <- function(community) {
+  if (is.null(community)) {
+    return(NULL)
+  }
+  assert_that(is.character(community))
+  strsplit(community, split = "\\s*;\\s*") |>
+    unlist() |>
+    unique()
 }
 
 #' @importFrom assertthat has_name

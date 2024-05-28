@@ -40,7 +40,9 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   )
   zen_rec$setPublisher(cit_meta$publisher)
 
-  zen_rec <- zen_upload(zenodo, zen_rec, path)
+  zen_rec <- zen_upload(
+    zenodo, zen_rec, path, community = cit_meta$communities
+  )
   return(invisible(zen_rec))
 }
 
@@ -63,11 +65,11 @@ zen_contributor <- function(zen_rec, contributors) {
   return(zen_rec)
 }
 
-#' @importFrom assertthat assert_that has_name
+#' @importFrom assertthat assert_that has_name is.string noNA
 #' @importFrom cli cli_alert_info cli_alert_warning
 #' @importFrom fs dir_ls
 #' @importFrom utils browseURL
-zen_upload <- function(zenodo, zen_rec, path) {
+zen_upload <- function(zenodo, zen_rec, path, community = NULL) {
   zen_rec <- zenodo$depositRecord(zen_rec, publish = FALSE)
   assert_that(
     has_name(zen_rec, "status"),
@@ -88,15 +90,33 @@ zen_upload <- function(zenodo, zen_rec, path) {
   for (filename in to_upload) {
     zenodo$uploadFile(filename, record = zen_rec)
   }
-  c(
-    "Draft uploaded to Zenodo.",
-    "Please visit {zen_rec$links$self_html} to publish."
-  ) |>
-    paste(collapse = " ") |>
-    cli_alert_info()
-  cli_alert_warning(
-    "Remember to add the publication to the relevant communities."
+
+  if (is.null(community)) {
+    c(
+      "Draft uploaded to Zenodo.",
+      "Please visit {zen_rec$links$self_html} to publish."
+    ) |>
+      paste(collapse = " ") |>
+      cli_alert_info()
+    if (interactive()) {
+      browseURL(zen_rec$links$self_html)
+    }
+    return(zen_rec)
+  }
+
+  zenodo$createReviewRequest(
+    record = zen_rec, community = unlist(head(community, 1))
   )
+  zenodo$submitRecordForReview(
+    recordId = zen_rec$id,
+    message = paste(
+      "Automated review request created by the checklist package.",
+      "More information at https://inbo.github.io/checklist/."
+    )
+  )
+  if (length(community) > 1) {
+    cli_alert_warning("Remember to add the additional communities.")
+  }
   if (interactive()) {
     browseURL(zen_rec$links$self_html)
   }

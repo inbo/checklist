@@ -17,7 +17,7 @@ reviewer:
     affiliation: Wesleyan University
 lang: nl
 keywords: checklist; unit test
-community: inbo
+community: checklist; inbo
 publication_type: publication-report
 publisher: Research Institute for Nature and Forest (INBO)
 funder: Research Institute for Nature and Forest (INBO)
