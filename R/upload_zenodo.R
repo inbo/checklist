@@ -35,6 +35,9 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   if (has_name(cit_meta, "version")) {
     zen_rec$setVersion(cit_meta$version)
   }
+  zen_rec$setPublicationDate(
+    first_non_null(cit_meta$publication_date, Sys.Date())
+  )
 
   zen_rec <- zen_upload(zenodo, zen_rec, path)
   return(invisible(zen_rec))

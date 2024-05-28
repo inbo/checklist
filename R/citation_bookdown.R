@@ -24,10 +24,17 @@ citation_bookdown <- function(meta) {
     ifelse(has_name(yaml, "subtitle"), paste0(". ", yaml$subtitle, "."), ".")
   )
   cit_meta$meta$upload_type <- "publication"
+  if (has_name(yaml, "publication_date")) {
+    cit_meta$meta$publication_date <- string2date(yaml$publication_date) |>
+      format("%Y-%m-%d")
+  }
   if (has_name(yaml, "embargo")) {
     cit_meta$meta$embargo_date <- string2date(yaml$embargo) |>
       format("%Y-%m-%d")
     cit_meta$meta$access_right <- "embargoed"
+    if (!has_name(yaml, "publication_date")) {
+      cit_meta$meta$publication_date <- cit_meta$meta$embargo_date
+    }
   } else {
     cit_meta$meta$access_right <- "open"
   }
