@@ -59,7 +59,7 @@ citation_bookdown <- function(meta) {
     cit_meta$meta$language <- yaml$lang
   }
   extra <- c(
-    "community", "doi", "keywords", "publication_type"
+    "community", "doi", "keywords", "publication_type", "publisher"
   )
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
@@ -77,7 +77,8 @@ citation_bookdown <- function(meta) {
     "publication-workingpaper"
   )
   c(
-    "no `keywords` element found"[!has_name(yaml, "keywords")],
+    "No `keywords` element found"[!has_name(yaml, "keywords")],
+    "No `publisher` element found"[!has_name(yaml, "publisher")],
     paste(
       "`publication_type` must be one of following:",
       paste(publication_type, collapse = ", "),
@@ -89,8 +90,8 @@ citation_bookdown <- function(meta) {
   ) |>
     c(cit_meta$errors) -> cit_meta$errors
   c(
-    "no `community` element found"[!has_name(yaml, "community")],
-    "no `publication_type` element found"[!has_name(yaml, "publication_type")]
+    "No `community` element found"[!has_name(yaml, "community")],
+    "No `publication_type` element found"[!has_name(yaml, "publication_type")]
   ) |>
     c(cit_meta$notes) -> cit_meta$notes
   return(cit_meta)

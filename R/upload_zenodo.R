@@ -38,6 +38,7 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   zen_rec$setPublicationDate(
     first_non_null(cit_meta$publication_date, Sys.Date())
   )
+  zen_rec$setPublisher(cit_meta$publisher)
 
   zen_rec <- zen_upload(zenodo, zen_rec, path)
   return(invisible(zen_rec))

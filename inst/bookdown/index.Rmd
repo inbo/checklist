@@ -19,6 +19,7 @@ lang: nl
 keywords: checklist; unit test
 community: inbo
 publication_type: publication-report
+publisher: Research Institute for Nature and Forest (INBO)
 funder: Research Institute for Nature and Forest (INBO)
 rightsholder: Research Institute for Nature and Forest (INBO)
 site: bookdown::bookdown_site
