@@ -325,13 +325,19 @@ is_tracked_not_modified <- function(file, repo = ".") {
   return(is_tracked && is_not_modified)
 }
 
-#' @importFrom gert git_info
+#' @importFrom gert git_branch_list git_diff git_info
 #' @importFrom cli cli_h1 cli_text col_green col_red
 checklist_diff <- function(root) {
   if (inherits(try(git_info(repo = root), silent = TRUE), "try-error")) {
     return(invisible(NULL))
   }
-  changes <- git_diff(repo = root)
+  branch_info <- git_branch_list(repo = root)
+  branch_info$ref[
+    grep("/main$", branch_info$ref) |>
+      c(grep("/master$", branch_info$ref)) |>
+      head(1)
+  ] |>
+    git_diff(repo = root) -> changes
   if (length(changes) == 0) {
     return(invisible(NULL))
   }
