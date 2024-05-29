@@ -25,6 +25,7 @@
 #' @param communities An optional vector of Zenodo community id's.
 #' @export
 #' @importFrom assertthat assert_that is.string
+#' @importFrom cli cli_alert_info
 #' @importFrom desc description
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
@@ -61,6 +62,11 @@ create_package <- function(
   if (missing(maintainer)) {
     cat("Please select the maintainer")
     maintainer <- author2person(role = c("aut", "cre"))
+    if (.Platform$OS.type == "windows") {
+      cli_alert_info(
+"This function opens a dialog box which might be hidden behind another window."
+      )
+    }
     while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
       maintainer <- c(maintainer, author2person())
     }
