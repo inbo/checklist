@@ -216,17 +216,20 @@ create_readme <- function(path, org) {
     sprintf(fmt = "**keywords**: %s") -> keywords
   c("[^cph]: copyright holder", "[^fnd]: funder", attr(author, "footnote")) |>
     unique() -> footnote
-  if (!is_repository(path)) {
-    badges <- character(0)
-  } else {
+  paste0(
+    "[![Project Status: Concept - Minimal or no implementation has been done ",
+    "yet, or the repository is only intended to be a limited example, demo, ",
+    "or proof-of-concept.]",
+    "(https://www.repostatus.org/badges/latest/concept.svg)]",
+    "(https://www.repostatus.org/#concept)"
+  ) -> badges
+  if (is_repository(path)) {
     remotes <- git_remote_list(repo = path)
     remotes$url[remotes$name == "origin"] |>
       gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
       gsub(pattern = "https://.*?@", replacement = "https://") |>
       gsub(pattern = "\\.git$", replacement = "") -> repo_url
-    if (length(repo_url) > 0 && !grepl("github.com", repo_url)) {
-      badges <- character(0)
-    } else {
+    if (length(repo_url) > 0 && grepl("github.com", repo_url)) {
       gsub("https://github.com/", "", repo_url) |>
         sprintf(
           fmt = paste0(
