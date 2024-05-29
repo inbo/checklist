@@ -318,8 +318,8 @@ renv_activate <- function(path) {
   ) {
     return(invisible(NULL))
   }
-  # nocov start
-  sprintf("Rscript -e 'renv::init(\"%s\", restart = FALSE)'", path) |>
-    execshell()
-  # nocov end
+  c(
+    "if (!utils::file_test(\"-f\", \"renv.lock\")) {", "  renv::init()", "}"
+  ) |>
+    writeLines(path(path, ".Rprofile"))
 }
