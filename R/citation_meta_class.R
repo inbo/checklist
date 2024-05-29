@@ -199,14 +199,17 @@ validate_citation <- function(meta) {
     FUN.VALUE = vector(mode = "list", length = 1), org = org$get_organisation,
     FUN = function(i, org) {
       paste(
-        "Non standard affiliation for %s %s as member of `%s`. ",
-        "Please use any of the following", collapse = ""
+        "Non standard affiliation for %s %s as member of `%s`.",
+        "Please use one of the following:\n%s", collapse = ""
       ) |>
         sprintf(
-          authors$given[i], authors$family[i], authors$organisation[i]
+          authors$given[i], authors$family[i], authors$organisation[i],
+          paste(org[[authors$organisation[i]]]$affiliation, collapse = "\n")
         ) -> error
+      strsplit(authors$affiliation[i], split = "\\s*;\\s*") |>
+        unlist() -> aff
       error <- error[
-        !authors$affiliation[i] %in% org[[authors$organisation[i]]]$affiliation
+        !any(aff %in% org[[authors$organisation[i]]]$affiliation)
       ]
       if (org[[authors$organisation[i]]]$orcid) {
         error <- c(
