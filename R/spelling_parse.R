@@ -269,6 +269,9 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("\\s[/\\\\]\\s", " ", text)
   text <- gsub("\\s[/\\\\]$", " ", text)
   text <- gsub("^[/\\\\]\\s", " ", text)
+  # remove double backward slashes at the start or end of a line
+  text <- gsub("^\\\\\\\\", " ", text)
+  text <- gsub("\\\\\\\\$", " ", text)
   # remove quarto anchors
   text <- gsub("\\{#.*?\\}", "", text)
   # remove quarto caption options
