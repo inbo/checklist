@@ -6,19 +6,12 @@
 #' @param path the project root folder
 #' @export
 #' @importFrom assertthat assert_that is.string
-#' @importFrom cli cli_alert_info
 #' @importFrom fs dir_create file_copy is_dir path path_real path_rel
 #' @family setup
 setup_project <- function(path = ".") {
   assert_that(is.string(path), is_dir(path))
   path <- path_real(path)
   checklist_file <- path(path, "checklist.yml")
-
-  if (.Platform$OS.type == "windows") {
-    cli_alert_info(
-"This function opens a dialog box which might be hidden behind another window."
-    )
-  }
 
   if (is_file(checklist_file)) {
     x <- read_checklist(path)
@@ -298,8 +291,7 @@ preferred_protocol <- function(org) {
 #' @export
 #' @family utils
 ask_yes_no <- function(
-  msg, default = TRUE,
-  prompts = getOption("askYesNo", gettext(c("Yes", "No", "Cancel"))), ...
+  msg, default = TRUE, prompts = c("Yes", "No", "Cancel"), ...
 ) {
   if (!interactive()) {
     return(default)

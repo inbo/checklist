@@ -4,12 +4,7 @@
 \alias{ask_yes_no}
 \title{Function to ask a simple yes no question}
 \usage{
-ask_yes_no(
-  msg,
-  default = TRUE,
-  prompts = getOption("askYesNo", gettext(c("Yes", "No", "Cancel"))),
-  ...
-)
+ask_yes_no(msg, default = TRUE, prompts = c("Yes", "No", "Cancel"), ...)
 }
 \arguments{
 \item{msg}{
