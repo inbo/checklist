@@ -1,4 +1,0 @@
-book_filename: "unit_test.Rmd"
-output_dir: "../output/bookdown"
-delete_merged_file: TRUE
-edit: https://github.com/inbo/checklist/edit/main/inst/bookdown/%s
