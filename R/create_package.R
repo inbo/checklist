@@ -29,7 +29,7 @@
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
 #' @importFrom tools toTitleCase
-#' @importFrom utils askYesNo installed.packages
+#' @importFrom utils installed.packages
 #' @family setup
 #' @examples
 #' # maintainer in `utils::person()` format
@@ -66,14 +66,14 @@ create_package <- function(
     }
   }
   assert_that(inherits(maintainer, "person"))
-  org <- organisation$new()
-  maintainer <- c(maintainer, org$as_person)
 
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
   assert_that(is.character(keywords), length(keywords) > 0)
   assert_that(is.character(communities))
+  org <- read_organisation(path)
+  maintainer <- c(maintainer, org$as_person)
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,
@@ -273,14 +273,21 @@ create_package <- function(
   )
 
   message("package created at `", path, "`")
-  return(invisible(NULL))
+
+  if (
+    !interactive() || !requireNamespace("rstudioapi", quietly = TRUE) ||
+    !rstudioapi::isAvailable()
+  ) {
+    return(invisible(NULL))
+  }
+  rstudioapi::openProject(path, newSession = TRUE)
 }
 
 valid_package_name <- function(x) {
   grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
 }
 
-#' @importFrom assertthat `on_failure<-`
+#' @importFrom assertthat on_failure<-
 on_failure(valid_package_name) <- function(call, env) {
   paste(deparse(call$x), "is not a valid package name.")
 }

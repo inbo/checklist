@@ -29,6 +29,8 @@ Other class:
 \item{\code{get_organisation}}{The organisation requirements.}
 
 \item{\code{get_rightsholder}}{The default rightsholder.}
+
+\item{\code{template}}{A list for a check list template.}
 }
 \if{html}{\out{</div>}}
 }
@@ -46,7 +48,40 @@ Other class:
 \subsection{Method \code{new()}}{
 Initialize a new \code{organisation} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{organisation$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{organisation$new(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{The organisation settings.
+See the details.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+\itemize{
+\item \code{github}: the name of the github organisation.
+Set to \code{NA_character_} in case you don't want a mandatory github
+organisation.
+\item \code{community}: the mandatory Zenodo community.
+Defaults to \code{"inbo"}.
+Set to \code{NA_character_} in case you don't want a mandatory community.
+\item \code{email}: the e-mail of the organisation.
+Defaults to \code{"info@inbo.be"}.
+Set to \code{NA_character_} in case you don't want an organisation e-mail.
+\item \code{funder}: the funder.
+Defaults to \code{"Research Institute for Nature and Forest (INBO)"}.
+Set to \code{NA_character_} in case you don't want to set a funder.
+\item \code{rightsholder}: the rightsholder.
+Defaults to \code{"Research Institute for Nature and Forest (INBO)"}.
+Set to \code{NA_character_} in case you don't want to set a rightsholder.
+\item \code{organisation}: a named list with one or more organisation defaults.
+The names of the element must match the e-mail domain name of the
+organisation.
+Every element should be a named list containing ´affiliation\code{and}orcid\code{. }affiliation\verb{is a character vector with the approved organisation names in one or more languages.}orcid = TRUE` indicated a mandatory ORCiD for every member.
+Use an empty list in case you don't want to set this.
+}
 }
 
 }

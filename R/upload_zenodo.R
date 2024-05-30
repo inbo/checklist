@@ -16,29 +16,33 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   zen_rec <- zen4R::ZenodoRecord$new()
   zen_rec$setTitle(cit_meta$title)
   zen_rec$setDescription(cit_meta$description)
-  zen_rec$setUploadType(cit_meta$upload_type)
+  zen_rec$setResourceType(cit_meta$upload_type)
   if (
     has_name(cit_meta, "embargo_date") &&
       as.Date(cit_meta$embargo_date) > Sys.Date()
   ) {
-    zen_rec$setEmbargoDate(as.Date(cit_meta$embargo_date))
+    zen_rec$setAccessPolicyEmbargo(TRUE, as.Date(cit_meta$embargo_date))
   }
-  zen_rec$setAccessRight(cit_meta$access_right)
-  zen_rec$setLicense(cit_meta$license, sandbox = sandbox)
-  zen_rec$setLanguage(cit_meta$language)
+  zen_rec$setLicense(tolower(cit_meta$license), sandbox = sandbox)
+  zen_rec$addLanguage(cit_meta$language)
   zen_creator(zen_rec, cit_meta$creator) |>
-    zen_contributor(cit_meta$contributors) |>
-    zen_communities(cit_meta$communities, sandbox = sandbox) -> zen_rec
-  zen_rec$setKeywords(cit_meta$keywords)
-  zen_rec$setPublicationType(cit_meta$publication_type)
+    zen_contributor(cit_meta$contributors) -> zen_rec
+  zen_rec$setSubjects(cit_meta$keywords)
+  zen_rec$setResourceType(cit_meta$publication_type)
   if (has_name(cit_meta, "doi")) {
     zen_rec$setDOI(cit_meta$doi)
   }
   if (has_name(cit_meta, "version")) {
     zen_rec$setVersion(cit_meta$version)
   }
+  zen_rec$setPublicationDate(
+    first_non_null(cit_meta$publication_date, Sys.Date())
+  )
+  zen_rec$setPublisher(cit_meta$publisher)
 
-  zen_rec <- zen_upload(zenodo, zen_rec, path)
+  zen_rec <- zen_upload(
+    zenodo, zen_rec, path, community = cit_meta$communities
+  )
   return(invisible(zen_rec))
 }
 
@@ -55,35 +59,77 @@ zen_contributor <- function(zen_rec, contributors) {
   for (x in contributors) {
     zen_rec$addContributor(
       firstname = character(0), lastname = x$name, affiliation = x$affiliation,
-      orcid = x$orcid, type = x$type
+      orcid = x$orcid, role = x$type
     )
   }
   return(zen_rec)
 }
 
-zen_communities <- function(zen_rec, communities, sandbox) {
-  for (x in communities) {
-    zen_rec$addCommunity(x$identifier, sandbox = sandbox)
-  }
-  return(zen_rec)
-}
-
-#' @importFrom assertthat assert_that has_name
+#' @importFrom assertthat assert_that has_name is.string noNA
+#' @importFrom cli cli_alert_info cli_alert_warning
 #' @importFrom fs dir_ls
 #' @importFrom utils browseURL
-zen_upload <- function(zenodo, zen_rec, path) {
+zen_upload <- function(zenodo, zen_rec, path, community = NULL) {
   zen_rec <- zenodo$depositRecord(zen_rec, publish = FALSE)
-  assert_that(!has_name(zen_rec, "status"),  msg = zen_rec$message)
+  assert_that(
+    has_name(zen_rec, "status"),
+    msg = "Unexpected error uploading to Zenodo. Please contact the maintainer."
+  )
+  assert_that(
+    zen_rec$status == "draft",
+    msg = ifelse(
+      zen_rec$status == "400",
+      "Problem authenticating to Zenodo. Check the Zenodo token.",
+      first_non_null(
+        zen_rec$message, "Error uploading to Zenodo without error message."
+      )
+    )
+  )
+
   to_upload <- dir_ls(path, recurse = TRUE, all = TRUE)
   for (filename in to_upload) {
     zenodo$uploadFile(filename, record = zen_rec)
   }
-  message(
-    "Draft uploaded to Zenodo. Please visit ", zen_rec$links$html,
-    " to publish."
+
+  if (is.null(community)) {
+    c(
+      "Draft uploaded to Zenodo.",
+      "Please visit {zen_rec$links$self_html} to publish."
+    ) |>
+      paste(collapse = " ") |>
+      cli_alert_info()
+    if (interactive()) {
+      browseURL(zen_rec$links$self_html)
+    }
+    return(zen_rec)
+  }
+
+  zenodo$createReviewRequest(
+    record = zen_rec, community = unlist(head(community, 1))
   )
+  zenodo$submitRecordForReview(
+    recordId = zen_rec$id,
+    message = paste(
+      "Automated review request created by the checklist package.",
+      "More information at https://inbo.github.io/checklist/."
+    )
+  )
+  if (length(community) > 1) {
+    cli_alert_warning("Remember to add the additional communities.")
+  }
   if (interactive()) {
-    browseURL(zen_rec$links$html)
+    browseURL(zen_rec$links$self_html)
   }
   return(zen_rec)
+}
+
+first_non_null <- function(...) {
+  dots <- list(...)
+  if (length(dots) == 0) {
+    return(NULL)
+  }
+  if (!is.null(dots[[1]])) {
+    return(dots[[1]])
+  }
+  do.call(first_non_null, tail(dots, -1))
 }

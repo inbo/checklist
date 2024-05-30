@@ -88,9 +88,11 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
       format(include = c("given", "family")) |>
       strsplit(split = " ") |>
       unlist() |>
-      c(dependencies(root, progress = FALSE)$Package) |>
-      unique() |>
-      c(add_words) -> add_words
+      c(
+        dependencies(root, progress = FALSE)$Package, add_words,
+        descr$get_field("Package")
+      ) |>
+      unique() -> add_words
   }
 
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
@@ -139,6 +141,16 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
           text = text, i = i,
           FUN = function(word, text, i) {
             detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
+            if (min(detect) == -1) {
+              return(
+                list(
+                  data.frame(
+                    line = integer(0), column = integer(0),
+                    message = character(0)
+                  )
+                )
+              )
+            }
             list(
               data.frame(line = i, column = as.vector(detect), message = word)
             )

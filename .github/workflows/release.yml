@@ -10,28 +10,21 @@ on:
       - completed
 
 jobs:
-  prepare:
+  publish:
     runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.gettag.outputs.tag }}
-      body: ${{ steps.gettag.outputs.body }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
       - name: Get tag
         run: |
           git fetch --tags --force
           TAG=$(git tag --contains $(git rev-parse HEAD))
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "body=$TAG_BODY" >> "$GITHUB_OUTPUT"
-        id: gettag
-  publish:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    needs: prepare
-    steps:
+          TAG_BODY=$(git tag --contains $(git rev-parse HEAD) --format='%(contents)')
+          echo "tag=$TAG" >> $GITHUB_ENV
+          echo "$TAG_BODY" > body.md
       - uses: ncipollo/release-action@v1
         with:
-          name: Release ${{needs.prepare.outputs.tag}}
-          tag: ${{needs.prepare.outputs.tag}}
-          body: ${{needs.prepare.outputs.body}}
+          name: Release ${{ env.tag }}
+          tag: ${{ env.tag }}
+          bodyFile: body.md

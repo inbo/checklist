@@ -1,12 +1,28 @@
-# Rstudio
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
 
 # OAuth tokens
-.httr-oauth
-
+# Rstudio
 # pkgdown
+*.dbf
+*.doc*
+*.gddoc
+*.gdsheet
+*.gpkg
+*.html
+*.mdb
+*.shp*
+*.shx
+*.xls*
+*_files
+.DS_Store
+.RData
+.Renviron
+.Rhistory
+.Rproj.user
+.Ruserdata
+.httr-oauth
+docs
 docs/*
 inst/doc
+libs
+output
+renv/library

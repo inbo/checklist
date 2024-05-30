@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.3.5
+Version: 0.3.6
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -21,6 +21,7 @@ Depends:
     R (>= 4.1.0)
 Imports:
     assertthat,
+    cli,
     codemetar,
     desc,
     devtools (> 2.4.0),
@@ -50,14 +51,13 @@ Suggests:
     showtext,
     sysfonts,
     testthat,
-    zen4R (>= 0.9)
+    zen4R (>= 0.10)
 VignetteBuilder: 
     knitr
-Additional_repositories: https://inbo.r-universe.dev
 Config/checklist/communities: inbo
 Config/checklist/keywords: quality control; documentation; publication
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 SystemRequirements: Pandoc (>= 1.17.2)

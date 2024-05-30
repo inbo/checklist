@@ -3,13 +3,18 @@
 #' Reuse existing author information or add a new author.
 #' Allows to update existing author information.
 #' @return A data.frame with author information.
+#' @param email An optional email address.
+#' When given and it matches with a single person, the function immediately
+#' returns the information of that person.
+#' @importFrom assertthat assert_that is.string noNA
 #' @importFrom fs path
 #' @importFrom tools R_user_dir
 #' @importFrom utils write.table
 #' @family utils
 #' @export
-use_author <- function() {
+use_author <- function(email) {
   root <- R_user_dir("checklist", which = "data")
+  org <- read_organisation()
   current <- stored_authors(root)
   assert_that(
     interactive() || nrow(current) > 0,
@@ -18,7 +23,13 @@ use_author <- function() {
   current <- current[
     order(-current$usage, current$family, current$given, current$orcid),
   ]
-  while (TRUE) {
+  run_loop <- TRUE
+  if (!missing(email)) {
+    assert_that(is.string(email), noNA(email))
+    selected <- which(current$email == email)
+    run_loop <- length(selected) != 1
+  }
+  while (run_loop) {
     sprintf("%s, %s", current$family, current$given) |>
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
@@ -27,7 +38,7 @@ use_author <- function() {
       next
     }
     if (selected > nrow(current)) {
-      current <- new_author(current = current, root = root)
+      current <- new_author(current = current, root = root, org = org)
     }
     cat(
       "given name: ", current$given[selected],
@@ -36,13 +47,15 @@ use_author <- function() {
       "\norcid:      ", current$orcid[selected],
       "\naffiliation:", current$affiliation[selected]
     )
-    current <- validate_author(current = current, selected = selected)
+    current <- validate_author(
+      current = current, selected = selected, org = org
+    )
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
       break
     }
     if (final == 2) {
-      current <- update_author(current, selected, root)
+      current <- update_author(current, selected, root, org)
       next
     }
   }
@@ -68,7 +81,7 @@ menu_first <- function(choices, graphics = FALSE, title = NULL) {
 
 #' @importFrom fs path
 #' @importFrom utils menu write.table
-update_author <- function(current, selected, root) {
+update_author <- function(current, selected, root, org) {
   original <- current
   item <- c("given", "family", "email", "orcid", "affiliation")
   while (TRUE) {
@@ -79,7 +92,9 @@ update_author <- function(current, selected, root) {
       "\norcid:      ", current$orcid[selected],
       "\naffiliation:", current$affiliation[selected]
     )
-    current <- validate_author(current = current, selected = selected)
+    current <- validate_author(
+      current = current, selected = selected, org = org
+    )
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
       title = "\nWhich item to update?"
@@ -106,7 +121,10 @@ update_author <- function(current, selected, root) {
   return(current)
 }
 
-new_author <- function(current, root) {
+#' @importFrom assertthat assert_that
+new_author <- function(current, root, org) {
+  assert_that(inherits(org, "organisation"))
+  org <- org$get_organisation
   cat("Please provide person information.\n")
   data.frame(
     given = readline(prompt = "given name:  "),
@@ -114,7 +132,6 @@ new_author <- function(current, root) {
     email = readline(prompt = "e-mail:      "),
     orcid = ask_orcid(prompt = "orcid:       ")
   ) -> extra
-  org <- organisation$new()$get_organisation
   gsub(".*@", "", extra$email) |>
     grepl(names(org), ignore.case = TRUE) |>
     which() -> which_org
@@ -150,7 +167,7 @@ author2person <- function(role = "aut") {
   if (is.na(df$orcid) || df$orcid == "") {
     comment <- character(0)
   } else {
-    comment <- c(orcid = df$orcid)
+    comment <- c(ORCID = df$orcid)
   }
   if (!is.na(df$affiliation) && df$affiliation != "") {
     comment <- c(comment, affiliation = df$affiliation)
@@ -164,8 +181,10 @@ author2person <- function(role = "aut") {
   )
 }
 
+#' @importFrom assertthat assert_that
 #' @importFrom utils tail
-author2badge <- function(role = "aut") {
+author2badge <- function(role = "aut", org) {
+  assert_that(inherits(org, "organisation"))
   df <- use_author()
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
@@ -186,7 +205,7 @@ author2badge <- function(role = "aut") {
   if (is.na(df$affiliation) || df$affiliation == "") {
     return(badge)
   }
-  org <- organisation$new()$get_organisation
+  org <- org$get_organisation
   vapply(
     names(org), FUN.VALUE = vector(mode = "list", length = 1L),
     FUN = function(x) {
@@ -209,8 +228,9 @@ author2badge <- function(role = "aut") {
     )
 }
 
-validate_author <- function(current, selected) {
-  org <- organisation$new()$get_organisation
+validate_author <- function(current, selected, org) {
+  assert_that(inherits(org, "organisation"))
+  org <- org$get_organisation
   names(org) |>
     gsub(pattern = "\\.", replacement = "\\\\.") |>
     paste(collapse = "|") |>

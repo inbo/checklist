@@ -81,6 +81,9 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
         - `ubuntu (devel)`
         - `windows (release)`
 
+1. Go in your package GitHub repository to _Settings_ > _Pages_.
+Select _Deploy for branch_ as source, `gh-pages` as branch and save the changes.
+
 ## Get it working with an existing package or update the checklist {#setup-package}
 
 ### Prerequisites
@@ -131,6 +134,8 @@ _Add rule_ for _Branch name pattern_ `main` and select the following items and _
         - `ubuntu (oldrel)`
         - `ubuntu (devel)`
         - `windows (release)`
+1. Go in your package GitHub repository to _Settings_ > _Pages_.
+Select _Deploy for branch_ as source, `gh-pages` as branch and save the changes.
 
 # Troubleshooting
 

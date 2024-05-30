@@ -30,7 +30,11 @@ test_that("create_package() works", {
   dir.create(r_user_dir)
   stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
   stub(new_author, "ask_orcid", mock(""))
-  expect_output(new_author(current = data.frame(), root = r_user_dir))
+  expect_output(
+    new_author(
+      current = data.frame(), root = r_user_dir, org = read_organisation()
+    )
+  )
   stub(store_authors, "R_user_dir", r_user_dir)
   expect_invisible(store_authors(repo))
 

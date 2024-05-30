@@ -9,9 +9,6 @@ allowed:
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
-
-      Availability using Additional_repositories specification:
-        ?   ?   https://inbo.r-universe.dev
 required:
 - CITATION
 - DESCRIPTION

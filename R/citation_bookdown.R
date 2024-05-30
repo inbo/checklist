@@ -14,7 +14,8 @@ citation_bookdown <- function(meta) {
     )
   }
   yaml <- yaml_front_matter(index_file)
-  cit_meta <- yaml_author(yaml)
+  read_organisation(meta$get_path) |>
+    yaml_author(yaml = yaml) -> cit_meta
   description <- bookdown_description(meta$get_path)
   cit_meta$meta$description <- description$description
   cit_meta$errors <- c(cit_meta$errors, description$errors)
@@ -23,10 +24,17 @@ citation_bookdown <- function(meta) {
     ifelse(has_name(yaml, "subtitle"), paste0(". ", yaml$subtitle, "."), ".")
   )
   cit_meta$meta$upload_type <- "publication"
+  if (has_name(yaml, "publication_date")) {
+    cit_meta$meta$publication_date <- string2date(yaml$publication_date) |>
+      format("%Y-%m-%d")
+  }
   if (has_name(yaml, "embargo")) {
     cit_meta$meta$embargo_date <- string2date(yaml$embargo) |>
       format("%Y-%m-%d")
     cit_meta$meta$access_right <- "embargoed"
+    if (!has_name(yaml, "publication_date")) {
+      cit_meta$meta$publication_date <- cit_meta$meta$embargo_date
+    }
   } else {
     cit_meta$meta$access_right <- "open"
   }
@@ -51,18 +59,26 @@ citation_bookdown <- function(meta) {
     cit_meta$meta$language <- yaml$lang
   }
   extra <- c(
-    "community", "doi", "keywords", "publication_type"
+    "community", "doi", "keywords", "publication_type", "publisher"
   )
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
   publication_type <- c(
-    "annotationcollection", "book", "section", "conferencepaper",
-    "datamanagementplan", "article", "patent", "preprint", "deliverable",
-    "milestone", "proposal", "report", "softwaredocumentation",
-    "taxonomictreatment", "technicalnote", "thesis", "workingpaper", "other"
+    "publication", "publication-annotationcollection", "publication-article",
+    "publication-book", "publication-conferencepaper",
+    "publication-conferenceproceeding", "publication-datamanagementplan",
+    "publication-datapaper", "publication-deliverable",
+    "publication-dissertation", "publication-journal", "publication-milestone",
+    "publication-other", "publication-patent", "publication-peerreview",
+    "publication-preprint", "publication-proposal", "publication-report",
+    "publication-section", "publication-softwaredocumentation",
+    "publication-standard", "publication-taxonomictreatment",
+    "publication-technicalnote", "publication-thesis",
+    "publication-workingpaper"
   )
   c(
-    "no `keywords` element found"[!has_name(yaml, "keywords")],
+    "No `keywords` element found"[!has_name(yaml, "keywords")],
+    "No `publisher` element found"[!has_name(yaml, "publisher")],
     paste(
       "`publication_type` must be one of following:",
       paste(publication_type, collapse = ", "),
@@ -74,18 +90,33 @@ citation_bookdown <- function(meta) {
   ) |>
     c(cit_meta$errors) -> cit_meta$errors
   c(
-    "no `community` element found"[!has_name(yaml, "community")],
-    "no `publication_type` element found"[!has_name(yaml, "publication_type")]
+    "No `community` element found"[!has_name(yaml, "community")],
+    "No `publication_type` element found"[!has_name(yaml, "publication_type")]
   ) |>
     c(cit_meta$notes) -> cit_meta$notes
+  cit_meta$meta$community <- split_community(cit_meta$meta$community)
   return(cit_meta)
 }
 
-#' @inheritParams assertthat has_name
-yaml_author <- function(yaml) {
-  author <- vapply(yaml$author, yaml_author_format, vector(mode = "list", 1))
+#' @importFrom assertthat assert_that
+split_community <- function(community) {
+  if (is.null(community)) {
+    return(NULL)
+  }
+  assert_that(is.character(community))
+  strsplit(community, split = "\\s*;\\s*") |>
+    unlist() |>
+    unique()
+}
+
+#' @importFrom assertthat has_name
+yaml_author <- function(yaml, org) {
+  author <- vapply(
+    X = yaml$author, FUN = yaml_author_format,
+    FUN.VALUE = vector(mode = "list", 1), org = org
+  )
   yaml$reviewer |>
-    vapply(yaml_author_format, vector(mode = "list", 1)) -> reviewer
+    vapply(yaml_author_format, vector(mode = "list", 1), org = org) -> reviewer
   c(author, reviewer) |>
     vapply(attr, vector(mode = "list", 1), which = "errors") |>
     unlist() |>
@@ -122,7 +153,7 @@ yaml_author <- function(yaml) {
       rbind(roles) -> roles
     data.frame(
       id = nrow(author) + 1, given = yaml$funder, family = "", orcid = "",
-      affiliation = "", organisation = known_affiliation(yaml$funder)
+      affiliation = "", organisation = known_affiliation(yaml$funder, org = org)
     ) |>
       rbind(author) -> author
   }
@@ -132,7 +163,7 @@ yaml_author <- function(yaml) {
     data.frame(
       id = nrow(author) + 1, given = yaml$rightsholder, family = "",
       orcid = "", affiliation = "",
-      organisation = known_affiliation(yaml$rightsholder)
+      organisation = known_affiliation(yaml$rightsholder, org = org)
     ) |>
       rbind(author) -> author
   }
@@ -141,8 +172,8 @@ yaml_author <- function(yaml) {
   )
 }
 
-#' @inheritParams assertthat has_name is.flag
-yaml_author_format <- function(person) {
+#' @importFrom assertthat has_name is.flag
+yaml_author_format <- function(person, org) {
   person_df <- data.frame(
     given = character(0), family = character(0), orcid = character(0),
     affiliation = character(0), contact = logical(0),
@@ -173,7 +204,7 @@ yaml_author_format <- function(person) {
     contact = ifelse(
       is.null(person$corresponding), FALSE, person$corresponding
     ),
-    organisation = known_affiliation(paste0(person$affiliation, ""))
+    organisation = known_affiliation(paste0(person$affiliation, ""), org = org)
   )
   c(
     "person `name` element is missing a `given` element"[

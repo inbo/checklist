@@ -275,13 +275,13 @@ readme_author <- function(text) {
     ]
   )
 
-  orgs[vapply(orgs, length, integer(1)) == 0] <- NA
+  orgs[vapply(orgs, length, integer(1)) == 0] <- NA_character_
   text$text <- text$text[!grepl("\\[\\^.*?\\]:", text$text)]
   text$meta$authors <- data.frame(
     id = seq_along(authors), given = gsub(".*,\\s*(.*)", "\\1", authors),
     family = ifelse(grepl(",", authors), gsub("(.*),.*", "\\1", authors), ""),
     affiliation = authors_aff, orcid = authors_orcid,
-    organisation = unlist(orgs)
+    organisation = vapply(orgs, FUN = head, FUN.VALUE = character(1), n = 1)
   )
   return(text)
 }

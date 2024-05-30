@@ -162,6 +162,7 @@ checklist_print <- function(
       ),
       type = "missing", variable = "note"
     ),
+    checklist_diff(path),
     checklist_summarise_linter(linter),
     checklist_summarise_spelling(spelling),
     checklist_format_error(errors)
@@ -322,4 +323,47 @@ is_tracked_not_modified <- function(file, repo = ".") {
   status <- git_status(repo = repo)
   is_not_modified <- !file %in% status$file[status$status == "modified"]
   return(is_tracked && is_not_modified)
+}
+
+#' @importFrom gert git_branch_list git_diff git_info
+#' @importFrom cli cli_h1 cli_text col_green col_red
+checklist_diff <- function(root) {
+  if (inherits(try(git_info(repo = root), silent = TRUE), "try-error")) {
+    return(invisible(NULL))
+  }
+  branch_info <- git_branch_list(repo = root)
+  branch_info$ref[
+    grep("/main$", branch_info$ref) |>
+      c(grep("/master$", branch_info$ref)) |>
+      head(1)
+  ] |>
+    git_diff(repo = root) -> changes
+  if (length(changes) == 0) {
+    return(invisible(NULL))
+  }
+  cli_h1("git diff")
+  changes$patch |>
+    gsub(pattern = "^.*?index.*?\n.*?\n", replacement = "") |>
+    strsplit(split = "\n") |>
+    unlist() -> changes
+  changes <- changes[grepl("^[\\+-]", changes)]
+  display_col <- character(length(changes))
+  files <- grepl("^\\+\\+\\+ b/", changes)
+  display_col[!files & grepl("^\\+", changes)] <- "green"
+  display_col[grepl("^\\-", changes)] <- "red"
+  vapply(
+    seq_along(display_col), FUN.VALUE = logical(1),
+    display_col = display_col, changes = changes,
+    FUN = function(i, display_col, changes) {
+      switch(
+        display_col[i],
+        "red" = col_red(changes[i]),
+        "green" = col_green(changes[i]),
+        cli_text(changes[i])
+      ) |>
+        cat(sep = "\n")
+      return(TRUE)
+    }
+  )
+  return(invisible(NULL))
 }

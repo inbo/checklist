@@ -152,6 +152,22 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     text[chunks[1]:chunks[2]] <- ""
     chunks <- tail(chunks, -2)
   }
+  # keep only alt text and captions for <figure> chunks
+  html_figures <- grep("^</?figure>$", text)
+  assert_that(
+    length(html_figures) %% 2 == 0,
+    msg = paste("Odd number of <figure> delimiters detected in", md_file)
+  )
+  while (length(html_figures)) {
+    text[head(html_figures, 2)] <- ""
+    fig_chunk_loc <- seq(html_figures[1] + 1, html_figures[2] - 1)
+    fig_chunk <- text[fig_chunk_loc]
+    paste(fig_chunk, collapse = " ") |>
+      gsub(pattern = "<img .*?alt=\"(.*)\".*?>", replacement = "\\1") |>
+      gsub(pattern = "<figcaption.*?>(.*)</figcaption>", replacement = "\\1") |>
+      rep(length(fig_chunk_loc)) -> text[fig_chunk_loc]
+    html_figures <- tail(html_figures, -2)
+  }
   # remove in line chunks
   text <- gsub("\\`r .*?`", "", text)
   # remove ignored lines
@@ -253,6 +269,9 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("\\s[/\\\\]\\s", " ", text)
   text <- gsub("\\s[/\\\\]$", " ", text)
   text <- gsub("^[/\\\\]\\s", " ", text)
+  # remove double backward slashes at the start or end of a line
+  text <- gsub("^\\\\\\\\", " ", text)
+  text <- gsub("\\\\\\\\$", " ", text)
   # remove quarto anchors
   text <- gsub("\\{#.*?\\}", "", text)
   # remove quarto caption options

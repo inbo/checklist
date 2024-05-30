@@ -1,3 +1,25 @@
+# checklist 0.3.6
+
+* Add an `organisation` class to store organisation rules different from those
+  of the Research Institute for Nature and Forest (INBO).
+  See `vignette("organisation", package = "checklist")` for more information.
+* The output of the check shows the git diff (#77).
+* `add_badges()` helps to add badges to the `README`.
+* Put double quotes around the title and abstract fields of `CITATION.cff`.
+* `check_documentation()` handles assignment functions and re-exported functions
+  correctly.
+* `check_lintr()` ignores `renv` subdirectories (#118).
+* Update to [`zen4R`](https://github.com/eblondel/zen4R/wiki) version 0.10 to
+  reflect the Zenodo API changes (#125).
+* `update_citation()` no longer introduces new lines (#124) and handles single
+  quotes in titles (#115).
+* You can add multiple affiliations per author (#123).
+  Separate them by a semi-colon (;) in a `DESCRIPTION` or the yaml of a
+  bookdown.
+  Use multiple footnotes is a `README.md`.
+* `check_spelling()` handles leading or trailing backwards slashes (#107).
+* `check_cran()` ignores irrelevant CRAN notes.
+
 # checklist 0.3.5
 
 * Fix release GitHub Action.
@@ -119,7 +141,7 @@
 
 # checklist 0.2.3
 
-* Add `vignette("zenodo")` on how to set up the integration with [Zenodo](https://www.zenodo.org) and
+* Add `vignette("zenodo")` on how to set up the integration with [Zenodo](https://zenodo.org) and
   [ORCID](https://orcid.org)
 * `check_environment()` makes sure that the required repository secrets are set.
   `check_package()` performs this check when it runs in a GitHub Action.

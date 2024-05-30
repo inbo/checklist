@@ -1,9 +1,9 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "license": "GPL-3.0",
   "upload_type": "software",
-  "description": "<p>An opinionated set of rules for R packages and R source code\nprojects.<\/p>",
+  "description": "<p>An opinionated set of rules for R packages and R source code projects.<\/p>",
   "keywords": [
     "quality control",
     "documentation",
@@ -16,23 +16,23 @@
       "name": "Onkelinx, Thierry",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0001-8804-4216",
-      "type": "ContactPerson"
+      "type": "contactperson"
     },
     {
       "name": "Lommelen, Els",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0002-3481-5684",
-      "type": "ProjectMember"
+      "type": "projectmember"
     },
     {
       "name": "Van Calster, Hans",
       "affiliation": "Research Institute for Nature and Forest (INBO)",
       "orcid": "0000-0001-8595-8426",
-      "type": "ProjectMember"
+      "type": "projectmember"
     },
     {
       "name": "Research Institute for Nature and Forest (INBO)",
-      "type": "RightsHolder"
+      "type": "rightsholder"
     }
   ],
   "creators": [
