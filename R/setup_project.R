@@ -282,7 +282,11 @@ preferred_protocol <- function(org) {
     config$git$protocol == "https", "https://github.com/%s/%%s.git",
     "git@github.com:%s/%%s.git"
   ) |>
-    sprintf(config$git$organisation)
+    sprintf(
+      ifelse(
+        config$git$organisation == "", org$get_github, config$git$organisation
+      )
+    )
 }
 
 #' Function to ask a simple yes no question
