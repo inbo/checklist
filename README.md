@@ -31,7 +31,7 @@ checks for R packages and R code.
 ## Installation
 
 You can install the package from the [INBO
-universe](https://inbo.r-universe.dev/ui/#builds) via
+universe](https://inbo.r-universe.dev/builds) via
 
 ``` r
 # Enable the INBO universe
