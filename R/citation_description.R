@@ -173,6 +173,7 @@ description_communities <- function(communities, org) {
     )
   }
   list(
-    meta = list(community = communities), warnings = character(0)
+    meta = list(community = split_community(communities)),
+    warnings = character(0)
   )
 }

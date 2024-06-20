@@ -98,7 +98,7 @@ check_filename <- function(x = ".") {
     paste(
       c(
         "\\.[a-zA-Z]+ignore", "\\.Rprofile", "\\.[a-zA-Z]+\\.(json|yml)",
-        "CITATION", "DESCRIPTION", "NAMESPACE", "CITATION\\.cff",
+        "CITATION", "CODEOWNERS", "DESCRIPTION", "NAMESPACE", "CITATION\\.cff",
         "README\\.R?md", "NEWS\\.md",
         "CODE_OF_CONDUCT\\.md", "CONTRIBUTING\\.md", "LICENSE(\\.md)?",
         "SUPPORT\\.md", "SECURITY\\.md", "FUNDING\\.yml",

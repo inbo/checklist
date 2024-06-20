@@ -1,3 +1,7 @@
+# checklist 0.3.7
+
+* `check_filename()` allows a `CODEOWNERS` file.
+
 # checklist 0.3.6
 
 * Add an `organisation` class to store organisation rules different from those
