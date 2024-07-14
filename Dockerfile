@@ -13,8 +13,8 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       maintainer="Thierry Onkelinx <thierry.onkelinx@inbo.be>"
 
 ## for apt to be noninteractive
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN true
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN=true
 
 ## Install nano
 RUN apt-get update \
