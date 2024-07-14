@@ -331,17 +331,11 @@ checklist_diff <- function(root) {
   if (inherits(try(git_info(repo = root), silent = TRUE), "try-error")) {
     return(invisible(NULL))
   }
-  branch_info <- git_branch_list(repo = root)
-  branch_info$ref[
-    grep("/main$", branch_info$ref) |>
-      c(grep("/master$", branch_info$ref)) |>
-      head(1)
-  ] |>
-    git_diff(repo = root) -> changes
+  changes <- git_diff(repo = root)
   if (length(changes) == 0) {
     return(invisible(NULL))
   }
-  cli_h1("git diff")
+  cli_h1("unstaged changes")
   changes$patch |>
     gsub(pattern = "^.*?index.*?\n.*?\n", replacement = "") |>
     strsplit(split = "\n") |>
