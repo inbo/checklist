@@ -25,7 +25,8 @@ organisation <- R6Class(
     #' - `rightsholder`: the rightsholder.
     #'   Defaults to `"Research Institute for Nature and Forest (INBO)"`.
     #'   Set to `NA_character_` in case you don't want to set a rightsholder.
-    #' - `organisation`: a named list with one or more organisation default rules.
+    #' - `organisation`: a named list with one or more organisation default
+    #'   rules.
     #'   The names of the element must match the e-mail domain name of the
     #'   organisation.
     #'   Every element should be a named list containing `affiliation` and
