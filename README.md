@@ -52,17 +52,49 @@ If that doesn’t work, you can install the version from
 remotes::install_github("inbo/checklist")
 ```
 
-## Examples
+## Setting a default organisation
 
-You can run the full list of checks
+We created `checklist` with the Research Institute for Nature and Forest
+(INBO) in mind. When you don’t specify the organisation, `checklist`
+assumes the code was written by INBO personnel. INBO has specific
+requirements which are not relevant for external users of `checklist`.
+
+When you are not writing code for INBO, we recommend that you set a
+default `organisation`. Below we specify the defaults for INBO. More
+details in `vignette("organisation", package = "checklist")`.
 
 ``` r
 library(checklist)
-check_package() # for packages
-check_source() # for a project with R and Rmd files
+org <- organisation$new(
+  github = "inbo", community = "inbo", email = "info@inbo.be",
+  rightsholder = "Research Institute for Nature and Forest (INBO)",
+  funder = "Research Institute for Nature and Forest (INBO)",
+  organisation = list(
+    "inbo.be" = list(
+      affiliation = c(
+        en = "Research Institute for Nature and Forest (INBO)",
+        nl = "Instituut voor Natuur en Bosonderzoek (INBO)"
+      ),
+      orcid = TRUE
+    ) 
+  )
+)
+default_organisation(org = org)
 ```
 
-Or run the individual checks
+## Using `checklist` on a package.
+
+Before you can run the checks, you must initialise `checklist` on the
+package. Either use `create_package()` to create a new package from
+scratch. Or use `setup_package()` on an existing package. More details
+in `vignette("getting_started", package = "checklist")`.
+
+``` r
+create_package()
+```
+
+Once initialised, you can run all the checks with `check_package()`. Or
+run the individual checks.
 
 ``` r
 check_cran()
@@ -70,16 +102,44 @@ check_description()
 check_documentation()
 check_lintr()
 check_filename()
+check_folder()
+update_citation()
 ```
 
-Create a `checklist.yml` to allow some of warnings or notes.
+To allow some of the warnings or notes, first run the checks and store
+them in an object. Update `checklist.yml` by writing that object.
 
 ``` r
-write_checklist()
+x <- check_package()
+write_checklist(x)
 ```
 
-Start a package from scratch with everything set-up
+## Using `checklist` on a project.
+
+Before you can run the checks, you must initialise `checklist` on the
+project. Either use `create_project()` to create a new package from
+scratch. Or use `setup_project()` on an existing package. More details
+in `vignette("getting_started_project", package = "checklist")`.
 
 ``` r
-create_package()
+library(checklist)
+create_project()
+```
+
+Once initialised, you can run all the checks with `check_project()`. Or
+run the individual checks.
+
+``` r
+check_lintr()
+check_filename()
+check_folder()
+update_citation()
+```
+
+To allow some of the warnings or notes, first run the checks and store
+them in an object. Update `checklist.yml` by writing that object.
+
+``` r
+x <- check_project()
+write_checklist(x)
 ```
