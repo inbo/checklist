@@ -54,10 +54,7 @@ setup_project <- function(path = ".") {
   x$set_default(c("en-GB", "nl-BE", "fr-FR")[answer])
 
   if ("license" %in% checks && !file_exists(path(path, "LICENSE.md"))) {
-    insert_file(
-      repo = repo, filename = "cc_by_4_0.md", template = "generic_template",
-      target = path, new_name = "LICENSE.md"
-    )
+    set_license(x)
   }
 
   x$set_required(checks = checks)

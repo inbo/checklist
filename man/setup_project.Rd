@@ -19,6 +19,7 @@ Other setup:
 \code{\link{create_package}()},
 \code{\link{create_project}()},
 \code{\link{prepare_ghpages}()},
+\code{\link{set_license}()},
 \code{\link{setup_package}()},
 \code{\link{setup_source}()}
 }
