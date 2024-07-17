@@ -28,7 +28,7 @@ set_license <- function(x = ".") {
       )
     ) |>
       system.file(package = "checklist") |>
-      file_copy(license_file)
+      file_copy(license_file, overwrite = TRUE)
     if (!grepl("^MIT", this_desc$get_field("License"))) {
       return(invisible(NULL))
     }
@@ -46,6 +46,6 @@ set_license <- function(x = ".") {
   }
   path("generic_template", "cc_by_4_0.md") |>
     system.file(package = "checklist") |>
-    file_copy(license_file)
+    file_copy(license_file, overwrite = TRUE)
   return(invisible(NULL))
 }

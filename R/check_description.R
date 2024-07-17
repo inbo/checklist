@@ -273,12 +273,12 @@ Please send a pull request if you need support for this license.",
     official <- official[-3]
     current <- current[-3]
   }
-  problems <- c(
-      problems,
-      "LICENSE.md doesn't match the version in the checklist package"[
-        (length(current) != length(official)) || any(current != official)
-      ]
+  if ((length(current) != length(official)) || any(current != official)) {
+    problems <- c(
+      problems, "LICENSE.md doesn't match the version in the checklist package"
     )
+    set_license(x)
+  }
   x$add_error(
     errors = problems,
     item = "license", keep = FALSE
