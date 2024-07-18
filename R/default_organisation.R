@@ -13,7 +13,9 @@
 #' @family both
 default_organisation <- function(org = organisation$new()) {
   assert_that(inherits(org, "organisation"))
-  R_user_dir("checklist", which = "config") |>
+  target <- R_user_dir("checklist", which = "config")
+  dir_create(target)
+  target |>
     path("organisation.yml") |>
     write_yaml(x = org$template)
   return(invisible(NULL))
