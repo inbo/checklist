@@ -243,7 +243,7 @@ rstudio_source_markers <- function(issues) { # nocov start
     "`%s` not found in the dictionary or wordlist for %s.", issues$message,
     issues$language
   )
-  issues <- issues[order(issues$file, issues$line, issues$column), ]
+  issues <- unique(issues[order(issues$file, issues$line, issues$column), ])
   issues$file <- as.character(issues$file)
   # request source markers
   rstudioapi::callFun(
