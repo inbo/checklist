@@ -1,0 +1,16 @@
+pandoc: '3.2'
+pkgdown: 2.1.0
+pkgdown_sha: ~
+articles:
+  folder: folder.html
+  getting_started_project: getting_started_project.html
+  getting_started: getting_started.html
+  organisation: organisation.html
+  path: path.html
+  philosophy: philosophy.html
+  spelling: spelling.html
+  zenodo: zenodo.html
+last_built: 2024-07-19T15:15Z
+urls:
+  reference: https://inbo.github.io/checklist/reference
+  article: https://inbo.github.io/checklist/articles
