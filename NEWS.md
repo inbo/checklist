@@ -1,3 +1,13 @@
+# checklist 0.4.0
+
+* Updated `README.md`.
+* Improved support for `organisation`.
+* Add `set_license()`.
+* `check_filename()` allows a `CODEOWNERS` file.
+* The checklist summary displays the unstaged git changes.
+* The GitHub Action on packages installs the `roxygen2` version listed in the
+  `DESCRIPTION` of the package it checks.
+
 # checklist 0.3.6
 
 * Add an `organisation` class to store organisation rules different from those

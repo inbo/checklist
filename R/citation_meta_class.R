@@ -173,13 +173,20 @@ validate_citation <- function(meta) {
   rightsholder_id <- roles$contributor[roles$role == "copyright holder"]
   funder_id <- roles$contributor[roles$role == "funder"]
   notes <- c(
+    "no rightsholder listed"[
+      !is.na(org$get_rightsholder) && length(rightsholder_id) == 0
+    ],
+    "no funder listed"[!is.na(org$get_funder) && length(funder_id) == 0],
     sprintf("rightsholder differs from `%s`", org$get_rightsholder)[
-      !is.na(org$get_rightsholder) &&
-        authors$given[authors$id == rightsholder_id] != org$get_rightsholder
+      !is.na(org$get_rightsholder) && length(rightsholder_id) >= 1 &&
+        !any(
+          authors$given[authors$id %in% rightsholder_id] %in%
+            org$get_rightsholder
+        )
     ],
     sprintf("funder differs from `%s`", org$get_funder)[
-      !is.na(org$get_funder) &&
-        authors$given[authors$id == funder_id] != org$get_funder
+      !is.na(org$get_funder) && length(funder_id) >= 1 &&
+        !any(org$get_funder %in% authors$given[authors$id == funder_id])
     ]
   )
   errors <- c(

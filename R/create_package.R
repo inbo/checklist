@@ -185,23 +185,7 @@ create_package <- function(
   git_add("README.Rmd", repo = repo)
 
   # add LICENSE.md
-  license_file <- path(path, "LICENSE.md")
-  switch(
-    license, "GPL-3" = path("generic_template", "gplv3.md"),
-    "MIT" = path("generic_template", "mit.md")
-  ) |>
-    system.file(package = "checklist") |>
-    file_copy(license_file)
-  if (license == "MIT") {
-    paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
-      c(sprintf("COPYRIGHT HOLDER: %s", org$get_rightsholder)) |>
-      writeLines(path(path, "LICENSE"))
-    git_add("LICENSE", repo = repo)
-    mit <- readLines(license_file)
-    mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
-    mit[3] <- gsub("<COPYRIGHT HOLDER>", org$get_rightsholder, mit[3])
-    writeLines(mit, license_file)
-  }
+  set_license(x)
   git_add("LICENSE.md", repo = repo)
 
   # Add code of conduct

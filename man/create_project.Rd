@@ -18,6 +18,7 @@ This function creates a new RStudio project with \code{checklist} functionality.
 Other setup: 
 \code{\link{create_package}()},
 \code{\link{prepare_ghpages}()},
+\code{\link{set_license}()},
 \code{\link{setup_package}()},
 \code{\link{setup_project}()},
 \code{\link{setup_source}()}

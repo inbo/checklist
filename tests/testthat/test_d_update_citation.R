@@ -47,13 +47,41 @@ test_that("update_citation() works", {
   )
   writeLines(old_citation, path(path, package, "inst", "CITATION"))
 
+  org <- organisation$new()
+
   this_description <- desc(path(path, package))
   this_description$add_urls("https://doi.org/10.5281/zenodo.4028303")
-  org <- organisation$new()
-  this_description$del_author(org$get_rightsholder)
+  gsub("([\\(\\)])", "\\\\\\1", org$get_rightsholder) |>
+    this_description$del_author()
+  expect_equal(length(this_description$get_authors()), 1)
+  this_description$write(path(path, package))
+  expect_is(
+    z <- update_citation(path(path, package), quiet = TRUE), "checklist"
+  )
+  expect_equal(
+    z$.__enclos_env__$private$notes,
+    c("no rightsholder listed", "no funder listed")
+  )
   this_description$add_author(given = "unit", family = "test", role = "ctb")
   this_description$add_author(given = "test", family = "unit", role = "cph")
   this_description$write(path(path, package))
   file_delete(path(path, package, ".Rbuildignore"))
-  expect_is(update_citation(path(path, package), quiet = TRUE), "checklist")
+  expect_is(
+    z <- update_citation(path(path, package), quiet = TRUE), "checklist"
+  )
+  expect_equal(
+    z$.__enclos_env__$private$notes,
+    c(
+      "no funder listed",
+      sprintf("rightsholder differs from `%s`", org$get_rightsholder)
+    )
+  )
+  new_org <- organisation$new(
+    email = NA_character_, funder = NA_character_, rightsholder = "test"
+  )
+  write_organisation(new_org, path(path, package))
+  expect_is(
+    z <- update_citation(path(path, package), quiet = TRUE), "checklist"
+  )
+  expect_length(z$.__enclos_env__$private$notes, 0)
 })

@@ -35,7 +35,16 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
 
   # add checklist.yml
   if (!file_exists(path(path, "checklist.yml"))) {
-    x <- checklist$new(x = path, language = "en-GB", package = TRUE)
+    if (descript$has_fields("Language")) {
+      x <- checklist$new(
+        x = path, language = descript$get_field("Language"), package = TRUE
+      )
+    } else {
+      x <- checklist$new(x = path, language = "en-GB", package = TRUE)
+      descript$set("Language", "en-GB")
+      path(x$get_path, "DESCRIPTION") |>
+        descript$write()
+    }
     x$set_required()
     x$set_ignore(c(".github", "LICENSE.md"))
     write_checklist(x)

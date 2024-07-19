@@ -32,7 +32,12 @@ read_checklist <- function(x = ".") {
   }
   assert_that(
     is_file(checklist_file),
-    msg = sprintf("no checklist.yml found `%s` or its parents", x)
+    msg = paste(
+      "No checklist.yml found at `%1$s` or its parents.",
+      "\nRun `checklist::setup_package(\"%1$s\")` or",
+      "`checklist::setup_project(\"%1$s\")`."
+    ) |>
+      sprintf(path_real(x))
   )
 
   # read existing check list file

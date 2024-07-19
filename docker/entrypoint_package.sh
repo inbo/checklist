@@ -26,6 +26,11 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# install the roxygen2 version mentions in the DESCRIPTION
+ROXYGEN_LINE=$(cat DESCRIPTION | grep "^RoxygenNote:")
+RO_VERSION=${ROXYGEN_LINE#*: }
+Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
+
 echo '\nChecking the package...\n'
 Rscript --no-save --no-restore -e 'checklist::check_package()'
 if [ $? -ne 0 ]; then

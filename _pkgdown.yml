@@ -1,4 +1,6 @@
 template:
+  bootstrap: 5
+  light-switch: false
   opengraph:
     image:
       src: man/figures/hexsticker.png
@@ -9,22 +11,33 @@ template:
 navbar:
   title: ~
   type: default
-  left:
-  - text: NEWS
-    href: news/index.html
-  - text: Tutorials
-    href: articles/index.html
-  - text: Functions
-    href: reference/index.html
-  - text: Contributing
-    href: CONTRIBUTING.html
-  right:
-  - icon: "fa fa-github"
-    href: https://github.com/inbo/checklist
-  - icon: "fa fa-twitter"
-    href: https://twitter.com/INBOVlaanderen
-  - icon: "fa fa-facebook"
-    href: https://www.facebook.com/pg/INBOVlaanderen
+  structure:
+    left:  [intro, reference, news, tutorials, contributing]
+    right: [search, github]
+  components:
+    tutorials:
+      text: Tutorials
+      href: articles/index.html
+      menu:
+      - text: Philosophy of the checklist package
+        href: articles/philosophy.html
+      - text: Setting up checklist for a package
+        href: articles/getting_started.html
+      - text: Setting up checklist for a project
+        href: articles/getting_started_project.html
+      - text: Organisations
+        href: articles/organisation.html
+      - text: Spell checking with checklist
+        href: articles/spelling.html
+      - text: Recommended folder structure
+        href: articles/folder.html
+      - text: File paths in code
+        href: articles/path.html
+      - text: Setting up the integration between GitHub, Zenodo and ORCID
+        href: articles/zenodo.html
+    contributing:
+      text: Contributing
+      href: CONTRIBUTING.html
 
 reference:
 - title: Functions relevant for checking packages
@@ -47,23 +60,11 @@ reference:
   contents:
   - has_concept("utils")
 
-articles:
-- title: Getting started
-  contents:
-  - philosophy
-  - folder
-  - path
-  - getting_started
-  - getting_started_project
-  - spelling
-  - zenodo
-  - organisation
-
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"
   Research Institute for Nature and Forest (INBO):
     href: "https://www.vlaanderen.be/inbo/en-gb"
-    html: "<img src='https://inbo.github.io/checklist/reference/figures/logo-en.png' height=24>"
+    html: "<img src='https://inbo.github.io/checklist/reference/figures/logo-en.png' height=24 alt='logo of the Research Institute for Nature and Forest (INBO)'>"
 
 url: https://inbo.github.io/checklist

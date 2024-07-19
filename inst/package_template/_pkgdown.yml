@@ -1,22 +1,14 @@
+template:
+  bootstrap: 5
+  light-switch: false
 navbar:
   title: ~
   type: default
-  left:
-  - text: NEWS
-    href: news/index.html
-  - text: Functions
-    href: reference/index.html
-  - text: Contributing
-    href: CONTRIBUTING.html
-  right:
-  - icon: "fa fa-github"
-    href: https://github.com/inbo/{{{ Package }}}
-  - icon: "fa fa-twitter"
-    href: https://twitter.com/INBOVlaanderen
-  - icon: "fa fa-facebook"
-    href: https://www.facebook.com/pg/INBOVlaanderen
+  structure:
+    left:  [intro, reference, news, tutorials, contributing]
+    right: [search, github]
 
 authors:
   Research Institute for Nature and Forest (INBO):
     href: "https://www.vlaanderen.be/inbo/en-gb"
-    html: "<img src='https://inbo.github.io/checklist/reference/figures/logo-en.png' height=24>"
+    html: "<img src='https://inbo.github.io/checklist/reference/figures/logo-en.png' height=24 alt='logo of the Research Institute for Nature and Forest (INBO)'>"

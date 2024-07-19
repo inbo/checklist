@@ -273,12 +273,12 @@ Please send a pull request if you need support for this license.",
     official <- official[-3]
     current <- current[-3]
   }
-  problems <- c(
-      problems,
-      "LICENSE.md doesn't match the version in the checklist package"[
-        (length(current) != length(official)) || any(current != official)
-      ]
+  if ((length(current) != length(official)) || any(current != official)) {
+    problems <- c(
+      problems, "LICENSE.md doesn't match the version in the checklist package"
     )
+    set_license(x)
+  }
   x$add_error(
     errors = problems,
     item = "license", keep = FALSE
@@ -291,19 +291,46 @@ Please send a pull request if you need support for this license.",
 check_authors <- function(this_desc, org) {
   assert_that(inherits(org, "organisation"))
   authors <- this_desc$get_authors()
-  stopifnot(
-    "TO DO: handle funder not equal to rightsholder" =
-      (is.na(org$get_rightsholder) && is.na(org$get_funder)) ||
-        (org$get_rightsholder == org$get_funder)
+  email <- c(NULL, org$get_email[!is.na(org$get_email)])
+  if (!is.na(org$get_rightsholder)) {
+    if (!is.na(org$get_funder)) {
+      if (org$get_rightsholder == org$get_funder) {
+        rightsholder <- person(
+          given = org$get_rightsholder, role = c("cph", "fnd"), email = email
+        )
+        funder <- NULL
+      } else {
+        rightsholder <- person(
+          given = org$get_rightsholder, role = "cph", email = email
+        )
+        funder <- person(given = org$get_funder, role = "fnd")
+      }
+    } else {
+      rightsholder <- person(
+        given = org$get_rightsholder, role = "cph", email = email
+      )
+      funder <- NULL
+    }
+  } else if (!is.na(org$get_funder)) {
+    rightsholder <- NULL
+    funder <- person(given = org$get_funder, role = "fnd")
+  }
+
+  problems <- c(
+    sprintf(
+      "`%s` must be listed as copyright holder and use `%s` as email.",
+      org$get_rightsholder, org$get_email
+    )[
+      !is.null(rightsholder) && !is.na(org$get_rightsholder) &&
+        !rightsholder %in% authors
+    ],
+    sprintf(
+      "`%s` must be listed as funder without email.",
+      org$get_funder
+    )[!is.null(funder) && !is.na(org$get_funder) && !funder %in% authors]
   )
-  rightsholder <- person(
-    given = org$get_rightsholder, role = c("cph", "fnd"), email = org$get_email
-  )
-  problems <- sprintf(
-    "`%s` must be listed as copyright holder and funder and use `%s` as email.",
-    org$get_rightsholder, org$get_email
-  )[!is.na(org$get_rightsholder) && !rightsholder %in% authors]
   authors <- authors[!authors %in% rightsholder]
+  authors <- authors[!authors %in% funder]
   vapply(
     authors, FUN.VALUE = vector(mode = "list", length = 1L),
     FUN = function(author) {
