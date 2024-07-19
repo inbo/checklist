@@ -2,12 +2,12 @@ citHeader("To cite `checklist` in publications please use:")
 # begin checklist entry
 bibentry(
   bibtype = "Manual",
-  title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.3.7",
+  title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.4.0",
   author = c( author = c(person(given = "Thierry", family = "Onkelinx"))),
   year = 2024,
   url = "https://inbo.github.io/checklist/",
   abstract = "An opinionated set of rules for R packages and R source code projects.",
-  textVersion = "Onkelinx, Thierry (2024) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.3.7. https://inbo.github.io/checklist/",
+  textVersion = "Onkelinx, Thierry (2024) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.4.0. https://inbo.github.io/checklist/",
   keywords = "quality control; documentation; publication",
   doi = "10.5281/zenodo.4028303",
 )
