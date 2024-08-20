@@ -7,7 +7,9 @@
 author2df(person)
 }
 \arguments{
-\item{person}{The person object or a list of person objects, \code{NA} or \code{NULL}.}
+\item{person}{The person object or a list of person objects, \code{NA} or \code{NULL}.
+Any \code{"character"} is converted to a person object using \code{as.person()} with a
+warning.}
 }
 \description{
 Results in a data.frame with the given name, family name, e-mail, ORCID,

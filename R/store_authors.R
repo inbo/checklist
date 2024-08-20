@@ -41,6 +41,8 @@ store_authors <- function(x = ".") {
 #' Missing elements result in an empty string (`""`).
 #' Persons with multiple roles will have the roles as a comma separated string.
 #' @param person The person object or a list of person objects, `NA` or `NULL`.
+#' Any `"character"` is converted to a person object using `as.person()` with a
+#' warning.
 #' @family utils
 #' @export
 author2df <- function(person) {
@@ -49,13 +51,13 @@ author2df <- function(person) {
 
 #' @export
 author2df.default <- function(person) {
-  stop("author2df() is not implemented for ", class(person))
+  stop("`author2df()` is not implemented for ", class(person))
 }
 
 #' @export
 author2df.logical <- function(person) {
   stopifnot(
-    "author2df() is not implemented for `TRUE` or `FALSE`" = is.na(person)
+    "`author2df()` is not implemented for `TRUE` or `FALSE`" = is.na(person)
   )
   data.frame(
     given = character(0), family = character(0), email = character(0),
@@ -69,6 +71,13 @@ author2df.NULL <- function(person) {
     given = character(0), family = character(0), email = character(0),
     orcid = character(0), affiliation = character(0), role = character(0)
   )
+}
+
+#' @export
+#' @importFrom utils as.person
+author2df.character <- function(person) {
+  warning("`author2df()` converted a character to a person using `as.person()`")
+  author2df(as.person(person))
 }
 
 #' @export
