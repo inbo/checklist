@@ -10,5 +10,28 @@ author2df(person)
 \item{person}{The person object or a list of person objects, \code{NA} or \code{NULL}.}
 }
 \description{
-Convert person object in a data.frame.
+Results in a data.frame with the given name, family name, e-mail, ORCID,
+affiliation and role.
+Missing elements result in an empty string (\code{""}).
+Persons with multiple roles will have the roles as a comma separated string.
 }
+\seealso{
+Other utils: 
+\code{\link{ask_yes_no}()},
+\code{\link{bookdown_zenodo}()},
+\code{\link{c_sort}()},
+\code{\link{clean_git}()},
+\code{\link{create_hexsticker}()},
+\code{\link{execshell}()},
+\code{\link{is_repository}()},
+\code{\link{is_workdir_clean}()},
+\code{\link{menu_first}()},
+\code{\link{new_branch}()},
+\code{\link{orcid2person}()},
+\code{\link{store_authors}()},
+\code{\link{use_author}()},
+\code{\link{validate_email}()},
+\code{\link{validate_orcid}()},
+\code{\link{yesno}()}
+}
+\concept{utils}

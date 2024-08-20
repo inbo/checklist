@@ -14,7 +14,7 @@ store_authors <- function(x = ".") {
     this_desc$get_authors() |>
       author2df() |>
       cbind(usage = 1) |>
-      rbind(current) -> new_author_df
+      rbind(cbind(current, role = "")) -> new_author_df
   } else {
     citation_meta$new(x)$get_meta$authors |>
       cbind(usage = 1, email = "") -> cit_meta
@@ -35,7 +35,13 @@ store_authors <- function(x = ".") {
 }
 
 #' Convert person object in a data.frame.
+#'
+#' Results in a data.frame with the given name, family name, e-mail, ORCID,
+#' affiliation and role.
+#' Missing elements result in an empty string (`""`).
+#' Persons with multiple roles will have the roles as a comma separated string.
 #' @param person The person object or a list of person objects, `NA` or `NULL`.
+#' @family utils
 #' @export
 author2df <- function(person) {
   UseMethod("author2df", person)
@@ -53,7 +59,7 @@ author2df.logical <- function(person) {
   )
   data.frame(
     given = character(0), family = character(0), email = character(0),
-    orcid = character(0), affiliation = character(0)
+    orcid = character(0), affiliation = character(0), role = character(0)
   )
 }
 
@@ -61,7 +67,7 @@ author2df.logical <- function(person) {
 author2df.NULL <- function(person) {
   data.frame(
     given = character(0), family = character(0), email = character(0),
-    orcid = character(0), affiliation = character(0)
+    orcid = character(0), affiliation = character(0), role = character(0)
   )
 }
 
@@ -93,15 +99,9 @@ author2df.person <- function(person) {
         do.call(what = rbind)
     )
   }
-  if (all(person$role %in% c("cph", "fnd"))) {
-    return(data.frame(
-      given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0)
-    ))
-  }
 
   data.frame(
-    given = person$given, family = person$family,
+    given = coalesce(person$given, ""), family = coalesce(person$family, ""),
     email = coalesce(person$email, ""),
     orcid = ifelse(
       has_name(person$comment, "ORCID"), unname(person$comment["ORCID"]), ""
@@ -109,7 +109,8 @@ author2df.person <- function(person) {
     affiliation = ifelse(
       has_name(person$comment, "affiliation"),
       unname(person$comment["affiliation"]), ""
-    )
+    ),
+    role = paste(person$role, collapse = ", ")
   )
 }
 

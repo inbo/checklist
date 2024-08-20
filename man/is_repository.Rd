@@ -21,6 +21,7 @@ then the parent's parent, and so on.
 \seealso{
 Other utils: 
 \code{\link{ask_yes_no}()},
+\code{\link{author2df}()},
 \code{\link{bookdown_zenodo}()},
 \code{\link{c_sort}()},
 \code{\link{clean_git}()},

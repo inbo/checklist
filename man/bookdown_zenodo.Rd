@@ -47,6 +47,7 @@ Otherwise it creates a review request for the first community.
 \seealso{
 Other utils: 
 \code{\link{ask_yes_no}()},
+\code{\link{author2df}()},
 \code{\link{c_sort}()},
 \code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
