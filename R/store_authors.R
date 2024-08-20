@@ -35,7 +35,7 @@ store_authors <- function(x = ".") {
 }
 
 #' Convert person object in a data.frame.
-#' @param person The person object or a list of person objects.
+#' @param person The person object or a list of person objects, `NA` or `NULL`.
 #' @export
 author2df <- function(person) {
   UseMethod("author2df", person)
@@ -43,7 +43,26 @@ author2df <- function(person) {
 
 #' @export
 author2df.default <- function(person) {
-  stop("author2df() not implemented for ", class(person))
+  stop("author2df() is not implemented for ", class(person))
+}
+
+#' @export
+author2df.logical <- function(person) {
+  stopifnot(
+    "author2df() is not implemented for `TRUE` or `FALSE`" = is.na(person)
+  )
+  data.frame(
+    given = character(0), family = character(0), email = character(0),
+    orcid = character(0), affiliation = character(0)
+  )
+}
+
+#' @export
+author2df.NULL <- function(person) {
+  data.frame(
+    given = character(0), family = character(0), email = character(0),
+    orcid = character(0), affiliation = character(0)
+  )
 }
 
 #' @export
