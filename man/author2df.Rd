@@ -7,7 +7,7 @@
 author2df(person)
 }
 \arguments{
-\item{person}{The person object.}
+\item{person}{The person object or a list of person objects.}
 }
 \description{
 Convert person object in a data.frame.

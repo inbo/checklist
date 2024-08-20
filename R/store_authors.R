@@ -35,25 +35,53 @@ store_authors <- function(x = ".") {
 }
 
 #' Convert person object in a data.frame.
-#' @param person The person object.
+#' @param person The person object or a list of person objects.
+#' @export
+author2df <- function(person) {
+  UseMethod("author2df", person)
+}
+
+#' @export
+author2df.default <- function(person) {
+  stop("author2df() not implemented for ", class(person))
+}
+
+#' @export
+author2df.list <- function(person) {
+  vapply(
+    person,
+    function(x) {
+      list(author2df(x))
+    },
+    vector(mode = "list", 1)
+  ) |>
+    do.call(what = rbind)
+}
+
 #' @export
 #' @importFrom assertthat assert_that has_name
-author2df <- function(person) {
+author2df.person <- function(person) {
   assert_that(inherits(person, "person"))
   if (length(person) > 1) {
     return(
-      vapply(person, author2df, vector(mode = "list", 1)) |>
+      vapply(
+        person,
+        function(x) {
+          list(author2df(x))
+        },
+        vector(mode = "list", 1)
+      ) |>
         do.call(what = rbind)
     )
   }
   if (all(person$role %in% c("cph", "fnd"))) {
-    return(list(data.frame(
+    return(data.frame(
       given = character(0), family = character(0), email = character(0),
       orcid = character(0), affiliation = character(0)
-    )))
+    ))
   }
 
-  list(data.frame(
+  data.frame(
     given = person$given, family = person$family,
     email = coalesce(person$email, ""),
     orcid = ifelse(
@@ -63,7 +91,7 @@ author2df <- function(person) {
       has_name(person$comment, "affiliation"),
       unname(person$comment["affiliation"]), ""
     )
-  ))
+  )
 }
 
 coalesce <- function(...) {
