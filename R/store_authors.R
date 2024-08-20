@@ -11,11 +11,10 @@ store_authors <- function(x = ".") {
   current <- stored_authors(root)
   if (file_exists(path(x, "DESCRIPTION"))) {
     this_desc <- description$new(file = path(x, "DESCRIPTION"))
-    author <- this_desc$get_authors()
-    vapply(author, author2df, vector(mode = "list", 1)) |>
-      do.call(what = rbind) -> new_author_df
-    new_author_df$usage <- 1
-    new_author_df <- rbind(current, new_author_df)
+    this_desc$get_authors() |>
+      author2df() |>
+      cbind(usage = 1) |>
+      rbind(current) -> new_author_df
   } else {
     citation_meta$new(x)$get_meta$authors |>
       cbind(usage = 1, email = "") -> cit_meta
@@ -41,6 +40,12 @@ store_authors <- function(x = ".") {
 #' @importFrom assertthat assert_that has_name
 author2df <- function(person) {
   assert_that(inherits(person, "person"))
+  if (length(person) > 1) {
+    return(
+      vapply(person, author2df, vector(mode = "list", 1)) |>
+        do.call(what = rbind)
+    )
+  }
   if (all(person$role %in% c("cph", "fnd"))) {
     return(list(data.frame(
       given = character(0), family = character(0), email = character(0),
