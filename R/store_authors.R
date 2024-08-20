@@ -13,8 +13,9 @@ store_authors <- function(x = ".") {
     this_desc <- description$new(file = path(x, "DESCRIPTION"))
     author <- this_desc$get_authors()
     vapply(author, author2df, vector(mode = "list", 1)) |>
-      c(list(current)) |>
       do.call(what = rbind) -> new_author_df
+    new_author_df$usage <- 1
+    new_author_df <- rbind(current, new_author_df)
   } else {
     citation_meta$new(x)$get_meta$authors |>
       cbind(usage = 1, email = "") -> cit_meta
@@ -34,25 +35,29 @@ store_authors <- function(x = ".") {
   return(invisible(NULL))
 }
 
+#' Convert person object in a data.frame.
+#' @param person The person object.
+#' @export
 #' @importFrom assertthat assert_that has_name
-author2df <- function(z) {
-  assert_that(inherits(z, "person"))
-  if (all(z$role %in% c("cph", "fnd"))) {
+author2df <- function(person) {
+  assert_that(inherits(person, "person"))
+  if (all(person$role %in% c("cph", "fnd"))) {
     return(list(data.frame(
       given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0), usage = integer(0)
+      orcid = character(0), affiliation = character(0)
     )))
   }
 
   list(data.frame(
-    given = z$given, family = z$family, email = coalesce(z$email, ""),
+    given = person$given, family = person$family,
+    email = coalesce(person$email, ""),
     orcid = ifelse(
-      has_name(z$comment, "ORCID"), unname(z$comment["ORCID"]), ""
+      has_name(person$comment, "ORCID"), unname(person$comment["ORCID"]), ""
     ),
     affiliation = ifelse(
-      has_name(z$comment, "ORCID"), unname(z$comment["affiliation"]), ""
-    ),
-    usage = 1
+      has_name(person$comment, "affiliation"),
+      unname(person$comment["affiliation"]), ""
+    )
   ))
 }
 
