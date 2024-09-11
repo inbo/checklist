@@ -7,6 +7,17 @@ navbar:
   structure:
     left:  [intro, reference, news, tutorials, contributing]
     right: [search, github]
+  components:
+    news:
+      text: Changelog
+      href: news/index.html
+    contributing:
+      text: Contributing
+      menu:
+      - text: Contributing
+        href: CONTRIBUTING.html
+      - text: Code of conduct
+        href: CODE_OF_CONDUCT.html
 
 authors:
   Research Institute for Nature and Forest (INBO):
