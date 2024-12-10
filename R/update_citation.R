@@ -30,7 +30,7 @@
 #' @importFrom desc description
 #' @importFrom gert git_status
 #' @importFrom utils file_test
-#' @family package
+#' @family both
 update_citation <- function(x = ".", quiet = FALSE) {
   x <- read_checklist(x = x)
   cit_meta <- citation_meta$new(x$get_path)

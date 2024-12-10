@@ -9,7 +9,7 @@
 #' @param roles No longer used.
 #' @export
 #' @importFrom assertthat assert_that
-#' @family package
+#' @family both
 write_citation_cff <- function(x = ".", roles) {
   # nocov start
   .Deprecated(new = "update_citation", package = "checklist")

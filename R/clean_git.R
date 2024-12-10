@@ -15,7 +15,7 @@
 #' git_remote_list
 #' @importFrom withr defer
 #' @export
-#' @family utils
+#' @family git
 clean_git <- function(repo =  ".", verbose = TRUE) {
   assert_that(is_workdir_clean(repo))
 

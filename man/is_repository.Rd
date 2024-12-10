@@ -19,22 +19,11 @@ If it is not a git repository itself, then its parent directory is consulted,
 then the parent's parent, and so on.
 }
 \seealso{
-Other utils: 
-\code{\link{ask_yes_no}()},
-\code{\link{author2df}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
+Other git: 
 \code{\link{clean_git}()},
-\code{\link{create_hexsticker}()},
-\code{\link{execshell}()},
+\code{\link{create_draft_pr}()},
 \code{\link{is_workdir_clean}()},
-\code{\link{menu_first}()},
 \code{\link{new_branch}()},
-\code{\link{orcid2person}()},
-\code{\link{store_authors}()},
-\code{\link{use_author}()},
-\code{\link{validate_email}()},
-\code{\link{validate_orcid}()},
-\code{\link{yesno}()}
+\code{\link{set_tag}()}
 }
-\concept{utils}
+\concept{git}

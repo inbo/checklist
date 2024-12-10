@@ -8,7 +8,7 @@
 #' @importFrom gert git_info git_remote_info
 #' @importFrom gh gh
 #' @export
-#' @family package
+#' @family git
 create_draft_pr <- function(x = ".") {
   x <- read_checklist(x)
   stopifnot("Current version only relevant for R packages" = x$package)

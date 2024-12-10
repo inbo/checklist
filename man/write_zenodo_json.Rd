@@ -19,18 +19,19 @@ See the \href{https://developers.zenodo.org/#add-metadata-to-your-github-reposit
 for more information.
 }
 \seealso{
-Other package: 
-\code{\link{check_codemeta}()},
-\code{\link{check_cran}()},
-\code{\link{check_description}()},
-\code{\link{check_documentation}()},
-\code{\link{check_environment}()},
-\code{\link{check_license}()},
-\code{\link{check_package}()},
-\code{\link{create_draft_pr}()},
-\code{\link{set_tag}()},
-\code{\link{tidy_desc}()},
+Other both: 
+\code{\link{add_badges}()},
+\code{\link{check_filename}()},
+\code{\link{check_lintr}()},
+\code{\link{check_spelling}()},
+\code{\link{custom_dictionary}()},
+\code{\link{default_organisation}()},
+\code{\link{print.checklist_spelling}()},
+\code{\link{read_checklist}()},
+\code{\link{read_organisation}()},
 \code{\link{update_citation}()},
-\code{\link{write_citation_cff}()}
+\code{\link{write_checklist}()},
+\code{\link{write_citation_cff}()},
+\code{\link{write_organisation}()}
 }
-\concept{package}
+\concept{both}

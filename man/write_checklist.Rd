@@ -63,6 +63,9 @@ Other both:
 \code{\link{print.checklist_spelling}()},
 \code{\link{read_checklist}()},
 \code{\link{read_organisation}()},
-\code{\link{write_organisation}()}
+\code{\link{update_citation}()},
+\code{\link{write_citation_cff}()},
+\code{\link{write_organisation}()},
+\code{\link{write_zenodo_json}()}
 }
 \concept{both}

@@ -14,18 +14,11 @@ This function creates a draft pull request for the current version of the
 package.
 }
 \seealso{
-Other package: 
-\code{\link{check_codemeta}()},
-\code{\link{check_cran}()},
-\code{\link{check_description}()},
-\code{\link{check_documentation}()},
-\code{\link{check_environment}()},
-\code{\link{check_license}()},
-\code{\link{check_package}()},
-\code{\link{set_tag}()},
-\code{\link{tidy_desc}()},
-\code{\link{update_citation}()},
-\code{\link{write_citation_cff}()},
-\code{\link{write_zenodo_json}()}
+Other git: 
+\code{\link{clean_git}()},
+\code{\link{is_repository}()},
+\code{\link{is_workdir_clean}()},
+\code{\link{new_branch}()},
+\code{\link{set_tag}()}
 }
-\concept{package}
+\concept{git}
