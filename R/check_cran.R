@@ -26,7 +26,7 @@ check_cran <- function(x = ".", quiet = FALSE) {
   # don't use fancy Quotes when checking
   old_options <- options()
   defer(options(old_options))
-  options(useFancyQuotes = FALSE)
+  options(useFancyQuotes = FALSE, timeout = max(360, getOption("timeout")))
 
   # test if the worlds clock is available
   clock_status <- HEAD("http://worldclockapi.com/api/json/utc/now")$status_code
