@@ -376,6 +376,7 @@ spelling_parse_md_yaml <- function(text) {
   }
   header <- header[1]:header[2]
   text[header][!grepl("(title|description)", text[header])] <- ""
+  text[header][grepl("^shorttitle", text[header])] <- ""
   text[header] <- gsub(".*?:(.*)", "\\1", text[header])
   return(text)
 }
