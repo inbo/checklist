@@ -24,57 +24,29 @@ RUN apt-get update \
 
 COPY docker/.Rprofile $R_HOME/etc/Rprofile.site
 
-## install INLA
-RUN  apt update \
-  && apt install -y --no-install-recommends \
-    gdal-bin libgdal-dev libproj-dev libudunits2-dev r-cran-class \
-    r-cran-classint r-cran-cli r-cran-dbi r-cran-e1071 r-cran-fansi \
-    r-cran-units r-cran-dplyr r-cran-generics r-cran-glue \
-    r-cran-kernsmooth r-cran-lattice r-cran-lifecycle r-cran-magrittr \
-    r-cran-matrix r-cran-pillar r-cran-pkgconfig r-cran-proxy \
-    r-cran-r6 r-cran-rcpp r-cran-rlang r-cran-s2 r-cran-sf r-cran-sp \
-    r-cran-tibble r-cran-tidyselect r-cran-utf8 r-cran-vctrs r-cran-withr \
-    r-cran-wk \
-  && Rscript --no-save --no-restore -e 'update.packages(ask = FALSE)' \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("fmesher")' \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("INLA", type = "source")'
+RUN Rscript --no-save --no-restore -e 'install.packages("pak")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes")'
 
-## install sn
-RUN  apt update \
-  && apt install -y --no-install-recommends \
-    r-cran-matrixmodels r-cran-mnormt r-cran-numderiv r-cran-quantreg \
-    r-cran-sn r-cran-sparsem \
-  && Rscript --no-save --no-restore -e 'update.packages(ask = FALSE)' \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran("sn")'
+## install INLA
+RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("fmesher")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("sn")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("INLA")'
 
 ## install checklist dependencies
-RUN  apt update \
-  && apt install -y --no-install-recommends \
-    r-cran-askpass r-cran-assertthat r-cran-backports r-cran-base64enc \
-    r-cran-brew r-cran-brio r-cran-cachem r-cran-callr r-cran-clipr \
-    r-cran-commonmark r-cran-crayon r-cran-credentials r-cran-crul r-cran-curl \
-    r-cran-desc r-cran-devtools r-cran-diffobj r-cran-digest r-cran-downlit \
-    r-cran-ellipsis r-cran-evaluate r-cran-fastmap r-cran-fs r-cran-gert \
-    r-cran-gh r-cran-gitcreds r-cran-highr r-cran-htmltools r-cran-htmlwidgets \
-    r-cran-httpcode r-cran-httpuv r-cran-httr r-cran-hunspell r-cran-ini \
-    r-cran-jsonlite r-cran-jquerylib r-cran-knitr r-cran-later r-cran-lazyeval \
-    r-cran-memoise r-cran-mime r-cran-miniui r-cran-openssl r-cran-pingr \
-    r-cran-pkgbuild r-cran-pkgload r-cran-praise r-cran-prettyunits \
-    r-cran-processx r-cran-promises r-cran-ps r-cran-purrr r-cran-ragg \
-    r-cran-rappdirs r-cran-rcmdcheck r-cran-rematch2 r-cran-rex \
-    r-cran-rmarkdown r-cran-roxygen2 r-cran-remotes r-cran-rprojroot \
-    r-cran-rstudioapi r-cran-rversions r-cran-sass r-cran-sessioninfo \
-    r-cran-shiny r-cran-sourcetools r-cran-stringi r-cran-stringr r-cran-sys \
-    r-cran-systemfonts r-cran-testthat r-cran-textshaping r-cran-tinytex \
-    r-cran-triebeard r-cran-urltools r-cran-usethis r-cran-waldo \
-    r-cran-whisker r-cran-xfun r-cran-xml2 r-cran-xopen r-cran-xtable \
-    r-cran-yaml r-cran-zip \
-  && Rscript --no-save --no-restore -e 'update.packages(ask = FALSE)' \
-  && Rscript --no-save --no-restore -e 'remotes::install_cran(c("bslib", "codemeta", "codemetar", "cyclocompt", "fontawesome", "httr2", "lintr", "pkgdown", "profvis", "renv", "urlchecker", "xmlparsedata"))'
+RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("bookdown")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("codemetar")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("covr")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("devtools")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("hunspell")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("mockery")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("renv")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")'
 
 ## install checklist
 COPY . /checklist/
-RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgrade = "always")'
+RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgrade = "always", dependencies = TRUE)'
 RUN Rscript --no-save --no-restore -e 'checklist:::install_dictionary(c("nl_BE", "fr_BE", "de_DE"))'
 
 COPY docker/entrypoint_package.sh /entrypoint_package.sh
