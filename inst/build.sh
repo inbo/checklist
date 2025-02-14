@@ -8,3 +8,8 @@ docker login
 docker push inbobmk/checklist:version-$version
 
 docker run -it --entrypoint=/bin/bash --rm inbobmk/checklist:version-$version
+
+git checkout main
+git pull
+docker build --pull --no-cache --rm --tag inbobmk/checklist:latest .
+docker push inbobmk/checklist:latest
