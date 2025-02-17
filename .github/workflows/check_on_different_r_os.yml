@@ -57,7 +57,7 @@ jobs:
             r-cran-roxygen2 r-cran-rstudioapi r-cran-sessioninfo \
             r-cran-testthat r-cran-withr r-cran-yaml
           Rscript --no-save --no-restore -e 'install.packages("remotes")'
-          Rscript --no-save --no-restore -e 'remotes::install_cran(c("assertthat", "bookdown", "codemetar", "covr", "curl", "desc", "devtools", "fs", "gert", "hexSticker", "httr", "hunspell", "jsonlite", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
+          Rscript --no-save --no-restore -e 'remotes::install_cran(c("assertthat", "bookdown", "codemetar", "covr", "curl", "cyclocomp", "desc", "devtools", "fs", "gert", "hexSticker", "httr", "hunspell", "jsonlite", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: runner.os != 'linux'
