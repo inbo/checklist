@@ -36,6 +36,7 @@ RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("fmesher")' \
 RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("bookdown")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("codemetar")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("covr")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("cyclocomp")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("devtools")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("hunspell")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \

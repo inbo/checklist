@@ -45,6 +45,7 @@ Suggests:
     bookdown,
     covr,
     curl,
+    cyclocomp,
     mockery,
     renv,
     roxygen2,
