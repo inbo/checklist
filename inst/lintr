@@ -1,6 +1,6 @@
 linters: list(
     absolute_path_linter(lax = TRUE),
-    assignment_linter(allow_cascading_assign = FALSE, allow_right_assign = TRUE),
+    assignment_linter(operator = c("<-", "->")),
     brace_linter(allow_single_line = FALSE),
     commas_linter(),
     commented_code_linter(),
