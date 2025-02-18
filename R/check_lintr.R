@@ -19,6 +19,9 @@
 #' @family both
 check_lintr <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
+  stopifnot(
+    "Please install the `cyclocomp` package" = requireNamespace("cyclocomp")
+  )
   options(lintr.linter_file = system.file("lintr", package = "checklist"))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
   options(lintr.rstudio_source_markers = interactive())
