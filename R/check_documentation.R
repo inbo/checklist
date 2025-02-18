@@ -94,7 +94,9 @@ check_documentation <- function(x = ".", quiet = FALSE) {
     unique() |>
     sort() -> documented
   unexported <- documented[!documented %in% exported]
-  datasets <- data(package = desc(x$get_path)$get_field("Package"))
+  pkgname <- desc(x$get_path)$get_field("Package")
+  unexported <- unexported[!unexported %in% paste0(pkgname, c("", "-package"))]
+  datasets <- data(package = pkgname)
   unexported <- unexported[!unexported %in% datasets$results[, "Item"]]
   unexported <- unexported[unexported != "reexports"]
   paste(unexported, collapse = ", ") |>

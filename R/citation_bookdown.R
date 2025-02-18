@@ -23,6 +23,9 @@ citation_bookdown <- function(meta) {
     yaml$title,
     ifelse(has_name(yaml, "subtitle"), paste0(". ", yaml$subtitle, "."), ".")
   )
+  if (has_name(yaml, "shorttitle")) {
+    cit_meta$meta$shorttitle <- yaml$shorttitle
+  }
   cit_meta$meta$upload_type <- "publication"
   if (has_name(yaml, "publication_date")) {
     cit_meta$meta$publication_date <- string2date(yaml$publication_date) |>

@@ -385,4 +385,10 @@ test_that("check_spelling() works on a quarto project", {
 
 test_that("strip_eqn() works", {
   expect_equal(strip_eqn("\\eqn{\\alpha}"), "")
+  expect_equal(strip_eqn("\\deqn{\\alpha}"), "")
+  expect_equal(strip_eqn("\\doi{10.1214/ss/1032280214}"), "")
+  expect_equal(strip_eqn("\\pkg{checklist}"), "")
+  expect_equal(strip_eqn("the \\pkg{boot} package"), "the package")
+  expect_equal(strip_eqn("where \\eqn{\\alpha} and \\eqn{\\beta} are"),
+               "where and are")
 })

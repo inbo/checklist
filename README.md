@@ -1,5 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start -->
 
 [![Project Status: Active – The project has reached a stable, usable
@@ -41,7 +42,7 @@ options(
   )
 )
 # Install the packages
-install.packages("checklist")
+install.packages("checklist", dependencies = TRUE)
 ```
 
 If that doesn’t work, you can install the version from
@@ -49,7 +50,7 @@ If that doesn’t work, you can install the version from
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("inbo/checklist")
+remotes::install_github("inbo/checklist", dependencies = TRUE)
 ```
 
 ## Setting a default organisation

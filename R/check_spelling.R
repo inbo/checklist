@@ -76,7 +76,6 @@ check_spelling <- function(x = ".", quiet = FALSE) {
 
 #' @importFrom fs file_exists path
 #' @importFrom hunspell dictionary
-#' @importFrom renv dependencies
 spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
   path("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
@@ -88,11 +87,13 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
       format(include = c("given", "family")) |>
       strsplit(split = " ") |>
       unlist() |>
-      c(
-        dependencies(root, progress = FALSE)$Package, add_words,
-        descr$get_field("Package")
-      ) |>
+      c(add_words, descr$get_field("Package")) |>
       unique() -> add_words
+    if (requireNamespace("renv", quietly = TRUE)) {
+      renv::dependencies(root, progress = FALSE)$Package |>
+        c(add_words) |>
+        unique() -> add_words
+    }
   }
 
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>

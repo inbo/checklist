@@ -15,6 +15,16 @@ navbar:
     left:  [intro, reference, news, tutorials, contributing]
     right: [search, github]
   components:
+    news:
+      text: Changelog
+      href: news/index.html
+    contributing:
+      text: Contributing
+      menu:
+      - text: Contributing
+        href: CONTRIBUTING.html
+      - text: Code of conduct
+        href: CODE_OF_CONDUCT.html
     tutorials:
       text: Tutorials
       href: articles/index.html
@@ -35,9 +45,6 @@ navbar:
         href: articles/path.html
       - text: Setting up the integration between GitHub, Zenodo and ORCID
         href: articles/zenodo.html
-    contributing:
-      text: Contributing
-      href: CONTRIBUTING.html
 
 reference:
 - title: Functions relevant for checking packages
@@ -53,6 +60,9 @@ reference:
 - title: Setting up a project use the checklist package
   contents:
   - has_concept("setup")
+- title: Git related functions
+  contents:
+  - has_concept("git")
 - title: R6 class behind the checklist package
   contents:
   - has_concept("class")

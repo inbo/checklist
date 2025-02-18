@@ -23,10 +23,6 @@ Other package:
 \code{\link{check_documentation}()},
 \code{\link{check_environment}()},
 \code{\link{check_license}()},
-\code{\link{check_package}()},
-\code{\link{set_tag}()},
-\code{\link{update_citation}()},
-\code{\link{write_citation_cff}()},
-\code{\link{write_zenodo_json}()}
+\code{\link{check_package}()}
 }
 \concept{package}

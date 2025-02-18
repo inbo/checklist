@@ -1,3 +1,7 @@
+# checklist 0.4.1
+
+* Escape quotes in the `CITATION` file.
+
 # checklist 0.4.0
 
 * Updated `README.md`.

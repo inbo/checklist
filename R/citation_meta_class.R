@@ -471,6 +471,7 @@ citation_r <- function(meta) {
     paste(collapse = ", ") |>
     sprintf(fmt = "  author = c(%s)") -> authors_bibtex
   sprintf("%s%s", authors$fam2, authors$given) -> authors_plain
+  cit_meta$description <- gsub("\"", "\\\\\"", cit_meta$description)
   package_citation <- c(
     bibtype = "\"Manual\"",
     title = sprintf(

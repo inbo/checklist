@@ -8,7 +8,7 @@
 #' @importFrom assertthat assert_that is.string
 #' @importFrom gert git_branch_list git_branch_create git_push
 #' @export
-#' @family utils
+#' @family git
 new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
   assert_that(is.string(branch))
 

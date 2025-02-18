@@ -88,7 +88,7 @@ Select _Deploy for branch_ as source, `gh-pages` as branch and save the changes.
 
 ### Prerequisites
 
-1. Make sure the package is using [git](https://inbo.github.io/tutorials/tutorials/git_introduction/) as version control system.
+1. Make sure the package is using [git](https://tutorials.inbo.be/tutorials/git_introduction/) as version control system.
 1. The git status must be clean.
 You'll need to commit all changes first.
 It is OK to have Untracked files.

@@ -74,16 +74,21 @@ spelling_parse_r <- function(r_file, wordlist) {
 }
 
 strip_eqn <- function(text) {
-  which_eqn <- which(grepl("\\\\eqn\\s*\\{.*?\\}", text))
+  c("deqn", "doi", "eqn", "mathbf", "pkg") |>
+    paste(collapse = "|") -> tags
+  find_regexp <- sprintf("\\\\(%s)\\s*\\{.*?\\}", tags)
+  which_eqn <- which(grepl(find_regexp, text))
   if (length(which_eqn) == 0) {
     return(text)
   }
   eqn <- text[which_eqn]
-  while (any(grepl("\\\\eqn\\s*\\{.*?\\}", eqn))) {
-    eqn <- gsub("(\\\\eqn.*?)(\\{[^\\{]*?\\})", "\\1", eqn, perl = TRUE)
+  while (any(grepl(find_regexp, eqn))) {
+    sprintf("(\\\\(%s).*?)(\\{[^\\{]*?\\})", tags) |>
+      gsub("\\1", eqn, perl = TRUE) -> eqn
   }
-  eqn <- gsub("\\\\eqn(\\s*[^\\{]|$)", "", eqn)
-  ok <- !grepl("\\\\eqn\\s*\\{", eqn)
+  sprintf("\\\\(%s)(\\s*|$)", tags) |>
+    gsub("", eqn) -> eqn
+  ok <- !grepl(sprintf("\\\\(%s)\\s*\\{", tags), eqn)
   text[which_eqn[ok]] <- eqn[ok]
   return(text)
 }
@@ -376,6 +381,7 @@ spelling_parse_md_yaml <- function(text) {
   }
   header <- header[1]:header[2]
   text[header][!grepl("(title|description)", text[header])] <- ""
+  text[header][grepl("^shorttitle", text[header])] <- ""
   text[header] <- gsub(".*?:(.*)", "\\1", text[header])
   return(text)
 }

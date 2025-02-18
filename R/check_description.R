@@ -311,9 +311,13 @@ check_authors <- function(this_desc, org) {
       )
       funder <- NULL
     }
-  } else if (!is.na(org$get_funder)) {
+  } else {
     rightsholder <- NULL
-    funder <- person(given = org$get_funder, role = "fnd")
+    if (!is.na(org$get_funder)) {
+      funder <- person(given = org$get_funder, role = "fnd")
+    } else {
+      funder <- NULL
+    }
   }
 
   problems <- c(

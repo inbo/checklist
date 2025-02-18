@@ -21,14 +21,11 @@ Improved version of menu()
 \seealso{
 Other utils: 
 \code{\link{ask_yes_no}()},
+\code{\link{author2df}()},
 \code{\link{bookdown_zenodo}()},
 \code{\link{c_sort}()},
-\code{\link{clean_git}()},
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
-\code{\link{is_repository}()},
-\code{\link{is_workdir_clean}()},
-\code{\link{new_branch}()},
 \code{\link{orcid2person}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},

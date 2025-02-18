@@ -15,7 +15,7 @@
 #' @importFrom gert git_config git_config_set git_info git_tag_create
 #' git_tag_list
 #' @importFrom withr defer
-#' @family package
+#' @family git
 set_tag <- function(x = ".") {
   if (
     !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||

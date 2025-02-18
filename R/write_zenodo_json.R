@@ -12,7 +12,7 @@
 #' @importFrom desc description
 #' @importFrom jsonlite toJSON
 #' @importFrom gert git_status
-#' @family package
+#' @family both
 write_zenodo_json <- function(x = ".") {
   .Deprecated(new = "update_citation", package = "checklist") # nocov start
   x <- update_citation(x = x)

@@ -20,17 +20,11 @@ It sets a new tag at the current commit using the related entry from
 This tag will turn into a release.
 }
 \seealso{
-Other package: 
-\code{\link{check_codemeta}()},
-\code{\link{check_cran}()},
-\code{\link{check_description}()},
-\code{\link{check_documentation}()},
-\code{\link{check_environment}()},
-\code{\link{check_license}()},
-\code{\link{check_package}()},
-\code{\link{tidy_desc}()},
-\code{\link{update_citation}()},
-\code{\link{write_citation_cff}()},
-\code{\link{write_zenodo_json}()}
+Other git: 
+\code{\link{clean_git}()},
+\code{\link{create_draft_pr}()},
+\code{\link{is_repository}()},
+\code{\link{is_workdir_clean}()},
+\code{\link{new_branch}()}
 }
-\concept{package}
+\concept{git}

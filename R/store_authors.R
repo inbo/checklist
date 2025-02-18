@@ -11,10 +11,10 @@ store_authors <- function(x = ".") {
   current <- stored_authors(root)
   if (file_exists(path(x, "DESCRIPTION"))) {
     this_desc <- description$new(file = path(x, "DESCRIPTION"))
-    author <- this_desc$get_authors()
-    vapply(author, author2df, vector(mode = "list", 1)) |>
-      c(list(current)) |>
-      do.call(what = rbind) -> new_author_df
+    this_desc$get_authors() |>
+      author2df() |>
+      cbind(usage = 1) |>
+      rbind(cbind(current, role = "")) -> new_author_df
   } else {
     citation_meta$new(x)$get_meta$authors |>
       cbind(usage = 1, email = "") -> cit_meta
@@ -34,26 +34,93 @@ store_authors <- function(x = ".") {
   return(invisible(NULL))
 }
 
+#' Convert person object in a data.frame.
+#'
+#' Results in a data.frame with the given name, family name, e-mail, ORCID,
+#' affiliation and role.
+#' Missing elements result in an empty string (`""`).
+#' Persons with multiple roles will have the roles as a comma separated string.
+#' @param person The person object or a list of person objects, `NA` or `NULL`.
+#' Any `"character"` is converted to a person object using `as.person()` with a
+#' warning.
+#' @family utils
+#' @export
+author2df <- function(person) {
+  UseMethod("author2df", person)
+}
+
+#' @export
+author2df.default <- function(person) {
+  stop("`author2df()` is not implemented for ", class(person))
+}
+
+#' @export
+author2df.logical <- function(person) {
+  stopifnot(
+    "`author2df()` is not implemented for `TRUE` or `FALSE`" = is.na(person)
+  )
+  data.frame(
+    given = character(0), family = character(0), email = character(0),
+    orcid = character(0), affiliation = character(0), role = character(0)
+  )
+}
+
+#' @export
+author2df.NULL <- function(person) {
+  data.frame(
+    given = character(0), family = character(0), email = character(0),
+    orcid = character(0), affiliation = character(0), role = character(0)
+  )
+}
+
+#' @export
+#' @importFrom utils as.person
+author2df.character <- function(person) {
+  warning("`author2df()` converted a character to a person using `as.person()`")
+  author2df(as.person(person))
+}
+
+#' @export
+author2df.list <- function(person) {
+  vapply(
+    person,
+    function(x) {
+      list(author2df(x))
+    },
+    vector(mode = "list", 1)
+  ) |>
+    do.call(what = rbind)
+}
+
+#' @export
 #' @importFrom assertthat assert_that has_name
-author2df <- function(z) {
-  assert_that(inherits(z, "person"))
-  if (all(z$role %in% c("cph", "fnd"))) {
-    return(list(data.frame(
-      given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0), usage = integer(0)
-    )))
+author2df.person <- function(person) {
+  assert_that(inherits(person, "person"))
+  if (length(person) > 1) {
+    return(
+      vapply(
+        person,
+        function(x) {
+          list(author2df(x))
+        },
+        vector(mode = "list", 1)
+      ) |>
+        do.call(what = rbind)
+    )
   }
 
-  list(data.frame(
-    given = z$given, family = z$family, email = coalesce(z$email, ""),
+  data.frame(
+    given = coalesce(person$given, ""), family = coalesce(person$family, ""),
+    email = coalesce(person$email, ""),
     orcid = ifelse(
-      has_name(z$comment, "ORCID"), unname(z$comment["ORCID"]), ""
+      has_name(person$comment, "ORCID"), unname(person$comment["ORCID"]), ""
     ),
     affiliation = ifelse(
-      has_name(z$comment, "ORCID"), unname(z$comment["affiliation"]), ""
+      has_name(person$comment, "affiliation"),
+      unname(person$comment["affiliation"]), ""
     ),
-    usage = 1
-  ))
+    role = paste(person$role, collapse = ", ")
+  )
 }
 
 coalesce <- function(...) {
