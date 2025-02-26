@@ -1,6 +1,20 @@
+# checklist 0.4.2
+
+* `check_lintr()` checks for missing dependencies.
+* Checking projects on GitHub Actions try to install the missing dependencies.
+
 # checklist 0.4.1
 
+* Add new function `create_draft_pr()`.
 * Escape quotes in the `CITATION` file.
+* Install packages in `Dockerfile` using `pak`.
+* `check_description()` doesn't require a funder when not set in the
+  organisation.
+* `check_document()` handles unexported functions in the documentation.
+* `check_lintr()` requires the `cyclocomp` package.
+* Improved extraction of citation information.
+* Fix false positive from `check_spelling()` as requested in #147.
+* Improve `author2df()`.
 
 # checklist 0.4.0
 
