@@ -34,8 +34,8 @@ add_badges <- function(x = ".", ...) {
     doi =
 "[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)](https://doi.org/%1$s)",
     check_package = paste0(
-      "[![R build status](https://github.com/%1$s/workflows/",
-      "check%20package%20on%20main/badge.svg)](https://github.com/%1$s/actions)"
+      "[![R build status](https://github.com/%1$s/actions/workflows/",
+      "check_on_main.yml/badge.svg)](https://github.com/%1$s/actions)"
     ),
     check_project = paste0(
       "![GitHub Workflow Status](https://img.shields.io/github/actions/",
