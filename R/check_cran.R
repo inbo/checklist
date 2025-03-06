@@ -26,6 +26,7 @@ check_cran <- function(x = ".", quiet = FALSE) {
   # don't use fancy Quotes when checking
   old_options <- options()
   defer(options(old_options))
+  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = 360)
   options(useFancyQuotes = FALSE, timeout = max(360, getOption("timeout")))
 
   # test if the worlds clock is available
@@ -38,7 +39,7 @@ check_cran <- function(x = ".", quiet = FALSE) {
     dirname(pandoc_exec()),
     rcmdcheck(
       path = x$get_path, args = c("--timings", "--as-cran", "--no-manual"),
-      error_on = "never", quiet = quiet
+      error_on = "never", quiet = quiet, timeout = Inf
     )
   )
   main_branch <- ifelse(
