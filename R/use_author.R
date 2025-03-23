@@ -258,6 +258,13 @@ Which default language for the affiliation?",
       )
     ) -> lang
   current$affiliation[selected] <- this_org[[1]]$affiliation[lang]
+  cat(
+    "given name: ", current$given[selected],
+    "\nfamily name:", current$family[selected],
+    "\ne-mail:     ", current$email[selected],
+    "\norcid:      ", current$orcid[selected],
+    "\naffiliation:", current$affiliation[selected]
+  )
   return(current)
 }
 
