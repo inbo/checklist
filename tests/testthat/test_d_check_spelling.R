@@ -346,12 +346,8 @@ test_that("check_spelling() works on a quarto project", {
     list(data.frame(quarto_lang = character(0), path = character(0)))
   )
   writeLines("lang: en-GB", path(path, "source", "_quarto.yml"))
-  expect_warning(
-    {z <- list_quarto_md(path(path, "source", "_quarto.yml"), root = path)},
-    "contact the maintainer"
-  )
   expect_identical(
-    z,
+    list_quarto_md(path(path, "source", "_quarto.yml"), root = path),
     list(data.frame(quarto_lang = character(0), path = character(0)))
   )
   writeLines(

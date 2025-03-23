@@ -183,11 +183,6 @@ get_language <- function(files, private) {
 #' @importFrom yaml read_yaml
 list_quarto_md <- function(quarto, root) {
   settings <- read_yaml(quarto)
-  if (!has_name(settings, "lang")) {
-    warning("No `lang` element found in quarto YAML.")
-    files <- data.frame(quarto_lang = character(0), path = character(0))
-    return(list(files))
-  }
   if (has_name(settings, "book")) {
     vapply(settings$book$chapters, FUN.VALUE = list(1), FUN = function(input) {
       if (inherits(input, "character")) {
@@ -197,22 +192,23 @@ list_quarto_md <- function(quarto, root) {
     }) |>
       unlist() |>
       c(settings$book$appendices) -> files
-    path_dir(quarto) |>
-      path_rel(root) |>
-      path(files) -> files
-    return(list(data.frame(quarto_lang = settings$lang, path = files)))
-  }
-  if (has_name(settings, "website")) {
+  } else if (has_name(settings, "website")) {
     files <- unlist(settings$website)
     files <- unname(files[grepl("file$", names(files))])
-    return(list(data.frame(quarto_lang = settings$lang, path = files)))
+  } else {
+    return(list(data.frame(quarto_lang = character(0), path = character(0))))
   }
-  list(
-    data.frame(
-      quarto_lang = settings$lang,
-      path = list.files(root, pattern = "q?md$", recursive = TRUE)
-    )
-  )
+  path_dir(quarto) |>
+    path_rel(root) |>
+    path(files) -> files
+  path(root, files) |>
+    vapply(
+      FUN.VALUE = character(1), lang = settings$lang,
+      FUN = function(x, lang) {
+        coalesce(yaml_front_matter(x)$lang, lang, NA_character_)
+      }
+    ) -> languages
+  list(data.frame(quarto_lang = languages, path = files))
 }
 
 #' @importFrom fs path path_norm path_split
