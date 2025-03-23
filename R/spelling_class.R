@@ -184,32 +184,35 @@ get_language <- function(files, private) {
 list_quarto_md <- function(quarto, root) {
   settings <- read_yaml(quarto)
   if (!has_name(settings, "lang")) {
+    warning("No `lang` element found in quarto YAML.")
     files <- data.frame(quarto_lang = character(0), path = character(0))
     return(list(files))
   }
-  if (!has_name(settings, "book")) {
-    warning(
-      paste(
-        "quarto project other than `book` detected.",
-        "Please contact the maintainer."
-      ),
-      call. = FALSE
+  if (has_name(settings, "book")) {
+    vapply(settings$book$chapters, FUN.VALUE = list(1), FUN = function(input) {
+      if (inherits(input, "character")) {
+        return(list(input))
+      }
+      return(list(input$chapters))
+    }) |>
+      unlist() |>
+      c(settings$book$appendices) -> files
+    path_dir(quarto) |>
+      path_rel(root) |>
+      path(files) -> files
+    return(list(data.frame(quarto_lang = settings$lang, path = files)))
+  }
+  if (has_name(settings, "website")) {
+    files <- unlist(settings$website)
+    files <- unname(files[grepl("file$", names(files))])
+    return(list(data.frame(quarto_lang = settings$lang, path = files)))
+  }
+  list(
+    data.frame(
+      quarto_lang = settings$lang,
+      path = list.files(root, pattern = "q?md$", recursive = TRUE)
     )
-    files <- data.frame(quarto_lang = character(0), path = character(0))
-    return(list(files))
-  }
-  vapply(settings$book$chapters, FUN.VALUE = list(1), FUN = function(input) {
-    if (inherits(input, "character")) {
-      return(list(input))
-    }
-    return(list(input$chapters))
-  }) |>
-    unlist() |>
-    c(settings$book$appendices) -> files
-  path_dir(quarto) |>
-    path_rel(root) |>
-    path(files) -> files
-  list(data.frame(quarto_lang = settings$lang, path = files))
+  )
 }
 
 #' @importFrom fs path path_norm path_split
