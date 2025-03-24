@@ -21,6 +21,9 @@ citation_meta <- R6Class(
       if (is_file(path(path, "_bookdown.yml"))) {
         private$type <- "bookdown"
         meta <- citation_bookdown(self)
+      } else if (is_file(path(path, "_quarto.yml"))) {
+        private$type <- "quarto"
+        meta <- citation_quarto(self)
       } else {
         assert_that(
           is_file(path(path, "checklist.yml")),
