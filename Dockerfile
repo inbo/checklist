@@ -20,9 +20,13 @@ ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get update \
   && apt upgrade -y \
   && apt-get install -y --no-install-recommends \
-    nano
+    nano \
+  && apt-get clean
 
 COPY docker/.Rprofile $R_HOME/etc/Rprofile.site
+COPY docker/upgrade_texlive.sh /rocker_scripts/upgrade_texlive.sh
+
+RUN /rocker_scripts/upgrade_texlive.sh
 
 RUN Rscript --no-save --no-restore -e 'install.packages("pak")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes")'
