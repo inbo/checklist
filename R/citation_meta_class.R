@@ -315,9 +315,9 @@ citation_zenodo <- function(meta) {
     "Please commit changes."
   )[
     is_repository(meta$get_path) &&
-    !is_tracked_not_modified(
-      path_rel(citation_file, git_find(meta$get_path)), meta$get_path
-    )
+      !is_tracked_not_modified(
+        path_rel(citation_file, git_find(meta$get_path)), meta$get_path
+      )
   ]
   return(errors)
 }
@@ -455,7 +455,10 @@ citation_r <- function(meta) {
     "Multiple `# end checklist entry` found in `inst/CITATION`"[
       length(end) > 1
     ],
-  "`# end checklist entry` before `# begin checklist entry` in `inst/CITATION`"[
+    paste(
+      "`# end checklist entry` before `# begin checklist entry` in",
+      "`inst/CITATION`"
+    )[
       head(start, length(end)) >= head(end, length(start))
     ]
   )

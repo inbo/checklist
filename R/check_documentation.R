@@ -143,8 +143,11 @@ check_news <- function(x) {
     return(
       c(
         doc_error,
-"No reference to a package version in NEWS.md.
-See the details in ?pkgdown::build_news for the required format."
+        paste(
+          "No reference to a package version in NEWS.md.",
+          "See the details in ?pkgdown::build_news for the required format.",
+          sep = "\n"
+        )
       )
     )
   }

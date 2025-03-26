@@ -22,7 +22,10 @@ test_that("check_environment() works", {
       `repository secret` = paste0(
         "Missing repository secret(s) CODECOV_TOKEN on ",
         "GitHub.\nSee ",
-"https://inbo.github.io/checklist/articles/getting_started.html#online-setup-2",
+        paste0(
+          "https://inbo.github.io/checklist/articles/",
+          "getting_started.html#online-setup-2"
+        ),
         " for more details."
       )
     )

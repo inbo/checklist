@@ -165,7 +165,8 @@ create_package <- function(
   license_batch <- switch(
     license,
     "GPL-3" = "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
-    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat")
+    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat"
+  )
   license_site <- switch(
     license,
     "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",
@@ -260,7 +261,7 @@ create_package <- function(
 
   if (
     !interactive() || !requireNamespace("rstudioapi", quietly = TRUE) ||
-    !rstudioapi::isAvailable()
+      !rstudioapi::isAvailable()
   ) {
     return(invisible(NULL))
   }

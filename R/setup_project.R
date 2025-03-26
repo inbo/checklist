@@ -118,7 +118,7 @@ setup_vc <- function(path, org) {
   # Add code of conduct
   if (
     !file_exists(path(path, ".github", "CODE_OF_CONDUCT.md")) &&
-    isTRUE(ask_yes_no("Add a default code of conduct?"))
+      isTRUE(ask_yes_no("Add a default code of conduct?"))
   ) {
     target <- path(path, ".github")
     insert_file(
@@ -132,7 +132,7 @@ setup_vc <- function(path, org) {
   # Add contributing guidelines
   if (
     !file_exists(path(path, ".github", "CONTRIBUTING.md")) &&
-    isTRUE(ask_yes_no("Add default contributing guidelines?"))
+      isTRUE(ask_yes_no("Add default contributing guidelines?"))
   ) {
     insert_file(
       repo = repo, filename = "CONTRIBUTING.md", template = "package_template",

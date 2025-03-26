@@ -103,7 +103,10 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
       paste(
         "# %s %s", "",
         "* Added a `NEWS.md` file to track changes to the package.",
-      "* Add [`checklist`](https://inbo.github.io/checklist/) infrastructure.",
+        paste(
+          "* Add [`checklist`](https://inbo.github.io/checklist/)",
+          "infrastructure."
+        ),
         sep = "\n"
       ),
       package, as.character(version)
@@ -118,7 +121,8 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
       license,
       "GPL-3" =
         "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
-      "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat")
+      "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat"
+    )
     license_site <- switch(
       license,
       "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",

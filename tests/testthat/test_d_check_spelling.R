@@ -296,8 +296,12 @@ test_that("check_spelling() on a project", {
   writeLines(
     c(
       head(readme_old, badge_end - 1), badge_doi,
-    "![r-universe name](https://inbo.r-universe.dev/badges/:name?color=c04384)",
-    readme_old[badge_end], "<!-- version: 0.1 -->", tail(readme_old, badge_end)
+      paste0(
+        "![r-universe name]",
+        "(https://inbo.r-universe.dev/badges/:name?color=c04384)"
+      ),
+      readme_old[badge_end], "<!-- version: 0.1 -->",
+      tail(readme_old, badge_end)
     ),
     path(path, "spelling", "README.md")
   )

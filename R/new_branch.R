@@ -21,11 +21,9 @@ new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
     ifelse("origin/master" %in% all_branches$name, "master", "unknown")
   )
   git_branch_create(
-    branch = branch,
-    ref = all_branches$commit[all_branches$name == main_branch],
-    checkout = checkout,
-    repo = repo
-    )
+    branch = branch, checkout = checkout, repo = repo,
+    ref = all_branches$commit[all_branches$name == main_branch]
+  )
   git_push(remote = "origin", refspec = sprintf("refs/heads/%s", branch),
            set_upstream = TRUE, verbose = verbose, repo = repo)
   return(invisible(NULL))

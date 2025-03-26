@@ -241,7 +241,7 @@ validate_author <- function(current, selected, org) {
   this_org <- org[gsub(".*@", "", current$email[selected])]
   while (
     this_org[[1]]$orcid &&
-    (is.na(current$orcid[selected]) || current$orcid[selected] == "")
+      (is.na(current$orcid[selected]) || current$orcid[selected] == "")
   ) {
     cat("\nAn ORCID is required for", names(this_org))
     current$orcid[selected] <- ask_orcid(prompt = "orcid: ")

@@ -46,7 +46,7 @@ check_filename <- function(x = ".") {
   ignored_dirs <- vapply(
     dirs,
     function(x) {
-     x[1] %in% c("", ".", ".git", ".Rproj.user") ||
+      x[1] %in% c("", ".", ".git", ".Rproj.user") ||
         identical(x[1:4], c("inst", "local_tex", "fonts", "opentype")) ||
         "_freeze" %in% x
     },

@@ -12,15 +12,16 @@ test_that("check_license() works", {
     new_cph <- paste0(
       "    person(\"", cph,
       "\", , , \"info@inbo.be\", role = c(\"cph\", \"fnd\"))"
-      )
+    )
     descr[cph_line] <- new_cph
     writeLines(descr, path(repo, "DESCRIPTION"))
     license <- readLines(path(repo, "LICENSE"))
     license[2] <- paste0("COPYRIGHT HOLDER: ", cph)
     writeLines(license, path(repo, "LICENSE"))
     license_md <- readLines(path(repo, "LICENSE.md"))
-    license_md[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
-                         " ", cph)
+    license_md[3] <- paste0(
+      "Copyright (c) ", format(Sys.Date(), "%Y"), " ", cph
+    )
     writeLines(license_md, path(repo, "LICENSE.md"))
   }
   path <- tempfile("check_license")
@@ -67,8 +68,11 @@ test_that("check_license() works", {
   expect_is(x <- check_license(repo), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
-    c("Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION",
-      "Copyright statement in LICENSE.md not in correct format"))
+    c(
+      "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION",
+      "Copyright statement in LICENSE.md not in correct format"
+    )
+  )
 
   # test all escape characters in copyright holder
   change_cph()

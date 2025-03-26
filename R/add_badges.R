@@ -31,8 +31,10 @@ add_badges <- function(x = ".", ...) {
   formats <- c(
     url =
       "[![website](https://img.shields.io/badge/website-%1$s-c04384)](%1$s)",
-    doi =
-"[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)](https://doi.org/%1$s)",
+    doi = paste0(
+      "[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)]",
+      "(https://doi.org/%1$s)"
+    ),
     check_package = paste0(
       "[![R build status](https://github.com/%1$s/actions/workflows/",
       "check_on_main.yml/badge.svg)](https://github.com/%1$s/actions)"

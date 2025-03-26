@@ -30,7 +30,7 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   missing_packages <- list_missing_packages(x$get_path)
   paste(missing_packages, collapse = ", ") |>
     sprintf(
-    fmt = "The code depends on the following uninstalled packages: %s"
+      fmt = "The code depends on the following uninstalled packages: %s"
     ) -> missing_packages_msg
   x$add_error(
     missing_packages_msg[length(missing_packages) > 0], item = "lintr"

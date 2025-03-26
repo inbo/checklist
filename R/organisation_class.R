@@ -91,10 +91,11 @@ organisation <- R6Class(
           )
           assert_that(
             is.character(private$organisation[[x]][["affiliation"]]),
-            msg = sprintf(
-        "`organisation[[\"%s\"]][[\"affiliation\"]]` is not a character vector",
-              x
-            )
+            msg = paste(
+              "`organisation[[\"%s\"]][[\"affiliation\"]]`",
+              "is not a character vector"
+            ) |>
+              sprintf(x)
           )
           assert_that(
             noNA(private$organisation[[x]][["affiliation"]]),

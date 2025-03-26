@@ -34,7 +34,7 @@ test_that("update_citation() works", {
   expect_is({
     x <- update_citation(path(path, package), quiet = TRUE)
   },
-    "checklist"
+  "checklist"
   )
   expect_named(x$.__enclos_env__$private$errors, "CITATION")
   expect_match(

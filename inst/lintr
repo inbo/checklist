@@ -7,6 +7,7 @@ linters: list(
     cyclocomp_linter(complexity_limit = 15L),
     equals_na_linter(),
     function_left_parentheses_linter(),
+    indentation_linter(),
     infix_spaces_linter(exclude_operators = NULL, allow_multiple_spaces = TRUE),
     line_length_linter(length = 80L),
     object_length_linter(length = 30L),

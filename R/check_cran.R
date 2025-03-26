@@ -48,9 +48,9 @@ check_cran <- function(x = ".", quiet = FALSE) {
   )
   if (
     main_branch != "none" &&
-    git_ahead_behind(upstream = main_branch, repo = x$get_path)$upstream ==
-      git_ahead_behind(upstream = main_branch, repo = x$get_path)$local &&
-    any(grepl("Insufficient package version", check_output$warnings))
+      git_ahead_behind(upstream = main_branch, repo = x$get_path)$upstream ==
+        git_ahead_behind(upstream = main_branch, repo = x$get_path)$local &&
+      any(grepl("Insufficient package version", check_output$warnings))
   ) { # nocov start
     incoming <- grepl(
       "checking CRAN incoming feasibility", check_output$warnings

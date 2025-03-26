@@ -53,42 +53,43 @@ check_description <- function(x = ".") {
     head_sha <- git_commit_id(repo = repo)
     current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
     if (length(current_branch) && current_branch %in% c("main", "master")) {
-"Branch master detected. From Oct. 1, 2020, any new repositories you create uses
-main as the default branch, instead of master. You can rename the default branch
-from the web. More info on https://github.com/github/renaming"[
-  current_branch == "master"
-] -> notes
+      paste(
+        "Branch master detected. From Oct. 1, 2020, any new repositories you",
+        "create uses\nmain as the default branch, instead of master. You can",
+        "rename the default branch\nfrom the web. More info on",
+        "https://github.com/github/renaming"
+      )[current_branch == "master"] -> notes
       descr_stats <- git_stat_files("DESCRIPTION", repo = repo)
       desc_diff <- git_diff(descr_stats$head, repo = repo)
       desc_diff <- desc_diff$patch[desc_diff$old == "DESCRIPTION"]
       desc_diff <- strsplit(desc_diff, "\n", fixed = TRUE)[[1]]
     } else {
       assert_that(
-        all(
-          grepl("origin", branch_info$name[!branch_info$local])
-          ),
+        all(grepl("origin", branch_info$name[!branch_info$local])),
         msg = "no remote called `origin` available"
       )
       assert_that(
-        any(branch_info$name %in%
-          c("origin/main", "origin/master")),
-        msg =
-      "No `main` or `master` branch found in `origin`. Did you fetch `origin`?"
+        any(branch_info$name %in% c("origin/main", "origin/master")),
+        msg = paste(
+          "No `main` or `master` branch found in `origin`. Did you fetch",
+          "`origin`?"
+        )
       )
       ref_branch <- ifelse(
         any(branch_info$name == "origin/main"), "origin/main", "origin/master"
       )
-"Branch master detected. From Oct. 1, 2020, any new repositories you create uses
-main as the default branch, instead of master. You can rename the default branch
-from the web. More info on https://github.com/github/renaming"[
-  !any(branch_info$name == "origin/main")
-] -> notes
+      paste(
+        "Branch master detected. From Oct. 1, 2020, any new repositories you",
+        "create uses\n main as the default branch, instead of master. You can",
+        "rename the default branch\nfrom the web. More info on",
+        "https://github.com/github/renaming"
+      )[!any(branch_info$name == "origin/main")] -> notes
       commit1 <- git_commit_id(ref = ref_branch, repo = repo)
       commit2 <- git_commit_id(ref = "HEAD", repo = repo)
       desc_diff <- execshell(
         sprintf("git diff %s..%s -- ./DESCRIPTION", commit1, commit2),
-        intern = TRUE,
-        path = repo)
+        intern = TRUE, path = repo
+      )
     }
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
     old_version <- gsub("-Version: ", "", old_version)
