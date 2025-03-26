@@ -18,9 +18,10 @@ create_draft_pr <- function(x = ".") {
   repo <- gsub("git@github.com:(.+)/(.+).git", "\\2", remote$url)
   desc(x$get_path)$get_version() |>
     as.character() -> version
-  gh(
+  output <- gh(
     "POST /repos/{owner}/{repo}/pulls", owner = owner, repo = repo,
     head = basename(git_info$head), base = basename(remote$head),
     title = sprintf(":bookmark:Version %s", version), draft = TRUE
   )
+  return(invisible(output$url))
 }
