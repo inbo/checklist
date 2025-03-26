@@ -184,20 +184,15 @@ get_language <- function(files, private) {
 list_quarto_md <- function(quarto, root) {
   settings <- read_yaml(quarto)
   if (has_name(settings, "book")) {
-    vapply(settings$book$chapters, FUN.VALUE = list(1), FUN = function(input) {
-      if (inherits(input, "character")) {
-        return(list(input))
-      }
-      return(list(input$chapters))
-    }) |>
-      unlist() |>
-      c(settings$book$appendices) -> files
+    files <- yaml_extract_filename(settings$book)
   } else if (has_name(settings, "website")) {
-    files <- unlist(settings$website)
-    files <- unname(files[grepl("file$", names(files))])
+    files <- yaml_extract_filename(settings$website)
   } else {
     return(list(data.frame(quarto_lang = character(0), path = character(0))))
   }
+  unlist(files) |>
+    unname() |>
+    unique() -> files
   path_dir(quarto) |>
     path_rel(root) |>
     path(files) -> files
@@ -323,4 +318,17 @@ print.checklist_language <- function(x, ..., hide_ignore = FALSE) {
   cat("\nIgnore patterns:\n\n")
   cat(attr(x, "checklist_ignore"))
   return(invisible(NULL))
+}
+
+yaml_extract_filename <- function(yaml) {
+  if (inherits(yaml, "list")) {
+    if (has_name(yaml, "file")) {
+      return(list(yaml$file))
+    }
+    return(list(vapply(yaml, yaml_extract_filename, list(1))))
+  }
+  if (!is.character(yaml)) {
+    return(list(NULL))
+  }
+  list(yaml[grepl(".q?md$", yaml)])
 }
