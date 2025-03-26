@@ -2,6 +2,15 @@
 
 * `check_lintr()` checks for missing dependencies.
 * Checking projects on GitHub Actions try to install the missing dependencies.
+* `check_lintr()` includes `lintr::indentation_linter()`.
+* Increase the time-out in `check_cran()`.
+* Docker image installs the latest version of `TeXLive`.
+* `check_filename()` ignores symbolic links.
+* When the path is a git repository, `check_filename()` and `check_folder()`
+  only check the files and directories under version control.
+* `check_folder()` allows quarto specific `_extensions` and `_files` folders.
+* `citation_meta()` now supports `quarto` documents.
+* Improved support for `quarto` documents in `check_spelling()`.
 
 # checklist 0.4.1
 
