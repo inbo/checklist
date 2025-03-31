@@ -29,20 +29,22 @@ add_badges <- function(x = ".", ...) {
   )
   dots <- list(...)
   formats <- c(
-    url =
-      "[![website](https://img.shields.io/badge/website-%1$s-c04384)](%1$s)",
-    doi = paste0(
-      "[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)]",
-      "(https://doi.org/%1$s)"
-    ),
     check_package = paste0(
       "[![R build status](https://github.com/%1$s/actions/workflows/",
       "check_on_main.yml/badge.svg)](https://github.com/%1$s/actions)"
     ),
     check_project = paste0(
-      "![GitHub Workflow Status](https://img.shields.io/github/actions/",
-      "workflow/status/%1$s/check_project.yml)"
-    )
+      "[![Build status](https://github.com/%1$s/actions/workflows/",
+      "check_project.yml/badge.svg)](https://github.com/%1$s/actions)"
+    ),
+    doi = paste0(
+      "[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)]",
+      "(https://doi.org/%1$s)"
+    ),
+    url =
+      "[![website](https://img.shields.io/badge/website-%1$s-c04384)](%1$s)",
+    version =
+      "[![version](https://img.shields.io/badge/version-%1$s-c04384)(%1$s)]"
   )
   dots <- dots[names(dots) %in% names(formats)]
   formats <- formats[names(dots)]
