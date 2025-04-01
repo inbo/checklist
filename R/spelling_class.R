@@ -196,6 +196,7 @@ list_quarto_md <- function(quarto, root) {
   path_dir(quarto) |>
     path_rel(root) |>
     path(files) -> files
+  files <- files[file_test("-f", path(root, files))]
   path(root, files) |>
     vapply(
       FUN.VALUE = character(1), lang = settings$lang,
