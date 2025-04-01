@@ -11,6 +11,7 @@
 * `check_folder()` allows quarto specific `_extensions` and `_files` folders.
 * `citation_meta()` now supports `quarto` documents.
 * Improved support for `quarto` documents in `check_spelling()`.
+* `add_badges()` can create a version badge.
 
 # checklist 0.4.1
 

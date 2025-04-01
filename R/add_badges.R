@@ -1,7 +1,10 @@
 #' add badges to a README
 #'
+#' - `check_package`: add a package check badge
+#' - `check_project`: add a project check badge
 #' - `doi`: add a DOI badge
 #' - `url`: add a website badge
+#' - `version`: add a version badge
 #' @inheritParams read_checklist
 #' @param ... Additional arguments
 #' @importFrom assertthat assert_that
@@ -14,6 +17,7 @@
 #'   add_badges(doi = "10.5281/zenodo.8063503")
 #'   add_badges(check_project = "inbo/checklist")
 #'   add_badges(check_package = "inbo/checklist")
+#'   add_badges(version = "v0.1.2")
 #'   add_badges(url = "https://www.inbo.be", doi = "10.5281/zenodo.8063503")
 #' }
 add_badges <- function(x = ".", ...) {
