@@ -5,6 +5,7 @@
 * `check_lintr()` includes `lintr::indentation_linter()`.
 * Increase the time-out in `check_cran()`.
 * Docker image installs the latest version of `TeXLive`.
+* Docker image installs missing packages on the fly.
 * `check_filename()` ignores symbolic links.
 * When the path is a git repository, `check_filename()` and `check_folder()`
   only check the files and directories under version control.
@@ -12,6 +13,8 @@
 * `citation_meta()` now supports `quarto` documents.
 * Improved support for `quarto` documents in `check_spelling()`.
 * `add_badges()` can create a version badge.
+* `create_draft_pr()` returns the URL of the draft pull request.
+* Fix bug in `use_author()` (#149).
 
 # checklist 0.4.1
 
