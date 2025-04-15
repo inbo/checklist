@@ -74,7 +74,7 @@ spelling_parse_r <- function(r_file, wordlist) {
 }
 
 strip_eqn <- function(text) {
-  c("deqn", "doi", "eqn", "mathbf", "pkg") |>
+  c("deqn", "doi", "eqn", "mathbf", "pkg", "emph", "href") |>
     paste(collapse = "|") -> tags
   find_regexp <- sprintf("\\\\(%s)\\s*\\{.*?\\}", tags)
   which_eqn <- which(grepl(find_regexp, text))
