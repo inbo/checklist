@@ -241,7 +241,7 @@ validate_author <- function(current, selected, org) {
   this_org <- org[gsub(".*@", "", current$email[selected])]
   while (
     this_org[[1]]$orcid &&
-    (is.na(current$orcid[selected]) || current$orcid[selected] == "")
+      (is.na(current$orcid[selected]) || current$orcid[selected] == "")
   ) {
     cat("\nAn ORCID is required for", names(this_org))
     current$orcid[selected] <- ask_orcid(prompt = "orcid: ")
@@ -258,6 +258,13 @@ Which default language for the affiliation?",
       )
     ) -> lang
   current$affiliation[selected] <- this_org[[1]]$affiliation[lang]
+  cat(
+    "given name: ", current$given[selected],
+    "\nfamily name:", current$family[selected],
+    "\ne-mail:     ", current$email[selected],
+    "\norcid:      ", current$orcid[selected],
+    "\naffiliation:", current$affiliation[selected]
+  )
   return(current)
 }
 

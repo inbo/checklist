@@ -16,4 +16,4 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
     steps:
-      - uses: inbo/actions/check_pkg@main
+      - uses: inbo/actions/check_pkg@devel

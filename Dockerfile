@@ -20,9 +20,13 @@ ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get update \
   && apt upgrade -y \
   && apt-get install -y --no-install-recommends \
-    nano
+    nano \
+  && apt-get clean
 
 COPY docker/.Rprofile $R_HOME/etc/Rprofile.site
+COPY docker/upgrade_texlive.sh /rocker_scripts/upgrade_texlive.sh
+
+RUN /rocker_scripts/upgrade_texlive.sh
 
 RUN Rscript --no-save --no-restore -e 'install.packages("pak")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes")'
@@ -41,6 +45,7 @@ RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("bookdown")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("hunspell")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("mockery")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("pdftools")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("renv")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")'

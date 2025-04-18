@@ -19,10 +19,10 @@ check_environment <- function(x = ".") {
     x$add_error(character(0), item = "repository secret", keep = FALSE)
     return(invisible(x))
   }
-  fmt <- paste(
-    "Missing repository secret(s) %s on GitHub.\nSee",
-"https://inbo.github.io/checklist/articles/getting_started.html#online-setup-2",
-    "for more details."
+  fmt <- paste0(
+    "Missing repository secret(s) %s on GitHub.\nSee ",
+    "https://inbo.github.io/checklist/articles/getting_started.html",
+    "#online-setup-2 for more details."
   )
   x$add_error(
     sprintf(fmt = fmt, paste(problems, collapse = ", ")),

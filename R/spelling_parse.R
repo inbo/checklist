@@ -74,7 +74,7 @@ spelling_parse_r <- function(r_file, wordlist) {
 }
 
 strip_eqn <- function(text) {
-  c("deqn", "doi", "eqn", "mathbf", "pkg") |>
+  c("deqn", "doi", "eqn", "mathbf", "pkg", "emph", "href") |>
     paste(collapse = "|") -> tags
   find_regexp <- sprintf("\\\\(%s)\\s*\\{.*?\\}", tags)
   which_eqn <- which(grepl(find_regexp, text))
@@ -281,6 +281,8 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("\\{#.*?\\}", "", text)
   # remove quarto caption options
   text <- gsub("^: (.*)\\{.*?\\}", "\\1", text)
+  # remove quarto shortcodes
+  text <- gsub("\\{\\{< .*? >\\}\\}", "", text)
 
   # remove markdown footnotes
   text <- gsub("\\[\\^.*?\\]", "", text)
@@ -289,7 +291,6 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}", "", text, perl = TRUE)
   text <- gsub("\\d+\\/\\d+", "", text, perl = TRUE)
 
-  # remove numbers
   # \u20ac is the Euro symbol in UTF-8 notation
   text <- gsub(
     "\u20ac?[\\s\\(\"][\\+-]?\\d+([\\.,]\\d+)*[\\s%\\)\"]", " ", text,

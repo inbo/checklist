@@ -53,7 +53,7 @@ create_hexsticker <- function(
     "  <g id=\"package: %s\">
     <path style=\"fill:#3C3D00\"  d=\"%s\"/>
   </g>",
-  package_name, paste(svg_name, collapse = " ")
+    package_name, paste(svg_name, collapse = " ")
   )
   if (missing(icon)) {
     writeLines(c(head(base, -1), svg_name, tail(base, 1)), filename)

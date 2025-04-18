@@ -1,6 +1,33 @@
+# checklist 0.4.2
+
+* `check_lintr()` checks for missing dependencies.
+* Checking projects on GitHub Actions try to install the missing dependencies.
+* `check_lintr()` includes `lintr::indentation_linter()`.
+* Increase the time-out in `check_cran()`.
+* Docker image installs the latest version of `TeXLive`.
+* Docker image installs missing packages on the fly.
+* `check_filename()` ignores symbolic links.
+* When the path is a git repository, `check_filename()` and `check_folder()`
+  only check the files and directories under version control.
+* `check_folder()` allows quarto specific `_extensions` and `_files` folders.
+* `citation_meta()` now supports `quarto` documents.
+* Improved support for `quarto` documents in `check_spelling()`.
+* `add_badges()` can create a version badge.
+* `create_draft_pr()` returns the URL of the draft pull request.
+* Fix bug in `use_author()` (#149).
+
 # checklist 0.4.1
 
+* Add new function `create_draft_pr()`.
 * Escape quotes in the `CITATION` file.
+* Install packages in `Dockerfile` using `pak`.
+* `check_description()` doesn't require a funder when not set in the
+  organisation.
+* `check_document()` handles unexported functions in the documentation.
+* `check_lintr()` requires the `cyclocomp` package.
+* Improved extraction of citation information.
+* Fix false positive from `check_spelling()` as requested in #147.
+* Improve `author2df()`.
 
 # checklist 0.4.0
 

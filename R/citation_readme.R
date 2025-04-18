@@ -74,7 +74,8 @@ readme_badges <- function(text) {
     return(
       list(
         errors = errors, notes = character(0), text = text,
-        warnings = character(0))
+        warnings = character(0)
+      )
     )
   }
   badges <- text[seq(badges_start + 1, badges_end - 1)]
@@ -152,8 +153,8 @@ readme_title <- function(text) {
   text$errors <- c(
     text$errors,
     paste(
-    "Title line must be just below the (optional) badges section in README.md",
-      "The title in README.md must start with `# `"
+      "Title line must be just below the (optional) badges section in",
+      "README.md.", "The title in README.md must start with `# `."
     )[!grepl("^ *# +", title)]
   )
   gsub(pattern = "^ *?# +", replacement = "", title) |>
@@ -218,7 +219,8 @@ readme_author <- function(text) {
   authors <- gsub("\\[\\^.*\\]", "", authors)
   c(
     "^\\[(.*?)!\\[ORCID logo\\]",
-  "\\(https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png\\)\\]",
+    "\\(https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png\\)",
+    "\\]",
     "\\(https://orcid.org/(.+)\\)$"
   ) |>
     paste(collapse = "") -> orcid_grep

@@ -34,29 +34,19 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom fs path path_split
-#' @importFrom gert git_ls
 #' @family both
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
-  if (
-    is_repository(x$get_path) && nrow(git_ls(repo = x$get_path)) > 0
-  ) {
-    repo <- x$get_path
-    # if a git repository: only check tracked files
-    files <- git_ls(repo = repo)
-    files <- files$path
-    dirs <- unique(dirname(files))
-  } else {
-    dirs <- list.dirs(x$get_path, recursive = TRUE, full.names = FALSE)
-    files <- list.files(x$get_path, recursive = TRUE, all.files = TRUE)
-  }
+  relevant <- list_project_files(x$get_path)
+  files <- relevant$files
+  dirs <- relevant$dirs
 
   dirs <- lapply(dirs, split_path)
   # ignore git and RStudio files
   ignored_dirs <- vapply(
     dirs,
     function(x) {
-     x[1] %in% c("", ".", ".git", ".Rproj.user") ||
+      x[1] %in% c("", ".", ".git", ".Rproj.user") ||
         identical(x[1:4], c("inst", "local_tex", "fonts", "opentype")) ||
         "_freeze" %in% x
     },
@@ -163,4 +153,28 @@ Fails: `%s`",
 split_path <- function(path) {
   if (dirname(path) %in% c(".", path)) return(basename(path))
   return(c(split_path(dirname(path)), basename(path)))
+}
+
+is_symlink <- function(paths) {
+  Sys.readlink(paths) |>
+    nzchar(keepNA = TRUE) |>
+    isTRUE()
+}
+
+#' @importFrom gert git_ls
+list_project_files <- function(path) {
+  oldwd <- getwd()
+  on.exit(setwd(oldwd), add = TRUE)
+  setwd(path)
+  if (
+    is_repository(".") && nrow(git_ls(repo = ".")) > 0
+  ) {
+    files <- git_ls(repo = ".")$path
+    dirs <- unique(dirname(files))
+  } else {
+    dirs <- list.dirs(".", recursive = TRUE, full.names = FALSE)
+    files <- list.files(".", recursive = TRUE, all.files = TRUE)
+  }
+  files <- files[!vapply(files, is_symlink, logical(1))]
+  return(list(files = files, dirs = dirs))
 }

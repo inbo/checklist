@@ -14,8 +14,11 @@ Defaults to \code{.}.}
 }
 \description{
 \itemize{
+\item \code{check_package}: add a package check badge
+\item \code{check_project}: add a project check badge
 \item \code{doi}: add a DOI badge
 \item \code{url}: add a website badge
+\item \code{version}: add a version badge
 }
 }
 \examples{
@@ -24,6 +27,7 @@ Defaults to \code{.}.}
   add_badges(doi = "10.5281/zenodo.8063503")
   add_badges(check_project = "inbo/checklist")
   add_badges(check_package = "inbo/checklist")
+  add_badges(version = "v0.1.2")
   add_badges(url = "https://www.inbo.be", doi = "10.5281/zenodo.8063503")
 }
 }

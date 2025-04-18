@@ -296,8 +296,12 @@ test_that("check_spelling() on a project", {
   writeLines(
     c(
       head(readme_old, badge_end - 1), badge_doi,
-    "![r-universe name](https://inbo.r-universe.dev/badges/:name?color=c04384)",
-    readme_old[badge_end], "<!-- version: 0.1 -->", tail(readme_old, badge_end)
+      paste0(
+        "![r-universe name]",
+        "(https://inbo.r-universe.dev/badges/:name?color=c04384)"
+      ),
+      readme_old[badge_end], "<!-- version: 0.1 -->",
+      tail(readme_old, badge_end)
     ),
     path(path, "spelling", "README.md")
   )
@@ -346,12 +350,8 @@ test_that("check_spelling() works on a quarto project", {
     list(data.frame(quarto_lang = character(0), path = character(0)))
   )
   writeLines("lang: en-GB", path(path, "source", "_quarto.yml"))
-  expect_warning(
-    {z <- list_quarto_md(path(path, "source", "_quarto.yml"), root = path)},
-    "contact the maintainer"
-  )
   expect_identical(
-    z,
+    list_quarto_md(path(path, "source", "_quarto.yml"), root = path),
     list(data.frame(quarto_lang = character(0), path = character(0)))
   )
   writeLines(

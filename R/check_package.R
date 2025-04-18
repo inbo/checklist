@@ -33,7 +33,7 @@
 #' @export
 #' @family package
 check_package <- function(
-    x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
+  x = ".", fail = !interactive(), pkgdown = interactive(), quiet = FALSE
 ) {
   assert_that(is.flag(fail), noNA(fail))
   assert_that(is.flag(pkgdown), noNA(pkgdown))

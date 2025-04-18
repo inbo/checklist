@@ -21,6 +21,9 @@ citation_meta <- R6Class(
       if (is_file(path(path, "_bookdown.yml"))) {
         private$type <- "bookdown"
         meta <- citation_bookdown(self)
+      } else if (is_file(path(path, "_quarto.yml"))) {
+        private$type <- "quarto"
+        meta <- citation_quarto(self)
       } else {
         assert_that(
           is_file(path(path, "checklist.yml")),
@@ -312,9 +315,9 @@ citation_zenodo <- function(meta) {
     "Please commit changes."
   )[
     is_repository(meta$get_path) &&
-    !is_tracked_not_modified(
-      path_rel(citation_file, git_find(meta$get_path)), meta$get_path
-    )
+      !is_tracked_not_modified(
+        path_rel(citation_file, git_find(meta$get_path)), meta$get_path
+      )
   ]
   return(errors)
 }
@@ -452,7 +455,10 @@ citation_r <- function(meta) {
     "Multiple `# end checklist entry` found in `inst/CITATION`"[
       length(end) > 1
     ],
-  "`# end checklist entry` before `# begin checklist entry` in `inst/CITATION`"[
+    paste(
+      "`# end checklist entry` before `# begin checklist entry` in",
+      "`inst/CITATION`"
+    )[
       head(start, length(end)) >= head(end, length(start))
     ]
   )

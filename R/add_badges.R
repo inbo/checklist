@@ -1,7 +1,10 @@
 #' add badges to a README
 #'
+#' - `check_package`: add a package check badge
+#' - `check_project`: add a project check badge
 #' - `doi`: add a DOI badge
 #' - `url`: add a website badge
+#' - `version`: add a version badge
 #' @inheritParams read_checklist
 #' @param ... Additional arguments
 #' @importFrom assertthat assert_that
@@ -14,6 +17,7 @@
 #'   add_badges(doi = "10.5281/zenodo.8063503")
 #'   add_badges(check_project = "inbo/checklist")
 #'   add_badges(check_package = "inbo/checklist")
+#'   add_badges(version = "v0.1.2")
 #'   add_badges(url = "https://www.inbo.be", doi = "10.5281/zenodo.8063503")
 #' }
 add_badges <- function(x = ".", ...) {
@@ -29,18 +33,22 @@ add_badges <- function(x = ".", ...) {
   )
   dots <- list(...)
   formats <- c(
-    url =
-      "[![website](https://img.shields.io/badge/website-%1$s-c04384)](%1$s)",
-    doi =
-"[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)](https://doi.org/%1$s)",
     check_package = paste0(
-      "[![R build status](https://github.com/%1$s/workflows/",
-      "check%20package%20on%20main/badge.svg)](https://github.com/%1$s/actions)"
+      "[![R build status](https://github.com/%1$s/actions/workflows/",
+      "check_on_main.yml/badge.svg)](https://github.com/%1$s/actions)"
     ),
     check_project = paste0(
-      "![GitHub Workflow Status](https://img.shields.io/github/actions/",
-      "workflow/status/%1$s/check_project.yml)"
-    )
+      "[![Build status](https://github.com/%1$s/actions/workflows/",
+      "check_project.yml/badge.svg)](https://github.com/%1$s/actions)"
+    ),
+    doi = paste0(
+      "[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)]",
+      "(https://doi.org/%1$s)"
+    ),
+    url =
+      "[![website](https://img.shields.io/badge/website-%1$s-c04384)](%1$s)",
+    version =
+      "[![version](https://img.shields.io/badge/version-%1$s-c04384)(%1$s)]"
   )
   dots <- dots[names(dots) %in% names(formats)]
   formats <- formats[names(dots)]

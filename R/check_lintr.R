@@ -27,6 +27,14 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   options(lintr.rstudio_source_markers = interactive())
   defer(options(lintr.rstudio_source_markers = old_lint_option))
   x <- read_checklist(x = x)
+  missing_packages <- list_missing_packages(x$get_path)
+  paste(missing_packages, collapse = ", ") |>
+    sprintf(
+      fmt = "The code depends on the following uninstalled packages: %s"
+    ) -> missing_packages_msg
+  x$add_error(
+    missing_packages_msg[length(missing_packages) > 0], item = "lintr"
+  )
 
   if (x$package) {
     linter <- lint_package(path = x$get_path)
@@ -45,4 +53,21 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   }
   x$add_linter(linter = linter)
   return(x)
+}
+
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom fs is_dir
+#' @importFrom utils installed.packages
+list_missing_packages <- function(x = ".") {
+  if (!requireNamespace("renv", quietly = TRUE)) {
+    warning("`renv` is not installed. Please install it.")
+    return(character(0))
+  }
+  assert_that(is.string(x), noNA(x), is_dir(x))
+  renv::dependencies(x, progress = FALSE)$Package |>
+    unique() |>
+    sort() -> required_packages
+  installed.packages() |>
+    rownames() -> installed_packages
+  required_packages[!required_packages %in% installed_packages]
 }

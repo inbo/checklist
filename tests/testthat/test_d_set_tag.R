@@ -32,8 +32,9 @@ test_that("set_tag() works", {
   gert::git_commit(message = "Initital commit", repo = repo)
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
-  git_push(remote = "origin", refspec = refspec,
-                 set_upstream = TRUE, repo = repo)
+  git_push(
+    remote = "origin", refspec = refspec, set_upstream = TRUE, repo = repo
+  )
 
   # not on GITHUB or main
   current_ref <- Sys.getenv("GITHUB_REF")

@@ -8,10 +8,9 @@ state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing-1)
 ![GitHub](https://img.shields.io/github/license/inbo/checklist)
-[![License](https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Release](https://img.shields.io/github/release/inbo/checklist.svg)](https://github.com/inbo/checklist/releases)
 [![R build
-status](https://github.com/inbo/checklist/workflows/check%20package%20on%20main/badge.svg)](https://github.com/inbo/checklist/actions)
+status](https://github.com/inbo/checklist/actions/workflows/check_on_main.yml/badge.svg)](https://github.com/inbo/checklist/actions)
 ![r-universe
 name](https://inbo.r-universe.dev/badges/:name?color=c04384)
 ![r-universe package](https://inbo.r-universe.dev/badges/checklist)

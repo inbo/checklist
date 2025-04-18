@@ -281,7 +281,7 @@ install_dutch <- function(lang) {
     path(target, "nl_NL.dic")
   )
   curl::curl_download(
-  "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
+    "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
     path(target, "nl_NL.aff")
   )
   file_copy(
