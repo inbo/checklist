@@ -46,7 +46,11 @@ if [ $? -ne 0 ]; then
 fi
 
 echo '\nBuilding pkgdown website...\n'
-Rscript --no-save --no-restore -e 'pkgdown::build_site()'
+Rscript --no-save --no-restore -e 'pkgdown::build_site(preview = FALSE)'
+if [ $? -ne 0 ]; then
+  echo '\nBuilding the packagedown website failed. Please check the error message above.\n';
+  exit 1
+fi
 
 echo 'GitHub actions:' $GITHUB_ACTIONS
 echo 'Event name:' $GITHUB_EVENT_NAME
