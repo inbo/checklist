@@ -1,3 +1,7 @@
+# checklist 0.4.3
+
+* `check_lintr()` turns missing dependencies into an error.
+
 # checklist 0.4.2
 
 * `check_lintr()` checks for missing dependencies.
