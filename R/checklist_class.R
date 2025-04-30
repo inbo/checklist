@@ -31,11 +31,13 @@ checklist <- R6Class(
 
     #' @description Add results from `lintr::lint_package()`
     #' @param linter A vector with linter errors.
-    add_linter = function(linter) {
+    #' @param error A logical indicating if the linter should be considered an
+    #' error.
+    add_linter = function(linter, error = FALSE) {
       assert_that(inherits(linter, "lints"))
       private$linter <- linter
       private$checked["lintr"] <- ifelse(
-        "lintr" %in% private$required, length(linter) > 0, NA
+        "lintr" %in% private$required, error || length(linter) > 0, NA
       )
       invisible(self)
     },

@@ -51,7 +51,7 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   if (!quiet && length(linter) > 0) {
     print(linter)
   }
-  x$add_linter(linter = linter)
+  x$add_linter(linter = linter, error = length(missing_packages) > 0)
   return(x)
 }
 
