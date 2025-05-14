@@ -1,3 +1,7 @@
+# checklist 0.4.3
+
+* Fix bug in `check_folder()` #156
+
 # checklist 0.4.2
 
 * `check_lintr()` checks for missing dependencies.
