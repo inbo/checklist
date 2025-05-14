@@ -177,6 +177,13 @@ is_symlink <- function(paths) {
     isTRUE()
 }
 
+# Function to extract all intermediate dirs from a single path
+extract_dirs <- function(path) {
+  parts <- strsplit(dirname(path), "/")[[1]]
+  dirs <- sapply(seq_along(parts), function(i) paste(parts[1:i], collapse = "/"))
+  return(dirs)
+}
+
 #' @importFrom gert git_ls
 list_project_files <- function(path) {
   oldwd <- getwd()
@@ -184,7 +191,7 @@ list_project_files <- function(path) {
   setwd(path)
   if (is_repository(".") && nrow(git_ls(repo = ".")) > 0) {
     files <- git_ls(repo = ".")$path
-    dirs <- unique(dirname(files))
+    dirs <- unique(unlist(lapply(files, extract_dirs)))
   } else {
     dirs <- list.dirs(".", recursive = TRUE, full.names = FALSE)
     files <- list.files(".", recursive = TRUE, all.files = TRUE)
