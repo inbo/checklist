@@ -164,7 +164,10 @@ is_symlink <- function(paths) {
 # Function to extract all intermediate dirs from a single path
 extract_dirs <- function(path) {
   parts <- strsplit(dirname(path), "/")[[1]]
-  dirs <- sapply(seq_along(parts), function(i) paste(parts[1:i], collapse = "/"))
+  dirs <- sapply(
+    seq_along(parts),
+    function(i) paste(parts[1:i], collapse = "/")
+  )
   return(dirs)
 }
 
