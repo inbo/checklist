@@ -58,7 +58,9 @@ test_that("list_project_files works in a git repository", {
   writeLines("test", "README.md")
 
   # Init git repo and add files
-  gert::git_init()
+  gert::git_init(path = tmp)
+  gert::git_config_set(name = "user.name", value = "junk", repo = tmp)
+  gert::git_config_set(name = "user.email", value = "junk@inbo.be", repo = tmp)
   gert::git_add(".")
   gert::git_commit("Initial commit")
 
