@@ -42,3 +42,66 @@ test_that("check_filename() works", {
   expect_true(check_filename(path)$fail)
   unlink(wrong_file)
 })
+
+test_that("list_project_files works in a git repository", {
+  skip_if_not_installed("gert")
+
+  tmp <- tempfile("testrepo_")
+  dir.create(tmp)
+  oldwd <- getwd()
+  on.exit(setwd(oldwd), add = TRUE)
+  setwd(tmp)
+
+  # Simulate project structure
+  dir.create("source/a/b", recursive = TRUE)
+  writeLines("test", "source/a/b/script.R")
+  writeLines("test", "README.md")
+
+  # Init git repo and add files
+  gert::git_init()
+  gert::git_add(".")
+  gert::git_commit("Initial commit")
+
+  # Run the function
+  res <- list_project_files(tmp)
+
+  # Check structure
+  expect_type(res, "list")
+  expect_named(res, c("files", "dirs"))
+
+  # Check files contain expected entries
+  expect_true("README.md" %in% res$files)
+  expect_true("source/a/b/script.R" %in% res$files)
+
+  # Check dirs contain all directory paths
+  expect_true("." %in% res$dirs)
+  expect_true("source" %in% res$dirs)
+  expect_true("source/a" %in% res$dirs)
+  expect_true("source/a/b" %in% res$dirs)
+})
+
+test_that("list_project_files works outside of a git repository", {
+  # Simulate project structure
+  tmp <- tempfile("norepo_")
+  dir.create(tmp)
+  dir.create(file.path(tmp, "data"))
+  dir.create(file.path(tmp, "source/a"), recursive = TRUE)
+  writeLines("test", file.path(tmp, "source/a/script.R"))
+  writeLines("test", file.path(tmp, "data/test.txt"))
+
+  # Run the function
+  res <- list_project_files(tmp)
+
+  # Check structure
+  expect_type(res, "list")
+  expect_named(res, c("files", "dirs"))
+
+  # Check files contain expected entries
+  expect_true("source/a/script.R" %in% res$files)
+  expect_true("data/test.txt" %in% res$files)
+
+  # Check dirs contain all directory paths
+  expect_true("data" %in% res$dirs)
+  expect_true("source" %in% res$dirs)
+  expect_true("source/a" %in% res$dirs)
+})
