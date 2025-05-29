@@ -130,7 +130,9 @@ checklist_print <- function(
   allowed_notes,
   linter,
   errors,
-  spelling
+  spelling,
+  package,
+  failed
 ) {
   print(session_info())
   output <- c(
@@ -204,8 +206,20 @@ checklist_print <- function(
   )
   cat(output, sep = rules())
   cat(rules())
-  if (interactive()) {
-    cat("\nDon't forget to store changes with `write_checklist()`\n")
+  if (failed) {
+    c(
+      "",
+      sprintf(
+        paste(
+          "You can allow certain warnings and notes via",
+          "`write_checklist(check_%s())`"
+        ),
+        ifelse(package, "package", "project")
+      ),
+      "You need to run this too in case of missing warnings or notes.",
+      "Because a missing warning or note is considered an error."
+    ) |>
+      cat(sep = "\n")
     cat(rules())
   }
 }

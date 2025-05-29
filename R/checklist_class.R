@@ -214,7 +214,9 @@ checklist <- R6Class(
         allowed_notes = private$allowed_notes,
         linter = private$linter,
         errors = private$errors,
-        spelling = private$spelling
+        spelling = private$spelling,
+        package = self$package,
+        failed = self$fail
       )
     },
 
