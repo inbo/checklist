@@ -10,7 +10,8 @@ test_that("check_environment() works", {
   Sys.setenv(GITHUB_ACTIONS = "")
   expect_invisible(suppressMessages(x <- check_environment(tmp_dir)))
   expect_identical(
-    x$.__enclos_env__$private$errors, list(`repository secret` = character(0))
+    x$.__enclos_env__$private$errors,
+    list(`repository secret` = character(0))
   )
 
   Sys.setenv(GITHUB_ACTIONS = "true")

@@ -30,20 +30,31 @@
 #' @importFrom utils zip
 #' @importFrom withr defer
 bookdown_zenodo <- function(
-  path, zip_format = c("bookdown::gitbook", "INBOmd::gitbook"),
+  path,
+  zip_format = c("bookdown::gitbook", "INBOmd::gitbook"),
   single_format = c(
-    "bookdown::pdf_book", "bookdown::epub_book", "INBOmd::pdf_report",
+    "bookdown::pdf_book",
+    "bookdown::epub_book",
+    "INBOmd::pdf_report",
     "INBOmd::epub_book"
-  ), token, sandbox = TRUE, logger = "INFO"
+  ),
+  token,
+  sandbox = TRUE,
+  logger = "INFO"
 ) {
   assert_that(
-    is.string(path), noNA(path), inherits(zip_format, "character"),
-    noNA(zip_format), inherits(single_format, "character"), noNA(single_format),
+    is.string(path),
+    noNA(path),
+    inherits(zip_format, "character"),
+    noNA(zip_format),
+    inherits(single_format, "character"),
+    noNA(single_format),
     assert_that(requireNamespace("bookdown", quietly = TRUE))
   )
   assert_that(is_dir(path), msg = "`path` is not an existing directory")
   assert_that(
-    is_file(path(path, "index.Rmd")), msg = "index.Rmd not found in `path`"
+    is_file(path(path, "index.Rmd")),
+    msg = "index.Rmd not found in `path`"
   )
   assert_that(
     is_file(path(path, "_bookdown.yml")),
@@ -67,7 +78,8 @@ bookdown_zenodo <- function(
   yml <- yaml_front_matter(path(path, "index.Rmd"))
   formats <- names(yml[["output"]])
   assert_that(
-    any(formats %in% c(zip_format, single_format)), msg = "No formats to render"
+    any(formats %in% c(zip_format, single_format)),
+    msg = "No formats to render"
   )
   zip_format <- zip_format[zip_format %in% formats]
   single_format <- single_format[single_format %in% formats]
@@ -97,7 +109,8 @@ bookdown_zenodo <- function(
   for (zip_i in seq_along(zip_format)) {
     # render report
     render_site(
-      output_format = zip_format[zip_i], encoding = "UTF-8",
+      output_format = zip_format[zip_i],
+      encoding = "UTF-8",
       quiet = is.null(logger)
     )
     # pack report into a zip archive
@@ -105,7 +118,8 @@ bookdown_zenodo <- function(
       path_rel(output_dir) -> files
     setwd(output_dir)
     path(
-      output_dir, paste(c(bookname, letters[zip_i - 1]), collapse = "_"),
+      output_dir,
+      paste(c(bookname, letters[zip_i - 1]), collapse = "_"),
       ext = "zip"
     ) |>
       zip(files = files, flags = "-r9XqT")
@@ -118,7 +132,9 @@ bookdown_zenodo <- function(
   }
   for (output_format in single_format) {
     render_site(
-      output_format = output_format, encoding = "UTF-8", quiet = is.null(logger)
+      output_format = output_format,
+      encoding = "UTF-8",
+      quiet = is.null(logger)
     )
   }
   dir_ls(output_dir, regexp = "reference-keys.txt") |>
@@ -128,6 +144,9 @@ bookdown_zenodo <- function(
     file_copy(output_dir, overwrite = TRUE)
 
   upload_zenodo(
-    path = output_dir, token = token, sandbox = sandbox, logger = logger
+    path = output_dir,
+    token = token,
+    sandbox = sandbox,
+    logger = logger
   )
 }

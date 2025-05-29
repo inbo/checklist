@@ -17,7 +17,8 @@ spelling <- R6Class(
       if (file_exists(path(base_path, "DESCRIPTION"))) {
         desc_lang <- desc(base_path)$get_field("Language", default = NA)
         assert_that(
-          !is.na(desc_lang), msg = paste(
+          !is.na(desc_lang),
+          msg = paste(
             "No `Language` field found in DESCRIPTION.",
             "Please add `Language: en-GB` to DESCRIPTION."
           )
@@ -51,8 +52,10 @@ spelling <- R6Class(
     #' different language.
     set_exceptions = function() {
       exceptions <- change_language_interactive(
-        rbind(self$get_md, self$get_rd, self$get_r), main = private$main,
-        ignore = private$ignore, other = private$other
+        rbind(self$get_md, self$get_rd, self$get_r),
+        main = private$main,
+        ignore = private$ignore,
+        other = private$other
       )
       private$ignore <- exceptions$ignore
       private$other <- exceptions$other
@@ -89,7 +92,10 @@ spelling <- R6Class(
     #' @importFrom fs dir_ls path
     get_md = function() {
       md_files <- dir_ls(
-        private$path, recurse = TRUE, type = "file", regexp = "\\.[Rrq]?md$",
+        private$path,
+        recurse = TRUE,
+        type = "file",
+        regexp = "\\.[Rrq]?md$",
         all = TRUE
       )
       get_language(files = md_files, private = private)
@@ -98,7 +104,10 @@ spelling <- R6Class(
     #' @importFrom fs dir_exists dir_ls
     get_r = function() {
       r_files <- dir_ls(
-        private$path, recurse = TRUE, type = "file", regexp = "\\.[R|r]$",
+        private$path,
+        recurse = TRUE,
+        type = "file",
+        regexp = "\\.[R|r]$",
         all = TRUE
       )
       get_language(files = r_files, private = private)
@@ -108,7 +117,10 @@ spelling <- R6Class(
     get_rd = function() {
       if (dir_exists(path(private$path, "man"))) {
         rd_files <- dir_ls(
-          path(private$path, "man"), recurse = FALSE, type = "file", all = TRUE,
+          path(private$path, "man"),
+          recurse = FALSE,
+          type = "file",
+          all = TRUE,
           regexp = "\\.[Rr]d$"
         )
       } else {
@@ -120,14 +132,18 @@ spelling <- R6Class(
     settings = function() {
       return(
         list(
-          root = private$path, default = private$main, ignore = private$ignore,
+          root = private$path,
+          default = private$main,
+          ignore = private$ignore,
           other = private$other
         )
       )
     }
   ),
   private = list(
-    main = character(0), ignore = character(0), other = list(),
+    main = character(0),
+    ignore = character(0),
+    other = list(),
     path = character(0)
   )
 )
@@ -162,14 +178,17 @@ get_language <- function(files, private) {
   files$language[apply(test_ignore, 1, any)] <- "ignore"
   dir_ls(private$path, regexp = "_quarto\\.yml", recurse = TRUE) |>
     vapply(
-      FUN = list_quarto_md, FUN.VALUE = vector(mode = "list", length = 1L),
+      FUN = list_quarto_md,
+      FUN.VALUE = vector(mode = "list", length = 1L),
       root = private$path
     ) |>
     c(list(data.frame(quarto_lang = character(0), path = character(0)))) |>
     do.call(what = rbind) |>
     merge(x = files, all.x = TRUE, by = "path") -> files
   files$language <- ifelse(
-    is.na(files$quarto_lang), files$language, files$quarto_lang
+    is.na(files$quarto_lang),
+    files$language,
+    files$quarto_lang
   )
   files$quarto_lang <- NULL
   class(files) <- c("checklist_language", class(files))
@@ -199,7 +218,8 @@ list_quarto_md <- function(quarto, root) {
   files <- files[file_test("-f", path(root, files))]
   path(root, files) |>
     vapply(
-      FUN.VALUE = character(1), lang = settings$lang,
+      FUN.VALUE = character(1),
+      lang = settings$lang,
       FUN = function(x, lang) {
         coalesce(yaml_front_matter(x)$lang, lang, NA_character_)
       }
@@ -210,7 +230,10 @@ list_quarto_md <- function(quarto, root) {
 #' @importFrom fs path path_norm path_split
 #' @importFrom utils menu
 change_language_interactive <- function(
-  x, main = "en-GB", other = list(), ignore = character(0)
+  x,
+  main = "en-GB",
+  other = list(),
+  ignore = character(0)
 ) {
   print(x)
   answer <- menu(
@@ -228,7 +251,10 @@ change_language_interactive <- function(
   }
   x <- x[order(x$path, method = "radix"), ]
   result <- change_language_interactive2(
-    x, main = main, other_lang = names(other), base_path = "."
+    x,
+    main = main,
+    other_lang = names(other),
+    base_path = "."
   )
   return(invisible(list(other = result$other, ignore = result$ignore)))
 }
@@ -237,7 +263,10 @@ change_language_interactive <- function(
 #' @importFrom stats setNames
 change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
   first_path <- vapply(
-    path_split(x$path), FUN = `[`, FUN.VALUE = character(1), x = 1
+    path_split(x$path),
+    FUN = `[`,
+    FUN.VALUE = character(1),
+    x = 1
   )
   x$path <- path_norm(path(base_path, x$path))
   other <- list()
@@ -247,9 +276,10 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
     print(c_sort(x$path[current]))
     answer <- menu(
       c(
-        paste("ignore",  "all files"[length(current) > 1]),
+        paste("ignore", "all files"[length(current) > 1]),
         paste(
-          "use", c(sprintf("%s (default)", main), other_lang),
+          "use",
+          c(sprintf("%s (default)", main), other_lang),
           "for all files"[length(current) > 1]
         ),
         "change the settings for some files"[length(current) > 1],
@@ -268,7 +298,9 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
       x2 <- x[current, ]
       x2$path <- path_rel(x2$path, start = path(base_path, i))
       x2 <- change_language_interactive2(
-        x = x2, main = main, other_lang = other_lang,
+        x = x2,
+        main = main,
+        other_lang = other_lang,
         base_path = path(base_path, i)
       )
       other_lang <- unique(c(other_lang, x2$other_lang))

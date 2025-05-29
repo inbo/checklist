@@ -13,9 +13,13 @@ test_that("check_description() works", {
   package <- "checkdescription"
   suppressMessages(
     create_package(
-      path = path, package = package, keywords = "dummy", communities = "inbo",
+      path = path,
+      package = package,
+      keywords = "dummy",
+      communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.", maintainer = maintainer,
+      description = "A dummy package.",
+      maintainer = maintainer,
       language = "en-GB"
     )
   )
@@ -56,7 +60,8 @@ test_that("check_description() works", {
   gert::git_commit(message = "bump patch version", repo = repo)
   expect_is(x <- check_description(repo), "checklist")
   expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION, character(0)
+    x$.__enclos_env__$private$errors$DESCRIPTION,
+    character(0)
   )
 
   this_desc <- desc::description$new(
@@ -75,16 +80,20 @@ test_that("check_description() works", {
   gert::git_clone(
     url = path(path, package),
     path = path(path, "origin"),
-    bare = TRUE, verbose = FALSE
+    bare = TRUE,
+    verbose = FALSE
   )
   gert::git_remote_add(
-    url = path(path, "origin"), name = "origin", repo = repo
+    url = path(path, "origin"),
+    name = "origin",
+    repo = repo
   )
   git_fetch(remote = "origin", repo = repo, verbose = FALSE)
   git_branch_create(branch = "junk", ref = "HEAD", checkout = TRUE, repo = repo)
 
   expect_is(x <- check_description(path(path, package)), "checklist")
   expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION, "Package version not updated"
+    x$.__enclos_env__$private$errors$DESCRIPTION,
+    "Package version not updated"
   )
 })

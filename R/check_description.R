@@ -76,7 +76,9 @@ check_description <- function(x = ".") {
         )
       )
       ref_branch <- ifelse(
-        any(branch_info$name == "origin/main"), "origin/main", "origin/master"
+        any(branch_info$name == "origin/main"),
+        "origin/main",
+        "origin/master"
       )
       paste(
         "Branch master detected. From Oct. 1, 2020, any new repositories you",
@@ -88,7 +90,8 @@ check_description <- function(x = ".") {
       commit2 <- git_commit_id(ref = "HEAD", repo = repo)
       desc_diff <- execshell(
         sprintf("git diff %s..%s -- ./DESCRIPTION", commit1, commit2),
-        intern = TRUE, path = repo
+        intern = TRUE,
+        path = repo
       )
     }
     old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
@@ -179,10 +182,12 @@ unchanged_repo <- function(repo, old_status) {
   new_files <- current_status$file
   old_files <- old_status$file
   changes <- c(
-    new_files[!new_files %in% old_files], old_files[!old_files %in% new_files]
+    new_files[!new_files %in% old_files],
+    old_files[!old_files %in% new_files]
   )
   attr(ok, "files") <- sprintf(
-    "changed files:\n%s", paste(changes, collapse = "\n")
+    "changed files:\n%s",
+    paste(changes, collapse = "\n")
   )
   return(ok)
 }
@@ -237,7 +242,9 @@ Please send a pull request if you need support for this license.",
   # check if LICENSE.md exists
   if (!file_exists(path(x$get_path, "LICENSE.md"))) {
     x$add_error(
-      errors = c(problems, "No LICENSE.md file"), item = "license", keep = FALSE
+      errors = c(problems, "No LICENSE.md file"),
+      item = "license",
+      keep = FALSE
     )
     return(x)
   }
@@ -246,7 +253,9 @@ Please send a pull request if you need support for this license.",
   path(x$get_path, "LICENSE.md") |>
     readLines() -> current
   official <- switch(
-    current_license, "GPL-3" = "gplv3.md", "MIT + file LICENSE" = "mit.md",
+    current_license,
+    "GPL-3" = "gplv3.md",
+    "MIT + file LICENSE" = "mit.md",
     "CC-BY" = "cc_by_4_0.md"
   )
   system.file("generic_template", official, package = "checklist") |>
@@ -254,8 +263,12 @@ Please send a pull request if you need support for this license.",
   if (current_license == "MIT + file LICENSE") {
     author <- this_desc$get_author(role = "cph")
     cph <- paste(c(author$given, author$family), collapse = " ")
-    cph <- gsub("([\\(\\)\\.\\\\\\|\\[\\]\\{\\}\\^\\$\\*\\+\\?])",
-                "\\\\\\1", cph, perl = TRUE)
+    cph <- gsub(
+      "([\\(\\)\\.\\\\\\|\\[\\]\\{\\}\\^\\$\\*\\+\\?])",
+      "\\\\\\1",
+      cph,
+      perl = TRUE
+    )
     problems <- c(
       problems,
       "Copyright holder in LICENSE.md doesn't match the one in DESCRIPTION"[
@@ -276,13 +289,15 @@ Please send a pull request if you need support for this license.",
   }
   if ((length(current) != length(official)) || any(current != official)) {
     problems <- c(
-      problems, "LICENSE.md doesn't match the version in the checklist package"
+      problems,
+      "LICENSE.md doesn't match the version in the checklist package"
     )
     set_license(x)
   }
   x$add_error(
     errors = problems,
-    item = "license", keep = FALSE
+    item = "license",
+    keep = FALSE
   )
   return(x)
 }
@@ -297,18 +312,24 @@ check_authors <- function(this_desc, org) {
     if (!is.na(org$get_funder)) {
       if (org$get_rightsholder == org$get_funder) {
         rightsholder <- person(
-          given = org$get_rightsholder, role = c("cph", "fnd"), email = email
+          given = org$get_rightsholder,
+          role = c("cph", "fnd"),
+          email = email
         )
         funder <- NULL
       } else {
         rightsholder <- person(
-          given = org$get_rightsholder, role = "cph", email = email
+          given = org$get_rightsholder,
+          role = "cph",
+          email = email
         )
         funder <- person(given = org$get_funder, role = "fnd")
       }
     } else {
       rightsholder <- person(
-        given = org$get_rightsholder, role = "cph", email = email
+        given = org$get_rightsholder,
+        role = "cph",
+        email = email
       )
       funder <- NULL
     }
@@ -324,9 +345,11 @@ check_authors <- function(this_desc, org) {
   problems <- c(
     sprintf(
       "`%s` must be listed as copyright holder and use `%s` as email.",
-      org$get_rightsholder, org$get_email
+      org$get_rightsholder,
+      org$get_email
     )[
-      !is.null(rightsholder) && !is.na(org$get_rightsholder) &&
+      !is.null(rightsholder) &&
+        !is.na(org$get_rightsholder) &&
         !rightsholder %in% authors
     ],
     sprintf(
@@ -337,7 +360,8 @@ check_authors <- function(this_desc, org) {
   authors <- authors[!authors %in% rightsholder]
   authors <- authors[!authors %in% funder]
   vapply(
-    authors, FUN.VALUE = vector(mode = "list", length = 1L),
+    authors,
+    FUN.VALUE = vector(mode = "list", length = 1L),
     FUN = function(author) {
       email <- format(author, include = "email", braces = list(email = ""))
       this_org <- org$get_organisation[[gsub(".*@", "", email)]]

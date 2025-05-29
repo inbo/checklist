@@ -42,7 +42,10 @@ test_that("author tools", {
   stub(update_author, "readline", "0000-0002-1825-0097", depth = 2)
   expect_output(
     update_author(
-      current = current, selected = 1, root = root, org = read_organisation()
+      current = current,
+      selected = 1,
+      root = root,
+      org = read_organisation()
     )
   )
   current$orcid <- "0000-0002-1825-0097"
@@ -59,7 +62,9 @@ test_that("author tools", {
 
   stub(update_author, "menu", mock(5, 6))
   stub(
-    update_author, "readline", org$get_organisation[["inbo.be"]]$affiliation[1],
+    update_author,
+    "readline",
+    org$get_organisation[["inbo.be"]]$affiliation[1],
     depth = 2
   )
   expect_output(

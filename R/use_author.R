@@ -41,14 +41,21 @@ use_author <- function(email) {
       current <- new_author(current = current, root = root, org = org)
     }
     cat(
-      "given name: ", current$given[selected],
-      "\nfamily name:", current$family[selected],
-      "\ne-mail:     ", current$email[selected],
-      "\norcid:      ", current$orcid[selected],
-      "\naffiliation:", current$affiliation[selected]
+      "given name: ",
+      current$given[selected],
+      "\nfamily name:",
+      current$family[selected],
+      "\ne-mail:     ",
+      current$email[selected],
+      "\norcid:      ",
+      current$orcid[selected],
+      "\naffiliation:",
+      current$affiliation[selected]
     )
     current <- validate_author(
-      current = current, selected = selected, org = org
+      current = current,
+      selected = selected,
+      org = org
     )
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
@@ -61,7 +68,10 @@ use_author <- function(email) {
   }
   current$usage[selected] <- pmax(current$usage[selected], 0) + 1
   write.table(
-    current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+    current,
+    file = path(root, "author.txt"),
+    sep = "\t",
+    row.names = FALSE,
     fileEncoding = "UTF8"
   )
   message("author information stored at ", path(root, "author.txt"))
@@ -86,14 +96,21 @@ update_author <- function(current, selected, root, org) {
   item <- c("given", "family", "email", "orcid", "affiliation")
   while (TRUE) {
     cat(
-      "given name: ", current$given[selected],
-      "\nfamily name:", current$family[selected],
-      "\ne-mail:     ", current$email[selected],
-      "\norcid:      ", current$orcid[selected],
-      "\naffiliation:", current$affiliation[selected]
+      "given name: ",
+      current$given[selected],
+      "\nfamily name:",
+      current$family[selected],
+      "\ne-mail:     ",
+      current$email[selected],
+      "\norcid:      ",
+      current$orcid[selected],
+      "\naffiliation:",
+      current$affiliation[selected]
     )
     current <- validate_author(
-      current = current, selected = selected, org = org
+      current = current,
+      selected = selected,
+      org = org
     )
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
@@ -103,7 +120,9 @@ update_author <- function(current, selected, root, org) {
       break
     }
     sprintf(
-      "current %s: %s\n", item[command], current[selected, item[command]]
+      "current %s: %s\n",
+      item[command],
+      current[selected, item[command]]
     ) |>
       cat()
     current[selected, item[command]] <- readline(
@@ -114,7 +133,10 @@ update_author <- function(current, selected, root, org) {
     return(original)
   }
   write.table(
-    current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+    current,
+    file = path(root, "author.txt"),
+    sep = "\t",
+    row.names = FALSE,
     fileEncoding = "UTF8"
   )
   message("author information stored at ", path(root, "author.txt"))
@@ -150,7 +172,10 @@ new_author <- function(current, root, org) {
   extra$usage <- 0
   rbind(current, extra) -> current
   write.table(
-    current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+    current,
+    file = path(root, "author.txt"),
+    sep = "\t",
+    row.names = FALSE,
     fileEncoding = "UTF8"
   )
   message("author information stored at ", path(root, "author.txt"))
@@ -176,7 +201,10 @@ author2person <- function(role = "aut") {
     comment <- NULL
   }
   person(
-    given = df$given, family = df$family, email = email, comment = comment,
+    given = df$given,
+    family = df$family,
+    email = email,
+    comment = comment,
     role = role
   )
 }
@@ -198,8 +226,12 @@ author2badge <- function(role = "aut", org) {
       sprintf(df$family, df$given, df$orcid, role_link)
   }
   c(
-    aut = "author", cre = "contact person", cph = "copyrightholder",
-    ctb = "contributor", fnd = "funder", rev = "reviewer"
+    aut = "author",
+    cre = "contact person",
+    cph = "copyrightholder",
+    ctb = "contributor",
+    fnd = "funder",
+    rev = "reviewer"
   )[role] |>
     sprintf(fmt = "[^%2$s]: %1$s", role) -> attr(badge, "footnote")
   if (is.na(df$affiliation) || df$affiliation == "") {
@@ -207,7 +239,8 @@ author2badge <- function(role = "aut", org) {
   }
   org <- org$get_organisation
   vapply(
-    names(org), FUN.VALUE = vector(mode = "list", length = 1L),
+    names(org),
+    FUN.VALUE = vector(mode = "list", length = 1L),
     FUN = function(x) {
       data.frame(domain = x, affiliation = org[[x]]$affiliation) |>
         list()
@@ -223,7 +256,8 @@ author2badge <- function(role = "aut", org) {
     `attr<-`(
       which = "footnote",
       value = c(
-        attr(badge, "footnote"), sprintf("[^%s]: %s", aff, df$affiliation)
+        attr(badge, "footnote"),
+        sprintf("[^%s]: %s", aff, df$affiliation)
       )
     )
 }
@@ -259,11 +293,16 @@ Which default language for the affiliation?",
     ) -> lang
   current$affiliation[selected] <- this_org[[1]]$affiliation[lang]
   cat(
-    "given name: ", current$given[selected],
-    "\nfamily name:", current$family[selected],
-    "\ne-mail:     ", current$email[selected],
-    "\norcid:      ", current$orcid[selected],
-    "\naffiliation:", current$affiliation[selected]
+    "given name: ",
+    current$given[selected],
+    "\nfamily name:",
+    current$family[selected],
+    "\ne-mail:     ",
+    current$email[selected],
+    "\norcid:      ",
+    current$orcid[selected],
+    "\naffiliation:",
+    current$affiliation[selected]
   )
   return(current)
 }
@@ -291,7 +330,7 @@ validate_orcid <- function(orcid) {
     matrix(ncol = 1) -> powers
   apply(digits[-16, , drop = FALSE], 1, as.integer, simplify = FALSE) |>
     do.call(what = rbind) |>
-    crossprod(2 ^ powers) |>
+    crossprod(2^powers) |>
     as.vector() -> total
   remainder <- (12 - (total %% 11)) %% 11
   remainder <- as.character(remainder)

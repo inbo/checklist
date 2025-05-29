@@ -9,7 +9,7 @@
 #' @importFrom gert git_branch_list git_branch_create git_push
 #' @export
 #' @family git
-new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
+new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo = ".") {
   assert_that(is.string(branch))
 
   clean_git(repo = repo, verbose = verbose)
@@ -17,14 +17,22 @@ new_branch <- function(branch, verbose = TRUE, checkout = TRUE, repo =  ".") {
   # determine main branch
   all_branches <- git_branch_list(repo = repo)
   main_branch <- ifelse(
-    "origin/main" %in% all_branches$name, "main",
+    "origin/main" %in% all_branches$name,
+    "main",
     ifelse("origin/master" %in% all_branches$name, "master", "unknown")
   )
   git_branch_create(
-    branch = branch, checkout = checkout, repo = repo,
+    branch = branch,
+    checkout = checkout,
+    repo = repo,
     ref = all_branches$commit[all_branches$name == main_branch]
   )
-  git_push(remote = "origin", refspec = sprintf("refs/heads/%s", branch),
-           set_upstream = TRUE, verbose = verbose, repo = repo)
+  git_push(
+    remote = "origin",
+    refspec = sprintf("refs/heads/%s", branch),
+    set_upstream = TRUE,
+    verbose = verbose,
+    repo = repo
+  )
   return(invisible(NULL))
 }

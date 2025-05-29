@@ -49,7 +49,8 @@ setup_project <- function(path = ".") {
   )
 
   answer <- menu_first(
-    c("English", "Dutch", "French"), title = "Default language of the project?"
+    c("English", "Dutch", "French"),
+    title = "Default language of the project?"
   )
   x$set_default(c("en-GB", "nl-BE", "fr-FR")[answer])
 
@@ -66,8 +67,12 @@ setup_project <- function(path = ".") {
   dir_ls(path, regexp = "Rproj$") |>
     path_rel(path) |>
     c(
-      "LICENSE.md"["license" %in% checks], files, "checklist.yml",
-      path("source", "checklist.R"), "renv", "renv.lock"
+      "LICENSE.md"["license" %in% checks],
+      files,
+      "checklist.yml",
+      path("source", "checklist.R"),
+      "renv",
+      "renv.lock"
     ) |>
     git_add(repo = repo)
   return(invisible(NULL))
@@ -91,7 +96,8 @@ setup_vc <- function(path, org) {
 
   # add .gitignore
   template <- system.file(
-    path("generic_template", "gitignore"), package = "checklist"
+    path("generic_template", "gitignore"),
+    package = "checklist"
   )
   if (is_file(path(path, ".gitignore"))) {
     current <- readLines(path(path, ".gitignore"))
@@ -109,7 +115,9 @@ setup_vc <- function(path, org) {
   target <- path(path, ".github", "workflows")
   dir_create(target)
   insert_file(
-    repo = repo, filename = "check_project.yml", template = "project_template",
+    repo = repo,
+    filename = "check_project.yml",
+    template = "project_template",
     target = target
   )
   path(".github", "workflows", "check_project.yml") |>
@@ -122,8 +130,10 @@ setup_vc <- function(path, org) {
   ) {
     target <- path(path, ".github")
     insert_file(
-      repo = repo, filename = "CODE_OF_CONDUCT.md",
-      template = "generic_template", target = target
+      repo = repo,
+      filename = "CODE_OF_CONDUCT.md",
+      template = "generic_template",
+      target = target
     )
     path(".github", "CODE_OF_CONDUCT.md") |>
       git_add(force = TRUE, repo = repo)
@@ -135,7 +145,9 @@ setup_vc <- function(path, org) {
       isTRUE(ask_yes_no("Add default contributing guidelines?"))
   ) {
     insert_file(
-      repo = repo, filename = "CONTRIBUTING.md", template = "package_template",
+      repo = repo,
+      filename = "CONTRIBUTING.md",
+      template = "package_template",
       target = target
     )
     path(".github", "CONTRIBUTING.md") |>
@@ -164,7 +176,8 @@ create_project <- function(path, project) {
   # create RStudio project
   file_copy(
     system.file(
-      path("project_template", "rproj.template"), package = "checklist"
+      path("project_template", "rproj.template"),
+      package = "checklist"
     ),
     path(path, project, project, ext = "Rproj")
   )
@@ -172,7 +185,8 @@ create_project <- function(path, project) {
   setup_project(path(path, project))
 
   if (
-    !interactive() || !requireNamespace("rstudioapi", quietly = TRUE) ||
+    !interactive() ||
+      !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {
     return(invisible(NULL))
@@ -232,18 +246,30 @@ create_readme <- function(path, org) {
     }
   }
   c(
-    "<!-- badges: start -->", badges, "<!-- badges: end -->", "",
-    paste("#", title), "", author,
-    paste0(org$get_rightsholder, "[^cph][^fnd]"), "", footnote,
-    "", keywords, "",
+    "<!-- badges: start -->",
+    badges,
+    "<!-- badges: end -->",
+    "",
+    paste("#", title),
+    "",
+    author,
+    paste0(org$get_rightsholder, "[^cph][^fnd]"),
+    "",
+    footnote,
+    "",
+    keywords,
+    "",
     sprintf(
-      "<!-- community: %s -->", paste(org$get_community, collapse = "; ")
+      "<!-- community: %s -->",
+      paste(org$get_community, collapse = "; ")
     ),
-    "", "<!-- description: start -->",
+    "",
+    "<!-- description: start -->",
     "Replace this with a short description of the project.",
     "It becomes the abstract of the project in the citation information.",
     "And the project description at https://zenodo.org",
-    "<!-- description: end -->", "",
+    "<!-- description: end -->",
+    "",
     "Anything below here is visible in the README but not in the citation."
   ) |>
     writeLines(path(path, "README.md"))
@@ -263,9 +289,7 @@ preferred_protocol <- function(org) {
   if (file_exists(config_file)) {
     config <- read_yaml(config_file)
   }
-  if (
-    !has_name(config, "git") || !has_name(config$git, "protocol")
-  ) {
+  if (!has_name(config, "git") || !has_name(config$git, "protocol")) {
     c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
@@ -276,12 +300,15 @@ preferred_protocol <- function(org) {
   sprintf("Which GitHub organisation. Leave empty for `%s`.", org$get_github) |>
     readline() -> config[["git"]][["organisation"]]
   ifelse(
-    config$git$protocol == "https", "https://github.com/%s/%%s.git",
+    config$git$protocol == "https",
+    "https://github.com/%s/%%s.git",
     "git@github.com:%s/%%s.git"
   ) |>
     sprintf(
       ifelse(
-        config$git$organisation == "", org$get_github, config$git$organisation
+        config$git$organisation == "",
+        org$get_github,
+        config$git$organisation
       )
     )
 }
@@ -292,7 +319,10 @@ preferred_protocol <- function(org) {
 #' @export
 #' @family utils
 ask_yes_no <- function(
-  msg, default = TRUE, prompts = c("Yes", "No", "Cancel"), ...
+  msg,
+  default = TRUE,
+  prompts = c("Yes", "No", "Cancel"),
+  ...
 ) {
   if (!interactive()) {
     return(default)
@@ -308,14 +338,17 @@ renv_activate <- function(path) {
   if (
     isFALSE(
       ask_yes_no(
-        "Use `renv` to lock package versions with the project?", default = FALSE
+        "Use `renv` to lock package versions with the project?",
+        default = FALSE
       )
     )
   ) {
     return(invisible(NULL))
   }
   c(
-    "if (!utils::file_test(\"-f\", \"renv.lock\")) {", "  renv::init()", "}"
+    "if (!utils::file_test(\"-f\", \"renv.lock\")) {",
+    "  renv::init()",
+    "}"
   ) |>
     writeLines(path(path, ".Rprofile"))
 }

@@ -4,11 +4,9 @@
 #' @importFrom R6 R6Class
 #' @family class
 citation_meta <- R6Class(
-
   "citation_meta",
 
   public = list(
-
     #' @description Initialize a new `citation_meta` object.
     #' @param path The path to the root of the project.
     #' @importFrom assertthat assert_that is.flag is.string noNA
@@ -33,7 +31,8 @@ citation_meta <- R6Class(
           citation_rbuildignore() -> x
         private$type <- ifelse(x$package, "package", "project")
         meta <- switch(
-          private$type, package = citation_description(self),
+          private$type,
+          package = citation_description(self),
           citation_readme(self)
         )
         meta$meta$language <- x$default
@@ -50,12 +49,16 @@ citation_meta <- R6Class(
       if (length(private$errors) > 0) {
         warning(
           "Errors found parsing citation meta data. ",
-          "Citation files not updated.", call. = FALSE, noBreaks. = TRUE
+          "Citation files not updated.",
+          call. = FALSE,
+          noBreaks. = TRUE
         )
         return(invisible(self))
       }
       private$errors <- c(
-        private$errors, citation_r(self), citation_zenodo(self),
+        private$errors,
+        citation_r(self),
+        citation_zenodo(self),
         citation_cff(self)
       )
       return(self)
@@ -69,15 +72,16 @@ citation_meta <- R6Class(
         return(invisible(NULL))
       }
       citation_print(
-        path = private$path, warnings = private$warnings, notes = private$notes,
-        errors = private$errors, meta = private$meta
+        path = private$path,
+        warnings = private$warnings,
+        notes = private$notes,
+        errors = private$errors,
+        meta = private$meta
       )
     }
-
   ),
 
   active = list(
-
     #' @field get_errors Return the errors
     get_errors = function() {
       return(private$errors)
@@ -107,12 +111,15 @@ citation_meta <- R6Class(
     get_warnings = function() {
       return(private$warnings)
     }
-
   ),
 
   private = list(
-    errors = character(0), notes = character(0), meta = list(),
-    path = character(0), type = character(0), warnings = list()
+    errors = character(0),
+    notes = character(0),
+    meta = list(),
+    path = character(0),
+    type = character(0),
+    warnings = list()
   )
 )
 
@@ -181,14 +188,16 @@ validate_citation <- function(meta) {
     ],
     "no funder listed"[!is.na(org$get_funder) && length(funder_id) == 0],
     sprintf("rightsholder differs from `%s`", org$get_rightsholder)[
-      !is.na(org$get_rightsholder) && length(rightsholder_id) >= 1 &&
+      !is.na(org$get_rightsholder) &&
+        length(rightsholder_id) >= 1 &&
         !any(
           authors$given[authors$id %in% rightsholder_id] %in%
             org$get_rightsholder
         )
     ],
     sprintf("funder differs from `%s`", org$get_funder)[
-      !is.na(org$get_funder) && length(funder_id) >= 1 &&
+      !is.na(org$get_funder) &&
+        length(funder_id) >= 1 &&
         !any(org$get_funder %in% authors$given[authors$id == funder_id])
     ]
   )
@@ -206,14 +215,18 @@ validate_citation <- function(meta) {
   authors <- authors[authors$organisation %in% names(org$get_organisation), ]
   vapply(
     seq_along(authors$organisation),
-    FUN.VALUE = vector(mode = "list", length = 1), org = org$get_organisation,
+    FUN.VALUE = vector(mode = "list", length = 1),
+    org = org$get_organisation,
     FUN = function(i, org) {
       paste(
         "Non standard affiliation for %s %s as member of `%s`.",
-        "Please use one of the following:\n%s", collapse = ""
+        "Please use one of the following:\n%s",
+        collapse = ""
       ) |>
         sprintf(
-          authors$given[i], authors$family[i], authors$organisation[i],
+          authors$given[i],
+          authors$family[i],
+          authors$organisation[i],
           paste(org[[authors$organisation[i]]]$affiliation, collapse = "\n")
         ) -> error
       strsplit(authors$affiliation[i], split = "\\s*;\\s*") |>
@@ -225,8 +238,10 @@ validate_citation <- function(meta) {
         error <- c(
           error,
           sprintf(
-            "No ORCID for %s %s. This is required for `%s`", authors$given[i],
-            authors$family[i], authors$organisation[i]
+            "No ORCID for %s %s. This is required for `%s`",
+            authors$given[i],
+            authors$family[i],
+            authors$organisation[i]
           )[is.na(authors$orcid[i]) || authors$orcid[i] == ""]
         )
       }
@@ -253,38 +268,62 @@ citation_zenodo <- function(meta) {
   zenodo$roles$role <- factor(
     zenodo$roles$role,
     levels = c(
-      "author", "contact person", "contributor", "copyright holder", "funder",
+      "author",
+      "contact person",
+      "contributor",
+      "copyright holder",
+      "funder",
       "reviewer"
     ),
     labels = c(
-      "author", "contactperson", "projectmember", "rightsholder", "funder",
+      "author",
+      "contactperson",
+      "projectmember",
+      "rightsholder",
+      "funder",
       "Other"
     )
   )
-  relevant <- zenodo$roles$role %in% c(
-    "contactperson", "projectmember", "rightsholder", "other"
-  )
+  relevant <- zenodo$roles$role %in%
+    c(
+      "contactperson",
+      "projectmember",
+      "rightsholder",
+      "other"
+    )
   zenodo$contributors <- merge(
-    zenodo$authors, zenodo$roles[relevant, ], by.x = "id", by.y = "contributor"
+    zenodo$authors,
+    zenodo$roles[relevant, ],
+    by.x = "id",
+    by.y = "contributor"
   )
   zenodo$contributors <- vapply(
-    seq_len(nrow(zenodo$contributors)), FUN = format_zenodo,
-    FUN.VALUE = vector("list", 1), x = zenodo$contributors
+    seq_len(nrow(zenodo$contributors)),
+    FUN = format_zenodo,
+    FUN.VALUE = vector("list", 1),
+    x = zenodo$contributors
   )
   relevant <- zenodo$roles$role == "author"
   zenodo$creators <- merge(
-    zenodo$authors, zenodo$roles[relevant, ], by.x = "id", by.y = "contributor"
+    zenodo$authors,
+    zenodo$roles[relevant, ],
+    by.x = "id",
+    by.y = "contributor"
   )
   zenodo$creators <- vapply(
-    seq_len(nrow(zenodo$creators)), FUN = format_zenodo,
-    FUN.VALUE = vector("list", 1), x = zenodo$creators
+    seq_len(nrow(zenodo$creators)),
+    FUN = format_zenodo,
+    FUN.VALUE = vector("list", 1),
+    x = zenodo$creators
   )
   zenodo$roles <- NULL
   zenodo$authors <- NULL
   zenodo$keywords <- as.list(zenodo$keywords)
   if (has_name(zenodo, "community")) {
     zenodo$communities <- vapply(
-      zenodo$community, FUN.VALUE = vector("list", 1), USE.NAMES = FALSE,
+      zenodo$community,
+      FUN.VALUE = vector("list", 1),
+      USE.NAMES = FALSE,
       FUN = function(x) {
         list(list(identifier = x))
       }
@@ -310,13 +349,15 @@ citation_zenodo <- function(meta) {
   toJSON(zenodo, pretty = TRUE, auto_unbox = TRUE) |>
     writeLines(citation_file)
   errors <- paste(
-    citation_file, "is modified.",
+    citation_file,
+    "is modified.",
     "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
     is_repository(meta$get_path) &&
       !is_tracked_not_modified(
-        path_rel(citation_file, git_find(meta$get_path)), meta$get_path
+        path_rel(citation_file, git_find(meta$get_path)),
+        meta$get_path
       )
   ]
   return(errors)
@@ -325,9 +366,11 @@ citation_zenodo <- function(meta) {
 format_zenodo <- function(x, i) {
   formatted <- list(
     name = ifelse(
-      x$family[i] == "", x$given[i],
+      x$family[i] == "",
+      x$given[i],
       ifelse(
-        x$given[i] == "", x$family[i],
+        x$given[i] == "",
+        x$family[i],
         paste(x$family[i], x$given[i], sep = ", ")
       )
     )
@@ -353,18 +396,28 @@ citation_cff <- function(meta) {
   input <- meta$get_meta
   relevant <- input$roles$role == "author"
   authors <- merge(
-    input$authors, input$roles[relevant, ], by.x = "id", by.y = "contributor"
+    input$authors,
+    input$roles[relevant, ],
+    by.x = "id",
+    by.y = "contributor"
   )
   authors <- vapply(
-    seq_len(nrow(authors)), FUN = format_cff, FUN.VALUE = vector("list", 1),
+    seq_len(nrow(authors)),
+    FUN = format_cff,
+    FUN.VALUE = vector("list", 1),
     x = authors
   )
   relevant <- input$roles$role == "contact person"
   contact <- merge(
-    input$authors, input$roles[relevant, ], by.x = "id", by.y = "contributor"
+    input$authors,
+    input$roles[relevant, ],
+    by.x = "id",
+    by.y = "contributor"
   )
   contact <- vapply(
-    seq_len(nrow(contact)), FUN = format_cff, FUN.VALUE = vector("list", 1),
+    seq_len(nrow(contact)),
+    FUN = format_cff,
+    FUN.VALUE = vector("list", 1),
     x = contact
   )
   if (has_name(input, "doi")) {
@@ -378,9 +431,14 @@ citation_cff <- function(meta) {
   cff <- list(
     `cff-version` = "1.2.0",
     message = "If you use this software, please cite it using these metadata.",
-    title = input$title, authors = authors, keywords = as.list(input$keywords),
-    contact = contact, doi = input$doi, license = input$license,
-    `repository-code` = input$source, type = input$upload_type,
+    title = input$title,
+    authors = authors,
+    keywords = as.list(input$keywords),
+    contact = contact,
+    doi = input$doi,
+    license = input$license,
+    `repository-code` = input$source,
+    type = input$upload_type,
     abstract = strip_markdown(input$description) |>
       paste(collapse = "\n")
   )
@@ -395,12 +453,14 @@ citation_cff <- function(meta) {
   citation_file <- path(meta$get_path, "CITATION.cff")
   write_yaml(x = cff, file = citation_file, fileEncoding = "UTF-8")
   errors <- paste(
-    citation_file, "is modified.",
+    citation_file,
+    "is modified.",
     "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
     !is_tracked_not_modified(
-      path_rel(citation_file, meta$get_path), meta$get_path
+      path_rel(citation_file, meta$get_path),
+      meta$get_path
     )
   ]
   return(errors)
@@ -441,7 +501,8 @@ citation_r <- function(meta) {
         "citHeader(\"To cite `%s` in publications please use:\")",
         gsub("^(.*?):.*", "\\1", cit_meta$title)
       ),
-      "# begin checklist entry", "# end checklist entry"
+      "# begin checklist entry",
+      "# end checklist entry"
     )
   }
   start <- grep("^# begin checklist entry", cit)
@@ -468,10 +529,14 @@ citation_r <- function(meta) {
   authors <- cit_meta$roles$contributor[cit_meta$roles$role == "author"]
   authors <- cit_meta$authors[cit_meta$authors$id %in% authors, ]
   authors$fam <- ifelse(
-    authors$family == "", "", sprintf(", family = \"%s\"", authors$family)
+    authors$family == "",
+    "",
+    sprintf(", family = \"%s\"", authors$family)
   )
   authors$fam2 <- ifelse(
-    authors$family == "", "", sprintf("%s, ", authors$family)
+    authors$family == "",
+    "",
+    sprintf("%s, ", authors$family)
   )
   sprintf("person(given = \"%s\"%s)", authors$given, authors$fam) |>
     paste(collapse = ", ") |>
@@ -481,7 +546,9 @@ citation_r <- function(meta) {
   package_citation <- c(
     bibtype = "\"Manual\"",
     title = sprintf(
-      "\"%s. Version %s\"", cit_meta$title, cit_meta$version
+      "\"%s. Version %s\"",
+      cit_meta$title,
+      cit_meta$version
     ),
     author = sprintf("c(%s)", authors_bibtex),
     year = format(Sys.Date(), "%Y"),
@@ -491,10 +558,13 @@ citation_r <- function(meta) {
     abstract = paste0("\"", cit_meta$description, "\""),
     textVersion = sprintf(
       "\"%s (%s) %s. Version %s. %s\"",
-      paste(authors_plain, collapse = "; "), format(Sys.Date(), "%Y"),
-      cit_meta$title, cit_meta$version,
+      paste(authors_plain, collapse = "; "),
+      format(Sys.Date(), "%Y"),
+      cit_meta$title,
+      cit_meta$version,
       ifelse(
-        length(cit_meta$url), paste(cit_meta$url, collapse = "; "),
+        length(cit_meta$url),
+        paste(cit_meta$url, collapse = "; "),
         cit_meta$source
       )
     ),
@@ -502,23 +572,28 @@ citation_r <- function(meta) {
   )
   if (length(cit_meta$doi)) {
     package_citation <- c(
-      package_citation, doi = paste0("\"", cit_meta$doi, "\"")
+      package_citation,
+      doi = paste0("\"", cit_meta$doi, "\"")
     )
   }
   package_citation <- gsub("\n", " ", package_citation)
   package_citation <- gsub("[ ]{2, }", " ", package_citation)
   package_citation <- sprintf(
-    "  %s = %s,", names(package_citation), package_citation
+    "  %s = %s,",
+    names(package_citation),
+    package_citation
   )
   c(head(cit, start), "bibentry(", package_citation, ")", tail(cit, 1 - end)) |>
     writeLines(citation_file)
   errors <- paste(
-    citation_file, "is modified.",
+    citation_file,
+    "is modified.",
     "Run `checklist::update_citation()` locally."[!interactive()],
     "Please commit changes."
   )[
     !is_tracked_not_modified(
-      path_rel(citation_file, meta$get_path), meta$get_path
+      path_rel(citation_file, meta$get_path),
+      meta$get_path
     )
   ]
   return(errors = errors)
@@ -534,7 +609,8 @@ citation_rbuildignore <- function(x = ".") {
   if (!is_file(rbuildignore_file)) {
     file_copy(
       system.file(
-        path("package_template", "rbuildignore"), package = "checklist"
+        path("package_template", "rbuildignore"),
+        package = "checklist"
       ),
       rbuildignore_file
     )

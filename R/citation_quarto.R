@@ -8,7 +8,8 @@ citation_quarto <- function(meta) {
   if (!is_file(index_file)) {
     return(
       list(
-        errors = paste(index_file, "not found"), warnings = character(0),
+        errors = paste(index_file, "not found"),
+        warnings = character(0),
         notes = character(0)
       )
     )
@@ -61,7 +62,8 @@ citation_quarto <- function(meta) {
       cit_meta$meta$license <- "CC-BY-4.0"
     } else {
       cit_meta$errors <- c(
-        cit_meta$errors, "LICENSE.md doesn't match with CC-BY-4.0 license"
+        cit_meta$errors,
+        "LICENSE.md doesn't match with CC-BY-4.0 license"
       )
     }
   }
@@ -69,21 +71,39 @@ citation_quarto <- function(meta) {
     cit_meta$meta$language <- yaml$lang
   }
   extra <- c(
-    "community", "doi", "keywords", "publication_type", "publisher"
+    "community",
+    "doi",
+    "keywords",
+    "publication_type",
+    "publisher"
   )
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
   publication_type <- c(
-    "publication", "publication-annotationcollection", "publication-article",
-    "publication-book", "publication-conferencepaper",
-    "publication-conferenceproceeding", "publication-datamanagementplan",
-    "publication-datapaper", "publication-deliverable",
-    "publication-dissertation", "publication-journal", "publication-milestone",
-    "publication-other", "publication-patent", "publication-peerreview",
-    "publication-preprint", "publication-proposal", "publication-report",
-    "publication-section", "publication-softwaredocumentation",
-    "publication-standard", "publication-taxonomictreatment",
-    "publication-technicalnote", "publication-thesis",
+    "publication",
+    "publication-annotationcollection",
+    "publication-article",
+    "publication-book",
+    "publication-conferencepaper",
+    "publication-conferenceproceeding",
+    "publication-datamanagementplan",
+    "publication-datapaper",
+    "publication-deliverable",
+    "publication-dissertation",
+    "publication-journal",
+    "publication-milestone",
+    "publication-other",
+    "publication-patent",
+    "publication-peerreview",
+    "publication-preprint",
+    "publication-proposal",
+    "publication-report",
+    "publication-section",
+    "publication-softwaredocumentation",
+    "publication-standard",
+    "publication-taxonomictreatment",
+    "publication-technicalnote",
+    "publication-thesis",
     "publication-workingpaper"
   )
   c(
@@ -94,7 +114,8 @@ citation_quarto <- function(meta) {
       paste(publication_type, collapse = ", "),
       sep = "\n"
     )[
-      has_name(yaml, "publication_type") && is.string(yaml$publication_type) &&
+      has_name(yaml, "publication_type") &&
+        is.string(yaml$publication_type) &&
         !yaml$publication_type %in% publication_type
     ]
   ) |>
@@ -131,7 +152,8 @@ quarto_description <- function(path) {
   }
   return(
     list(
-      description = description$meta$description, errors = description$errors
+      description = description$meta$description,
+      errors = description$errors
     )
   )
 }

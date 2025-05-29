@@ -7,7 +7,8 @@ citation_readme <- function(meta) {
   if (!is_file(readme_file)) {
     return(
       list(
-        errors = paste(readme_file, "not found"), warnings = character(0),
+        errors = paste(readme_file, "not found"),
+        warnings = character(0),
         notes = character(0)
       )
     )
@@ -43,7 +44,8 @@ citation_readme <- function(meta) {
       cit_meta$meta$license <- "CC-BY-4.0"
     } else {
       cit_meta$errors <- c(
-        cit_meta$errors, "LICENSE.md doesn't match with CC-BY-4.0 license"
+        cit_meta$errors,
+        "LICENSE.md doesn't match with CC-BY-4.0 license"
       )
     }
   }
@@ -73,7 +75,9 @@ readme_badges <- function(text) {
   if (length(errors) > 0 || length(badges_start) == 0) {
     return(
       list(
-        errors = errors, notes = character(0), text = text,
+        errors = errors,
+        notes = character(0),
+        text = text,
         warnings = character(0)
       )
     )
@@ -123,15 +127,19 @@ readme_badges <- function(text) {
     "multiple website badges found in README.md"[length(website_line) > 1]
   )
   notes <- c(
-    notes, "no website badge found in README.md"[length(website_line) == 0]
+    notes,
+    "no website badge found in README.md"[length(website_line) == 0]
   )
   if (length(website_line) == 1) {
     meta$url <- gsub(website_regexp, "\\2", badges[website_line])
   }
   meta$access_right <- "open"
   list(
-    errors = errors, notes = notes, meta = meta,
-    text = text[-badges_start:-badges_end], warnings = character(0)
+    errors = errors,
+    notes = notes,
+    meta = meta,
+    text = text[-badges_start:-badges_end],
+    warnings = character(0)
   )
 }
 
@@ -154,7 +162,8 @@ readme_title <- function(text) {
     text$errors,
     paste(
       "Title line must be just below the (optional) badges section in",
-      "README.md.", "The title in README.md must start with `# `."
+      "README.md.",
+      "The title in README.md must start with `# `."
     )[!grepl("^ *# +", title)]
   )
   gsub(pattern = "^ *?# +", replacement = "", title) |>
@@ -235,7 +244,9 @@ readme_author <- function(text) {
   affiliations <- text$text[grepl("\\[\\^.*?\\]:", text$text)]
   aff_code <- gsub(".*\\[\\^(.*?)\\]:.*", "\\1", affiliations)
   aff_code_check <- vapply(
-    orgs, FUN.VALUE = logical(1), aff_code = aff_code,
+    orgs,
+    FUN.VALUE = logical(1),
+    aff_code = aff_code,
     FUN = function(z, aff_code) {
       all(z %in% aff_code)
     }
@@ -243,7 +254,9 @@ readme_author <- function(text) {
   gsub("\\[\\^(.*?)\\]:\\s*(.*)", "\\2", affiliations) |>
     setNames(aff_code) -> affiliations
   authors_aff <- vapply(
-    orgs, FUN.VALUE = character(1), z = affiliations,
+    orgs,
+    FUN.VALUE = character(1),
+    z = affiliations,
     FUN = function(y, z) {
       paste(z[y], collapse = "; ")
     }
@@ -280,9 +293,11 @@ readme_author <- function(text) {
   orgs[vapply(orgs, length, integer(1)) == 0] <- NA_character_
   text$text <- text$text[!grepl("\\[\\^.*?\\]:", text$text)]
   text$meta$authors <- data.frame(
-    id = seq_along(authors), given = gsub(".*,\\s*(.*)", "\\1", authors),
+    id = seq_along(authors),
+    given = gsub(".*,\\s*(.*)", "\\1", authors),
     family = ifelse(grepl(",", authors), gsub("(.*),.*", "\\1", authors), ""),
-    affiliation = authors_aff, orcid = authors_orcid,
+    affiliation = authors_aff,
+    orcid = authors_orcid,
     organisation = vapply(orgs, FUN = head, FUN.VALUE = character(1), n = 1)
   )
   return(text)
@@ -318,7 +333,9 @@ readme_community <- function(text) {
   )
   if (length(community_line) > 0) {
     text$meta$community <- gsub(
-      community_regexp, "\\1", text$text[community_line]
+      community_regexp,
+      "\\1",
+      text$text[community_line]
     )
     text$text <- text$text[-community_line]
   }

@@ -31,35 +31,50 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   languages <- languages[languages != "ignore"]
   install_dictionary(languages)
   issues <- vapply(
-    languages, root = x$get_path, r_files = r_files,
-    md_files = md_files, rd_files = rd_files, macros = macros,
+    languages,
+    root = x$get_path,
+    r_files = r_files,
+    md_files = md_files,
+    rd_files = rd_files,
+    macros = macros,
     FUN.VALUE = vector(mode = "list", length = 1),
     FUN = function(lang, root, r_files, md_files, rd_files, macros) {
       wordlist <- spelling_wordlist(
-        lang = gsub("-", "_", lang), root = root, package = x$package
+        lang = gsub("-", "_", lang),
+        root = root,
+        package = x$package
       )
       r_issues <- vapply(
         path(root, r_files$path[r_files$language == lang]),
-        FUN = spelling_parse_r, FUN.VALUE = vector(mode = "list", length = 1),
+        FUN = spelling_parse_r,
+        FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist
       )
       md_issues <- vapply(
         path(root, md_files$path[md_files$language == lang]),
-        FUN = spelling_parse_md, FUN.VALUE = vector(mode = "list", length = 1),
-        wordlist = wordlist, x = x
+        FUN = spelling_parse_md,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        wordlist = wordlist,
+        x = x
       )
       rd_issues <- vapply(
         path(root, rd_files$path[rd_files$language == lang]),
-        FUN = spelling_parse_rd, FUN.VALUE = vector(mode = "list", length = 1),
-        wordlist = wordlist, macros = macros
+        FUN = spelling_parse_rd,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        wordlist = wordlist,
+        macros = macros
       )
       return(list(c(md_issues, rd_issues, r_issues)))
     }
   )
   if (length(issues) == 0) {
     issues <- data.frame(
-      type = character(0), file = character(0), line = integer(0),
-      column = integer(0), message = character(0), language = character(0)
+      type = character(0),
+      file = character(0),
+      line = integer(0),
+      column = integer(0),
+      message = character(0),
+      language = character(0)
     )
     class(issues) <- c("checklist_spelling", class(issues))
   } else {
@@ -116,8 +131,12 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
 spelling_check <- function(text, filename, wordlist, raw_text = text) {
   if (all(text == "")) {
     result <- data.frame(
-      type = character(0), file = character(0), line = integer(0),
-      column = integer(0), message = character(0), language = character(0)
+      type = character(0),
+      file = character(0),
+      line = integer(0),
+      column = integer(0),
+      message = character(0),
+      language = character(0)
     )
     class(result) <- c("checklist_spelling", class(result))
     return(result)
@@ -126,27 +145,36 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
   relevant <- which(vapply(problems, length, integer(1)) > 0)
   if (length(relevant) == 0) {
     result <- data.frame(
-      type = character(0), file = character(0), line = integer(0),
-      column = integer(0), message = character(0), language = character(0)
+      type = character(0),
+      file = character(0),
+      line = integer(0),
+      column = integer(0),
+      message = character(0),
+      language = character(0)
     )
     class(result) <- c("checklist_spelling", class(result))
     return(result)
   }
   result <- vapply(
-    relevant, FUN.VALUE = vector(mode = "list", length = 1),
-    text = raw_text, problems = problems,
+    relevant,
+    FUN.VALUE = vector(mode = "list", length = 1),
+    text = raw_text,
+    problems = problems,
     FUN = function(i, text, problems) {
       list(
         vapply(
-          problems[[i]], FUN.VALUE = vector(mode = "list", length = 1),
-          text = text, i = i,
+          problems[[i]],
+          FUN.VALUE = vector(mode = "list", length = 1),
+          text = text,
+          i = i,
           FUN = function(word, text, i) {
             detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
             if (min(detect) == -1) {
               return(
                 list(
                   data.frame(
-                    line = integer(0), column = integer(0),
+                    line = integer(0),
+                    column = integer(0),
                     message = character(0)
                   )
                 )
@@ -209,23 +237,36 @@ print.checklist_spelling <- function(x, ...) {
   x$file <- path_rel(x$file, start = common)
   x <- x[order(x$file, x$line, x$message), ]
   display <- aggregate(
-    column ~ file + language + message + line, x, FUN = paste, collapse = "|"
+    column ~ file + language + message + line,
+    x,
+    FUN = paste,
+    collapse = "|"
   )
   display$line <- sprintf("%i (%s)", display$line, display$column)
   display <- aggregate(
-    line ~ file + language + message, display, FUN = paste, collapse = ", "
+    line ~ file + language + message,
+    display,
+    FUN = paste,
+    collapse = ", "
   )
   display$message <- sprintf("%s: %s", display$message, display$line)
   display <- aggregate(
-    message ~ file + language, display, FUN = paste, collapse = "\n"
+    message ~ file + language,
+    display,
+    FUN = paste,
+    collapse = "\n"
   )
   cat(
     "Overview of words missing from dictionary.",
-    "i (j) indicates that the word occures at line i, column j", sep = "\n"
+    "i (j) indicates that the word occures at line i, column j",
+    sep = "\n"
   )
   cat(
     sprintf(
-      "\n%s (%s)\n\n%s\n", display$file, display$language, display$message
+      "\n%s (%s)\n\n%s\n",
+      display$file,
+      display$language,
+      display$message
     ),
     sep = rules(".")
   )
@@ -233,7 +274,8 @@ print.checklist_spelling <- function(x, ...) {
 }
 
 #' @importFrom fs path_common
-rstudio_source_markers <- function(issues) { # nocov start
+rstudio_source_markers <- function(issues) {
+  # nocov start
   # nocov_start
   assert_that(
     requireNamespace("rstudioapi", quietly = TRUE),
@@ -241,15 +283,19 @@ rstudio_source_markers <- function(issues) { # nocov start
   )
   common <- path_common(issues$file)
   issues$message <- sprintf(
-    "`%s` not found in the dictionary or wordlist for %s.", issues$message,
+    "`%s` not found in the dictionary or wordlist for %s.",
+    issues$message,
     issues$language
   )
   issues <- unique(issues[order(issues$file, issues$line, issues$column), ])
   issues$file <- as.character(issues$file)
   # request source markers
   rstudioapi::callFun(
-    "sourceMarkers", name = "checklist_spelling", markers = issues,
-    basePath = common, autoSelect = "first"
+    "sourceMarkers",
+    name = "checklist_spelling",
+    markers = issues,
+    basePath = common,
+    autoSelect = "first"
   )
 } # nocov end
 
@@ -285,10 +331,14 @@ install_dutch <- function(lang) {
     path(target, "nl_NL.aff")
   )
   file_copy(
-    path(target, "nl_NL.dic"), path(target, "nl_BE.dic"), overwrite = TRUE
+    path(target, "nl_NL.dic"),
+    path(target, "nl_BE.dic"),
+    overwrite = TRUE
   )
   file_copy(
-    path(target, "nl_NL.aff"), path(target, "nl_BE.aff"), overwrite = TRUE
+    path(target, "nl_NL.aff"),
+    path(target, "nl_BE.aff"),
+    overwrite = TRUE
   )
   return(TRUE)
 }
@@ -313,10 +363,14 @@ install_french <- function(lang) {
     path(target, "fr_FR.aff")
   )
   file_copy(
-    path(target, "fr_FR.dic"), path(target, "fr_BE.dic"), overwrite = TRUE
+    path(target, "fr_FR.dic"),
+    path(target, "fr_BE.dic"),
+    overwrite = TRUE
   )
   file_copy(
-    path(target, "fr_FR.aff"), path(target, "fr_BE.aff"), overwrite = TRUE
+    path(target, "fr_FR.aff"),
+    path(target, "fr_BE.aff"),
+    overwrite = TRUE
   )
   return(TRUE)
 }

@@ -13,9 +13,13 @@ test_that("set_tag() works", {
 
   package <- "settag"
   create_package(
-    path = path, package = package, keywords = "dummy", communities = "inbo",
+    path = path,
+    package = package,
+    keywords = "dummy",
+    communities = "inbo",
     title = "testing the ability of checklist to create a minimal package",
-    description = "A dummy package.", maintainer = maintainer,
+    description = "A dummy package.",
+    maintainer = maintainer,
     language = "en-GB"
   )
   repo <- git_init(path(path, package))
@@ -27,13 +31,15 @@ test_that("set_tag() works", {
     bare = TRUE,
     verbose = FALSE
   )
-  gert::git_remote_add(name = "origin", url = path(path, "origin"),
-                       repo = repo)
+  gert::git_remote_add(name = "origin", url = path(path, "origin"), repo = repo)
   gert::git_commit(message = "Initital commit", repo = repo)
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
   git_push(
-    remote = "origin", refspec = refspec, set_upstream = TRUE, repo = repo
+    remote = "origin",
+    refspec = refspec,
+    set_upstream = TRUE,
+    repo = repo
   )
 
   # not on GITHUB or main

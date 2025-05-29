@@ -29,9 +29,11 @@ add_badges <- function(x = ".", ...) {
   text <- readLines(readme)
   badges_start <- grep("<!-- badges: start -->", text)
   assert_that(
-    length(badges_start) == 1, msg = "Problematic badge delimiters in README"
+    length(badges_start) == 1,
+    msg = "Problematic badge delimiters in README"
   )
   dots <- list(...)
+  # fmt: skip
   formats <- c(
     check_package = paste0(
       "[![R build status](https://github.com/%1$s/actions/workflows/",
@@ -53,7 +55,10 @@ add_badges <- function(x = ".", ...) {
   dots <- dots[names(dots) %in% names(formats)]
   formats <- formats[names(dots)]
   vapply(
-    names(dots), FUN.VALUE = character(1), formats = formats, dots = dots,
+    names(dots),
+    FUN.VALUE = character(1),
+    formats = formats,
+    dots = dots,
     FUN = function(i, formats, dots) {
       list(fmt = formats[i]) |>
         c(dots[i]) |>

@@ -1,6 +1,8 @@
 test_that("create_package() works", {
   maintainer <- person(
-    given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
+    given = "Thierry",
+    family = "Onkelinx",
+    role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
     comment = c(ORCID = "0000-0001-8804-4216")
   )
@@ -13,9 +15,13 @@ test_that("create_package() works", {
   package <- "ghpages"
   expect_message(
     create_package(
-      path = path, package = package, keywords = "dummy", communities = "inbo",
+      path = path,
+      package = package,
+      keywords = "dummy",
+      communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.", maintainer = maintainer,
+      description = "A dummy package.",
+      maintainer = maintainer,
       language = "en-GB"
     ),
     regexp = sprintf("package created at `.*%s`", package)
@@ -36,7 +42,8 @@ test_that("create_package() works", {
 
   gert::git_remote_add(origin_repo, repo = repo)
   expect_error(
-    prepare_ghpages(repo), "no branch `origin/main` or `origin/master` found"
+    prepare_ghpages(repo),
+    "no branch `origin/main` or `origin/master` found"
   )
 
   git_push(repo = repo, verbose = FALSE)

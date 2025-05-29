@@ -10,7 +10,8 @@ test_that("check_license() works", {
     descr <- readLines(path(repo, "DESCRIPTION"))
     cph_line <- grep("cph", descr, value = FALSE)
     new_cph <- paste0(
-      "    person(\"", cph,
+      "    person(\"",
+      cph,
       "\", , , \"info@inbo.be\", role = c(\"cph\", \"fnd\"))"
     )
     descr[cph_line] <- new_cph
@@ -20,7 +21,10 @@ test_that("check_license() works", {
     writeLines(license, path(repo, "LICENSE"))
     license_md <- readLines(path(repo, "LICENSE.md"))
     license_md[3] <- paste0(
-      "Copyright (c) ", format(Sys.Date(), "%Y"), " ", cph
+      "Copyright (c) ",
+      format(Sys.Date(), "%Y"),
+      " ",
+      cph
     )
     writeLines(license_md, path(repo, "LICENSE.md"))
   }
@@ -33,9 +37,14 @@ test_that("check_license() works", {
   package <- "checklicense"
   suppressMessages(
     create_package(
-      path = path, package = package, keywords = "dummy", communities = "inbo",
+      path = path,
+      package = package,
+      keywords = "dummy",
+      communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.", maintainer = maintainer, license = "MIT"
+      description = "A dummy package.",
+      maintainer = maintainer,
+      license = "MIT"
     )
   )
   repo <- path(path, package)
@@ -48,7 +57,9 @@ test_that("check_license() works", {
   expect_identical(
     mit[3],
     sprintf(
-      "Copyright (c) %s %s", format(Sys.Date(), "%Y"), org$get_rightsholder
+      "Copyright (c) %s %s",
+      format(Sys.Date(), "%Y"),
+      org$get_rightsholder
     )
   )
   expect_identical(
@@ -62,8 +73,7 @@ test_that("check_license() works", {
   )
 
   # copyright holder mismatch
-  mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
-                   " INBO")
+  mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"), " INBO")
   writeLines(mit, path(repo, "LICENSE.md"))
   expect_is(x <- check_license(repo), "checklist")
   expect_identical(

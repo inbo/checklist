@@ -18,17 +18,20 @@ store_authors <- function(x = ".") {
   } else {
     citation_meta$new(x)$get_meta$authors |>
       cbind(usage = 1, email = "") -> cit_meta
-    cit_meta <- cit_meta[
-      , c("given", "family", "email", "orcid", "affiliation", "usage")
+    cit_meta <- cit_meta[,
+      c("given", "family", "email", "orcid", "affiliation", "usage")
     ]
     new_author_df <- rbind(current, cit_meta)
   }
   aggregate(
-    usage ~ given + family + email + orcid + affiliation, FUN = sum,
+    usage ~ given + family + email + orcid + affiliation,
+    FUN = sum,
     data = new_author_df
   ) |>
     write.table(
-      file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+      file = path(root, "author.txt"),
+      sep = "\t",
+      row.names = FALSE,
       fileEncoding = "UTF8"
     )
   return(invisible(NULL))
@@ -60,16 +63,24 @@ author2df.logical <- function(person) {
     "`author2df()` is not implemented for `TRUE` or `FALSE`" = is.na(person)
   )
   data.frame(
-    given = character(0), family = character(0), email = character(0),
-    orcid = character(0), affiliation = character(0), role = character(0)
+    given = character(0),
+    family = character(0),
+    email = character(0),
+    orcid = character(0),
+    affiliation = character(0),
+    role = character(0)
   )
 }
 
 #' @export
 author2df.NULL <- function(person) {
   data.frame(
-    given = character(0), family = character(0), email = character(0),
-    orcid = character(0), affiliation = character(0), role = character(0)
+    given = character(0),
+    family = character(0),
+    email = character(0),
+    orcid = character(0),
+    affiliation = character(0),
+    role = character(0)
   )
 }
 
@@ -110,14 +121,18 @@ author2df.person <- function(person) {
   }
 
   data.frame(
-    given = coalesce(person$given, ""), family = coalesce(person$family, ""),
+    given = coalesce(person$given, ""),
+    family = coalesce(person$family, ""),
     email = coalesce(person$email, ""),
     orcid = ifelse(
-      has_name(person$comment, "ORCID"), unname(person$comment["ORCID"]), ""
+      has_name(person$comment, "ORCID"),
+      unname(person$comment["ORCID"]),
+      ""
     ),
     affiliation = ifelse(
       has_name(person$comment, "affiliation"),
-      unname(person$comment["affiliation"]), ""
+      unname(person$comment["affiliation"]),
+      ""
     ),
     role = paste(person$role, collapse = ", ")
   )
@@ -144,23 +159,32 @@ stored_authors <- function(root) {
     dir_create(root)
     return(
       data.frame(
-        given = character(0), family = character(0), email = character(0),
-        orcid = character(0), affiliation = character(0), usage = integer(0)
+        given = character(0),
+        family = character(0),
+        email = character(0),
+        orcid = character(0),
+        affiliation = character(0),
+        usage = integer(0)
       )
     )
   }
   if (is_file(path(root, "author.txt"))) {
     path(root, "author.txt") |>
       read.table(
-        header = TRUE, sep = "\t",
+        header = TRUE,
+        sep = "\t",
         colClasses = c(rep("character", 5), "integer")
       ) -> current
     return(current)
   }
   return(
     data.frame(
-      given = character(0), family = character(0), email = character(0),
-      orcid = character(0), affiliation = character(0), usage = integer(0)
+      given = character(0),
+      family = character(0),
+      email = character(0),
+      orcid = character(0),
+      affiliation = character(0),
+      usage = integer(0)
     )
   )
 }

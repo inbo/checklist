@@ -11,7 +11,9 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
     read_yaml() -> cit_meta
 
   zenodo <- zen4R::ZenodoManager$new(
-    sandbox = sandbox, token = token, logger = logger
+    sandbox = sandbox,
+    token = token,
+    logger = logger
   )
   zen_rec <- zen4R::ZenodoRecord$new()
   zen_rec$setTitle(cit_meta$title)
@@ -41,7 +43,10 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   zen_rec$setPublisher(cit_meta$publisher)
 
   zen_rec <- zen_upload(
-    zenodo, zen_rec, path, community = cit_meta$communities
+    zenodo,
+    zen_rec,
+    path,
+    community = cit_meta$communities
   )
   return(invisible(zen_rec))
 }
@@ -49,7 +54,9 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
 zen_creator <- function(zen_rec, creators) {
   for (x in creators) {
     zen_rec$addCreator(
-      name = x$name, affiliation = x$affiliation, orcid = x$orcid
+      name = x$name,
+      affiliation = x$affiliation,
+      orcid = x$orcid
     )
   }
   return(zen_rec)
@@ -58,8 +65,11 @@ zen_creator <- function(zen_rec, creators) {
 zen_contributor <- function(zen_rec, contributors) {
   for (x in contributors) {
     zen_rec$addContributor(
-      firstname = character(0), lastname = x$name, affiliation = x$affiliation,
-      orcid = x$orcid, role = x$type
+      firstname = character(0),
+      lastname = x$name,
+      affiliation = x$affiliation,
+      orcid = x$orcid,
+      role = x$type
     )
   }
   return(zen_rec)
@@ -81,7 +91,8 @@ zen_upload <- function(zenodo, zen_rec, path, community = NULL) {
       zen_rec$status == "400",
       "Problem authenticating to Zenodo. Check the Zenodo token.",
       first_non_null(
-        zen_rec$message, "Error uploading to Zenodo without error message."
+        zen_rec$message,
+        "Error uploading to Zenodo without error message."
       )
     )
   )
@@ -105,7 +116,8 @@ zen_upload <- function(zenodo, zen_rec, path, community = NULL) {
   }
 
   zenodo$createReviewRequest(
-    record = zen_rec, community = unlist(head(community, 1))
+    record = zen_rec,
+    community = unlist(head(community, 1))
   )
   zenodo$submitRecordForReview(
     recordId = zen_rec$id,

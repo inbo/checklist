@@ -8,7 +8,8 @@ citation_bookdown <- function(meta) {
   if (!is_file(index_file)) {
     return(
       list(
-        errors = paste(index_file, "not found"), warnings = character(0),
+        errors = paste(index_file, "not found"),
+        warnings = character(0),
         notes = character(0)
       )
     )
@@ -54,7 +55,8 @@ citation_bookdown <- function(meta) {
       cit_meta$meta$license <- "CC-BY-4.0"
     } else {
       cit_meta$errors <- c(
-        cit_meta$errors, "LICENSE.md doesn't match with CC-BY-4.0 license"
+        cit_meta$errors,
+        "LICENSE.md doesn't match with CC-BY-4.0 license"
       )
     }
   }
@@ -62,21 +64,39 @@ citation_bookdown <- function(meta) {
     cit_meta$meta$language <- yaml$lang
   }
   extra <- c(
-    "community", "doi", "keywords", "publication_type", "publisher"
+    "community",
+    "doi",
+    "keywords",
+    "publication_type",
+    "publisher"
   )
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
   publication_type <- c(
-    "publication", "publication-annotationcollection", "publication-article",
-    "publication-book", "publication-conferencepaper",
-    "publication-conferenceproceeding", "publication-datamanagementplan",
-    "publication-datapaper", "publication-deliverable",
-    "publication-dissertation", "publication-journal", "publication-milestone",
-    "publication-other", "publication-patent", "publication-peerreview",
-    "publication-preprint", "publication-proposal", "publication-report",
-    "publication-section", "publication-softwaredocumentation",
-    "publication-standard", "publication-taxonomictreatment",
-    "publication-technicalnote", "publication-thesis",
+    "publication",
+    "publication-annotationcollection",
+    "publication-article",
+    "publication-book",
+    "publication-conferencepaper",
+    "publication-conferenceproceeding",
+    "publication-datamanagementplan",
+    "publication-datapaper",
+    "publication-deliverable",
+    "publication-dissertation",
+    "publication-journal",
+    "publication-milestone",
+    "publication-other",
+    "publication-patent",
+    "publication-peerreview",
+    "publication-preprint",
+    "publication-proposal",
+    "publication-report",
+    "publication-section",
+    "publication-softwaredocumentation",
+    "publication-standard",
+    "publication-taxonomictreatment",
+    "publication-technicalnote",
+    "publication-thesis",
     "publication-workingpaper"
   )
   c(
@@ -87,7 +107,8 @@ citation_bookdown <- function(meta) {
       paste(publication_type, collapse = ", "),
       sep = "\n"
     )[
-      has_name(yaml, "publication_type") && is.string(yaml$publication_type) &&
+      has_name(yaml, "publication_type") &&
+        is.string(yaml$publication_type) &&
         !yaml$publication_type %in% publication_type
     ]
   ) |>
@@ -115,8 +136,10 @@ split_community <- function(community) {
 #' @importFrom assertthat has_name
 yaml_author <- function(yaml, org) {
   author <- vapply(
-    X = yaml$author, FUN = yaml_author_format,
-    FUN.VALUE = vector(mode = "list", 1), org = org
+    X = yaml$author,
+    FUN = yaml_author_format,
+    FUN.VALUE = vector(mode = "list", 1),
+    org = org
   )
   yaml$reviewer |>
     vapply(yaml_author_format, vector(mode = "list", 1), org = org) -> reviewer
@@ -145,7 +168,8 @@ yaml_author <- function(yaml, org) {
   data.frame(
     contributor = c(author$id, author$id[author$contact], reviewer$id),
     role = c(
-      rep("author", nrow(author)), rep("contact person", sum(author$contact)),
+      rep("author", nrow(author)),
+      rep("contact person", sum(author$contact)),
       rep("reviewer", nrow(reviewer))
     )
   ) -> roles
@@ -155,8 +179,12 @@ yaml_author <- function(yaml, org) {
     data.frame(contributor = nrow(author) + 1, role = "funder") |>
       rbind(roles) -> roles
     data.frame(
-      id = nrow(author) + 1, given = yaml$funder, family = "", orcid = "",
-      affiliation = "", organisation = known_affiliation(yaml$funder, org = org)
+      id = nrow(author) + 1,
+      given = yaml$funder,
+      family = "",
+      orcid = "",
+      affiliation = "",
+      organisation = known_affiliation(yaml$funder, org = org)
     ) |>
       rbind(author) -> author
   }
@@ -164,22 +192,30 @@ yaml_author <- function(yaml, org) {
     data.frame(contributor = nrow(author) + 1, role = "copyright holder") |>
       rbind(roles) -> roles
     data.frame(
-      id = nrow(author) + 1, given = yaml$rightsholder, family = "",
-      orcid = "", affiliation = "",
+      id = nrow(author) + 1,
+      given = yaml$rightsholder,
+      family = "",
+      orcid = "",
+      affiliation = "",
       organisation = known_affiliation(yaml$rightsholder, org = org)
     ) |>
       rbind(author) -> author
   }
   list(
-    meta = list(authors = author, roles = roles), errors = errors, notes = notes
+    meta = list(authors = author, roles = roles),
+    errors = errors,
+    notes = notes
   )
 }
 
 #' @importFrom assertthat has_name is.flag
 yaml_author_format <- function(person, org) {
   person_df <- data.frame(
-    given = character(0), family = character(0), orcid = character(0),
-    affiliation = character(0), contact = logical(0),
+    given = character(0),
+    family = character(0),
+    orcid = character(0),
+    affiliation = character(0),
+    contact = logical(0),
     organisation = character(0)
   )
   if (!is.list(person)) {
@@ -202,10 +238,13 @@ yaml_author_format <- function(person, org) {
   }
   person_df <- data.frame(
     given = paste0(person$name$given, ""),
-    family = paste0(person$name$family, ""), orcid = paste0(person$orcid, ""),
+    family = paste0(person$name$family, ""),
+    orcid = paste0(person$orcid, ""),
     affiliation = paste0(person$affiliation, ""),
     contact = ifelse(
-      is.null(person$corresponding), FALSE, person$corresponding
+      is.null(person$corresponding),
+      FALSE,
+      person$corresponding
     ),
     organisation = known_affiliation(paste0(person$affiliation, ""), org = org)
   )
@@ -251,7 +290,8 @@ bookdown_description <- function(path) {
   if (has_name(description, "meta") || length(description$errors) > 0) {
     return(
       list(
-        description = description$meta$description, errors = description$errors
+        description = description$meta$description,
+        errors = description$errors
       )
     )
   }
@@ -276,7 +316,8 @@ bookdown_description <- function(path) {
   }
   return(
     list(
-      description = description$meta$description, errors = description$errors
+      description = description$meta$description,
+      errors = description$errors
     )
   )
 }

@@ -13,14 +13,16 @@ test_that("new_branch() creates a branch from the main branch", {
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
 
-
   writeLines("foo", path(path, "junk.txt"))
   git_add("junk.txt", repo = repo)
   initial <- gert::git_commit(message = "Initial commit", repo = repo)
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
   git_push(
-    remote = "origin", refspec = refspec, set_upstream = TRUE, repo = repo,
+    remote = "origin",
+    refspec = refspec,
+    set_upstream = TRUE,
+    repo = repo,
     verbose = FALSE
   )
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
@@ -28,7 +30,10 @@ test_that("new_branch() creates a branch from the main branch", {
   git_add("junk2.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(
-    remote = "origin", set_upstream = TRUE, repo = repo, verbose = FALSE,
+    remote = "origin",
+    set_upstream = TRUE,
+    repo = repo,
+    verbose = FALSE,
     refspec = "refs/heads/branch"
   )
   expect_invisible(

@@ -12,7 +12,13 @@
 yesno <- function(...) {
   stopifnot(interactive())
   yeses <- c(
-    "Yes", "Definitely", "For sure", "Yup", "Yeah", "Of course", "Absolutely"
+    "Yes",
+    "Definitely",
+    "For sure",
+    "Yup",
+    "Yeah",
+    "Of course",
+    "Absolutely"
   )
   nos <- c("No way", "Not yet", "I forget", "No", "Nope", "Uhhhh... Maybe?")
 
@@ -38,9 +44,7 @@ is_workdir_clean <- function(repo) {
   status <- as.data.frame(status)
   identical(
     status,
-    data.frame(file = character(0),
-               status = character(0),
-               staged = logical(0))
+    data.frame(file = character(0), status = character(0), staged = logical(0))
   )
 }
 
@@ -85,7 +89,8 @@ checklist_format_error <- function(errors) {
     function(x) {
       sprintf(
         "%s: %i error%s%s",
-        x, length(errors[[x]]),
+        x,
+        length(errors[[x]]),
         ifelse(length(errors[[x]]) > 1, "s", ""),
         paste(rules("-"), errors[[x]], collapse = "")
       )
@@ -95,8 +100,12 @@ checklist_format_error <- function(errors) {
 }
 
 checklist_format_output <- function(
-  input, output, motivation = rep("", length = length(input)), type,
-  variable, negate = FALSE
+  input,
+  output,
+  motivation = rep("", length = length(input)),
+  type,
+  variable,
+  negate = FALSE
 ) {
   ok <- xor(input %in% output, negate)
   if (all(ok)) {
@@ -104,63 +113,89 @@ checklist_format_output <- function(
   }
   sprintf(
     "%i %s %s%s\n%s",
-    sum(!ok), type, variable, ifelse(sum(!ok) > 1, "s", ""),
+    sum(!ok),
+    type,
+    variable,
+    ifelse(sum(!ok) > 1, "s", ""),
     paste(rules("-"), input[!ok], motivation[!ok], collapse = "")
   )
 }
 
 #' @importFrom sessioninfo session_info
 checklist_print <- function(
-  path, warnings, allowed_warnings, notes, allowed_notes, linter, errors,
+  path,
+  warnings,
+  allowed_warnings,
+  notes,
+  allowed_notes,
+  linter,
+  errors,
   spelling
 ) {
   print(session_info())
   output <- c(
     sprintf(
       "%sChecklist summary for the package located at:\n%s",
-      rules(), path
+      rules(),
+      path
     ),
     checklist_format_output(
       input = warnings,
       output = checklist_extract(allowed_warnings),
       motivation = checklist_extract(
-        allowed_warnings, "motivation", "\nmotivation: "
+        allowed_warnings,
+        "motivation",
+        "\nmotivation: "
       ),
-      type = "allowed", variable = "warning", negate = TRUE
+      type = "allowed",
+      variable = "warning",
+      negate = TRUE
     ),
     checklist_format_output(
       input = warnings,
       output = checklist_extract(allowed_warnings),
-      type = "new", variable = "warning"
+      type = "new",
+      variable = "warning"
     ),
     checklist_format_output(
       input = checklist_extract(allowed_warnings),
       output = warnings,
       motivation = checklist_extract(
-        allowed_warnings, "motivation", "\nmotivation: "
+        allowed_warnings,
+        "motivation",
+        "\nmotivation: "
       ),
-      type = "missing", variable = "warning"
+      type = "missing",
+      variable = "warning"
     ),
     checklist_format_output(
       input = notes,
       output = checklist_extract(allowed_notes),
       motivation = checklist_extract(
-        allowed_notes, "motivation", "\nmotivation: "
+        allowed_notes,
+        "motivation",
+        "\nmotivation: "
       ),
-      type = "allowed", variable = "note", negate = TRUE
+      type = "allowed",
+      variable = "note",
+      negate = TRUE
     ),
     checklist_format_output(
       input = notes,
       output = checklist_extract(allowed_notes),
-      type = "new", variable = "note"
+      type = "new",
+      variable = "note"
     ),
     checklist_format_output(
       input = checklist_extract(allowed_notes),
       output = notes,
       motivation = checklist_extract(
-        allowed_notes, "motivation", "\nmotivation: "
+        allowed_notes,
+        "motivation",
+        "\nmotivation: "
       ),
-      type = "missing", variable = "note"
+      type = "missing",
+      variable = "note"
     ),
     checklist_diff(path),
     checklist_summarise_linter(linter),
@@ -185,7 +220,8 @@ checklist_summarise_linter <- function(linter) {
   sprintf(
     "%i linter%s found.
 `styler::style_file()` can fix some problems automatically. \n%s%s",
-    length(linter), ifelse(length(linter) > 1, "s", ""),
+    length(linter),
+    ifelse(length(linter) > 1, "s", ""),
     rules("-"),
     paste(messages, collapse = "\n")
   )
@@ -197,10 +233,13 @@ checklist_summarise_spelling <- function(spelling) {
   }
 
   messages <- vapply(
-    unique(spelling$language), FUN.VALUE = character(1), spelling = spelling,
+    unique(spelling$language),
+    FUN.VALUE = character(1),
+    spelling = spelling,
     FUN = function(i, spelling) {
       sprintf(
-        "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s", i,
+        "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s",
+        i,
         paste(
           c_sort(
             as.character(unique(spelling$message[spelling$language == i]))
@@ -220,7 +259,8 @@ checklist_summarise_spelling <- function(spelling) {
 checklist_template <- function(package, warnings, notes, spelling, required) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
-    package = package, allowed = list(warnings = warnings, notes = notes),
+    package = package,
+    allowed = list(warnings = warnings, notes = notes),
     required = required
   )
   spelling$root <- NULL
@@ -346,8 +386,10 @@ checklist_diff <- function(root) {
   display_col[!files & grepl("^\\+", changes)] <- "green"
   display_col[grepl("^\\-", changes)] <- "red"
   vapply(
-    seq_along(display_col), FUN.VALUE = logical(1),
-    display_col = display_col, changes = changes,
+    seq_along(display_col),
+    FUN.VALUE = logical(1),
+    display_col = display_col,
+    changes = changes,
     FUN = function(i, display_col, changes) {
       switch(
         display_col[i],

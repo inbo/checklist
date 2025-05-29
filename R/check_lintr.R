@@ -33,19 +33,25 @@ check_lintr <- function(x = ".", quiet = FALSE) {
       fmt = "The code depends on the following uninstalled packages: %s"
     ) -> missing_packages_msg
   x$add_error(
-    missing_packages_msg[length(missing_packages) > 0], item = "lintr"
+    missing_packages_msg[length(missing_packages) > 0],
+    item = "lintr"
   )
 
   if (x$package) {
     linter <- lint_package(path = x$get_path)
   } else {
     dir_ls(
-      path = x$get_path, recurse = TRUE, regexp = "/renv$", type = "directory"
+      path = x$get_path,
+      recurse = TRUE,
+      regexp = "/renv$",
+      type = "directory"
     ) |>
       as.list() |>
       unname() -> exclude_renv
     linter <- lint_dir(
-      x$get_path, pattern = "\\.(R|q)(md|nw)?$", exclusions = exclude_renv
+      x$get_path,
+      pattern = "\\.(R|q)(md|nw)?$",
+      exclusions = exclude_renv
     )
   }
   if (!quiet && length(linter) > 0) {

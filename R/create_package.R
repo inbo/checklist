@@ -50,9 +50,17 @@
 #'   language = "en-GB", license = "GPL-3", keywords = "keyword"
 #' )
 create_package <- function(
-  package, path = ".", title, description, keywords, language = "en-GB",
-  license = c("GPL-3", "MIT"), communities = character(0), maintainer
+  package,
+  path = ".",
+  title,
+  description,
+  keywords,
+  language = "en-GB",
+  license = c("GPL-3", "MIT"),
+  communities = character(0),
+  maintainer
 ) {
+  # fmt: skip
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
     msg =
@@ -93,7 +101,6 @@ create_package <- function(
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
-
   # create DESCRIPTION
   desc <- desc::description$new("!new")
   desc$set("Package", package)
@@ -109,7 +116,8 @@ create_package <- function(
   )
   if (length(communities)) {
     desc$set(
-      "Config/checklist/communities", paste(communities, collapse = "; ")
+      "Config/checklist/communities",
+      paste(communities, collapse = "; ")
     )
   }
   desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
@@ -128,31 +136,43 @@ create_package <- function(
 
   # create RStudio project
   insert_file(
-    repo = repo, filename = "rproj.template", template = "package_template",
-    target = path, new_name = paste0(package, ".Rproj")
+    repo = repo,
+    filename = "rproj.template",
+    template = "package_template",
+    target = path,
+    new_name = paste0(package, ".Rproj")
   )
 
   # add .gitignore
   insert_file(
-    repo = repo, filename = "gitignore", template = "generic_template",
-    target = path, new_name = ".gitignore"
+    repo = repo,
+    filename = "gitignore",
+    template = "generic_template",
+    target = path,
+    new_name = ".gitignore"
   )
 
   # add .Rbuildignore
   insert_file(
-    repo = repo, filename = "rbuildignore", template = "package_template",
-    target = path, new_name = ".Rbuildignore"
+    repo = repo,
+    filename = "rbuildignore",
+    template = "package_template",
+    target = path,
+    new_name = ".Rbuildignore"
   )
 
   # add codecov.yml
   insert_file(
-    repo = repo, filename = "codecov.yml", template = "package_template",
+    repo = repo,
+    filename = "codecov.yml",
+    template = "package_template",
     target = path
   )
 
   # add NEWS.md
   paste(
-    "# %s 0.0.0", "",
+    "# %s 0.0.0",
+    "",
     "* Added a `NEWS.md` file to track changes to the package.",
     "* Add [`checklist`](https://inbo.github.io/checklist/) infrastructure.",
     sep = "\n"
@@ -177,10 +197,12 @@ create_package <- function(
     readLines() |>
     gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
     gsub(
-      pattern = "\\{\\{\\{ license batch \\}\\}\\}", replacement = license_batch
+      pattern = "\\{\\{\\{ license batch \\}\\}\\}",
+      replacement = license_batch
     ) |>
     gsub(
-      pattern = "\\{\\{\\{ license site \\}\\}\\}", replacement = license_site
+      pattern = "\\{\\{\\{ license site \\}\\}\\}",
+      replacement = license_site
     ) |>
     writeLines(path(path, "README.Rmd"))
   git_add("README.Rmd", repo = repo)
@@ -193,34 +215,46 @@ create_package <- function(
   target <- path(path, ".github")
   dir_create(target)
   insert_file(
-    repo = repo, filename = "CODE_OF_CONDUCT.md",
-    template = "generic_template", target = target
+    repo = repo,
+    filename = "CODE_OF_CONDUCT.md",
+    template = "generic_template",
+    target = target
   )
 
   # Add contributing guidelines
   insert_file(
-    repo = repo, filename = "CONTRIBUTING.md",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "CONTRIBUTING.md",
+    template = "package_template",
+    target = target
   )
 
   # Add GitHub actions
   target <- path(path, ".github", "workflows")
   dir_create(target)
   insert_file(
-    repo = repo, filename = "check_on_branch.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "check_on_branch.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = repo, filename = "check_on_main.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "check_on_main.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = repo, filename = "check_on_different_r_os.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "check_on_different_r_os.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = repo, filename = "release.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "release.yml",
+    template = "package_template",
+    target = target
   )
 
   # prepare pkgdown
@@ -234,33 +268,45 @@ create_package <- function(
   target <- path(path, "pkgdown")
   dir_create(target)
   insert_file(
-    repo = repo, filename = "pkgdown.css", template = "package_template",
-    target = target, new_name = "extra.css"
+    repo = repo,
+    filename = "pkgdown.css",
+    template = "package_template",
+    target = target,
+    new_name = "extra.css"
   )
 
   target <- path(path, "man", "figures")
   dir_create(target)
   insert_file(
-    repo = repo, filename = "logo-en.png", template = "package_template",
+    repo = repo,
+    filename = "logo-en.png",
+    template = "package_template",
     target = target
   )
   insert_file(
-    repo = repo, filename = "background-pattern.png",
-    template = "package_template", target = target
-  )
-  insert_file(
-    repo = repo, filename = "flanders.woff2", template = "package_template",
+    repo = repo,
+    filename = "background-pattern.png",
+    template = "package_template",
     target = target
   )
   insert_file(
-    repo = repo, filename = "flanders.woff", template = "package_template",
+    repo = repo,
+    filename = "flanders.woff2",
+    template = "package_template",
+    target = target
+  )
+  insert_file(
+    repo = repo,
+    filename = "flanders.woff",
+    template = "package_template",
     target = target
   )
 
   message("package created at `", path, "`")
 
   if (
-    !interactive() || !requireNamespace("rstudioapi", quietly = TRUE) ||
+    !interactive() ||
+      !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {
     return(invisible(NULL))

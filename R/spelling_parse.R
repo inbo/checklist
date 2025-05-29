@@ -15,7 +15,9 @@ spelling_parse_r <- function(r_file, wordlist) {
     grep(text) -> multiline
   while (length(multiline) > 0) {
     end_multiline <- c(
-      which(text == ""), grep("#'\\s*@", text), length(text) + 1
+      which(text == ""),
+      grep("#'\\s*@", text),
+      length(text) + 1
     )
     end_multiline <- min(end_multiline[end_multiline > head(multiline, 1)]) - 1
     text[head(multiline, 1):end_multiline] <- ""
@@ -42,9 +44,23 @@ spelling_parse_r <- function(r_file, wordlist) {
 
   # remove the entire line for certain tags
   c(
-    "author", "docType", "export", "exportClass", "exportMethod", "family",
-    "importClassesFrom", "importFrom", "include", "inherit\\w*Params",
-    "keywords", "name", "method", "rdname", "seealso", "title", "template"
+    "author",
+    "docType",
+    "export",
+    "exportClass",
+    "exportMethod",
+    "family",
+    "importClassesFrom",
+    "importFrom",
+    "include",
+    "inherit\\w*Params",
+    "keywords",
+    "name",
+    "method",
+    "rdname",
+    "seealso",
+    "title",
+    "template"
   ) |>
     paste(collapse = "|") |>
     sprintf(fmt = "^#'\\s*@(%s) .*") |>
@@ -62,14 +78,18 @@ spelling_parse_r <- function(r_file, wordlist) {
 
   # remove bare URLs
   text <- gsub(
-    "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+", "", text
+    "(https?|ftp):\\/{2}(\\w|\\.|\\/|#|-|=|\\?|:|_|\\(|\\))+",
+    "",
+    text
   )
 
   # remove equations
   text <- strip_eqn(text)
 
   list(spelling_check(
-    text = text, filename = r_file, wordlist = wordlist
+    text = text,
+    filename = r_file,
+    wordlist = wordlist
   ))
 }
 
@@ -110,7 +130,9 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
   # remove equations
   text <- strip_eqn(text)
   list(spelling_check(
-    text = text, filename = rd_file, wordlist = wordlist
+    text = text,
+    filename = rd_file,
+    wordlist = wordlist
   ))
 }
 
@@ -132,7 +154,8 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     all(start < end),
     msg = paste(
       "`spell-check: ignore:end` appears before `spell-check: ignore:start`",
-      "found in", md_file
+      "found in",
+      md_file
     )
   )
   assert_that(
@@ -197,13 +220,15 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   assert_that(
     length(start) == length(end),
     msg = paste(
-      "unmatched `\\begin{equation}` and `\\end{equation}` in", md_file
+      "unmatched `\\begin{equation}` and `\\end{equation}` in",
+      md_file
     )
   )
   assert_that(
     all(start < end),
     msg = paste(
-      "`\\end{equation}` appears before `\\begin{equation}` found in", md_file
+      "`\\end{equation}` appears before `\\begin{equation}` found in",
+      md_file
     )
   )
   assert_that(
@@ -222,13 +247,19 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("\\\\\\w+", "", text)
   # remove Markdown figuren
   text <- gsub(
-    "!\\[((.|\n)*?)\\]\\(.*?\\)(\\{.*?\\})?\\\\?", " \\1 ", text, perl = TRUE
+    "!\\[((.|\n)*?)\\]\\(.*?\\)(\\{.*?\\})?\\\\?",
+    " \\1 ",
+    text,
+    perl = TRUE
   )
   # remove Markdown urls
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub(
-    "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+", "", text, perl = TRUE
+    "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+",
+    "",
+    text,
+    perl = TRUE
   )
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
@@ -293,7 +324,9 @@ spelling_parse_md <- function(md_file, wordlist, x) {
 
   # \u20ac is the Euro symbol in UTF-8 notation
   text <- gsub(
-    "\u20ac?[\\s\\(\"][\\+-]?\\d+([\\.,]\\d+)*[\\s%\\)\"]", " ", text,
+    "\u20ac?[\\s\\(\"][\\+-]?\\d+([\\.,]\\d+)*[\\s%\\)\"]",
+    " ",
+    text,
     perl = TRUE
   )
 
@@ -301,22 +334,27 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   assert_that(
     length(
       grep("(\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*){2,}", text)
-    ) == 0,
+    ) ==
+      0,
     msg = paste("Multiple `[]{lang=}` on the same line found in", md_file)
   )
 
   other_languages <- data.frame(
-    line = integer(0), text = character(0), language = character(0)
+    line = integer(0),
+    text = character(0),
+    language = character(0)
   )
   inline_language <- grep("\\[.*?\\]\\{lang=[a-z]{2}(-[A-Z]{2})?\\}", text)
   other_languages <- data.frame(
     line = inline_language,
     text = gsub(
-      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*", "\\1",
+      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*",
+      "\\1",
       text[inline_language]
     ),
     language = gsub(
-      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*", "\\2",
+      ".*\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*",
+      "\\2",
       text[inline_language]
     )
   )
@@ -335,7 +373,9 @@ spelling_parse_md <- function(md_file, wordlist, x) {
         line = seq(other_lang_start[1] + 1, other_lang_end[1] - 1),
         text = text[seq(other_lang_start[1] + 1, other_lang_end[1] - 1)],
         language = gsub(
-          ".*lang=([a-z]{2}(-[A-Z]{2})).*", "\\1", text[other_lang_start[1]]
+          ".*lang=([a-z]{2}(-[A-Z]{2})).*",
+          "\\1",
+          text[other_lang_start[1]]
         )
       )
     )
@@ -354,19 +394,29 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   }
 
   main_language <- spelling_check(
-    text = text, raw_text = raw_text, filename = md_file, wordlist = wordlist
+    text = text,
+    raw_text = raw_text,
+    filename = md_file,
+    wordlist = wordlist
   )
   other_languages <- vapply(
-    unique(other_languages$language), empty_text = rep("", length(raw_text)),
-    FUN.VALUE = vector(mode = "list", length = 1), input = other_languages,
-    raw_text = raw_text, md_file = md_file,
+    unique(other_languages$language),
+    empty_text = rep("", length(raw_text)),
+    FUN.VALUE = vector(mode = "list", length = 1),
+    input = other_languages,
+    raw_text = raw_text,
+    md_file = md_file,
     FUN = function(lang, input, empty_text, raw_text, md_file) {
       empty_text[input[input$language == lang, "line"]] <-
         input[input$language == lang, "text"]
       list(spelling_check(
-        text = empty_text, raw_text = raw_text, filename = md_file,
+        text = empty_text,
+        raw_text = raw_text,
+        filename = md_file,
         wordlist = spelling_wordlist(
-          lang = gsub("-", "_", lang), root = x$get_path, package = x$package
+          lang = gsub("-", "_", lang),
+          root = x$get_path,
+          package = x$package
         )
       ))
     }

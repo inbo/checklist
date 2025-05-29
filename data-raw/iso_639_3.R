@@ -30,7 +30,8 @@ email_regexp <- paste0(
 graphics_ext <- c("eps", "jpg", "jpeg", "pdf", "png", "ps", "svg")
 sprintf("`%s`", graphics_ext) |>
   paste(collapse = ", ") |>
-  sprintf(fmt = "#' @section Exceptions for some file formats:
+  sprintf(
+    fmt = "#' @section Exceptions for some file formats:
 #' Underscores (`_`) causes problems for graphical files when using LaTeX to
 #' create pdf output.
 #' This is how we generate pdf output from rmarkdown.
@@ -40,9 +41,14 @@ sprintf("`%s`", graphics_ext) |>
 #'
 #' We ignore files with `.otf` or `.ttf` extensions.
 #' These are fonts files which often require their own file name scheme.
-") |>
+"
+  ) |>
   writeLines("man-roxygen/graphics.R")
 open_data_ext <- c("csv", "gpkg", "tsv", "txt")
 save(
-  email_regexp, graphics_ext, iso_639_3, open_data_ext, file = "R/sysdata.rda"
+  email_regexp,
+  graphics_ext,
+  iso_639_3,
+  open_data_ext,
+  file = "R/sysdata.rda"
 )

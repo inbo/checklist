@@ -27,10 +27,12 @@ check_codemeta <- function(x = ".") {
     "Code metadata needs to be updated. Run `codemetar::write_codemeta()`."[
       !unchanged_repo(repo, status_before)
     ],
-    item = "codemeta", keep = FALSE
+    item = "codemeta",
+    keep = FALSE
   )
   x$add_notes(
-    sprintf("in %s fix %s", opinions$where, opinions$fixme), "codemeta"
+    sprintf("in %s fix %s", opinions$where, opinions$fixme),
+    "codemeta"
   )
 
   return(x)

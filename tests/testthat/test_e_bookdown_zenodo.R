@@ -10,7 +10,10 @@ test_that("bookdown_zenodo() works", {
     file_delete()
   expect_error(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     ),
     "index.Rmd not found"
   )
@@ -26,7 +29,10 @@ test_that("bookdown_zenodo() works", {
     file_copy(root, overwrite = TRUE)
   expect_warning(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     ),
     "Errors found parsing citation meta data"
   )
@@ -64,7 +70,10 @@ test_that("bookdown_zenodo() works", {
   sink(zenodo_out2)
   suppressMessages(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     )
   )
   sink()
@@ -72,7 +81,8 @@ test_that("bookdown_zenodo() works", {
   zen_com <- manager$getCommunityById("checklist")
   sprintf(
     "status:submitted AND receiver.community:%s AND topic.record:%s",
-    zen_com$id, x$id
+    zen_com$id,
+    x$id
   ) |>
     manager$getRequests() -> reqs
   expect_true(
@@ -88,8 +98,11 @@ test_that("bookdown_zenodo() works", {
   c("---", index[!grepl("^community:", index)]) |>
     writeLines(path(root, "index.Rmd"))
   organisation$new(
-    github = NA_character_, community = NA_character_, email = NA_character_,
-    funder = NA_character_, rightsholder = NA_character_
+    github = NA_character_,
+    community = NA_character_,
+    email = NA_character_,
+    funder = NA_character_,
+    rightsholder = NA_character_
   ) |>
     write_organisation(root)
   zenodo_out3 <- tempfile(fileext = ".txt")
@@ -97,7 +110,10 @@ test_that("bookdown_zenodo() works", {
   sink(zenodo_out3)
   suppressMessages(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     )
   )
   sink()
@@ -112,7 +128,8 @@ test_that("bookdown_zenodo() works", {
     c("  - Josiah Carberry", tail(index, -10)) |>
     writeLines(path(root, "index.Rmd"))
   expect_warning(
-    x <- citation_meta$new(root), "Errors found parsing citation meta data"
+    x <- citation_meta$new(root),
+    "Errors found parsing citation meta data"
   )
   expect_identical(
     x$get_errors,
@@ -139,7 +156,10 @@ test_that("bookdown_zenodo() works", {
     file_copy(path(root, "LICENSE.md"), overwrite = TRUE)
   expect_warning(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     ),
     "Errors found parsing citation meta data"
   )
@@ -148,7 +168,10 @@ test_that("bookdown_zenodo() works", {
     file_delete()
   expect_warning(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     ),
     "Errors found parsing citation meta data"
   )
@@ -157,12 +180,16 @@ test_that("bookdown_zenodo() works", {
     file_delete()
   expect_error(
     x <- bookdown_zenodo(
-      root, logger = NULL, sandbox = TRUE, token = sandbox_token
+      root,
+      logger = NULL,
+      sandbox = TRUE,
+      token = sandbox_token
     ),
     "index.Rmd not found in `path`"
   )
   expect_warning(
-    x <- citation_meta$new(root), "Errors found parsing citation meta data"
+    x <- citation_meta$new(root),
+    "Errors found parsing citation meta data"
   )
   expect_match(x$get_errors, "index.Rmd not found")
 })

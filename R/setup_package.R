@@ -37,7 +37,9 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   if (!file_exists(path(path, "checklist.yml"))) {
     if (descript$has_fields("Language")) {
       x <- checklist$new(
-        x = path, language = descript$get_field("Language"), package = TRUE
+        x = path,
+        language = descript$get_field("Language"),
+        package = TRUE
       )
     } else {
       x <- checklist$new(x = path, language = "en-GB", package = TRUE)
@@ -68,8 +70,11 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
     git_add(".gitignore", force = TRUE, repo = path)
   } else {
     insert_file(
-      repo = path, filename = "gitignore", template = "generic_template",
-      target = path, new_name = ".gitignore"
+      repo = path,
+      filename = "gitignore",
+      template = "generic_template",
+      target = path,
+      new_name = ".gitignore"
     )
   }
 
@@ -86,14 +91,19 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
     git_add(".Rbuildignore", force = TRUE, repo = path)
   } else {
     insert_file(
-      repo = path, filename = "rbuildignore", template = "package_template",
-      target = path, new_name = ".Rbuildignore"
+      repo = path,
+      filename = "rbuildignore",
+      template = "package_template",
+      target = path,
+      new_name = ".Rbuildignore"
     )
   }
 
   # add codecov.yml
   insert_file(
-    repo = path, filename = "codecov.yml", template = "package_template",
+    repo = path,
+    filename = "codecov.yml",
+    template = "package_template",
     target = path
   )
 
@@ -101,7 +111,8 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   if (!is_file(path(path, "NEWS.md"))) {
     sprintf(
       paste(
-        "# %s %s", "",
+        "# %s %s",
+        "",
         "* Added a `NEWS.md` file to track changes to the package.",
         paste(
           "* Add [`checklist`](https://inbo.github.io/checklist/)",
@@ -109,7 +120,8 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
         ),
         sep = "\n"
       ),
-      package, as.character(version)
+      package,
+      as.character(version)
     ) |>
       writeLines(path(path, "NEWS.md"))
     git_add("NEWS.md", force = TRUE, repo = path)
@@ -117,6 +129,7 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
 
   # add README.Rmd
   if (!is_file(path(path, "README.md"))) {
+    # fmt: skip
     license_batch <- switch(
       license,
       "GPL-3" =
@@ -137,7 +150,8 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
         replacement = license_batch
       ) |>
       gsub(
-        pattern = "\\{\\{\\{ license site \\}\\}\\}", replacement = license_site
+        pattern = "\\{\\{\\{ license site \\}\\}\\}",
+        replacement = license_site
       ) |>
       writeLines(path(path, "README.Rmd"))
     git_add("README.Rmd", force = TRUE, repo = path)
@@ -147,12 +161,15 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   if (length(dir_ls(path, regexp = "LICEN(S|C)E")) == 0) {
     switch(license, "GPL-3" = "gplv3.md", "MIT" = "mit.md") |>
       insert_file(
-        repo = path, template = "generic_template", target = path,
+        repo = path,
+        template = "generic_template",
+        target = path,
         new_name = "LICENSE.md"
       )
     if (license == "MIT") {
       writeLines(
-        c(paste0("YEAR: ", format(Sys.Date(), "%Y")),
+        c(
+          paste0("YEAR: ", format(Sys.Date(), "%Y")),
           "COPYRIGHT HOLDER: Research Institute for Nature and Forest (INBO)"
         ),
         path(path, "LICENSE")
@@ -160,9 +177,11 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
       git_add("LICENSE", force = TRUE, repo = path)
       mit <- readLines(path(path, "LICENSE.md"))
       mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
-      mit[3] <- gsub("<COPYRIGHT HOLDERS>",
-                     "Research Institute for Nature and Forest (INBO)",
-                     mit[3])
+      mit[3] <- gsub(
+        "<COPYRIGHT HOLDERS>",
+        "Research Institute for Nature and Forest (INBO)",
+        mit[3]
+      )
       writeLines(mit, path(path, "LICENSE.md"))
     }
     git_add("LICENSE.md", force = TRUE, repo = path)
@@ -172,13 +191,17 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   target <- path(path, ".github")
   dir_create(target)
   insert_file(
-    repo = path, filename = "CODE_OF_CONDUCT.md", template = "generic_template",
+    repo = path,
+    filename = "CODE_OF_CONDUCT.md",
+    template = "generic_template",
     target = target
   )
 
   # Add contributing guidelines
   insert_file(
-    repo = path, filename = "CONTRIBUTING.md", template = "package_template",
+    repo = path,
+    filename = "CONTRIBUTING.md",
+    template = "package_template",
     target = target
   )
 
@@ -186,19 +209,27 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   target <- path(path, ".github", "workflows")
   dir_create(target)
   insert_file(
-    repo = path, filename = "check_on_branch.yml",
-    template = "package_template", target = target
+    repo = path,
+    filename = "check_on_branch.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = path, filename = "check_on_main.yml",
-    template = "package_template", target = target
+    repo = path,
+    filename = "check_on_main.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = path, filename = "check_on_different_r_os.yml",
-    template = "package_template", target = target
+    repo = path,
+    filename = "check_on_different_r_os.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = path, filename = "release.yml", template = "package_template",
+    repo = path,
+    filename = "release.yml",
+    template = "package_template",
     target = target
   )
 
@@ -212,25 +243,36 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   target <- path(path, "pkgdown")
   dir_create(target)
   insert_file(
-    repo = path, filename = "pkgdown.css", template = "package_template",
-    target = target, new_name = "extra.css"
+    repo = path,
+    filename = "pkgdown.css",
+    template = "package_template",
+    target = target,
+    new_name = "extra.css"
   )
   target <- path(path, "man", "figures")
   dir_create(target)
   insert_file(
-    repo = path, filename = "logo-en.png", template = "package_template",
+    repo = path,
+    filename = "logo-en.png",
+    template = "package_template",
     target = target
   )
   insert_file(
-    repo = path, filename = "background-pattern.png",
-    template = "package_template", target = target
-  )
-  insert_file(
-    repo = path, filename = "flanders.woff2", template = "package_template",
+    repo = path,
+    filename = "background-pattern.png",
+    template = "package_template",
     target = target
   )
   insert_file(
-    repo = path, filename = "flanders.woff", template = "package_template",
+    repo = path,
+    filename = "flanders.woff2",
+    template = "package_template",
+    target = target
+  )
+  insert_file(
+    repo = path,
+    filename = "flanders.woff",
+    template = "package_template",
     target = target
   )
 

@@ -48,16 +48,22 @@ read_checklist <- function(x = ".") {
   }
   if (allowed$package) {
     x <- checklist$new(
-      x = current, package = TRUE,
+      x = current,
+      package = TRUE,
       language = ifelse(
-        has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
+        has_name(allowed$spelling, "default"),
+        allowed$spelling$default,
+        "en-GB"
       )
     )
   } else {
     x <- checklist$new(
-      x = current, package = FALSE,
+      x = current,
+      package = FALSE,
       language = ifelse(
-        has_name(allowed$spelling, "default"), allowed$spelling$default, "en-GB"
+        has_name(allowed$spelling, "default"),
+        allowed$spelling$default,
+        "en-GB"
       )
     )
     if (has_name(allowed, "required")) {
@@ -80,7 +86,10 @@ read_checklist <- function(x = ".") {
   assert_that(is.list(allowed$warnings))
   assert_that(is.list(allowed$notes))
   motivation <- vapply(
-    allowed$warnings, `[[`, character(1), "motivation"
+    allowed$warnings,
+    `[[`,
+    character(1),
+    "motivation"
   )
   assert_that(
     length(allowed$warnings) == length(motivation),
@@ -91,7 +100,10 @@ read_checklist <- function(x = ".") {
     msg = "Please add a motivation for each warning the checklist"
   )
   motivation <- vapply(
-    allowed$notes, `[[`, character(1), "motivation"
+    allowed$notes,
+    `[[`,
+    character(1),
+    "motivation"
   )
   assert_that(
     length(allowed$notes) == length(motivation),
@@ -102,14 +114,20 @@ read_checklist <- function(x = ".") {
     msg = "Please add a motivation for each note the checklist"
   )
   value <- vapply(
-    allowed$warnings, `[[`, character(1), "value"
+    allowed$warnings,
+    `[[`,
+    character(1),
+    "value"
   )
   assert_that(
     length(allowed$warnings) == length(value),
     msg = "Each warning in the checklist requires a value"
   )
   value <- vapply(
-    allowed$notes, `[[`, character(1), "value"
+    allowed$notes,
+    `[[`,
+    character(1),
+    "value"
   )
   assert_that(
     length(allowed$notes) == length(value),

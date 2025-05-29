@@ -1,6 +1,8 @@
 test_that("update_citation() works", {
   maintainer <- person(
-    given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
+    given = "Thierry",
+    family = "Onkelinx",
+    role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
     comment = c(
       ORCID = "0000-0001-8804-4216",
@@ -12,9 +14,13 @@ test_that("update_citation() works", {
   defer(unlink(path, recursive = TRUE))
   package <- "citation"
   create_package(
-    path = path, package = package, keywords = "dummy", communities = "inbo",
+    path = path,
+    package = package,
+    keywords = "dummy",
+    communities = "inbo",
     title = "testing the ability of checklist to create a minimal package",
-    description = "A dummy package.", maintainer = maintainer,
+    description = "A dummy package.",
+    maintainer = maintainer,
     language = "en-GB"
   )
 
@@ -31,10 +37,11 @@ test_that("update_citation() works", {
     old_citation[!grepl("^# .* checklist entry", old_citation)],
     path(path, package, "inst", "CITATION")
   )
-  expect_is({
-    x <- update_citation(path(path, package), quiet = TRUE)
-  },
-  "checklist"
+  expect_is(
+    {
+      x <- update_citation(path(path, package), quiet = TRUE)
+    },
+    "checklist"
   )
   expect_named(x$.__enclos_env__$private$errors, "CITATION")
   expect_match(
@@ -56,7 +63,8 @@ test_that("update_citation() works", {
   expect_equal(length(this_description$get_authors()), 1)
   this_description$write(path(path, package))
   expect_is(
-    z <- update_citation(path(path, package), quiet = TRUE), "checklist"
+    z <- update_citation(path(path, package), quiet = TRUE),
+    "checklist"
   )
   expect_equal(
     z$.__enclos_env__$private$notes,
@@ -67,7 +75,8 @@ test_that("update_citation() works", {
   this_description$write(path(path, package))
   file_delete(path(path, package, ".Rbuildignore"))
   expect_is(
-    z <- update_citation(path(path, package), quiet = TRUE), "checklist"
+    z <- update_citation(path(path, package), quiet = TRUE),
+    "checklist"
   )
   expect_equal(
     z$.__enclos_env__$private$notes,
@@ -77,11 +86,14 @@ test_that("update_citation() works", {
     )
   )
   new_org <- organisation$new(
-    email = NA_character_, funder = NA_character_, rightsholder = "test"
+    email = NA_character_,
+    funder = NA_character_,
+    rightsholder = "test"
   )
   write_organisation(new_org, path(path, package))
   expect_is(
-    z <- update_citation(path(path, package), quiet = TRUE), "checklist"
+    z <- update_citation(path(path, package), quiet = TRUE),
+    "checklist"
   )
   expect_length(z$.__enclos_env__$private$notes, 0)
 })

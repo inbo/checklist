@@ -59,12 +59,15 @@ set_tag <- function(x = ".") {
   old_config <- git_config(repo = repo)
   defer(
     git_config_set(
-      "user.name", old_config$value[old_config$name == "user.name"], repo = repo
+      "user.name",
+      old_config$value[old_config$name == "user.name"],
+      repo = repo
     )
   )
   defer(
     git_config_set(
-      "user.email", old_config$value[old_config$name == "user.email"],
+      "user.email",
+      old_config$value[old_config$name == "user.email"],
       repo = repo
     )
   )
@@ -75,7 +78,9 @@ set_tag <- function(x = ".") {
   body[nchar(body) > 0] |>
     paste(collapse = "\n") -> tag_message
   git_tag_create(
-    name = paste0("v", version), message = tag_message, repo = repo
+    name = paste0("v", version),
+    message = tag_message,
+    repo = repo
   )
   return(invisible(NULL))
 }

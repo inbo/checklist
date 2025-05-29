@@ -46,7 +46,8 @@ check_filename <- function(x = ".") {
   ignored_dirs <- vapply(
     dirs,
     function(x) {
-      x[1] %in% c("", ".", ".git", ".Rproj.user") ||
+      x[1] %in%
+        c("", ".", ".git", ".Rproj.user") ||
         identical(x[1:4], c("inst", "local_tex", "fonts", "opentype")) ||
         "_freeze" %in% x
     },
@@ -55,7 +56,8 @@ check_filename <- function(x = ".") {
   dirs <- dirs[!ignored_dirs]
   exceptions <- list(
     c("R"),
-    c(".github", "ISSUE_TEMPLATE"), c(".github", "PULL_REQUEST_TEMPLATE")
+    c(".github", "ISSUE_TEMPLATE"),
+    c(".github", "PULL_REQUEST_TEMPLATE")
   )
   dirs <- dirs[!dirs %in% exceptions]
   check_dir <- vapply(
@@ -87,13 +89,27 @@ check_filename <- function(x = ".") {
     "^(%s)$",
     paste(
       c(
-        "\\.[a-zA-Z]+ignore", "\\.Rprofile", "\\.[a-zA-Z]+\\.(json|yml)",
-        "CITATION", "CODEOWNERS", "DESCRIPTION", "NAMESPACE", "CITATION\\.cff",
-        "README\\.R?md", "NEWS\\.md",
-        "CODE_OF_CONDUCT\\.md", "CONTRIBUTING\\.md", "LICENSE(\\.md)?",
-        "SUPPORT\\.md", "SECURITY\\.md", "FUNDING\\.yml",
-        "Dockerfile", "WORDLIST.*", "docker-compose.*\\.yml",
-        "REVIEWING.md", "_redirects"
+        "\\.[a-zA-Z]+ignore",
+        "\\.Rprofile",
+        "\\.[a-zA-Z]+\\.(json|yml)",
+        "CITATION",
+        "CODEOWNERS",
+        "DESCRIPTION",
+        "NAMESPACE",
+        "CITATION\\.cff",
+        "README\\.R?md",
+        "NEWS\\.md",
+        "CODE_OF_CONDUCT\\.md",
+        "CONTRIBUTING\\.md",
+        "LICENSE(\\.md)?",
+        "SUPPORT\\.md",
+        "SECURITY\\.md",
+        "FUNDING\\.yml",
+        "Dockerfile",
+        "WORDLIST.*",
+        "docker-compose.*\\.yml",
+        "REVIEWING.md",
+        "_redirects"
       ),
       collapse = "|"
     )
@@ -166,9 +182,7 @@ list_project_files <- function(path) {
   oldwd <- getwd()
   on.exit(setwd(oldwd), add = TRUE)
   setwd(path)
-  if (
-    is_repository(".") && nrow(git_ls(repo = ".")) > 0
-  ) {
+  if (is_repository(".") && nrow(git_ls(repo = ".")) > 0) {
     files <- git_ls(repo = ".")$path
     dirs <- unique(dirname(files))
   } else {

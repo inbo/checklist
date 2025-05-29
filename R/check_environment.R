@@ -26,7 +26,8 @@ check_environment <- function(x = ".") {
   )
   x$add_error(
     sprintf(fmt = fmt, paste(problems, collapse = ", ")),
-    item = "repository secret", keep = FALSE
+    item = "repository secret",
+    keep = FALSE
   )
   return(invisible(x))
 }
