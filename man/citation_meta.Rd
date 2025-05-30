@@ -9,6 +9,7 @@ A class which contains citation information.
 \seealso{
 Other class: 
 \code{\link{checklist}},
+\code{\link{org_item}},
 \code{\link{organisation}},
 \code{\link{spelling}}
 }
