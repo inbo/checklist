@@ -10,6 +10,7 @@ A class containing a single organisation
 Other class: 
 \code{\link{checklist}},
 \code{\link{citation_meta}},
+\code{\link{org_list}},
 \code{\link{organisation}},
 \code{\link{spelling}}
 }

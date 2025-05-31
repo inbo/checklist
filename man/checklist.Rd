@@ -10,6 +10,7 @@ A class which contains all checklist results.
 Other class: 
 \code{\link{citation_meta}},
 \code{\link{org_item}},
+\code{\link{org_list}},
 \code{\link{organisation}},
 \code{\link{spelling}}
 }

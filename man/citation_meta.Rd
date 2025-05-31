@@ -10,6 +10,7 @@ A class which contains citation information.
 Other class: 
 \code{\link{checklist}},
 \code{\link{org_item}},
+\code{\link{org_list}},
 \code{\link{organisation}},
 \code{\link{spelling}}
 }
