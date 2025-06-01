@@ -22,13 +22,15 @@ Other class:
 
 \item{\code{get_community}}{The organisation Zenodo community.}
 
-\item{\code{get_domain}}{The organisation email.}
+\item{\code{get_domain}}{The organisation domain.}
 
 \item{\code{get_email}}{The organisation email.}
 
 \item{\code{get_funder}}{The funder rules.}
 
-\item{\code{get_name}}{The organisation name.}
+\item{\code{get_default_name}}{The organisation default name.}
+
+\item{\code{get_name}}{The organisation names.}
 
 \item{\code{get_orcid}}{The ORCID rules.}
 
@@ -42,6 +44,7 @@ Other class:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-org_item-new}{\code{org_item$new()}}
+\item \href{#method-org_item-as_person}{\code{org_item$as_person()}}
 \item \href{#method-org_item-print}{\code{org_item$print()}}
 \item \href{#method-org_item-clone}{\code{org_item$clone()}}
 }
@@ -53,18 +56,31 @@ Other class:
 Initialize a new \code{org_item} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{org_item$new(
-  ...,
+  name,
+  domain,
+  email,
   orcid = FALSE,
   rightsholder = c("optional", "single", "shared", "when no other"),
-  funder = c("optional", "single", "shared", "when no other")
+  funder = c("optional", "single", "shared", "when no other"),
+  git,
+  ror,
+  zenodo
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{The organisation information.
-See the details.}
+\item{\code{name}}{A named vector with the organisation names in one or more
+languages.
+The first item in the vector is the default language.
+The names of the vector must match the language code.}
+
+\item{\code{domain}}{The email domain of the organisation.
+Used to match users to the organisation.}
+
+\item{\code{email}}{An optional email address for the organisation.
+Used to contact the organisation.}
 
 \item{\code{orcid}}{Whether the organisation requires an ORCID for every person
 that uses this organisation as affiliation.}
@@ -81,27 +97,37 @@ the organisation must be the copyright holder.}
 
 \item{\code{funder}}{The required funder status for the organisation.
 The categories are the same as for \code{rightsholder}.}
+
+\item{\code{git}}{The optional root URL to the organisations git repositories.
+The organisation with matching URL in the git remote will be used as
+the primary organisation.}
+
+\item{\code{ror}}{The optional ROR ID of the organisation.}
+
+\item{\code{zenodo}}{The optional Zenodo community ID of the organisation.}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Details}{
-\itemize{
-\item \code{name}: A named vector with the organisation names in one or more
-languages.
-The first item in the vector is the default language.
-The names of the vector must match the language code.
-\item \code{domain}: The email domain of the organisation.
-Used to match users to the organisation.
-\item \code{email}: An optional email address for the organisation.
-Used to contact the organisation.
-\item \code{git}: The optional root URL to the organisations git repositories.
-The organisation with matching URL in the git remote will be used as
-the primary organisation.
-\item \code{ror}: The optional ROR ID of the organisation.
-\item \code{zenodo}: The optional Zenodo community ID of the organisation.
 }
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_item-as_person"></a>}}
+\if{latex}{\out{\hypertarget{method-org_item-as_person}{}}}
+\subsection{Method \code{as_person()}}{
+as_person The organisation as a person.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_item$as_person(lang = names(private$name)[1], role = c("cph", "fnd"))}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{lang}}{The language to use for the organisation name.
+Defaults to the first language in the \code{name} vector.}
+
+\item{\code{role}}{The role of the person in the organisation.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-org_item-print"></a>}}
