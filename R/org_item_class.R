@@ -12,8 +12,6 @@ org_item <- R6Class(
     #'   languages.
     #'   The first item in the vector is the default language.
     #'   The names of the vector must match the language code.
-    #' @param domain The email domain of the organisation.
-    #'   Used to match users to the organisation.
     #' @param email An optional email address for the organisation.
     #'   Used to contact the organisation.
     #' @param orcid Whether the organisation requires an ORCID for every person
@@ -36,7 +34,6 @@ org_item <- R6Class(
     #' @param zenodo The optional Zenodo community ID of the organisation.
     initialize = function(
       name,
-      domain,
       email,
       orcid = FALSE,
       rightsholder = c("optional", "single", "shared", "when no other"),
@@ -48,18 +45,19 @@ org_item <- R6Class(
       private$rightsholder <- match.arg(rightsholder)
       private$funder <- match.arg(funder)
       stopifnot(
-        "`domain` must be a string" = is.string(domain),
-        "`domain` cannot be NA" = noNA(domain),
-        "`domain` cannot be empty" = domain != ""
+        "`email` must be a string" = is.string(email),
+        "`email` cannot be NA" = noNA(email),
+        "`email` cannot be empty" = email != "",
+        "invalid email" = validate_email(email)
       )
-      if (domain == "inbo.be") {
+      if (grepl("@inbo\\.be$", email)) {
         private$name <- c(
           `nl-BE` = "Instituut voor Natuur- en Bosonderzoek (INBO)",
           `fr-FR` = "Institut de Recherche sur la Nature et les Forêts (INBO)",
           `en-GB` = "Research Institute for Nature and Forest (INBO)",
           `de-DE` = "Institut für Natur- und Waldforschung (INBO)"
         )
-        private$domain <- domain
+        private$email <- "info@inbo.be"
         private$orcid <- TRUE
         private$ror <- "https://ror.org/00j54wy13"
         private$zenodo <- "inbo"
@@ -74,13 +72,9 @@ org_item <- R6Class(
         "`name` cannot have empty names" = all(names(name) != ""),
         "`name` cannot have empty values" = noNA(name),
         "`orcid` must be `TRUE` or `FALSE`" = is.flag(orcid),
-        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid),
-        "`email` must be a string" = is.string(email),
-        "`email` cannot be NA" = noNA(email),
-        "`email` cannot be empty" = email != ""
+        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid)
       )
       private$name <- name
-      private$domain <- domain
       private$orcid <- orcid
       private$email <- email
       if (!missing(git)) {
@@ -142,7 +136,6 @@ org_item <- R6Class(
       c(
         "name",
         sprintf("- %s: %s", names(private$name), private$name),
-        sprintf("domain: %s", private$domain),
         sprintf("email: %s", private$email),
         sprintf("ROR: %s", private$ror),
         sprintf("git organisation: %s", private$git),
@@ -159,7 +152,6 @@ org_item <- R6Class(
     #' @field as_list The organisation as a list.
     as_list = function() {
       organisation <- list(
-        domain = private$domain,
         name = as.list(private$name),
         email = private$email,
         ror = private$ror,
@@ -176,9 +168,9 @@ org_item <- R6Class(
     get_community = function() {
       private$community
     },
-    #' @field get_domain The organisation domain.
-    get_domain = function() {
-      private$domain
+    #' @field get_default_name The organisation default name.
+    get_default_name = function() {
+      private$name[1]
     },
     #' @field get_email The organisation email.
     get_email = function() {
@@ -188,9 +180,9 @@ org_item <- R6Class(
     get_funder = function() {
       private$funder
     },
-    #' @field get_default_name The organisation default name.
-    get_default_name = function() {
-      private$name[1]
+    #' @field get_git The organisational root git URL.
+    get_git = function() {
+      private$git
     },
     #' @field get_name The organisation names.
     get_name = function() {
@@ -200,10 +192,6 @@ org_item <- R6Class(
     get_orcid = function() {
       private$orcid
     },
-    #' @field get_git The organisational root git URL.
-    get_git = function() {
-      private$git
-    },
     #' @field get_rightsholder The rightsholder rules.
     get_rightsholder = function() {
       private$rightsholder
@@ -211,7 +199,6 @@ org_item <- R6Class(
   ),
   private = list(
     email = character(0),
-    domain = character(0),
     git = character(0),
     name = character(0),
     orcid = FALSE,

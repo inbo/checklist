@@ -22,19 +22,17 @@ Other class:
 
 \item{\code{get_community}}{The organisation Zenodo community.}
 
-\item{\code{get_domain}}{The organisation domain.}
+\item{\code{get_default_name}}{The organisation default name.}
 
 \item{\code{get_email}}{The organisation email.}
 
 \item{\code{get_funder}}{The funder rules.}
 
-\item{\code{get_default_name}}{The organisation default name.}
+\item{\code{get_git}}{The organisational root git URL.}
 
 \item{\code{get_name}}{The organisation names.}
 
 \item{\code{get_orcid}}{The ORCID rules.}
-
-\item{\code{get_git}}{The organisational root git URL.}
 
 \item{\code{get_rightsholder}}{The rightsholder rules.}
 }
@@ -57,7 +55,6 @@ Initialize a new \code{org_item} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{org_item$new(
   name,
-  domain,
   email,
   orcid = FALSE,
   rightsholder = c("optional", "single", "shared", "when no other"),
@@ -75,9 +72,6 @@ Initialize a new \code{org_item} object.
 languages.
 The first item in the vector is the default language.
 The names of the vector must match the language code.}
-
-\item{\code{domain}}{The email domain of the organisation.
-Used to match users to the organisation.}
 
 \item{\code{email}}{An optional email address for the organisation.
 Used to contact the organisation.}

@@ -124,9 +124,9 @@ check_description <- function(x = ".") {
 
   x$add_error(desc_error, item = "DESCRIPTION", keep = FALSE)
   x$add_notes(notes, item = "DESCRIPTION")
-  read_organisation(x$get_path) |>
+  org_list$new()$read(x$get_path) |>
     check_authors(this_desc = this_desc) |>
-    x$add_warnings(item = "DESCRIPTION")
+    x$add_error(item = "DESCRIPTION")
 
   check_license(x = x)
 }
@@ -302,74 +302,56 @@ Please send a pull request if you need support for this license.",
   return(x)
 }
 
-#' @importFrom assertthat assert_that
+#' @importFrom assertthat assert_that is.string
 #' @importFrom utils person
 check_authors <- function(this_desc, org) {
-  assert_that(inherits(org, "organisation"))
+  assert_that(inherits(org, "org_list"))
+  rightsholder <- this_desc$get_author(role = "cph")
+  funder <- this_desc$get_author(role = "fnd")
+  problems <- org$validate_rules(rightsholder = rightsholder, funder = funder)
   authors <- this_desc$get_authors()
-  email <- c(NULL, org$get_email[!is.na(org$get_email)])
-  if (!is.na(org$get_rightsholder)) {
-    if (!is.na(org$get_funder)) {
-      if (org$get_rightsholder == org$get_funder) {
-        rightsholder <- person(
-          given = org$get_rightsholder,
-          role = c("cph", "fnd"),
-          email = email
-        )
-        funder <- NULL
-      } else {
-        rightsholder <- person(
-          given = org$get_rightsholder,
-          role = "cph",
-          email = email
-        )
-        funder <- person(given = org$get_funder, role = "fnd")
-      }
-    } else {
-      rightsholder <- person(
-        given = org$get_rightsholder,
-        role = "cph",
-        email = email
-      )
-      funder <- NULL
-    }
-  } else {
-    rightsholder <- NULL
-    if (!is.na(org$get_funder)) {
-      funder <- person(given = org$get_funder, role = "fnd")
-    } else {
-      funder <- NULL
-    }
-  }
-
-  problems <- c(
-    sprintf(
-      "`%s` must be listed as copyright holder and use `%s` as email.",
-      org$get_rightsholder,
-      org$get_email
-    )[
-      !is.null(rightsholder) &&
-        !is.na(org$get_rightsholder) &&
-        !rightsholder %in% authors
-    ],
-    sprintf(
-      "`%s` must be listed as funder without email.",
-      org$get_funder
-    )[!is.null(funder) && !is.na(org$get_funder) && !funder %in% authors]
-  )
   authors <- authors[!authors %in% rightsholder]
   authors <- authors[!authors %in% funder]
+  lang <- ifelse(
+    is.na(this_desc$get("Language")),
+    "en-GB",
+    this_desc$get("Language")
+  )
   vapply(
     authors,
+    lang = lang,
     FUN.VALUE = vector(mode = "list", length = 1L),
-    FUN = function(author) {
+    FUN = function(author, lang) {
       email <- format(author, include = "email", braces = list(email = ""))
-      this_org <- org$get_organisation[[gsub(".*@", "", email)]]
-      format(author, include = c("given", "family")) |>
-        sprintf(fmt = "ORCID required for `%s`") -> problem
-      list(
-        problem[isTRUE(this_org$orcid) && !has_name(author$comment, "ORCID")]
-      )
+      author_name <- format(author, include = c("given", "family"))
+      affiliation <- org$get_name_by_domain(email, lang)
+      if (length(affiliation) == 0) {
+        return(list(NULL))
+      }
+      sprintf(
+        "%s: affiliation required for %s",
+        author_name,
+        gsub(".*@(.*)", "\\1", email)
+      )[
+        !has_name(author$comment, "affiliation")
+      ] |>
+        c(
+          sprintf(
+            "%s: affiliation must match %s",
+            author_name,
+            names(affiliation) |>
+              paste(collapse = " or ")
+          )[
+            has_name(author$comment, "affiliation") &&
+              !author$comment["affiliation"] %in% names(affiliation)
+          ],
+          sprintf(
+            "%s: ORCID is required for %s",
+            author_name,
+            paste(names(affiliation)[affiliation], collapse = " and ")
+          )[any(affiliation) && !has_name(author$comment, "ORCID")]
+        ) |>
+        list()
     }
   ) |>
     unlist() |>

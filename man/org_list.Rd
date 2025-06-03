@@ -15,14 +15,80 @@ Other class:
 \code{\link{spelling}}
 }
 \concept{class}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{get_default_name}}{The organisations default name.}
+
+\item{\code{get_email}}{The organisations email.}
+
+\item{\code{which_funder}}{The required rightsholders.}
+
+\item{\code{which_rightsholder}}{The required rightsholders.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-org_list-get_person}{\code{org_list$get_person()}}
+\item \href{#method-org_list-get_name_by_domain}{\code{org_list$get_name_by_domain()}}
 \item \href{#method-org_list-new}{\code{org_list$new()}}
 \item \href{#method-org_list-print}{\code{org_list$print()}}
 \item \href{#method-org_list-read}{\code{org_list$read()}}
+\item \href{#method-org_list-validate_rules}{\code{org_list$validate_rules()}}
 \item \href{#method-org_list-write}{\code{org_list$write()}}
 \item \href{#method-org_list-clone}{\code{org_list$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-get_person"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-get_person}{}}}
+\subsection{Method \code{get_person()}}{
+Return the organisation with matching email as a \code{person()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_person(email, role = c("cph", "fnd"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{The email address of the organisation.}
+
+\item{\code{role}}{The role of the person to return.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-get_name_by_domain"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-get_name_by_domain}{}}}
+\subsection{Method \code{get_name_by_domain()}}{
+Return the organisation names with a matching email domain.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_name_by_domain(email, lang)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{The email address to match the domain against.}
+
+\item{\code{lang}}{The language to return the organisation name in.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The function extracts the domain from the email address and
+matches it against the organisation email addresses.
+If multiple organisations have the same domain,
+the function returns all matching names.
+If the language is not available for a specific organisation,
+it will return the first available name.
+}
+
+\subsection{Returns}{
+A character vector with the organisation names.
 }
 }
 \if{html}{\out{<hr>}}
@@ -66,6 +132,25 @@ Read the \code{org_list} object from an \code{organisation.yml} file.
 \describe{
 \item{\code{x}}{The path to the directory where the \code{organisation.yml} file
 is stored.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-validate_rules"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-validate_rules}{}}}
+\subsection{Method \code{validate_rules()}}{
+Validate the rules for the rightsholder and funder.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$validate_rules(rightsholder = person(), funder = person())}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rightsholder}}{The rightsholders as a \code{person} object.}
+
+\item{\code{funder}}{The funders as a \code{person} object.}
 }
 \if{html}{\out{</div>}}
 }
