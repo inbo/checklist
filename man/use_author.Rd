@@ -4,7 +4,7 @@
 \alias{use_author}
 \title{Which author to use}
 \usage{
-use_author(email)
+use_author(email, lang)
 }
 \arguments{
 \item{email}{An optional email address.

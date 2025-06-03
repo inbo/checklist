@@ -38,7 +38,7 @@ org_list <- R6Class(
         FUN.VALUE = character(1),
         FUN = function(x, lang) {
           org_names <- x$get_name
-          if (lang %in% names(org_names)) {
+          if (!missing(lang) && lang %in% names(org_names)) {
             return(org_names[[lang]])
           } else {
             return(org_names[[1]])
