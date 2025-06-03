@@ -56,6 +56,5 @@ RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgra
 RUN Rscript --no-save --no-restore -e 'checklist:::install_dictionary(c("nl_BE", "fr_BE", "de_DE"))'
 
 COPY docker/entrypoint_package.sh /entrypoint_package.sh
-COPY docker/entrypoint_source.sh /entrypoint_source.sh
 COPY docker/entrypoint_project.sh /entrypoint_project.sh
 ENTRYPOINT ["/entrypoint_package.sh"]
