@@ -138,6 +138,164 @@ org_list <- R6Class(
         do.call(what = org_list$new) -> self
       return(self)
     },
+    #' @description Validate a `person` object given the `org_list` object.
+    #' @param person The `person` object to validate.
+    #' @param lang The language to use for affiliation.
+    validate_person = function(person, lang) {
+      assert_that(inherits(person, "person"))
+      if (length(person) > 1) {
+        vapply(
+          person,
+          y = self,
+          lang = lang,
+          FUN = function(x, y, lang) {
+            list(y$validate_person(person = x, lang = lang))
+          },
+          FUN.VALUE = vector(mode = "list", length = 1)
+        ) -> updated_person
+        attr(updated_person, "errors") <- vapply(
+          updated_person,
+          function(x) {
+            list(attr(x, "errors"))
+          },
+          FUN.VALUE = vector("list", 1)
+        ) |>
+          unlist()
+        return(updated_person)
+      }
+      person_name <- format(person, c("given", "family"))
+      if (person$email %in% names(private$items)) {
+        this_org <- private$items[[person$email]]$as_list
+        if (missing(lang) || !lang %in% names(this_org$name)) {
+          lang <- names(this_org$name)[1]
+        }
+        problems <- c(
+          sprintf(
+            "`%s`: `given` does not match `%s`",
+            person_name,
+            this_org$name[lang]
+          )[
+            person$given != this_org$name[lang]
+          ],
+          sprintf("`%s`: `family` must be empty", person_name)[
+            !is.null(person$family) && person$family != ""
+          ],
+          sprintf(
+            "`%s`: `comment` must contain `ROR = \"%s\"`",
+            person_name,
+            this_org$ror
+          )[
+            !has_name(this_org, "ror") &&
+              (!has_name(person, "comment") ||
+                !has_name(person$comment, "ROR") ||
+                this_org$ror != person$comment$ROR)
+          ],
+          sprintf(
+            "`%s`: `ORCID` is not relevant for organisations",
+            person_name
+          )[
+            has_name(person, "comment") && has_name(person$comment, "ORCID")
+          ]
+        )
+        comment <- first_non_null(person$comment, c(ROR = this_org$ror))
+        comment["ROR"] <- this_org$ror
+        updated_person <- person(
+          given = this_org$name[lang],
+          email = this_org$email,
+          role = person$role,
+          comment = comment
+        )
+        attr(updated_person, "errors") <- problems
+        return(updated_person)
+      }
+      org_domain <- gsub(".*@(.*)", "\\1", names(private$items))
+      email_domain <- gsub(".*@(.*)", "\\1", person$email)
+      private$items[org_domain %in% email_domain] |>
+        vapply(
+          FUN = function(x) {
+            list(x$as_list)
+          },
+          FUN.VALUE = vector(mode = "list", length = 1)
+        ) -> relevant
+      if (length(relevant) == 0) {
+        updated_person <- person
+        attr(updated_person, "errors") <- character(0)
+        return(updated_person)
+      }
+      if (length(relevant) > 1) {
+        vapply(
+          relevant,
+          FUN = function(x) {
+            person$comment["affiliation"] %in% x$name
+          },
+          FUN.VALUE = logical(1)
+        ) |>
+          which() -> which_aff
+        if (length(which_aff) == 0) {
+          updated_person <- person
+          attr(updated_person, "errors") <- sprintf(
+            "`%s`: matching `affiliation` required for `%s`",
+            person_name,
+            email_domain
+          )
+          return(updated_person)
+        }
+        relevant <- relevant[which_aff]
+      }
+      if (missing(lang) || !lang %in% names(relevant[[1]]$name)) {
+        lang <- names(relevant[[1]]$name)[1]
+      }
+      problems <- c(
+        sprintf("`%s`: `given` is empty", person_name)[
+          is.null(person$given) || person$given == ""
+        ],
+        sprintf("`%s`: `family` is empty", person_name)[
+          is.null(person$family) || person$family == ""
+        ],
+        sprintf(
+          "`%s`: `affiliation` must contain `%s`",
+          person_name,
+          relevant[[1]]$name[lang]
+        )[
+          is.null(person$comment) ||
+            !has_name(person$comment, "affiliation") ||
+            !relevant[[1]]$name[lang] %in% person$comment["affiliation"]
+        ],
+        sprintf(
+          "`%s`: `ORCID` required for `%s`",
+          person_name,
+          relevant[[1]]$name[lang]
+        )[
+          is.null(person$comment) || !has_name(person$comment, "ORCID")
+        ],
+        sprintf(
+          "`%s`: `ROR` is only relevant for organisations",
+          person_name
+        )[
+          is.null(person$comment) || has_name(person$comment, "ROR")
+        ]
+      )
+      comment <- first_non_null(
+        person$comment,
+        c(affiliation = relevant[[1]]$name[lang])
+      )
+      c(
+        relevant[[1]]$name[[lang]],
+        comment[["affiliation"]][
+          !comment[["affiliation"]] %in% relevant[[1]]$name
+        ]
+      ) |>
+        unique() -> comment[["affiliation"]]
+      updated_person <- person(
+        given = person$given,
+        family = person$family,
+        email = person$email,
+        role = person$role,
+        comment = comment
+      )
+      attr(updated_person, "errors") <- problems
+      return(updated_person)
+    },
     #' @description Validate the rules for the rightsholder and funder.
     #' @param rightsholder The rightsholders as a `person` object.
     #' @param funder The funders as a `person` object.

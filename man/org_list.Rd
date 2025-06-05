@@ -36,6 +36,7 @@ Other class:
 \item \href{#method-org_list-new}{\code{org_list$new()}}
 \item \href{#method-org_list-print}{\code{org_list$print()}}
 \item \href{#method-org_list-read}{\code{org_list$read()}}
+\item \href{#method-org_list-validate_person}{\code{org_list$validate_person()}}
 \item \href{#method-org_list-validate_rules}{\code{org_list$validate_rules()}}
 \item \href{#method-org_list-write}{\code{org_list$write()}}
 \item \href{#method-org_list-clone}{\code{org_list$clone()}}
@@ -132,6 +133,25 @@ Read the \code{org_list} object from an \code{organisation.yml} file.
 \describe{
 \item{\code{x}}{The path to the directory where the \code{organisation.yml} file
 is stored.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-validate_person"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-validate_person}{}}}
+\subsection{Method \code{validate_person()}}{
+Validate a \code{person} object given the \code{org_list} object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$validate_person(person, lang)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{person}}{The \code{person} object to validate.}
+
+\item{\code{lang}}{The language to use for affiliation.}
 }
 \if{html}{\out{</div>}}
 }
