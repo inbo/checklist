@@ -68,7 +68,8 @@ description_author <- function(authors) {
   data.frame(
     id = seq_along(authors),
     given = format(authors, include = "given"),
-    family = format(authors, include = "family")
+    family = format(authors, include = "family"),
+    email = format(authors, include = "email", braces = list(email = ""))
   ) |>
     merge(
       unique(roles[, c(

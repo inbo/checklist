@@ -205,9 +205,9 @@ org_list <- R6Class(
             this_org$ror
           )[
             has_name(this_org, "ror") &&
-              (!has_name(person, "comment") ||
-                !has_name(person$comment, "ROR") ||
-                this_org$ror != person$comment$ROR)
+              (is.null(person$comment) ||
+                is.null(person$comment["ROR"]) ||
+                this_org$ror != person$comment["ROR"])
           ],
           sprintf(
             "`%s`: `ORCID` is not relevant for organisations",

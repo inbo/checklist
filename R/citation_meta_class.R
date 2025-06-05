@@ -42,9 +42,7 @@ citation_meta <- R6Class(
       private$notes <- meta$notes
       private$warnings <- meta$warnings
       if (length(private$errors) == 0) {
-        validated <- validate_citation(self)
-        private$errors <- c(private$errors, validated$errors)
-        private$notes <- c(private$notes, validated$notes)
+        private$errors <- c(private$errors, validate_citation(self))
       }
       if (length(private$errors) > 0) {
         warning(
@@ -95,6 +93,37 @@ citation_meta <- R6Class(
     #' @field get_notes Return the notes
     get_notes = function() {
       return(private$notes)
+    },
+
+    #' @field get_person Return the authors and organisations as a list of
+    #' `person` objects.
+    get_person = function() {
+      apply(
+        private$meta$authors,
+        1,
+        roles = private$meta$roles,
+        function(x, roles) {
+          comment <- x[c("orcid", "affiliation", "ror")]
+          names(comment)[names(comment) == "orcid"] <- "ORCID"
+          names(comment)[names(comment) == "ror"] <- "ROR"
+          comment <- comment[comment != ""]
+          person(
+            given = x["given"],
+            family = x["family"],
+            email = x["email"],
+            comment = comment,
+            role = c(
+              author = "aut",
+              `contact person` = "cre",
+              contributor = "ctb",
+              `copyright holder` = "cph",
+              `funder` = "fnd",
+              `reviewer` = "rev"
+            )[roles$role[roles$contributor == x["id"]]]
+          )
+        }
+      ) |>
+        do.call(what = c)
     },
 
     #' @field get_type A string indicating the type of source.
@@ -177,80 +206,36 @@ citation_print <- function(errors, meta, notes, path, warnings) {
 #' @importFrom assertthat assert_that
 validate_citation <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
-  org <- read_organisation(meta$get_path)
-  roles <- meta$get_meta$roles
-  authors <- meta$get_meta$authors
-  rightsholder_id <- roles$contributor[roles$role == "copyright holder"]
-  funder_id <- roles$contributor[roles$role == "funder"]
-  notes <- c(
-    "no rightsholder listed"[
-      !is.na(org$get_rightsholder) && length(rightsholder_id) == 0
-    ],
-    "no funder listed"[!is.na(org$get_funder) && length(funder_id) == 0],
-    sprintf("rightsholder differs from `%s`", org$get_rightsholder)[
-      !is.na(org$get_rightsholder) &&
-        length(rightsholder_id) >= 1 &&
-        !any(
-          authors$given[authors$id %in% rightsholder_id] %in%
-            org$get_rightsholder
-        )
-    ],
-    sprintf("funder differs from `%s`", org$get_funder)[
-      !is.na(org$get_funder) &&
-        length(funder_id) >= 1 &&
-        !any(org$get_funder %in% authors$given[authors$id == funder_id])
-    ]
-  )
-  errors <- c(
-    sprintf("invalid ORCID for %s %s", authors$given, authors$family)[
-      !validate_orcid(authors$orcid)
-    ],
-    sprintf("missing required Zenodo community `%s`", org$get_community)[
-      !is.na(org$get_community) &&
-        !org$get_community %in% meta$get_meta$community
-    ]
-  )
-  authors <- authors[authors$given != org$get_rightsholder, ]
-  authors <- authors[authors$given != org$get_funder, ]
-  authors <- authors[authors$organisation %in% names(org$get_organisation), ]
-  vapply(
-    seq_along(authors$organisation),
-    FUN.VALUE = vector(mode = "list", length = 1),
-    org = org$get_organisation,
-    FUN = function(i, org) {
-      paste(
-        "Non standard affiliation for %s %s as member of `%s`.",
-        "Please use one of the following:\n%s",
-        collapse = ""
-      ) |>
-        sprintf(
-          authors$given[i],
-          authors$family[i],
-          authors$organisation[i],
-          paste(org[[authors$organisation[i]]]$affiliation, collapse = "\n")
-        ) -> error
-      strsplit(authors$affiliation[i], split = "\\s*;\\s*") |>
-        unlist() -> aff
-      error <- error[
-        !any(aff %in% org[[authors$organisation[i]]]$affiliation)
+  org <- org_list$new()$read(meta$get_path)
+  persons <- meta$get_person
+  rightsholder <- persons[vapply(
+    persons$role,
+    FUN = function(x) {
+      "cph" %in% x
+    },
+    FUN.VALUE = logical(1)
+  )]
+  funder <- persons[vapply(
+    persons$role,
+    FUN = function(x) {
+      "fnd" %in% x
+    },
+    FUN.VALUE = logical(1)
+  )]
+  c(rightsholder$email, funder$email) |>
+    org$get_zenodo_by_email() -> required_communities
+  org$validate_person(persons, lang = "en-GB") |>
+    attr("errors") |>
+    c(
+      org$validate_rules(rightsholder = rightsholder, funder = funder),
+      sprintf(
+        "missing required Zenodo community `%s`",
+        paste(required_communities, collapse = ", ")
+      )[
+        length(required_communities) > 0 &&
+          !all(required_communities %in% meta$get_meta$community)
       ]
-      if (org[[authors$organisation[i]]]$orcid) {
-        error <- c(
-          error,
-          sprintf(
-            "No ORCID for %s %s. This is required for `%s`",
-            authors$given[i],
-            authors$family[i],
-            authors$organisation[i]
-          )[is.na(authors$orcid[i]) || authors$orcid[i] == ""]
-        )
-      }
-      return(list(error))
-    }
-  ) |>
-    unlist() |>
-    c(errors) -> errors
-  list(notes = notes, errors = errors)
+    )
 }
 
 #' @importFrom assertthat assert_that has_name
