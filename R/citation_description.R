@@ -6,16 +6,14 @@ citation_description <- function(meta) {
   assert_that(meta$get_type == "package")
   path(meta$get_path, "DESCRIPTION") |>
     description$new() -> descript
-  org <- read_organisation(meta$get_path)
+  org <- org_list$new()$read(meta$get_path)
   descript$get_field("Config/checklist/keywords", default = character(0)) |>
     description_keywords() -> keywords
-  descript$get_field("Config/checklist/communities", default = character(0)) |>
-    description_communities(org = org) -> communities
+  description_communities(descript = descript, org = org) -> communities
   urls <- description_url(descript$get_urls())
-  authors <- description_author(
-    descript$get_authors(),
-    org = org$get_organisation
-  )
+  descript$get_authors() |>
+    org$validate_person(lang = "en-GB") |>
+    description_author() -> authors
   descript$get_field("License") |>
     gsub(pattern = " \\+ file LICENSE", replacement = "") |>
     gsub(pattern = "^GPL-3$", replacement = "GPL-3.0") -> license
@@ -59,12 +57,11 @@ citation_description <- function(meta) {
   )
 }
 
-description_author <- function(authors, org) {
+description_author <- function(authors) {
   vapply(
     seq_along(authors),
     FUN = description_author_format,
     x = authors,
-    org = org,
     FUN.VALUE = vector("list", 1)
   ) |>
     do.call(what = "rbind") -> roles
@@ -74,14 +71,20 @@ description_author <- function(authors, org) {
     family = format(authors, include = "family")
   ) |>
     merge(
-      unique(roles[, c("contributor", "orcid", "affiliation", "organisation")]),
+      unique(roles[, c(
+        "contributor",
+        "orcid",
+        "affiliation",
+        "ror",
+        "organisation"
+      )]),
       by.x = "id",
       by.y = "contributor"
     ) -> contributors
   list(authors = contributors, roles = roles[, c("contributor", "role")])
 }
 
-description_author_format <- function(i, x, org) {
+description_author_format <- function(i, x) {
   formatted <- data.frame(
     contributor = i,
     role = c(
@@ -108,23 +111,22 @@ description_author_format <- function(i, x, org) {
     "",
     x[[i]]$comment["ORCID"]
   )
+  formatted$ror <- ifelse(
+    is.na(x[[i]]$comment["ROR"]),
+    "",
+    x[[i]]$comment["ROR"]
+  )
   formatted$affiliation <- ifelse(
     is.na(x[[i]]$comment["affiliation"]),
     "",
     x[[i]]$comment["affiliation"]
   )
-  if (formatted$organisation[1] == "" && formatted$affiliation[1] != "") {
-    formatted$organisation <- known_affiliation(
-      formatted$affiliation[1],
-      org = org
-    )
-  }
   return(list(formatted))
 }
 
 #' @importFrom assertthat assert_that
 known_affiliation <- function(target, org) {
-  assert_that(inherits(org, "organisation"))
+  assert_that(inherits(org, "org_list"))
   target <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", target)
   vapply(
     names(org),
@@ -187,22 +189,36 @@ description_keywords <- function(keywords) {
 }
 
 #' @importFrom assertthat assert_that
-description_communities <- function(communities, org) {
-  assert_that(inherits(org, "organisation"))
-  if (length(communities) == 0 && any(!is.na(org$get_community))) {
+description_communities <- function(descript, org) {
+  assert_that(inherits(descript, "description"), inherits(org, "org_list"))
+  communities <- descript$get_field(
+    "Config/checklist/communities",
+    default = character(0)
+  )
+  descript$get_author("cph")$email |>
+    c(descript$get_author("fnd")$email) |>
+    unlist() |>
+    org$get_zenodo_by_email() -> required_communities
+  if (length(communities) == 0 && length(required_communities) > 0) {
     return(
       list(
         meta = list(),
         warnings = paste(
-          "no communities found in `DESCRIPTION`.",
-          "Please add them with `Config/checklist/communities:",
-          paste(org$get_community, collapse = "; ")
+          "missing communities found in `DESCRIPTION`.",
+          "Please make sure to add `Config/checklist/communities:",
+          paste(required_communities, collapse = "; ")
         )
       )
     )
   }
   list(
     meta = list(community = split_community(communities)),
-    warnings = character(0)
+    warnings = paste(
+      "missing communities found in `DESCRIPTION`.",
+      "Please make sure to add `Config/checklist/communities:",
+      paste(required_communities, collapse = "; ")
+    )[
+      !all(required_communities %in% communities)
+    ]
   )
 }
