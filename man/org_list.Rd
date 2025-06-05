@@ -32,6 +32,7 @@ Other class:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-org_list-get_person}{\code{org_list$get_person()}}
+\item \href{#method-org_list-get_zenodo_by_email}{\code{org_list$get_zenodo_by_email()}}
 \item \href{#method-org_list-get_name_by_domain}{\code{org_list$get_name_by_domain()}}
 \item \href{#method-org_list-new}{\code{org_list$new()}}
 \item \href{#method-org_list-print}{\code{org_list$print()}}
@@ -59,6 +60,27 @@ Return the organisation with matching email as a \code{person()}.
 \item{\code{role}}{The role of the person to return.}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-get_zenodo_by_email"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-get_zenodo_by_email}{}}}
+\subsection{Method \code{get_zenodo_by_email()}}{
+Return a vector of Zenodo communities associated with the
+organisations with matching email.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_zenodo_by_email(email)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{The email addresses to match against.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector with the communities.
 }
 }
 \if{html}{\out{<hr>}}

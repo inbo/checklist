@@ -20,7 +20,7 @@ Other class:
 \describe{
 \item{\code{as_list}}{The organisation as a list.}
 
-\item{\code{get_community}}{The organisation Zenodo community.}
+\item{\code{get_zenodo}}{The organisation Zenodo community.}
 
 \item{\code{get_default_name}}{The organisation default name.}
 

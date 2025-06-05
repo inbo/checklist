@@ -17,6 +17,22 @@ org_list <- R6Class(
       relevant <- which(self$get_email == email)
       private$items[[relevant]]$as_person(role = role)
     },
+    #' @description Return a vector of Zenodo communities associated with the
+    #' organisations with matching email.
+    #' @param email The email addresses to match against.
+    #' @return A character vector with the communities.
+    get_zenodo_by_email = function(email) {
+      relevant <- private$items[unique(email)]
+      vapply(
+        relevant,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        FUN = function(x) {
+          list(x$get_zenodo)
+        }
+      ) |>
+        unlist() |>
+        unique()
+    },
     #' @description Return the organisation names with a matching email domain.
     #' @param email The email address to match the domain against.
     #' @param lang The language to return the organisation name in.
@@ -31,7 +47,7 @@ org_list <- R6Class(
     get_name_by_domain = function(email, lang) {
       org_domain <- gsub(".*@(.*)", "\\1", names(private$items))
       email_domain <- gsub(".*@(.*)", "\\1", email)
-      relevant <- private$items[org_domain == email_domain]
+      relevant <- private$items[org_domain %in% email_domain]
       vapply(
         relevant,
         lang = lang,

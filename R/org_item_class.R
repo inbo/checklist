@@ -164,9 +164,9 @@ org_item <- R6Class(
       relevant <- vapply(organisation, length, FUN.VALUE = integer(1)) > 0
       organisation[relevant]
     },
-    #' @field get_community The organisation Zenodo community.
-    get_community = function() {
-      private$community
+    #' @field get_zenodo The organisation Zenodo community.
+    get_zenodo = function() {
+      private$zenodo
     },
     #' @field get_default_name The organisation default name.
     get_default_name = function() {
