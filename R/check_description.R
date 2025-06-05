@@ -41,12 +41,6 @@ check_description <- function(x = ".") {
   )
 
   repo <- x$get_path
-  this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
-
-  version <- as.character(this_desc$get_version())
-  "Incorrect version tag format. Use `0.0` or `0.0.0`"[
-    !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
-  ] -> desc_error
   notes <- character(0)
   if (!is.na(git_info(repo = repo)$head) && nrow(git_log(repo = repo)) > 1) {
     branch_info <- git_branch_list(repo = repo)
@@ -63,6 +57,7 @@ check_description <- function(x = ".") {
       desc_diff <- git_diff(descr_stats$head, repo = repo)
       desc_diff <- desc_diff$patch[desc_diff$old == "DESCRIPTION"]
       desc_diff <- strsplit(desc_diff, "\n", fixed = TRUE)[[1]]
+      desc_error <- character(0)
     } else {
       assert_that(
         all(grepl("origin", branch_info$name[!branch_info$local])),
@@ -105,7 +100,7 @@ check_description <- function(x = ".") {
       ),
       "Package version not updated"
     )
-    desc_error <- c(desc_error, na.omit(version_bump))
+    desc_error <- na.omit(version_bump)
   }
   status_before <- git_status(repo = repo)
   tidy_desc(x)
@@ -116,17 +111,23 @@ check_description <- function(x = ".") {
     ]
   )
 
-  # check if the language is set
-  desc_error <- c(
-    desc_error,
-    "Language field not set."[is.na(this_desc$get("Language"))]
-  )
-
-  x$add_error(desc_error, item = "DESCRIPTION", keep = FALSE)
-  x$add_notes(notes, item = "DESCRIPTION")
+  this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
   org_list$new()$read(x$get_path) |>
-    check_authors(this_desc = this_desc) |>
-    x$add_error(item = "DESCRIPTION")
+    check_authors(this_desc = this_desc) -> updated_authors
+  this_desc$set_authors(updated_authors)
+  path(x$get_path, "DESCRIPTION") |>
+    this_desc$write()
+  version <- as.character(this_desc$get_version())
+  c(
+    desc_error,
+    "Incorrect version tag format. Use `0.0` or `0.0.0`"[
+      !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
+    ],
+    "Language field not set."[is.na(this_desc$get("Language"))],
+    attr(updated_authors, "errors")
+  ) |>
+    x$add_error(item = "DESCRIPTION", keep = FALSE)
+  x$add_notes(notes, item = "DESCRIPTION")
 
   check_license(x = x)
 }
@@ -310,50 +311,12 @@ check_authors <- function(this_desc, org) {
   funder <- this_desc$get_author(role = "fnd")
   problems <- org$validate_rules(rightsholder = rightsholder, funder = funder)
   authors <- this_desc$get_authors()
-  authors <- authors[!authors %in% rightsholder]
-  authors <- authors[!authors %in% funder]
   lang <- ifelse(
     is.na(this_desc$get("Language")),
     "en-GB",
     this_desc$get("Language")
   )
-  vapply(
-    authors,
-    lang = lang,
-    FUN.VALUE = vector(mode = "list", length = 1L),
-    FUN = function(author, lang) {
-      email <- format(author, include = "email", braces = list(email = ""))
-      author_name <- format(author, include = c("given", "family"))
-      affiliation <- org$get_name_by_domain(email, lang)
-      if (length(affiliation) == 0) {
-        return(list(NULL))
-      }
-      sprintf(
-        "%s: affiliation required for %s",
-        author_name,
-        gsub(".*@(.*)", "\\1", email)
-      )[
-        !has_name(author$comment, "affiliation")
-      ] |>
-        c(
-          sprintf(
-            "%s: affiliation must match %s",
-            author_name,
-            names(affiliation) |>
-              paste(collapse = " or ")
-          )[
-            has_name(author$comment, "affiliation") &&
-              !author$comment["affiliation"] %in% names(affiliation)
-          ],
-          sprintf(
-            "%s: ORCID is required for %s",
-            author_name,
-            paste(names(affiliation)[affiliation], collapse = " and ")
-          )[any(affiliation) && !has_name(author$comment, "ORCID")]
-        ) |>
-        list()
-    }
-  ) |>
-    unlist() |>
-    c(problems)
+  updated_person <- org$validate_person(person = authors, lang = lang)
+  attr(updated_person, "errors") <- c(problems, attr(updated_person, "errors"))
+  return(updated_person)
 }

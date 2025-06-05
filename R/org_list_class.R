@@ -169,14 +169,16 @@ org_list <- R6Class(
           },
           FUN.VALUE = vector(mode = "list", length = 1)
         ) -> updated_person
-        attr(updated_person, "errors") <- vapply(
+        vapply(
           updated_person,
           function(x) {
             list(attr(x, "errors"))
           },
           FUN.VALUE = vector("list", 1)
         ) |>
-          unlist()
+          unlist() -> problems
+        updated_person <- do.call(c, updated_person)
+        attr(updated_person, "errors") <- problems
         return(updated_person)
       }
       person_name <- format(person, c("given", "family"))
@@ -185,6 +187,7 @@ org_list <- R6Class(
         if (missing(lang) || !lang %in% names(this_org$name)) {
           lang <- names(this_org$name)[1]
         }
+        assert_that(is.string(lang), noNA(lang))
         problems <- c(
           sprintf(
             "`%s`: `given` does not match `%s`",
@@ -201,7 +204,7 @@ org_list <- R6Class(
             person_name,
             this_org$ror
           )[
-            !has_name(this_org, "ror") &&
+            has_name(this_org, "ror") &&
               (!has_name(person, "comment") ||
                 !has_name(person$comment, "ROR") ||
                 this_org$ror != person$comment$ROR)
@@ -261,6 +264,7 @@ org_list <- R6Class(
       if (missing(lang) || !lang %in% names(relevant[[1]]$name)) {
         lang <- names(relevant[[1]]$name)[1]
       }
+      assert_that(is.string(lang), noNA(lang))
       problems <- c(
         sprintf("`%s`: `given` is empty", person_name)[
           is.null(person$given) || person$given == ""
@@ -350,7 +354,7 @@ org_list <- R6Class(
           "missing required rightsholder:\n - %s",
           paste(unlist(self$which_rightsholder), collapse = "\n -")
         )[
-          !((length(self$which_rightsholder[["alternative"]]) > 0 &&
+          !((length(self$which_rightsholder[["required"]]) > 0 &&
             all(
               self$which_rightsholder[["required"]] %in% rightsholder$email
             )) ||
