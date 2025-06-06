@@ -388,10 +388,12 @@ org_list <- R6Class(
           "missing required rightsholder:\n - %s",
           paste(unlist(self$which_rightsholder), collapse = "\n -")
         )[
-          !((length(self$which_rightsholder[["required"]]) > 0 &&
-            all(
-              self$which_rightsholder[["required"]] %in% rightsholder$email
-            )) ||
+          !((length(self$which_rightsholder[["required"]]) == 0 &&
+            length(self$which_rightsholder[["alternative"]]) == 0) ||
+            (length(self$which_rightsholder[["required"]]) > 0 &&
+              all(
+                self$which_rightsholder[["required"]] %in% rightsholder$email
+              )) ||
             (length(self$which_rightsholder[["alternative"]]) > 0 &&
               self$which_rightsholder[["alternative"]] %in% rightsholder$email))
         ],
@@ -399,10 +401,12 @@ org_list <- R6Class(
           "missing required funder:\n - %s",
           paste(unlist(self$which_funder), collapse = "\n -")
         )[
-          !((length(self$which_rightsfunder[["alternative"]]) > 0 &&
-            all(
-              self$which_funder[["required"]] %in% funder$email
-            )) ||
+          !((length(self$which_funder[["required"]]) == 0 &&
+            length(self$which_funder[["alternative"]]) == 0) ||
+            (length(self$which_funder[["required"]]) > 0 &&
+              all(
+                self$which_funder[["required"]] %in% funder$email
+              )) ||
             (length(self$which_funder[["alternative"]]) > 0 &&
               self$which_funder[["alternative"]] %in% funder$email))
         ],
