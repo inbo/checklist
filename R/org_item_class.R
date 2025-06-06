@@ -131,6 +131,39 @@ org_item <- R6Class(
         role = role
       )
     },
+    #' @description Compares the number of matching words with the organisation
+    #' name.
+    #' Either `Inf` when there is a perfect match.
+    #' Otherwise a number between 0 and 1 indicating the ratio of the matching
+    #' words with the total number of words in `name`.
+    #' A value of 1 means that all words in `name` are present in one of the
+    #' organisation names but in a different order.
+    #' @param name The name to match.
+    compare_by_name = function(name) {
+      assert_that(is.string(name), noNA(name))
+      if (any(name %in% private$name)) {
+        best_match <- unname(private$name[private$name == name])
+        attr(best_match, "match") <- Inf
+        return(best_match)
+      }
+      gsub("  ", " ", name) |>
+        gsub(pattern = "[-\\(\\)]", replacement = "") |>
+        strsplit(split = " ") -> name_split
+      gsub("  ", " ", private$name) |>
+        gsub(pattern = "[-\\(\\)]", replacement = "") |>
+        strsplit(split = " ") -> target_name_split
+      vapply(
+        target_name_split,
+        name_split = name_split[[1]],
+        FUN = function(x, name_split) {
+          mean(name_split %in% x)
+        },
+        FUN.VALUE = numeric(1)
+      ) -> ratios
+      best_match <- unname(private$name[which.max(ratios)])
+      attr(best_match, "match") <- max(ratios)
+      return(best_match)
+    },
     #' @description Print the `org_item` object.
     print = function() {
       c(

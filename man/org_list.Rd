@@ -33,6 +33,7 @@ Other class:
 \itemize{
 \item \href{#method-org_list-get_person}{\code{org_list$get_person()}}
 \item \href{#method-org_list-get_zenodo_by_email}{\code{org_list$get_zenodo_by_email()}}
+\item \href{#method-org_list-get_match}{\code{org_list$get_match()}}
 \item \href{#method-org_list-get_name_by_domain}{\code{org_list$get_name_by_domain()}}
 \item \href{#method-org_list-new}{\code{org_list$new()}}
 \item \href{#method-org_list-print}{\code{org_list$print()}}
@@ -81,6 +82,26 @@ organisations with matching email.
 }
 \subsection{Returns}{
 A character vector with the communities.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-get_match"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-get_match}{}}}
+\subsection{Method \code{get_match()}}{
+Return the organisation with a matching name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_match(name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{The name of the organisation to match.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list with the organisation name, email and match ratio.
 }
 }
 \if{html}{\out{<hr>}}

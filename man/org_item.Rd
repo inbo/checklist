@@ -43,6 +43,7 @@ Other class:
 \itemize{
 \item \href{#method-org_item-new}{\code{org_item$new()}}
 \item \href{#method-org_item-as_person}{\code{org_item$as_person()}}
+\item \href{#method-org_item-compare_by_name}{\code{org_item$compare_by_name()}}
 \item \href{#method-org_item-print}{\code{org_item$print()}}
 \item \href{#method-org_item-clone}{\code{org_item$clone()}}
 }
@@ -119,6 +120,29 @@ as_person The organisation as a person.
 Defaults to the first language in the \code{name} vector.}
 
 \item{\code{role}}{The role of the person in the organisation.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_item-compare_by_name"></a>}}
+\if{latex}{\out{\hypertarget{method-org_item-compare_by_name}{}}}
+\subsection{Method \code{compare_by_name()}}{
+Compares the number of matching words with the organisation
+name.
+Either \code{Inf} when there is a perfect match.
+Otherwise a number between 0 and 1 indicating the ratio of the matching
+words with the total number of words in \code{name}.
+A value of 1 means that all words in \code{name} are present in one of the
+organisation names but in a different order.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_item$compare_by_name(name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{The name to match.}
 }
 \if{html}{\out{</div>}}
 }

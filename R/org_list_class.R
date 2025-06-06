@@ -33,6 +33,33 @@ org_list <- R6Class(
         unlist() |>
         unique()
     },
+    #' @description Return the organisation with a matching name.
+    #' @param name The name of the organisation to match.
+    #' @return A list with the organisation name, email and match ratio.
+    get_match = function(name) {
+      matches <- vapply(
+        private$items,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        FUN = function(x) {
+          list(x$compare_by_name(name))
+        }
+      )
+      ratios <- vapply(matches, attr, FUN.VALUE = numeric(1), which = "match")
+      assert_that(
+        sum(ratios == max(ratios)) == 1,
+        msg = unlist(matches)[ratios == max(ratios)] |>
+          paste(collapse = "\n") |>
+          sprintf(fmt = "multiples matches for `%2$s`:\n%1$s", name)
+      )
+      best_match <- matches[ratios == max(ratios)]
+      return(
+        list(
+          name = unname(unlist(best_match)),
+          email = names(best_match),
+          match = attr(best_match[[1]], "match")
+        )
+      )
+    },
     #' @description Return the organisation names with a matching email domain.
     #' @param email The email address to match the domain against.
     #' @param lang The language to return the organisation name in.
@@ -182,6 +209,11 @@ org_list <- R6Class(
         return(updated_person)
       }
       person_name <- format(person, c("given", "family"))
+      if (is.null(person$email)) {
+        updated_person <- person
+        attr(updated_person, "errors") <- character(0)
+        return(updated_person)
+      }
       if (person$email %in% names(private$items)) {
         this_org <- private$items[[person$email]]$as_list
         if (missing(lang) || !lang %in% names(this_org$name)) {
@@ -331,14 +363,16 @@ org_list <- R6Class(
       }
       c(
         "`rightsholder` with multiple email"[
-          !all(
-            vapply(rightsholder$email, length, integer(1)) == 1
-          )
+          !is.null(rightsholder$email) &&
+            !all(
+              vapply(rightsholder$email, length, integer(1)) == 1
+            )
         ],
         "`funder` with multiple email"[
-          !all(
-            vapply(funder$email, length, integer(1)) == 1
-          )
+          !is.null(funder$email) &&
+            !all(
+              vapply(funder$email, length, integer(1)) == 1
+            )
         ],
         "`rightsholder` without matching email in `organisation.yml`"[
           !all(
@@ -374,6 +408,7 @@ org_list <- R6Class(
         ],
         "incompatible rules for rightholder"[
           length(rightsholder) > 0 &&
+            !is.null(rightsholder$email) &&
             !(private$items[[unlist(
               rightsholder$email
             )]]$get_rightsholder |>
@@ -381,6 +416,7 @@ org_list <- R6Class(
         ],
         "incompatible rules for funder"[
           length(funder) > 0 &&
+            !is.null(funder$email) &&
             !(private$items[[unlist(
               funder$email
             )]]$get_funder |>
