@@ -37,6 +37,7 @@ citation_meta <- R6Class(
         )
         meta$meta$language <- x$default
       }
+      private$person <- meta$person
       private$meta <- meta$meta
       private$errors <- meta$errors
       private$notes <- meta$notes
@@ -70,11 +71,12 @@ citation_meta <- R6Class(
         return(invisible(NULL))
       }
       citation_print(
-        path = private$path,
-        warnings = private$warnings,
-        notes = private$notes,
         errors = private$errors,
-        meta = private$meta
+        meta = private$meta,
+        notes = private$notes,
+        path = private$path,
+        person = private$person,
+        warnings = private$warnings
       )
     }
   ),
@@ -98,32 +100,7 @@ citation_meta <- R6Class(
     #' @field get_person Return the authors and organisations as a list of
     #' `person` objects.
     get_person = function() {
-      apply(
-        private$meta$authors,
-        1,
-        roles = private$meta$roles,
-        function(x, roles) {
-          comment <- x[c("orcid", "affiliation", "ror")]
-          names(comment)[names(comment) == "orcid"] <- "ORCID"
-          names(comment)[names(comment) == "ror"] <- "ROR"
-          comment <- comment[comment != ""]
-          person(
-            given = x["given"],
-            family = x["family"],
-            email = x["email"],
-            comment = comment,
-            role = c(
-              author = "aut",
-              `contact person` = "cre",
-              contributor = "ctb",
-              `copyright holder` = "cph",
-              `funder` = "fnd",
-              `reviewer` = "rev"
-            )[roles$role[roles$contributor == x["id"]]]
-          )
-        }
-      ) |>
-        do.call(what = c)
+      private$person
     },
 
     #' @field get_type A string indicating the type of source.
@@ -147,30 +124,29 @@ citation_meta <- R6Class(
     notes = character(0),
     meta = list(),
     path = character(0),
+    person = person(),
     type = character(0),
     warnings = list()
   )
 )
 
-citation_print <- function(errors, meta, notes, path, warnings) {
+citation_print <- function(errors, meta, notes, path, person, warnings) {
   cat(rules())
   cat("\ncitation meta data for", path, "\n")
   cat(rules())
   cat("\ntitle:", meta$title)
-  cat("\ncontributors:")
-  for (i in seq_along(meta$authors$id)) {
-    cat("\n- given:", meta$authors$given[i])
-    cat("\n  family:", meta$authors$family[i])
-    cat("\n  affiliation:", meta$authors$affiliation[i])
-    cat("\n  orcid:", meta$authors$orcid[i])
-    cat(
-      "\n  roles:",
-      paste(
-        meta$roles$role[meta$roles$contributor == meta$authors$id[i]],
-        collapse = "; "
-      )
+  cat("\ncontributors:\n")
+  format(
+    person,
+    braces = list(
+      given = c("- given: ", "\n"),
+      family = c("  family: ", "\n"),
+      email = c("  email: ", "\n"),
+      comment = c("  comment: ", "\n"),
+      role = c("  role: ", "\n")
     )
-  }
+  ) |>
+    cat()
   cat("\nversion:", as.character(meta$version))
   cat("\nlicense:", meta$license)
   cat("\nlanguage:", meta$language)
@@ -224,7 +200,7 @@ validate_citation <- function(meta) {
   )]
   c(rightsholder$email, funder$email) |>
     org$get_zenodo_by_email() -> required_communities
-  org$validate_person(persons, lang = "en-GB") |>
+  org$validate_person(persons, lang = meta$get_meta$language) |>
     attr("errors") |>
     c(
       org$validate_rules(rightsholder = rightsholder, funder = funder),
@@ -247,62 +223,36 @@ citation_zenodo <- function(meta) {
   assert_that(inherits(meta, "citation_meta"))
   assert_that(length(meta$get_errors) == 0)
   zenodo <- meta$get_meta
+  person <- org_list$new()$read(meta$get_path)$validate_person(
+    meta$get_person,
+    lang = "en-GB"
+  )
   if (has_name(zenodo, "version")) {
     zenodo$version <- as.character(zenodo$version)
   }
-  zenodo$roles$role <- factor(
-    zenodo$roles$role,
-    levels = c(
-      "author",
-      "contact person",
-      "contributor",
-      "copyright holder",
-      "funder",
-      "reviewer"
-    ),
-    labels = c(
-      "author",
-      "contactperson",
-      "projectmember",
-      "rightsholder",
-      "funder",
-      "Other"
-    )
-  )
-  relevant <- zenodo$roles$role %in%
-    c(
-      "contactperson",
-      "projectmember",
-      "rightsholder",
-      "other"
-    )
-  zenodo$contributors <- merge(
-    zenodo$authors,
-    zenodo$roles[relevant, ],
-    by.x = "id",
-    by.y = "contributor"
-  )
-  zenodo$contributors <- vapply(
-    seq_len(nrow(zenodo$contributors)),
-    FUN = format_zenodo,
-    FUN.VALUE = vector("list", 1),
-    x = zenodo$contributors
-  )
-  relevant <- zenodo$roles$role == "author"
-  zenodo$creators <- merge(
-    zenodo$authors,
-    zenodo$roles[relevant, ],
-    by.x = "id",
-    by.y = "contributor"
-  )
-  zenodo$creators <- vapply(
-    seq_len(nrow(zenodo$creators)),
-    FUN = format_zenodo,
-    FUN.VALUE = vector("list", 1),
-    x = zenodo$creators
-  )
-  zenodo$roles <- NULL
-  zenodo$authors <- NULL
+  person[vapply(
+    person$role,
+    FUN = function(x) {
+      any(c("ctb", "cph", "cre", "rev") %in% x)
+    },
+    FUN.VALUE = logical(1)
+  )] |>
+    vapply(
+      FUN = format_zenodo,
+      FUN.VALUE = vector("list", 1)
+    ) -> zenodo$contributors
+  person[vapply(
+    person$role,
+    FUN = function(x) {
+      "aut" %in% x
+    },
+    FUN.VALUE = logical(1)
+  )] |>
+    vapply(
+      FUN = format_zenodo,
+      type = FALSE,
+      FUN.VALUE = vector("list", 1)
+    ) -> zenodo$creators
   zenodo$keywords <- as.list(zenodo$keywords)
   if (has_name(zenodo, "community")) {
     zenodo$communities <- vapply(
@@ -348,28 +298,50 @@ citation_zenodo <- function(meta) {
   return(errors)
 }
 
-format_zenodo <- function(x, i) {
-  formatted <- list(
-    name = ifelse(
-      x$family[i] == "",
-      x$given[i],
-      ifelse(
-        x$given[i] == "",
-        x$family[i],
-        paste(x$family[i], x$given[i], sep = ", ")
-      )
-    )
-  )
-  if (x$affiliation[i] != "") {
-    formatted$affiliation <- x$affiliation[i]
+format_zenodo <- function(x, type = TRUE) {
+  list(
+    name = format(
+      x,
+      include = c("family", "given"),
+      braces = list(family = c("", ","))
+    ),
+    affiliation = unname(x$comment["affiliation"]),
+    orcid = unname(x$comment["ORCID"]),
+    type = zenodo_role(x$role)
+  )[c(
+    TRUE,
+    !is.na(x$comment["ORCID"]),
+    !is.na(x$comment["affiliation"]),
+    type
+  )] |>
+    list()
+}
+
+zenodo_role <- function(z) {
+  if ("cre" %in% z) {
+    return("contactperson")
+  } else if ("cph" %in% z) {
+    return("rightsholder")
+  } else if ("rev" %in% z) {
+    return("other")
+  } else {
+    return("projectmember")
   }
-  if (x$orcid[i] != "") {
-    formatted$orcid <- x$orcid[i]
-  }
-  if (x$role[i] != "author") {
-    formatted$type <- as.character(x$role[i])
-  }
-  return(list(formatted))
+}
+
+format_cff <- function(x) {
+  list(
+    `given-names` = unname(x$given),
+    `family-names` = unname(x$family),
+    affiliation = unname(x$comment["affiliation"]),
+    orcid = unname(x$comment["ORCID"])
+  )[c(
+    !is.na(x$given),
+    !is.na(x$family),
+    !is.na(x$comment["affiliation"]),
+    !is.na(x$comment["ORCID"])
+  )] |>
+    list()
 }
 
 citation_cff <- function(meta) {
@@ -378,33 +350,30 @@ citation_cff <- function(meta) {
     return(character(0))
   }
   assert_that(length(meta$get_errors) == 0)
+  person <- meta$get_person
+  person[vapply(
+    person$role,
+    FUN = function(x) {
+      "aut" %in% x
+    },
+    FUN.VALUE = logical(1)
+  )] |>
+    vapply(
+      FUN = format_cff,
+      FUN.VALUE = vector(mode = "list", 1)
+    ) -> authors
+  person[vapply(
+    person$role,
+    FUN = function(x) {
+      "cre" %in% x
+    },
+    FUN.VALUE = logical(1)
+  )] |>
+    vapply(
+      FUN = format_cff,
+      FUN.VALUE = vector(mode = "list", 1)
+    ) -> contact
   input <- meta$get_meta
-  relevant <- input$roles$role == "author"
-  authors <- merge(
-    input$authors,
-    input$roles[relevant, ],
-    by.x = "id",
-    by.y = "contributor"
-  )
-  authors <- vapply(
-    seq_len(nrow(authors)),
-    FUN = format_cff,
-    FUN.VALUE = vector("list", 1),
-    x = authors
-  )
-  relevant <- input$roles$role == "contact person"
-  contact <- merge(
-    input$authors,
-    input$roles[relevant, ],
-    by.x = "id",
-    by.y = "contributor"
-  )
-  contact <- vapply(
-    seq_len(nrow(contact)),
-    FUN = format_cff,
-    FUN.VALUE = vector("list", 1),
-    x = contact
-  )
   if (has_name(input, "doi")) {
     identifiers <- list(list(type = "doi", value = input$doi))
   } else {
@@ -449,20 +418,6 @@ citation_cff <- function(meta) {
     )
   ]
   return(errors)
-}
-
-format_cff <- function(x, i) {
-  formatted <- list(`given-names` = x$given[i])
-  if (x$family[i] != "") {
-    formatted$`family-names` <- x$family[i]
-  }
-  if (x$affiliation[i] != "") {
-    formatted$affiliation <- x$affiliation[i]
-  }
-  if (x$orcid[i] != "") {
-    formatted$orcid <- x$orcid[i]
-  }
-  return(list(formatted))
 }
 
 #' @importFrom assertthat assert_that
@@ -511,22 +466,27 @@ citation_r <- function(meta) {
   if (length(errors) > 0) {
     return(errors = errors)
   }
-  authors <- cit_meta$roles$contributor[cit_meta$roles$role == "author"]
-  authors <- cit_meta$authors[cit_meta$authors$id %in% authors, ]
-  authors$fam <- ifelse(
-    authors$family == "",
-    "",
-    sprintf(", family = \"%s\"", authors$family)
+  authors <- meta$get_person[vapply(
+    meta$get_person,
+    FUN.VALUE = logical(1),
+    FUN = function(x) {
+      "aut" %in% x$role
+    }
+  )]
+  format(
+    authors,
+    include = c("given", "family"),
+    braces = list(
+      given = c("person(given = \"", "\","),
+      family = c("family = \"", "\")")
+    )
+  ) |>
+    paste(collapse = ", ") -> authors_bibtex
+  authors_plain <- format(
+    authors,
+    include = c("family", "given"),
+    braces = list(family = c("", ","))
   )
-  authors$fam2 <- ifelse(
-    authors$family == "",
-    "",
-    sprintf("%s, ", authors$family)
-  )
-  sprintf("person(given = \"%s\"%s)", authors$given, authors$fam) |>
-    paste(collapse = ", ") |>
-    sprintf(fmt = "  author = c(%s)") -> authors_bibtex
-  sprintf("%s%s", authors$fam2, authors$given) -> authors_plain
   cit_meta$description <- gsub("\"", "\\\\\"", cit_meta$description)
   package_citation <- c(
     bibtype = "\"Manual\"",
