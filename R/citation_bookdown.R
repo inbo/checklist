@@ -15,11 +15,10 @@ citation_bookdown <- function(meta) {
     )
   }
   yaml <- yaml_front_matter(index_file)
-  read_organisation(meta$get_path) |>
-    yaml_author(yaml = yaml) -> cit_meta
+  cit_meta <- list(person = yaml_author(yaml = yaml))
   description <- bookdown_description(meta$get_path)
   cit_meta$meta$description <- description$description
-  cit_meta$errors <- c(cit_meta$errors, description$errors)
+  cit_meta$errors <- description$errors
   cit_meta$meta$title <- paste0(
     yaml$title,
     ifelse(has_name(yaml, "subtitle"), paste0(". ", yaml$subtitle, "."), ".")
@@ -134,138 +133,49 @@ split_community <- function(community) {
 }
 
 #' @importFrom assertthat has_name
-yaml_author <- function(yaml, org) {
+yaml_author <- function(yaml) {
   author <- vapply(
     X = yaml$author,
+    role = "aut",
     FUN = yaml_author_format,
-    FUN.VALUE = vector(mode = "list", 1),
-    org = org
+    FUN.VALUE = vector(mode = "list", 1)
   )
-  yaml$reviewer |>
-    vapply(yaml_author_format, vector(mode = "list", 1), org = org) -> reviewer
-  c(author, reviewer) |>
-    vapply(attr, vector(mode = "list", 1), which = "errors") |>
-    unlist() |>
-    unique() -> errors
-  c(author, reviewer) |>
-    vapply(attr, vector(mode = "list", 1), which = "notes") |>
-    unlist() |>
-    unique() |>
-    c(
-      "no `funder` element found"[!has_name(yaml, "funder")],
-      "no `rightsholder` element found"[!has_name(yaml, "rightsholder")]
-    ) -> notes
-  author <- do.call(rbind, author)
-  author$id <- seq_along(author$family)
-  c(
-    "no author with `corresponding: true`"[sum(author$contact) == 0],
-    "multiple authors with `corresponding: true`"[sum(author$contact) > 1],
-    errors
-  ) -> errors
-  reviewer <- do.call(rbind, reviewer)
-  reviewer$id <- seq_along(reviewer$family) + nrow(author)
-
-  data.frame(
-    contributor = c(author$id, author$id[author$contact], reviewer$id),
-    role = c(
-      rep("author", nrow(author)),
-      rep("contact person", sum(author$contact)),
-      rep("reviewer", nrow(reviewer))
-    )
-  ) -> roles
-  author <- rbind(author, reviewer)
-  author$contact <- NULL
-  if (has_name(yaml, "funder")) {
-    data.frame(contributor = nrow(author) + 1, role = "funder") |>
-      rbind(roles) -> roles
-    data.frame(
-      id = nrow(author) + 1,
-      given = yaml$funder,
-      family = "",
-      orcid = "",
-      affiliation = "",
-      organisation = known_affiliation(yaml$funder, org = org)
-    ) |>
-      rbind(author) -> author
-  }
-  if (has_name(yaml, "rightsholder")) {
-    data.frame(contributor = nrow(author) + 1, role = "copyright holder") |>
-      rbind(roles) -> roles
-    data.frame(
-      id = nrow(author) + 1,
-      given = yaml$rightsholder,
-      family = "",
-      orcid = "",
-      affiliation = "",
-      organisation = known_affiliation(yaml$rightsholder, org = org)
-    ) |>
-      rbind(author) -> author
-  }
-  list(
-    meta = list(authors = author, roles = roles),
-    errors = errors,
-    notes = notes
+  reviewer <- vapply(
+    X = yaml$reviewer,
+    FUN = yaml_author_format,
+    role = "rev",
+    FUN.VALUE = vector(mode = "list", 1)
   )
+  funder <- vapply(
+    X = yaml$funder,
+    FUN = yaml_author_format,
+    role = "fnd",
+    FUN.VALUE = vector(mode = "list", 1)
+  )
+  rightsholder <- vapply(
+    X = yaml$rightsholder,
+    FUN = yaml_author_format,
+    role = "cph",
+    FUN.VALUE = vector(mode = "list", 1)
+  )
+  c(author, reviewer, funder, rightsholder) |>
+    do.call(what = "c")
 }
 
 #' @importFrom assertthat has_name is.flag
-yaml_author_format <- function(person, org) {
-  person_df <- data.frame(
-    given = character(0),
-    family = character(0),
-    orcid = character(0),
-    affiliation = character(0),
-    contact = logical(0),
-    organisation = character(0)
-  )
-  if (!is.list(person)) {
-    attr(person_df, "errors") <- list("person must be a list")
-    attr(person_df, "notes") <- list(character(0))
-    return(list(person_df))
-  }
-  if (!has_name(person, "name") || !is.list(person$name)) {
-    c(
-      "person has no `name` element"[
-        !has_name(person, "name")
-      ],
-      "person `name` element is not a list"[
-        has_name(person, "name") && !is.list(person$name)
-      ]
-    ) |>
-      list() -> attr(person_df, "errors")
-    attr(person_df, "notes") <- list(character(0))
-    return(list(person_df))
-  }
-  person_df <- data.frame(
-    given = paste0(person$name$given, ""),
-    family = paste0(person$name$family, ""),
-    orcid = paste0(person$orcid, ""),
-    affiliation = paste0(person$affiliation, ""),
-    contact = ifelse(
-      is.null(person$corresponding),
-      FALSE,
-      person$corresponding
-    ),
-    organisation = known_affiliation(paste0(person$affiliation, ""), org = org)
-  )
-  c(
-    "person `name` element is missing a `given` element"[
-      !has_name(person$name, "given")
-    ],
-    "person `name` element is missing a `family` element"[
-      !has_name(person$name, "family")
-    ],
-    "person `corresponding` element must be true, false or missing"[
-      has_name(person, "corresponding") && !is.flag(person$corresponding)
-    ]
+yaml_author_format <- function(person, role) {
+  comment <- person[c("orcid", "affiliation", "ror")]
+  names(comment)[names(comment) == "orcid"] <- "ORCID"
+  names(comment)[names(comment) == "ror"] <- "ROR"
+  comment <- comment[comment != ""]
+  person(
+    given = paste0(person$name[["given"]], ""),
+    family = paste0(person$name[["family"]], ""),
+    email = paste0(person$email, ""),
+    comment = unlist(comment),
+    role = c(role, "cre"[isTRUE(person$corresponding)])
   ) |>
-    list() -> attr(person_df, "errors")
-  c(
-    "person has no `orcid` element"[!has_name(person, "orcid")],
-    "person has no `affiliation` element"[!has_name(person, "affiliation")]
-  ) |>
-    list() -> attr(person_df, "notes")
-  return(list(person_df))
+    list()
 }
 
 #' @family utils
