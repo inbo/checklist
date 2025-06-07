@@ -11,9 +11,9 @@ citation_description <- function(meta) {
     description_keywords() -> keywords
   description_communities(descript = descript, org = org) -> communities
   urls <- description_url(descript$get_urls())
+  lang <- descript$get_field("Language", default = "")
   descript$get_authors() |>
-    org$validate_person(lang = "en-GB") |>
-    description_author() -> authors
+    org$validate_person(lang = lang) -> authors
   descript$get_field("License") |>
     gsub(pattern = " \\+ file LICENSE", replacement = "") |>
     gsub(pattern = "^GPL-3$", replacement = "GPL-3.0") -> license
@@ -31,13 +31,11 @@ citation_description <- function(meta) {
     description = abstract
   ) |>
     c(
-      authors,
       keywords$meta,
       communities$meta,
       urls$meta,
       access_right = "open"
     ) -> cit_meta
-  lang <- descript$get_field("Language", default = "")
   if (lang != "") {
     cit_meta$language <- lang
   }
@@ -51,78 +49,11 @@ citation_description <- function(meta) {
   }
   list(
     meta = cit_meta,
+    person = authors,
     errors = c(urls$errors, keywords$errors),
     warnings = communities$warnings,
     notes = character(0)
   )
-}
-
-description_author <- function(authors) {
-  vapply(
-    seq_along(authors),
-    FUN = description_author_format,
-    x = authors,
-    FUN.VALUE = vector("list", 1)
-  ) |>
-    do.call(what = "rbind") -> roles
-  data.frame(
-    id = seq_along(authors),
-    given = format(authors, include = "given"),
-    family = format(authors, include = "family"),
-    email = format(authors, include = "email", braces = list(email = ""))
-  ) |>
-    merge(
-      unique(roles[, c(
-        "contributor",
-        "orcid",
-        "affiliation",
-        "ror",
-        "organisation"
-      )]),
-      by.x = "id",
-      by.y = "contributor"
-    ) -> contributors
-  list(authors = contributors, roles = roles[, c("contributor", "role")])
-}
-
-description_author_format <- function(i, x) {
-  formatted <- data.frame(
-    contributor = i,
-    role = c(
-      aut = "author",
-      cre = "contact person",
-      ctb = "contributor",
-      cph = "copyright holder",
-      fnd = "funder",
-      rev = "reviewer"
-    )[x[[i]]$role]
-  )
-  formatted$organisation <- ifelse(
-    is.null(x[[i]]$email),
-    "",
-    gsub(".*@", "", x[[i]]$email)
-  )
-  if (is.null(x[[i]]$comment)) {
-    formatted$orcid <- ""
-    formatted$affiliation <- ""
-    return(list(formatted))
-  }
-  formatted$orcid <- ifelse(
-    is.na(x[[i]]$comment["ORCID"]),
-    "",
-    x[[i]]$comment["ORCID"]
-  )
-  formatted$ror <- ifelse(
-    is.na(x[[i]]$comment["ROR"]),
-    "",
-    x[[i]]$comment["ROR"]
-  )
-  formatted$affiliation <- ifelse(
-    is.na(x[[i]]$comment["affiliation"]),
-    "",
-    x[[i]]$comment["affiliation"]
-  )
-  return(list(formatted))
 }
 
 #' @importFrom assertthat assert_that
