@@ -53,9 +53,11 @@ org_item <- R6Class(
       if (grepl("@inbo\\.be$", email)) {
         private$name <- c(
           `nl-BE` = "Instituut voor Natuur- en Bosonderzoek (INBO)",
-          `fr-FR` = "Institut de Recherche sur la Nature et les Forêts (INBO)",
+          # fmt: skip
+          `fr-FR` =
+            "Institut de Recherche sur la Nature et les For\u00eats (INBO)",
           `en-GB` = "Research Institute for Nature and Forest (INBO)",
-          `de-DE` = "Institut für Natur- und Waldforschung (INBO)"
+          `de-DE` = "Institut f\u00fcr Natur- und Waldforschung (INBO)"
         )
         private$email <- "info@inbo.be"
         private$orcid <- TRUE
