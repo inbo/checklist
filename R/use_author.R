@@ -6,6 +6,11 @@
 #' @param email An optional email address.
 #' When given and it matches with a single person, the function immediately
 #' returns the information of that person.
+#' @param lang The language to use for the affiliation.
+#' Defaults to the first language in the `name` vector of the
+#' `org_list` object.
+#' When the affiliation is not available in that language,
+#' it will use the first available language.
 #' @importFrom assertthat assert_that is.string noNA
 #' @importFrom fs path
 #' @importFrom tools R_user_dir

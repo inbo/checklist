@@ -10,6 +10,12 @@ use_author(email, lang)
 \item{email}{An optional email address.
 When given and it matches with a single person, the function immediately
 returns the information of that person.}
+
+\item{lang}{The language to use for the affiliation.
+Defaults to the first language in the \code{name} vector of the
+\code{org_list} object.
+When the affiliation is not available in that language,
+it will use the first available language.}
 }
 \value{
 A data.frame with author information.
