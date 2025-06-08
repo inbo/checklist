@@ -15,10 +15,10 @@ citation_bookdown <- function(meta) {
     )
   }
   yaml <- yaml_front_matter(index_file)
-  cit_meta <- list(person = yaml_author(yaml = yaml))
+  cit_meta <- yaml_author(yaml = yaml)
   description <- bookdown_description(meta$get_path)
   cit_meta$meta$description <- description$description
-  cit_meta$errors <- description$errors
+  cit_meta$errors <- c(cit_meta$errors, description$errors)
   cit_meta$meta$title <- paste0(
     yaml$title,
     ifelse(has_name(yaml, "subtitle"), paste0(". ", yaml$subtitle, "."), ".")
@@ -158,24 +158,47 @@ yaml_author <- function(yaml) {
     role = "cph",
     FUN.VALUE = vector(mode = "list", 1)
   )
-  c(author, reviewer, funder, rightsholder) |>
-    do.call(what = "c")
+  list(
+    person = c(
+      author$person,
+      reviewer$person,
+      funder$person,
+      rightsholder$person
+    ) |>
+      do.call(what = "c"),
+    errors = c(
+      author$error,
+      reviewer$error,
+      funder$error,
+      rightsholder$error
+    ) |>
+      do.call(what = "c")
+  )
 }
 
 #' @importFrom assertthat has_name is.flag
 yaml_author_format <- function(person, role) {
+  if (!inherits(person, "list")) {
+    return(list(
+      person = NULL,
+      error = sprintf(
+        "`%s` is not in the required person format. Please update the YAML",
+        person
+      )
+    ))
+  }
   comment <- person[c("orcid", "affiliation", "ror")]
   names(comment)[names(comment) == "orcid"] <- "ORCID"
   names(comment)[names(comment) == "ror"] <- "ROR"
   comment <- comment[comment != ""]
-  person(
+  person <- person(
     given = paste0(person$name[["given"]], ""),
     family = paste0(person$name[["family"]], ""),
     email = paste0(person$email, ""),
     comment = unlist(comment),
     role = c(role, "cre"[isTRUE(person$corresponding)])
-  ) |>
-    list()
+  )
+  list(person = person, error = NULL)
 }
 
 #' @family utils

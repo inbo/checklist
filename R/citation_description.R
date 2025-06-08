@@ -50,7 +50,7 @@ citation_description <- function(meta) {
   list(
     meta = cit_meta,
     person = authors,
-    errors = c(urls$errors, keywords$errors),
+    errors = c(attr(authors, "errors"), urls$errors, keywords$errors),
     warnings = communities$warnings,
     notes = character(0)
   )
