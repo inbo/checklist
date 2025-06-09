@@ -48,7 +48,8 @@ use_author <- function(email, lang) {
     current <- validate_author(
       current = current,
       selected = selected,
-      org = org
+      org = org,
+      lang = lang
     )
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
@@ -59,7 +60,8 @@ use_author <- function(email, lang) {
         current = current,
         selected = selected,
         root = root,
-        org = org
+        org = org,
+        lang = lang
       )
       next
     }
@@ -98,14 +100,15 @@ menu_first <- function(choices, graphics = FALSE, title = NULL) {
 
 #' @importFrom fs path
 #' @importFrom utils menu write.table
-update_author <- function(current, selected, root, org) {
+update_author <- function(current, selected, root, org, lang) {
   original <- current
   item <- c("given", "family", "email", "orcid", "affiliation")
   while (TRUE) {
     current <- validate_author(
       current = current,
       selected = selected,
-      org = org
+      org = org,
+      lang = lang
     )
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
@@ -139,7 +142,7 @@ update_author <- function(current, selected, root, org) {
 }
 
 #' @importFrom assertthat assert_that
-new_author <- function(current, root, org) {
+new_author <- function(current, root, org, lang) {
   assert_that(inherits(org, "org_list"))
   cat("Please provide person information.\n")
   data.frame(
@@ -148,7 +151,7 @@ new_author <- function(current, root, org) {
     email = readline(prompt = "e-mail:      "),
     orcid = ask_orcid(prompt = "orcid:       ")
   ) -> extra
-  which_org <- org$get_name_by_domain(extra$email)
+  which_org <- org$get_name_by_domain(extra$email, lang = lang)
   if (length(which_org) == 1) {
     extra$affiliation <- names(which_org)
     while (which_org && extra$orcid == "") {
@@ -181,8 +184,8 @@ new_author <- function(current, root, org) {
   return(current)
 }
 
-author2person <- function(role = "aut") {
-  df <- use_author()
+author2person <- function(role = "aut", lang) {
+  df <- use_author(lang = lang)
   if (is.na(df$email) || df$email == "") {
     email <- NULL
   } else {
@@ -210,9 +213,9 @@ author2person <- function(role = "aut") {
 
 #' @importFrom assertthat assert_that
 #' @importFrom utils tail
-author2badge <- function(role = "aut", org) {
-  assert_that(inherits(org, "organisation"))
-  df <- use_author()
+author2badge <- function(role = "aut", org, lang) {
+  assert_that(inherits(org, "org_list"))
+  df <- use_author(lang = lang)
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
   if (is.na(df$orcid) || df$orcid == "") {
@@ -236,21 +239,12 @@ author2badge <- function(role = "aut", org) {
   if (is.na(df$affiliation) || df$affiliation == "") {
     return(badge)
   }
-  org <- org$get_organisation
-  vapply(
-    names(org),
-    FUN.VALUE = vector(mode = "list", length = 1L),
-    FUN = function(x) {
-      data.frame(domain = x, affiliation = org[[x]]$affiliation) |>
-        list()
-    }
-  ) |>
-    do.call(what = rbind) -> aff_domain
-  aff <- aff_domain$domain[aff_domain$affiliation == df$affiliation]
-  gsub(".*\\((.+)\\).*", "\\1", df$affiliation) |>
-    abbreviate() |>
-    c(aff) |>
-    tail(1) -> aff
+  if (grepl("\\(.+\\)", df$affiliation)) {
+    aff <- gsub(".*\\((.+)\\).*", "\\1", df$affiliation)
+  } else {
+    aff <- abbreviate(df$affiliation)
+  }
+
   sprintf("%s[^%s]", badge, aff) |>
     `attr<-`(
       which = "footnote",
@@ -261,9 +255,9 @@ author2badge <- function(role = "aut", org) {
     )
 }
 
-validate_author <- function(current, selected, org) {
+validate_author <- function(current, selected, org, lang) {
   assert_that(inherits(org, "org_list"))
-  affiliation <- org$get_name_by_domain(current$email[selected])
+  affiliation <- org$get_name_by_domain(current$email[selected], lang = lang)
   if (length(affiliation) == 0) {
     return(current)
   }

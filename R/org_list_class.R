@@ -82,7 +82,7 @@ org_list <- R6Class(
         FUN = function(x, lang) {
           x$get_name[[
             first_valid(
-              choices = names(org_names),
+              choices = names(x$get_name),
               x = lang
             )
           ]]
