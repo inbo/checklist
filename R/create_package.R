@@ -105,31 +105,33 @@ create_package <- function(
   } else {
     funder <- funder$alternative
   }
-  vapply(
-    rightsholder[rightsholder %in% funder],
-    FUN = function(x) {
-      list(org$get_person(x, role = c("cph", "fnd")))
-    },
-    FUN.VALUE = vector("list", 1)
-  ) |>
+  c(
+    maintainer,
     c(
+      vapply(
+        rightsholder[rightsholder %in% funder],
+        FUN = function(x) {
+          list(org$get_person(x, role = c("cph", "fnd"), lang = language))
+        },
+        FUN.VALUE = vector("list", 1)
+      ),
       vapply(
         rightsholder[!rightsholder %in% funder],
         FUN = function(x) {
-          list(org$get_person(x, role = "cph"))
+          list(org$get_person(x, role = "cph", lang = language))
         },
         FUN.VALUE = vector("list", 1)
       ),
       vapply(
         funder[!funder %in% rightsholder],
         FUN = function(x) {
-          list(org$get_person(x, role = "fnd"))
+          list(org$get_person(x, role = "fnd", lang = language))
         },
         FUN.VALUE = vector("list", 1)
       )
     ) |>
-    do.call(what = c) |>
-    c(maintainer) -> maintainer
+      do.call(what = c)
+  ) -> maintainer
 
   dir_create(path)
   repo <- git_init(path = path)

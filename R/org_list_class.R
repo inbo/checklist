@@ -10,12 +10,13 @@ org_list <- R6Class(
     #' @description Return the organisation with matching email as a `person()`.
     #' @param email The email address of the organisation.
     #' @param role The role of the person to return.
-    get_person = function(email, role = c("cph", "fnd")) {
+    #' @param lang The language to return the organisation name in.
+    get_person = function(email, role = c("cph", "fnd"), lang) {
       if (!email %in% self$get_email) {
         return(person(email = email, role = role))
       }
       relevant <- which(self$get_email == email)
-      private$items[[relevant]]$as_person(role = role)
+      private$items[[relevant]]$as_person(role = role, lang = lang)
     },
     #' @description Return a vector of Zenodo communities associated with the
     #' organisations with matching email.
@@ -522,15 +523,15 @@ ol_validate_person <- function(person, lang, items) {
   )
   comment <- first_non_null(
     person$comment,
-    c(affiliation = relevant[[1]]$name[lang])
+    c(affiliation = relevant[[1]]$name[[lang]])
   )
-  c(
-    relevant[[1]]$name[[lang]],
-    comment[["affiliation"]][
-      !comment[["affiliation"]] %in% relevant[[1]]$name
-    ]
-  ) |>
-    head(1) -> comment[["affiliation"]]
+  if ("affiliation" %in% names(comment)) {
+    relevant[[1]]$name[[lang]] |>
+      first_non_null(comment[["affiliation"]]) |>
+      head(1) -> comment[["affiliation"]]
+  } else {
+    comment[["affiliation"]] <- relevant[[1]]$name[[lang]]
+  }
   updated_person <- person(
     given = person$given,
     family = person$family,

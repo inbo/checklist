@@ -42,7 +42,9 @@ check_description <- function(x = ".") {
 
   repo <- x$get_path
   notes <- character(0)
-  if (!is.na(git_info(repo = repo)$head) && nrow(git_log(repo = repo)) > 1) {
+  if (is.na(git_info(repo = repo)$head) || nrow(git_log(repo = repo)) <= 1) {
+    desc_error <- character(0)
+  } else {
     branch_info <- git_branch_list(repo = repo)
     head_sha <- git_commit_id(repo = repo)
     current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
@@ -105,6 +107,7 @@ check_description <- function(x = ".") {
   status_before <- git_status(repo = repo)
   tidy_desc(x)
   desc_error <- c(
+    desc_error,
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
       !unchanged_repo(repo, status_before)
     ]

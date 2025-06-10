@@ -4,7 +4,10 @@ test_that("check_description() works", {
     family = "Onkelinx",
     role = c("aut", "cre"),
     email = "thierry.onkelinx@inbo.be",
-    comment = c(ORCID = "0000-0001-8804-4216")
+    comment = c(
+      ORCID = "0000-0001-8804-4216",
+      affiliation = "Research Institute for Nature and Forest (INBO)"
+    )
   )
   path <- tempfile("check_description")
   dir.create(path)
@@ -20,7 +23,8 @@ test_that("check_description() works", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,
-      language = "en-GB"
+      language = "en-GB",
+      github = "inbo"
     )
   )
   repo <- path(path, package)
@@ -28,9 +32,8 @@ test_that("check_description() works", {
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  this_desc <- desc::description$new(
-    file = path(path, package, "DESCRIPTION")
-  )
+  path(path, package, "DESCRIPTION") |>
+    desc::description$new() -> this_desc
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)

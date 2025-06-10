@@ -52,7 +52,7 @@ Other class:
 \subsection{Method \code{get_person()}}{
 Return the organisation with matching email as a \code{person()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{org_list$get_person(email, role = c("cph", "fnd"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_person(email, role = c("cph", "fnd"), lang)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -61,6 +61,8 @@ Return the organisation with matching email as a \code{person()}.
 \item{\code{email}}{The email address of the organisation.}
 
 \item{\code{role}}{The role of the person to return.}
+
+\item{\code{lang}}{The language to return the organisation name in.}
 }
 \if{html}{\out{</div>}}
 }
