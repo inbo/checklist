@@ -249,6 +249,19 @@ org_list <- R6Class(
         x$get_email
       })
     },
+    #' @field get_languages The different languages of the organisations.
+    get_languages = function() {
+      vapply(
+        private$items,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        FUN = function(x) {
+          names(private$items[[1]]$get_name) |>
+            list()
+        }
+      ) |>
+        unlist() |>
+        unique()
+    },
     #' @field which_funder The required rightsholders.
     which_funder = function() {
       type <- vapply(

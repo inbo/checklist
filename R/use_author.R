@@ -213,13 +213,12 @@ author2person <- function(role = "aut", lang) {
 
 #' @importFrom assertthat assert_that
 #' @importFrom utils tail
-author2badge <- function(role = "aut", org, lang) {
-  assert_that(inherits(org, "org_list"))
-  df <- use_author(lang = lang)
+author2badge <- function(df, role = "aut") {
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
   if (is.na(df$orcid) || df$orcid == "") {
-    badge <- sprintf("%s, %s%s", df$family, df$given, role_link)
+    ifelse(df$family == "", "", paste0(df$family, ", ")) |>
+      paste0(df$given, role_link) -> badge
   } else {
     badge <- paste0(
       "[%s, %s![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/",

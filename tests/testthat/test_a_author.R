@@ -20,11 +20,6 @@ test_that("author tools", {
   stub(author2person, "R_user_dir", root, depth = 2)
   expect_s3_class(author2person(), "person")
 
-  stub(author2badge, "R_user_dir", root, depth = 2)
-  badge <- "Doe, John[^aut]"
-  attr(badge, "footnote") <- "[^aut]: author"
-  expect_equal(author2badge(org = org), badge)
-
   stub(update_author, "menu", mock(4, 6))
   stub(update_author, "readline", "0000-0002-1825-0097", depth = 2)
   expect_output(
@@ -32,12 +27,6 @@ test_that("author tools", {
   )
   current$orcid <- "0000-0002-1825-0097"
   expect_identical(current, stored_authors(root))
-  badge <- paste0(
-    "[Doe, John![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/",
-    "11/orcid_16x16.png)](https://orcid.org/0000-0002-1825-0097)[^aut]"
-  )
-  attr(badge, "footnote") <- "[^aut]: author"
-  expect_equal(author2badge(org = org), badge)
 
   stub(update_author, "menu", mock(5, 6))
   stub(
@@ -57,16 +46,6 @@ test_that("author tools", {
   )
   current$affiliation <- names(org$get_name_by_domain("inbo.be", "fr-FR"))
   expect_identical(current, stored_authors(root))
-  badge <- paste0(
-    "[Doe, John![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/",
-    "11/orcid_16x16.png)]",
-    "(https://orcid.org/0000-0002-1825-0097)[^aut][^INBO]"
-  )
-  attr(badge, "footnote") <- c(
-    "[^aut]: author",
-    paste("[^INBO]:", names(org$get_name_by_domain("inbo.be", "fr-FR")))
-  )
-  expect_equal(author2badge(org = org, lang = "fr-FR"), badge)
   expect_is(author2person(), "person")
 
   stub(update_author, "menu", mock(3, 6))
@@ -105,4 +84,36 @@ test_that("author tools", {
   sink()
   expect_equal(x$given, "Jane")
   expect_equal(x$family, "Doe")
+
+  badge <- "Doe, John[^aut]"
+  attr(badge, "footnote") <- "[^aut]: author"
+  expect_equal(
+    data.frame(given = "John", family = "Doe", orcid = "", affiliation = "") |>
+      author2badge(),
+    badge
+  )
+
+  badge <- "INBO[^cph][^fnd]"
+  attr(badge, "footnote") <- c("[^cph]: copyrightholder", "[^fnd]: funder")
+  expect_equal(
+    data.frame(given = "INBO", family = "", orcid = "", affiliation = "") |>
+      author2badge(role = c("cph", "fnd")),
+    badge
+  )
+
+  badge <- paste0(
+    "[Doe, John![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/",
+    "11/orcid_16x16.png)](https://orcid.org/0000-0002-1825-0097)[^ctb]"
+  )
+  attr(badge, "footnote") <- "[^ctb]: contributor"
+  expect_equal(
+    data.frame(
+      family = "Doe",
+      given = "John",
+      orcid = "0000-0002-1825-0097",
+      affiliation = ""
+    ) |>
+      author2badge(role = "ctb"),
+    badge
+  )
 })

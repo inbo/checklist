@@ -22,6 +22,8 @@ Other class:
 
 \item{\code{get_email}}{The organisations email.}
 
+\item{\code{get_languages}}{The different languages of the organisations.}
+
 \item{\code{which_funder}}{The required rightsholders.}
 
 \item{\code{which_rightsholder}}{The required rightsholders.}

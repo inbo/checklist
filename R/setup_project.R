@@ -12,11 +12,16 @@ setup_project <- function(path = ".") {
   assert_that(is.string(path), is_dir(path))
   path <- path_real(path)
   checklist_file <- path(path, "checklist.yml")
+  org <- org_list$new()$read(path)
 
   if (is_file(checklist_file)) {
     x <- read_checklist(path)
   } else {
-    x <- checklist$new(x = path, language = "en-GB", package = FALSE)
+    lang <- menu_first(
+      choices = org$get_languages,
+      title = "Language of the project?"
+    )
+    x <- checklist$new(x = path, language = lang, package = FALSE)
     x$allowed()
     x$set_ignore(c(".github", "LICENSE.md"))
   }
@@ -28,10 +33,9 @@ setup_project <- function(path = ".") {
       system.file(package = "checklist") |>
       file_copy(path(path, "source", "checklist.R"))
   }
-  org <- read_organisation(path)
-  repo <- setup_vc(path = path, org = org)
+  repo <- setup_vc(path = path)
   renv_activate(path = path)
-  files <- create_readme(path = path, org = org)
+  files <- create_readme(path = path)
   checks <- c(
     "checklist",
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
@@ -80,7 +84,7 @@ setup_project <- function(path = ".") {
 
 #' @importFrom fs dir_create file_copy file_exists is_file path
 #' @importFrom gert git_add git_find git_init git_remote_add
-setup_vc <- function(path, org) {
+setup_vc <- function(path) {
   if (is_repository(path)) {
     assert_that(is_workdir_clean(path))
     repo <- git_find(path)
@@ -89,7 +93,7 @@ setup_vc <- function(path, org) {
       return(invisible(NULL))
     }
     repo <- git_init(path = path)
-    preferred_protocol(org) |>
+    preferred_protocol() |>
       sprintf(basename(path)) |>
       git_remote_add(repo = repo)
   }
@@ -196,17 +200,18 @@ create_project <- function(path, project) {
 }
 
 #' @importFrom fs file_exists path
-create_readme <- function(path, org) {
+create_readme <- function(path, org, lang) {
   if (file_exists(path(path, "README.md"))) {
     return(character(0))
   }
   cat("Which person to use as author and contact person?\n")
-  author <- author2badge(role = c("aut", "cre"), org = org)
+  use_author(lang = lang) |>
+    author2badge(role = c("aut", "cre")) -> author
   while (isTRUE(ask_yes_no("add another author?", default = FALSE))) {
-    extra <- author2badge(org = org)
+    use_author(lang = lang) |>
+      author2badge() -> extra
     attr(author, "footnote") |>
-      c(attr(extra, "footnote")) |>
-      unique() -> footnote
+      c(attr(extra, "footnote")) -> footnote
     c(author, extra) |>
       `attr<-`(which = "footnote", value = footnote) -> author
   }
@@ -218,8 +223,90 @@ create_readme <- function(path, org) {
     gsub(pattern = "\\s+$", replacement = "") |>
     paste(collapse = "; ") |>
     sprintf(fmt = "**keywords**: %s") -> keywords
-  c("[^cph]: copyright holder", "[^fnd]: funder", attr(author, "footnote")) |>
-    unique() -> footnote
+  org <- org_list$new()$read(path)
+  rightsholder <- org$which_rightsholder
+  if (length(rightsholder$required) > 0) {
+    rightsholder <- rightsholder$required
+  } else {
+    rightsholder <- rightsholder$alternative
+  }
+  funder <- org$which_funder
+  if (length(funder$required) > 0) {
+    funder <- funder$required
+  } else {
+    funder <- funder$alternative
+  }
+  vapply(
+    rightsholder[rightsholder %in% funder],
+    FUN = function(x) {
+      list(org$get_person(x, role = c("cph", "fnd")))
+    },
+    FUN.VALUE = vector("list", 1)
+  ) |>
+    vapply(
+      FUN.VALUE = vector("list", 1),
+      FUN = function(x) {
+        data.frame(
+          given = x$given,
+          family = "",
+          orcid = "",
+          affiliation = ""
+        ) |>
+          author2badge(role = x$role) |>
+          list()
+      }
+    ) |>
+    c(
+      vapply(
+        rightsholder[!rightsholder %in% funder],
+        FUN = function(x) {
+          list(org$get_person(x, role = "cph"))
+        },
+        FUN.VALUE = vector("list", 1)
+      ) |>
+        vapply(
+          FUN.VALUE = vector("list", 1),
+          FUN = function(x) {
+            data.frame(
+              given = x$given,
+              family = "",
+              orcid = "",
+              affiliation = ""
+            ) |>
+              author2badge(role = x$role) |>
+              list()
+          }
+        ),
+      vapply(
+        funder[!funder %in% rightsholder],
+        FUN = function(x) {
+          list(org$get_person(x, role = "fnd"))
+        },
+        FUN.VALUE = vector("list", 1)
+      ) |>
+        vapply(
+          FUN.VALUE = vector("list", 1),
+          FUN = function(x) {
+            data.frame(
+              given = x$given,
+              family = "",
+              orcid = "",
+              affiliation = ""
+            ) |>
+              author2badge(role = x$role) |>
+              list()
+          }
+        )
+    ) -> extra
+  vapply(extra, FUN.VALUE = vector(mode = "list", 1), FUN = function(x) {
+    list(attr(x, "footnote"))
+  }) |>
+    unlist() |>
+    c(attr(author, "footnote")) |>
+    unique() |>
+    sort() -> footnote
+  c(author, unlist(extra)) |>
+    `attr<-`(which = "footnote", value = footnote) -> author
   paste0(
     "[![Project Status: Concept - Minimal or no implementation has been done ",
     "yet, or the repository is only intended to be a limited example, demo, ",
@@ -253,7 +340,6 @@ create_readme <- function(path, org) {
     paste("#", title),
     "",
     author,
-    paste0(org$get_rightsholder, "[^cph][^fnd]"),
     "",
     footnote,
     "",
@@ -281,8 +367,7 @@ create_readme <- function(path, org) {
 #' @importFrom tools R_user_dir
 #' @importFrom utils menu
 #' @importFrom yaml read_yaml write_yaml
-preferred_protocol <- function(org) {
-  assert_that(inherits(org, "organisation"))
+preferred_protocol <- function() {
   config <- list()
   R_user_dir("checklist", which = "config") |>
     path("config.yml") -> config_file
@@ -297,20 +382,13 @@ preferred_protocol <- function(org) {
       dir_create()
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
-  sprintf("Which GitHub organisation. Leave empty for `%s`.", org$get_github) |>
-    readline() -> config[["git"]][["organisation"]]
+  config[["git"]][["organisation"]] <- readline("Which GitHub organisation?")
   ifelse(
     config$git$protocol == "https",
     "https://github.com/%s/%%s.git",
     "git@github.com:%s/%%s.git"
   ) |>
-    sprintf(
-      ifelse(
-        config$git$organisation == "",
-        org$get_github,
-        config$git$organisation
-      )
-    )
+    sprintf(config$git$organisation)
 }
 
 #' Function to ask a simple yes no question
