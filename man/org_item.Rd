@@ -42,6 +42,7 @@ Other class:
 \item \href{#method-org_item-new}{\code{org_item$new()}}
 \item \href{#method-org_item-as_person}{\code{org_item$as_person()}}
 \item \href{#method-org_item-compare_by_name}{\code{org_item$compare_by_name()}}
+\item \href{#method-org_item-get_license}{\code{org_item$get_license()}}
 \item \href{#method-org_item-print}{\code{org_item$print()}}
 \item \href{#method-org_item-clone}{\code{org_item$clone()}}
 }
@@ -58,6 +59,9 @@ Initialize a new \code{org_item} object.
   orcid = FALSE,
   rightsholder = c("optional", "single", "shared", "when no other"),
   funder = c("optional", "single", "shared", "when no other"),
+  license = list(package = c(`GPL-3.0` = "generic_template/gplv3.md", MIT =
+    "generic_template/mit.md"), project = c(`CC-BY-4.0` =
+    "generic_template/cc_by_4_0.md"), data = c(`CC0-1.0` = "generic_template/cc0.md")),
   ror,
   zenodo
 )}\if{html}{\out{</div>}}
@@ -89,6 +93,20 @@ the organisation must be the copyright holder.}
 
 \item{\code{funder}}{The required funder status for the organisation.
 The categories are the same as for \code{rightsholder}.}
+
+\item{\code{license}}{A list with the allowed licenses by the organisation.
+The list may contain the following items:
+\code{package}, \code{project}, and \code{data}.
+Every item must be a named character vector with the allowed licenses.
+The names must match the license name.
+The values must either match the path to a license template in the
+\code{checklist} package or an absolute URL to publicly available markdown
+file with the license text.
+Use \code{character(0)} to indicate that the organisation does not
+require a specific license for that item.
+\code{package} defaults to \code{c("GPL-3.0", "MIT")}.
+\code{project} defaults to \code{"CC-BY-4.0"}.
+\code{data} defaults to \code{"CC-0"}.}
 
 \item{\code{ror}}{The optional ROR ID of the organisation.}
 
@@ -138,6 +156,28 @@ organisation names but in a different order.
 \item{\code{name}}{The name to match.}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_item-get_license"></a>}}
+\if{latex}{\out{\hypertarget{method-org_item-get_license}{}}}
+\subsection{Method \code{get_license()}}{
+Get the organisation license.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_item$get_license(type = c("package", "project", "data"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{The type of license to get.
+Can be one of \code{"package"}, \code{"project"}, or \code{"data"}.
+Defaults to \code{"package"}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A named character vector with the allowed licenses.
 }
 }
 \if{html}{\out{<hr>}}

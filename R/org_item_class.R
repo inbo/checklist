@@ -28,6 +28,19 @@ org_item <- R6Class(
     #' @param funder The required funder status for the organisation.
     #' The categories are the same as for `rightsholder`.
     #' @param ror The optional ROR ID of the organisation.
+    #' @param license A list with the allowed licenses by the organisation.
+    #' The list may contain the following items:
+    #' `package`, `project`, and `data`.
+    #' Every item must be a named character vector with the allowed licenses.
+    #' The names must match the license name.
+    #' The values must either match the path to a license template in the
+    #' `checklist` package or an absolute URL to publicly available markdown
+    #' file with the license text.
+    #' Use `character(0)` to indicate that the organisation does not
+    #' require a specific license for that item.
+    #' `package` defaults to `c("GPL-3.0", "MIT")`.
+    #' `project` defaults to `"CC-BY-4.0"`.
+    #' `data` defaults to `"CC-0"`.
     #' @param zenodo The optional Zenodo community ID of the organisation.
     initialize = function(
       name,
@@ -35,6 +48,14 @@ org_item <- R6Class(
       orcid = FALSE,
       rightsholder = c("optional", "single", "shared", "when no other"),
       funder = c("optional", "single", "shared", "when no other"),
+      license = list(
+        package = c(
+          `GPL-3.0` = "generic_template/gplv3.md",
+          MIT = "generic_template/mit.md"
+        ),
+        project = c(`CC-BY-4.0` = "generic_template/cc_by_4_0.md"),
+        data = c(`CC0-1.0` = "generic_template/cc0.md")
+      ),
       ror,
       zenodo
     ) {
@@ -59,6 +80,14 @@ org_item <- R6Class(
         private$orcid <- TRUE
         private$ror <- "https://ror.org/00j54wy13"
         private$zenodo <- "inbo"
+        private$license <- list(
+          package = c(
+            `GPL-3.0` = "generic_template/gplv3.md",
+            MIT = "generic_template/mit.md"
+          ),
+          project = c(`CC-BY-4.0` = "generic_template/cc_by_4_0.md"),
+          data = c(`CC0-1.0` = "generic_template/cc0.md")
+        )
         return(self)
       }
       name <- unlist(name)
@@ -69,11 +98,28 @@ org_item <- R6Class(
         "`name` cannot have empty names" = all(names(name) != ""),
         "`name` cannot have empty values" = noNA(name),
         "`orcid` must be `TRUE` or `FALSE`" = is.flag(orcid),
-        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid)
+        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid),
+        "`license` must be a list" = inherits(license, "list"),
+        # fmt:skip
+        "`license` must contain `package`, `project`, and `data`" =
+          all(c("package", "project", "data") %in% names(license)),
+        "`license` must contain character vectors" = all(
+          vapply(license, is.character, FUN.VALUE = logical(1))
+        ),
+        "`license` must contain named vectors" = all(
+          vapply(
+            license,
+            function(x) {
+              length(x) == 0 || (!is.null(names(x)) && all(names(x) != ""))
+            },
+            FUN.VALUE = logical(1)
+          )
+        )
       )
       private$name <- name
       private$orcid <- orcid
       private$email <- email
+      private$license <- license
       if (!missing(ror)) {
         stopifnot(
           "`ror` must be a string" = is.string(ror),
@@ -149,6 +195,15 @@ org_item <- R6Class(
       attr(best_match, "match") <- max(ratios)
       return(best_match)
     },
+    #' @description Get the organisation license.
+    #' @param type The type of license to get.
+    #' Can be one of `"package"`, `"project"`, or `"data"`.
+    #' Defaults to `"package"`.
+    #' @return A named character vector with the allowed licenses.
+    get_license = function(type = c("package", "project", "data")) {
+      type <- match.arg(type)
+      private$license[[type]]
+    },
     #' @description Print the `org_item` object.
     print = function() {
       c(
@@ -159,7 +214,21 @@ org_item <- R6Class(
         "ORCID is required"[private$orcid],
         sprintf("zenodo community: %s", private$zenodo),
         sprintf("copyright holder: %s", private$rightsholder),
-        sprintf("funder: %s", private$funder)
+        sprintf("funder: %s", private$funder),
+        "allowed licenses:",
+        vapply(
+          names(private$license),
+          FUN.VALUE = character(1),
+          license = private$license,
+          FUN = function(x, license) {
+            if (length(license[[x]]) == 0) {
+              return(sprintf("- %s: no requirements", x))
+            }
+            names(license[[x]]) |>
+              paste(collapse = " or ") |>
+              sprintf(fmt = "- %2$s: %1$s", x)
+          }
+        )
       ) |>
         cat(sep = "\n")
       return(invisible(NULL))
@@ -211,6 +280,7 @@ org_item <- R6Class(
   ),
   private = list(
     email = character(0),
+    license = list(),
     name = character(0),
     orcid = FALSE,
     ror = character(0),
