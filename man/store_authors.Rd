@@ -22,7 +22,6 @@ Other utils:
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
 \code{\link{menu_first}()},
-\code{\link{orcid2person}()},
 \code{\link{use_author}()},
 \code{\link{validate_email}()},
 \code{\link{validate_orcid}()},
