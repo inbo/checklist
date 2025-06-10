@@ -27,9 +27,6 @@ org_item <- R6Class(
     #' the organisation must be the copyright holder.
     #' @param funder The required funder status for the organisation.
     #' The categories are the same as for `rightsholder`.
-    #' @param git The optional root URL to the organisations git repositories.
-    #'   The organisation with matching URL in the git remote will be used as
-    #'   the primary organisation.
     #' @param ror The optional ROR ID of the organisation.
     #' @param zenodo The optional Zenodo community ID of the organisation.
     initialize = function(
@@ -38,7 +35,6 @@ org_item <- R6Class(
       orcid = FALSE,
       rightsholder = c("optional", "single", "shared", "when no other"),
       funder = c("optional", "single", "shared", "when no other"),
-      git,
       ror,
       zenodo
     ) {
@@ -63,7 +59,6 @@ org_item <- R6Class(
         private$orcid <- TRUE
         private$ror <- "https://ror.org/00j54wy13"
         private$zenodo <- "inbo"
-        private$git <- "https://github.com/inbo"
         return(self)
       }
       name <- unlist(name)
@@ -79,18 +74,6 @@ org_item <- R6Class(
       private$name <- name
       private$orcid <- orcid
       private$email <- email
-      if (!missing(git)) {
-        stopifnot(
-          "`git` must be a string" = is.string(git),
-          "`git` cannot be NA" = noNA(git),
-          "`git` must be in https://server/org format" = grepl(
-            "^https:\\/\\/[\\w\\.]+\\/\\w+$",
-            git,
-            perl = TRUE
-          )
-        )
-        private$git <- git
-      }
       if (!missing(ror)) {
         stopifnot(
           "`ror` must be a string" = is.string(ror),
@@ -173,7 +156,6 @@ org_item <- R6Class(
         sprintf("- %s: %s", names(private$name), private$name),
         sprintf("email: %s", private$email),
         sprintf("ROR: %s", private$ror),
-        sprintf("git organisation: %s", private$git),
         "ORCID is required"[private$orcid],
         sprintf("zenodo community: %s", private$zenodo),
         sprintf("copyright holder: %s", private$rightsholder),
@@ -190,7 +172,6 @@ org_item <- R6Class(
         name = as.list(private$name),
         email = private$email,
         ror = private$ror,
-        git = private$git,
         orcid = private$orcid,
         zenodo = private$zenodo,
         rightsholder = private$rightsholder,
@@ -215,10 +196,6 @@ org_item <- R6Class(
     get_funder = function() {
       private$funder
     },
-    #' @field get_git The organisational root git URL.
-    get_git = function() {
-      private$git
-    },
     #' @field get_name The organisation names.
     get_name = function() {
       private$name
@@ -234,7 +211,6 @@ org_item <- R6Class(
   ),
   private = list(
     email = character(0),
-    git = character(0),
     name = character(0),
     orcid = FALSE,
     ror = character(0),

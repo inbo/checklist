@@ -28,8 +28,6 @@ Other class:
 
 \item{\code{get_funder}}{The funder rules.}
 
-\item{\code{get_git}}{The organisational root git URL.}
-
 \item{\code{get_name}}{The organisation names.}
 
 \item{\code{get_orcid}}{The ORCID rules.}
@@ -60,7 +58,6 @@ Initialize a new \code{org_item} object.
   orcid = FALSE,
   rightsholder = c("optional", "single", "shared", "when no other"),
   funder = c("optional", "single", "shared", "when no other"),
-  git,
   ror,
   zenodo
 )}\if{html}{\out{</div>}}
@@ -92,10 +89,6 @@ the organisation must be the copyright holder.}
 
 \item{\code{funder}}{The required funder status for the organisation.
 The categories are the same as for \code{rightsholder}.}
-
-\item{\code{git}}{The optional root URL to the organisations git repositories.
-The organisation with matching URL in the git remote will be used as
-the primary organisation.}
 
 \item{\code{ror}}{The optional ROR ID of the organisation.}
 
