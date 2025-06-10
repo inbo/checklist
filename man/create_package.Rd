@@ -13,7 +13,8 @@ create_package(
   language = "en-GB",
   license = c("GPL-3", "MIT"),
   communities = character(0),
-  maintainer
+  maintainer,
+  github
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ Default GPL-3.}
 \item{maintainer}{When missing, the function interactively lets you add the
 maintainer and other authors.
 Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
+
+\item{github}{The name of the GitHub organisation or user.}
 }
 \description{
 Creates a package template in a new folder.

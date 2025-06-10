@@ -105,7 +105,6 @@ check_description <- function(x = ".") {
   status_before <- git_status(repo = repo)
   tidy_desc(x)
   desc_error <- c(
-    desc_error,
     "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"[
       !unchanged_repo(repo, status_before)
     ]

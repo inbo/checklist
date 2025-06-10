@@ -25,7 +25,8 @@ test_that("create_package() works", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,
-      language = "en-GB"
+      language = "en-GB",
+      github = "inbo"
     ),
     regexp = sprintf("package created at `.*%s`", package)
   )
@@ -40,7 +41,7 @@ test_that("create_package() works", {
     new_author(
       current = data.frame(),
       root = r_user_dir,
-      org = read_organisation()
+      org = org_list$new()$read()
     )
   )
   stub(store_authors, "R_user_dir", r_user_dir)

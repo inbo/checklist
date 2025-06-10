@@ -23,6 +23,7 @@
 #' Default GPL-3.
 #' @param keywords A vector of keywords.
 #' @param communities An optional vector of Zenodo community id's.
+#' @param github The name of the GitHub organisation or user.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom desc description
@@ -58,13 +59,15 @@ create_package <- function(
   language = "en-GB",
   license = c("GPL-3", "MIT"),
   communities = character(0),
-  maintainer
+  maintainer,
+  github
 ) {
-  # fmt: skip
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
-    msg =
-      "Please install the `roxygen2` package. `install.packages(\"roxygen2\")`"
+    msg = paste(
+      "Please install the `roxygen2` package.",
+      "`install.packages(\"roxygen2\")`"
+    )
   )
   if (missing(maintainer)) {
     cat("Please select the maintainer")
@@ -80,8 +83,6 @@ create_package <- function(
   assert_that(valid_package_name(package))
   assert_that(is.character(keywords), length(keywords) > 0)
   assert_that(is.character(communities))
-  org <- read_organisation(path)
-  maintainer <- c(maintainer, org$as_person)
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,
@@ -90,6 +91,45 @@ create_package <- function(
   assert_that(is.string(title))
   validate_language(language)
   license <- match.arg(license)
+
+  org <- org_list$new()$read()
+  rightsholder <- org$which_rightsholder
+  if (length(rightsholder$required) > 0) {
+    rightsholder <- rightsholder$required
+  } else {
+    rightsholder <- rightsholder$alternative
+  }
+  funder <- org$which_funder
+  if (length(funder$required) > 0) {
+    funder <- funder$required
+  } else {
+    funder <- funder$alternative
+  }
+  vapply(
+    rightsholder[rightsholder %in% funder],
+    FUN = function(x) {
+      list(org$get_person(x, role = c("cph", "fnd")))
+    },
+    FUN.VALUE = vector("list", 1)
+  ) |>
+    c(
+      vapply(
+        rightsholder[!rightsholder %in% funder],
+        FUN = function(x) {
+          list(org$get_person(x, role = "cph"))
+        },
+        FUN.VALUE = vector("list", 1)
+      ),
+      vapply(
+        funder[!funder %in% rightsholder],
+        FUN = function(x) {
+          list(org$get_person(x, role = "fnd"))
+        },
+        FUN.VALUE = vector("list", 1)
+      )
+    ) |>
+    do.call(what = c) |>
+    c(maintainer) -> maintainer
 
   dir_create(path)
   repo <- git_init(path = path)
@@ -109,10 +149,10 @@ create_package <- function(
   desc$set_authors(maintainer)
   desc$set("Description", description)
   desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
-  desc$set_urls(sprintf("https://github.com/%s/%s", org$get_github, package))
+  desc$set_urls(sprintf("https://github.com/%s/%s", github, package))
   desc$set(
     "BugReports",
-    sprintf("https://github.com/%s/%s/issues", org$get_github, package)
+    sprintf("https://github.com/%s/%s/issues", github, package)
   )
   if (length(communities)) {
     desc$set(
