@@ -244,7 +244,8 @@ org_item <- R6Class(
         orcid = private$orcid,
         zenodo = private$zenodo,
         rightsholder = private$rightsholder,
-        funder = private$funder
+        funder = private$funder,
+        license = lapply(private$license, as.list)
       )
       relevant <- vapply(organisation, length, FUN.VALUE = integer(1)) > 0
       organisation[relevant]

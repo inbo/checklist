@@ -102,7 +102,20 @@ org_list <- R6Class(
     },
     #' @description Initialize a new `org_list` object.
     #' @param ... One or more `org_item` objects.
-    initialize = function(...) {
+    #' @param git An optional string with the absolute path to a git
+    #' organisation.
+    #' E.g. `"https://github.com/inbo"`
+    initialize = function(..., git = character(0)) {
+      stopifnot(
+        "`git` is not a character" = inherits(git, "character"),
+        "`git` cannot contain multiple values" = length(git) <= 1,
+        "`git` cannot contain `NA`" = noNA(git),
+        "`git` must be a valid URL to an organisation" = grepl(
+          "^https:\\/\\/[\\w\\.]+?\\/\\w+$",
+          git,
+          perl = TRUE
+        )
+      )
       dots <- list(...)
       vapply(dots, inherits, logical(1), what = "org_item") |>
         as.list() -> ok
@@ -132,6 +145,7 @@ org_list <- R6Class(
       do.call(stopifnot, ok)
       private$items <- dots
       names(private$items) <- self$get_email
+      private$git <- git
       return(self)
     },
     #' @description Print the `org_list` object.
@@ -155,7 +169,7 @@ org_list <- R6Class(
     #' @param x The path to the directory where the `organisation.yml` file
     #' is stored.
     #' @importFrom fs is_dir path
-    #' @importFrom yaml read_yaml write_yaml
+    #' @importFrom yaml read_yaml
     read = function(x = ".") {
       checklist <- try(read_checklist(x = x), silent = TRUE)
       if (inherits(checklist, "checklist")) {
@@ -164,8 +178,7 @@ org_list <- R6Class(
         stopifnot("`x` is not an existing directory" = is_dir(x))
       }
       if (!file_exists(path(x, "organisation.yml"))) {
-        self <- org_list$new(org_item$new(email = "info@inbo.be"))
-        return(self)
+        return(git_org(x))
       }
       path(x, "organisation.yml") |>
         read_yaml() -> yaml
@@ -175,10 +188,15 @@ org_list <- R6Class(
           "checklist version"
         )
       )
-      yaml[names(yaml) != "checklist version"] |>
+      yaml[!names(yaml) %in% c("checklist version", "git")] |>
         lapply(function(z) {
+          z$license <- lapply(z$license, function(y) {
+            unlist(y) |>
+              c(character(0))
+          })
           do.call(org_item$new, z)
         }) |>
+        c(git = yaml$git) |>
         do.call(what = org_list$new) -> self
       return(self)
     },
@@ -225,15 +243,16 @@ org_list <- R6Class(
           list(x$as_list)
         }
       ) -> yaml
-      names(yaml) <- self$get_default_name
+      names(yaml) <- self$get_email
       si <- session_info(pkgs = "checklist")
-      yaml <- c(
+      c(
         `checklist version` = si$packages$loadedversion[
           si$packages$package == "checklist"
         ],
+        git = private$git,
         yaml
-      )
-      write_yaml(yaml, file = path(x, "organisation.yml"))
+      ) |>
+        write_yaml(file = path(x, "organisation.yml"))
       return(path(x, "organisation.yml"))
     }
   ),
@@ -294,7 +313,7 @@ org_list <- R6Class(
       )
     }
   ),
-  private = list(items = list())
+  private = list(items = list(), git = character(0))
 )
 
 compatible_rules <- function(rules) {
@@ -570,4 +589,99 @@ ol_select_relevant_org <- function(
     return(updated_person)
   }
   relevant <- relevant[which_aff]
+}
+
+git_org <- function(x) {
+  if (!is_repository(x)) {
+    return(org_list$new(org_item$new(email = "info@inbo.be")))
+  }
+  remotes <- git_remote_list(repo = x)
+  url <- remotes$url[remotes$name == "origin"]
+  org_url <- gsub("\\/\\w+?\\.git$", "", url, perl = TRUE)
+  if (!grepl("^https:\\/\\/", org_url)) {
+    org_url <- gsub("^git@(.*):", "https://\\1/", org_url, perl = TRUE)
+  }
+  # fmt: skip
+  stopifnot(
+    "downloading org_list from git is to do" =
+      org_url == "https://github.com/inbo"
+  )
+  org_list$new(
+    git = "https://github.com/inbo",
+    org_item$new(
+      email = "info@inbo.be",
+      rightsholder = "share",
+      funder = "when no other"
+    ),
+    org_item$new(
+      name = c(
+        `nl-BE` = "Agentschap voor Natuur en Bos (ANB)",
+        `en-GB` = "Agency for Nature & Forests (ANB)"
+      ),
+      email = "natuurenbos@vlaanderen.be",
+      ror = "https://ror.org/04wcznf70",
+      license = list(
+        package = character(0),
+        project = character(0),
+        data = character(0)
+      )
+    ),
+    org_item$new(
+      name = c(`nl-BE` = "Department Omgeving"),
+      email = "omgeving@vlaanderen.be",
+      license = list(
+        package = character(0),
+        project = character(0),
+        data = character(0)
+      )
+    ),
+    org_item$new(
+      name = c(
+        `nl-BE` = paste(
+          "Instituut voor Landbouw-, Visserij- en Voedingsonderzoek (ILVO)"
+        ),
+        `en-GB` = paste(
+          "Flanders Research Institute for Agriculture, Fisheries and Food",
+          "(ILVO)"
+        )
+      ),
+      email = "ilvo@ilvo.vlaanderen.be",
+      ror = "https://ror.org/05cjt1n05",
+      license = list(
+        package = character(0),
+        project = character(0),
+        data = character(0)
+      )
+    ),
+    org_item$new(
+      name = c(`nl-BE` = "Vlaamse Landmaatschappij (VLM)"),
+      email = "info@vlm.be",
+      license = list(
+        package = character(0),
+        project = character(0),
+        data = character(0)
+      )
+    ),
+    org_item$new(
+      name = c(
+        `nl-BE` = "Vlaamse Milieumaatschappij (VMM)",
+        `en-GB` = "Flanders Environment Agency (VMM)"
+      ),
+      email = "info@vmm.be",
+      license = list(
+        package = character(0),
+        project = character(0),
+        data = character(0)
+      )
+    ),
+    org_item$new(
+      name = c(`nl-BE` = "De Vlaamse Waterweg nv"),
+      email = "info@vlaamsewaterweg.be",
+      license = list(
+        package = character(0),
+        project = character(0),
+        data = character(0)
+      )
+    )
+  )
 }

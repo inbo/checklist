@@ -145,13 +145,17 @@ A character vector with the organisation names.
 \subsection{Method \code{new()}}{
 Initialize a new \code{org_list} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{org_list$new(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{org_list$new(..., git = character(0))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{One or more \code{org_item} objects.}
+
+\item{\code{git}}{An optional string with the absolute path to a git
+organisation.
+E.g. \code{"https://github.com/inbo"}}
 }
 \if{html}{\out{</div>}}
 }
