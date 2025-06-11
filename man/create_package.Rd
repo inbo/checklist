@@ -11,10 +11,8 @@ create_package(
   description,
   keywords,
   language = "en-GB",
-  license = c("GPL-3", "MIT"),
-  communities = character(0),
-  maintainer,
-  github
+  license,
+  maintainer
 )
 }
 \arguments{
@@ -34,17 +32,11 @@ create_package(
 E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
 Belgian Dutch.}
 
-\item{license}{What type of license should be used?
-Choice between GPL-3 and MIT.
-Default GPL-3.}
-
-\item{communities}{An optional vector of Zenodo community id's.}
+\item{license}{What type of license should be used?}
 
 \item{maintainer}{When missing, the function interactively lets you add the
 maintainer and other authors.
 Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
-
-\item{github}{The name of the GitHub organisation or user.}
 }
 \description{
 Creates a package template in a new folder.
@@ -82,7 +74,7 @@ dir.create(path)
 create_package(
   path = path, package = "packagename", title = "package title",
   description = "A short description.", maintainer = maintainer,
-  language = "en-GB", license = "GPL-3", keywords = "keyword"
+  language = "en-GB", keywords = "keyword"
 )
 }
 \seealso{

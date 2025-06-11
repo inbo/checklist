@@ -19,12 +19,10 @@ test_that("check_description() works", {
       path = path,
       package = package,
       keywords = "dummy",
-      communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,
-      language = "en-GB",
-      github = "inbo"
+      language = "en-GB"
     )
   )
   repo <- path(path, package)
@@ -86,6 +84,7 @@ test_that("check_description() works", {
     bare = TRUE,
     verbose = FALSE
   )
+  gert::git_remote_remove(remote = "origin", repo = repo)
   gert::git_remote_add(
     url = path(path, "origin"),
     name = "origin",

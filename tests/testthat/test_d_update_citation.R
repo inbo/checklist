@@ -1,3 +1,4 @@
+library(mockery)
 test_that("update_citation() works", {
   maintainer <- person(
     given = "Thierry",
@@ -12,12 +13,16 @@ test_that("update_citation() works", {
   path <- tempfile("citation")
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
+  cache <- tempfile("cache")
+  dir_create(cache)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(cache, "config.yml"))
+  stub(create_package, "R_user_dir", cache, depth = 2)
   package <- "citation"
   create_package(
     path = path,
     package = package,
     keywords = "dummy",
-    communities = "inbo",
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.",
     maintainer = maintainer,

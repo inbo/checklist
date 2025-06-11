@@ -382,13 +382,39 @@ preferred_protocol <- function() {
       dir_create()
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
-  config[["git"]][["organisation"]] <- readline("Which GitHub organisation?")
-  ifelse(
-    config$git$protocol == "https",
-    "https://github.com/%s/%%s.git",
-    "git@github.com:%s/%%s.git"
-  ) |>
-    sprintf(config$git$organisation)
+  c(config[["git"]][["organisation"]], "new git organisation") |>
+    menu_first(title = "Which git organisation?") -> org_choice
+  if (org_choice > length(config[["git"]][["organisation"]])) {
+    while (TRUE) {
+      paste(
+        "Enter the URL of the git organisation?",
+        "E.g. `https://github.com/inbo`: "
+      ) |>
+        readline() -> org_url
+      if (grepl("^https:\\/\\/[\\w\\.]+?\\/\\w+$", org_url, perl = TRUE)) {
+        break
+      }
+      message("Please enter a valid URL.")
+    }
+    c(
+      config[["git"]][["organisation"]],
+      org_url
+    ) |>
+      sort() |>
+      unique() -> config[["git"]][["organisation"]]
+    write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
+  } else {
+    org_url <- config[["git"]][["organisation"]][org_choice]
+  }
+  if (config[["git"]][["protocol"]] == "https") {
+    return(paste0(org_url, "/%s.git"))
+  }
+  gsub(
+    "^https:\\/\\/([\\w\\.]+?)\\/(\\w+)$",
+    "git@\\1:\\2/%s.git",
+    org_url,
+    perl = TRUE
+  )
 }
 
 #' Function to ask a simple yes no question

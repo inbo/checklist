@@ -33,6 +33,7 @@ Other class:
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-org_list-get_allowed_licenses}{\code{org_list$get_allowed_licenses()}}
 \item \href{#method-org_list-get_person}{\code{org_list$get_person()}}
 \item \href{#method-org_list-get_zenodo_by_email}{\code{org_list$get_zenodo_by_email()}}
 \item \href{#method-org_list-get_match}{\code{org_list$get_match()}}
@@ -44,6 +45,26 @@ Other class:
 \item \href{#method-org_list-validate_rules}{\code{org_list$validate_rules()}}
 \item \href{#method-org_list-write}{\code{org_list$write()}}
 \item \href{#method-org_list-clone}{\code{org_list$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-get_allowed_licenses"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-get_allowed_licenses}{}}}
+\subsection{Method \code{get_allowed_licenses()}}{
+Return the allowed licenses.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_allowed_licenses(email, type = c("package", "project", "data"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{The email addresses of the organisations.}
+
+\item{\code{type}}{The type of license to return.
+Can be one of \code{"package"}, \code{"project"} or \code{"data"}.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

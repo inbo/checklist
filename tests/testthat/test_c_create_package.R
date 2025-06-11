@@ -16,17 +16,20 @@ test_that("create_package() works", {
   defer(unlink(path, recursive = TRUE))
 
   package <- "create"
+  cache <- tempfile("cache")
+  dir_create(cache)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(cache, "config.yml"))
+  stub(create_package, "R_user_dir", cache, depth = 2)
   expect_message(
     create_package(
       path = path,
       package = package,
       keywords = "dummy",
-      communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,
-      language = "en-GB",
-      github = "inbo"
+      language = "en-GB"
     ),
     regexp = sprintf("package created at `.*%s`", package)
   )

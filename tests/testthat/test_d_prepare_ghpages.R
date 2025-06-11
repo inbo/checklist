@@ -1,3 +1,4 @@
+library(mockery)
 test_that("create_package() works", {
   maintainer <- person(
     given = "Thierry",
@@ -12,13 +13,17 @@ test_that("create_package() works", {
   origin_repo <- git_init(tempfile("ghpages_origin"), bare = TRUE)
   defer(unlink(origin_repo, recursive = TRUE))
 
+  cache <- tempfile("cache")
+  dir_create(cache)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(cache, "config.yml"))
+  stub(create_package, "R_user_dir", cache, depth = 2)
   package <- "ghpages"
   expect_message(
     create_package(
       path = path,
       package = package,
       keywords = "dummy",
-      communities = "inbo",
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,

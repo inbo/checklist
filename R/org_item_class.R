@@ -82,11 +82,11 @@ org_item <- R6Class(
         private$zenodo <- "inbo"
         private$license <- list(
           package = c(
-            `GPL-3.0` = "generic_template/gplv3.md",
+            `GPL-3` = "generic_template/gplv3.md",
             MIT = "generic_template/mit.md"
           ),
-          project = c(`CC-BY-4.0` = "generic_template/cc_by_4_0.md"),
-          data = c(`CC0-1.0` = "generic_template/cc0.md")
+          project = c(`CC BY 4.0` = "generic_template/cc_by_4_0.md"),
+          data = c(CC0 = "generic_template/cc0.md")
         )
         return(self)
       }

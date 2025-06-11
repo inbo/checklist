@@ -19,11 +19,7 @@
 #' E.g. `en-GB` for British English, `en-US` for American English, `nl-BE` for
 #' Belgian Dutch.
 #' @param license What type of license should be used?
-#' Choice between GPL-3 and MIT.
-#' Default GPL-3.
 #' @param keywords A vector of keywords.
-#' @param communities An optional vector of Zenodo community id's.
-#' @param github The name of the GitHub organisation or user.
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom desc description
@@ -48,7 +44,7 @@
 #' create_package(
 #'   path = path, package = "packagename", title = "package title",
 #'   description = "A short description.", maintainer = maintainer,
-#'   language = "en-GB", license = "GPL-3", keywords = "keyword"
+#'   language = "en-GB", keywords = "keyword"
 #' )
 create_package <- function(
   package,
@@ -57,10 +53,8 @@ create_package <- function(
   description,
   keywords,
   language = "en-GB",
-  license = c("GPL-3", "MIT"),
-  communities = character(0),
-  maintainer,
-  github
+  license,
+  maintainer
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -82,7 +76,6 @@ create_package <- function(
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
   assert_that(is.character(keywords), length(keywords) > 0)
-  assert_that(is.character(communities))
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,
@@ -90,7 +83,13 @@ create_package <- function(
   )
   assert_that(is.string(title))
   validate_language(language)
-  license <- match.arg(license)
+
+  dir_create(path)
+  repo <- git_init(path = path)
+  preferred_protocol() |>
+    sprintf(package) -> git
+  git_remote_add(repo = repo, url = git)
+  dir_create(path(path, "R"))
 
   org <- org_list$new()$read()
   rightsholder <- org$which_rightsholder
@@ -99,6 +98,22 @@ create_package <- function(
   } else {
     rightsholder <- rightsholder$alternative
   }
+  allowed <- org$get_allowed_licenses(rightsholder, type = "package")
+  if (missing(license)) {
+    names(allowed) |>
+      head(1) -> license
+  }
+  assert_that(
+    license = is.string(license),
+    noNA(license)
+  )
+  assert_that(
+    license %in% names(allowed),
+    msg = paste(
+      "`license` must be one of the following:",
+      paste(names(allowed), collapse = ", ")
+    )
+  )
   funder <- org$which_funder
   if (length(funder$required) > 0) {
     funder <- funder$required
@@ -133,10 +148,6 @@ create_package <- function(
       do.call(what = c)
   ) -> maintainer
 
-  dir_create(path)
-  repo <- git_init(path = path)
-  dir_create(path(path, "R"))
-
   # add checklist.yml
   x <- checklist$new(x = path, package = TRUE, language = language)
   x$set_ignore(c(".github", "LICENSE.md"))
@@ -151,11 +162,18 @@ create_package <- function(
   desc$set_authors(maintainer)
   desc$set("Description", description)
   desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
-  desc$set_urls(sprintf("https://github.com/%s/%s", github, package))
-  desc$set(
-    "BugReports",
-    sprintf("https://github.com/%s/%s/issues", github, package)
-  )
+  org_url <- gsub("\\.git$", "", git, perl = TRUE)
+  if (!grepl("^https:\\/\\/", org_url)) {
+    org_url <- gsub("^git@(.*):", "https://\\1/", org_url, perl = TRUE)
+  }
+  desc$set_urls(org_url)
+  desc$set("BugReports", sprintf("%s/issues", org_url))
+
+  vapply(rightsholder, FUN.VALUE = vector(mode = "list", 1), FUN = function(x) {
+    list(org$get_zenodo_by_email(x))
+  }) |>
+    unlist() |>
+    unique() -> communities
   if (length(communities)) {
     desc$set(
       "Config/checklist/communities",
@@ -231,7 +249,7 @@ create_package <- function(
   )
   license_site <- switch(
     license,
-    "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",
+    "GPL-3" = "https://spdx.org/licenses/GPL-3.0-only.html",
     "MIT" = "https://opensource.org/licenses/MIT"
   )
   path("package_template", "README.Rmd") |>

@@ -7,6 +7,34 @@
 org_list <- R6Class(
   "org_list",
   public = list(
+    #' @description Return the allowed licenses.
+    #' @param email The email addresses of the organisations.
+    #' @param type The type of license to return.
+    #' Can be one of `"package"`, `"project"` or `"data"`.
+    get_allowed_licenses = function(
+      email,
+      type = c("package", "project", "data")
+    ) {
+      type <- match.arg(type)
+      private$items[email] |>
+        vapply(
+          FUN.VALUE = vector(mode = "list", 1),
+          type = type,
+          FUN = function(x, type) {
+            list(x$get_license(type = type))
+          }
+        ) |>
+        unname() -> licenses
+      licenses <- licenses[
+        vapply(licenses, FUN.VALUE = integer(1), FUN = length) > 0
+      ]
+      # fmt: skip
+      stopifnot(
+        "multiple copyrightholders with licenses requirements not yet handled" =
+          length(licenses) <= 1
+      )
+      return(unlist(licenses))
+    },
     #' @description Return the organisation with matching email as a `person()`.
     #' @param email The email address of the organisation.
     #' @param role The role of the person to return.
@@ -596,10 +624,14 @@ git_org <- function(x) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   remotes <- git_remote_list(repo = x)
+  stopifnot("no git remote `origin` found" = any(remotes$name == "origin"))
   url <- remotes$url[remotes$name == "origin"]
   org_url <- gsub("\\/\\w+?\\.git$", "", url, perl = TRUE)
   if (!grepl("^https:\\/\\/", org_url)) {
     org_url <- gsub("^git@(.*):", "https://\\1/", org_url, perl = TRUE)
+  }
+  if (!grepl("^(https:|git@)", org_url, perl = TRUE)) {
+    return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   # fmt: skip
   stopifnot(

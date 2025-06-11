@@ -14,6 +14,11 @@ test_that("check_spelling() on a package", {
   dir_create(path)
   defer(unlink(path, recursive = TRUE))
 
+  cache <- tempfile("cache")
+  dir_create(cache)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(cache, "config.yml"))
+  stub(create_package, "R_user_dir", cache, depth = 2)
   package <- "spelling"
   suppressMessages(
     create_package(
@@ -23,8 +28,7 @@ test_that("check_spelling() on a package", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       language = "en-GB",
-      keywords = "dummy",
-      communities = "inbo"
+      keywords = "dummy"
     )
   )
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
