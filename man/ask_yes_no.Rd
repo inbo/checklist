@@ -2,7 +2,10 @@
 % Please edit documentation in R/setup_project.R
 \name{ask_yes_no}
 \alias{ask_yes_no}
-\title{Function to ask a simple yes no question}
+\title{Function to ask a simple yes no question
+Provides a simple wrapper around \code{utils::askYesNo()}.
+This function is used to ask questions in an interactive way.
+It repeats the question until a valid answer is given.}
 \usage{
 ask_yes_no(msg, default = TRUE, prompts = c("Yes", "No", "Cancel"), ...)
 }
@@ -28,6 +31,9 @@ Additional parameters, ignored by the default function.
 }
 \description{
 Function to ask a simple yes no question
+Provides a simple wrapper around \code{utils::askYesNo()}.
+This function is used to ask questions in an interactive way.
+It repeats the question until a valid answer is given.
 }
 \seealso{
 Other utils: 

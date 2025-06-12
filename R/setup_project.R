@@ -418,6 +418,9 @@ preferred_protocol <- function() {
 }
 
 #' Function to ask a simple yes no question
+#' Provides a simple wrapper around `utils::askYesNo()`.
+#' This function is used to ask questions in an interactive way.
+#' It repeats the question until a valid answer is given.
 #' @inheritParams utils::askYesNo
 #' @importFrom utils askYesNo
 #' @export
@@ -431,7 +434,15 @@ ask_yes_no <- function(
   if (!interactive()) {
     return(default)
   }
-  askYesNo(msg = msg, default = default, prompts = prompts, ...)
+  answer <- try(askYesNo(msg = msg, default = default, prompts = prompts))
+  while (inherits(answer, "try-error") || is.null(answer)) {
+    sprintf("`%s`", prompts) |>
+      paste(collapse = ", ") |>
+      sprintf(fmt = "Please answer with %s.") |>
+      cat()
+    answer <- try(askYesNo(msg = msg, default = default, prompts = prompts))
+  }
+  return(answer)
 }
 
 #' @importFrom fs file_exists path
