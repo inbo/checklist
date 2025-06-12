@@ -32,8 +32,18 @@ set_license <- function(x = ".") {
     if (!grepl("^MIT", this_desc$get_field("License"))) {
       return(invisible(NULL))
     }
-    this_desc$get_author(role = "cph") |>
-      format(include = c("given", "family")) |>
+    org <- org_list$new()$read(x$get_path)
+    rightsholder <- org$which_rightsholder
+    if (length(rightsholder$required) > 0) {
+      rightsholder <- rightsholder$required
+    } else {
+      rightsholder <- rightsholder$alternative
+    }
+    org$get_name_by_domain(
+      rightsholder,
+      lang = this_desc$get_field("Language")
+    ) |>
+      names() |>
       paste(collapse = ", ") -> cph
     paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
       c(sprintf("COPYRIGHT HOLDER: %s", cph)) |>

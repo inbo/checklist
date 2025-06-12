@@ -20,8 +20,11 @@
 #' Belgian Dutch.
 #' @param license What type of license should be used?
 #' @param keywords A vector of keywords.
+#' @param quiet If `TRUE`, don't open the project in RStudio.
+#' If `FALSE`, open the project in RStudio when RStudio is available.
+#' Defaults to `FALSE`.
 #' @export
-#' @importFrom assertthat assert_that is.string
+#' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom desc description
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
@@ -54,7 +57,8 @@ create_package <- function(
   keywords,
   language = "en-GB",
   license,
-  maintainer
+  maintainer,
+  quiet = FALSE
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -70,7 +74,7 @@ create_package <- function(
       maintainer <- c(maintainer, author2person())
     }
   }
-  assert_that(inherits(maintainer, "person"))
+  assert_that(inherits(maintainer, "person"), is.flag(quiet), noNA(quiet))
 
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
@@ -88,10 +92,10 @@ create_package <- function(
   repo <- git_init(path = path)
   preferred_protocol() |>
     sprintf(package) -> git
-  git_remote_add(repo = repo, url = git)
+  git_remote_add(url = git, name = "origin", repo = repo)
   dir_create(path(path, "R"))
 
-  org <- org_list$new()$read()
+  org <- org_list$new()$read(path)
   rightsholder <- org$which_rightsholder
   if (length(rightsholder$required) > 0) {
     rightsholder <- rightsholder$required
@@ -100,6 +104,9 @@ create_package <- function(
   }
   allowed <- org$get_allowed_licenses(rightsholder, type = "package")
   if (missing(license)) {
+    stopifnot(
+      "no `license` given and no required licenses" = length(allowed) > 0
+    )
     names(allowed) |>
       head(1) -> license
   }
@@ -108,7 +115,7 @@ create_package <- function(
     noNA(license)
   )
   assert_that(
-    license %in% names(allowed),
+    length(allowed) == 0 || license %in% names(allowed),
     msg = paste(
       "`license` must be one of the following:",
       paste(names(allowed), collapse = ", ")
@@ -366,6 +373,7 @@ create_package <- function(
 
   if (
     !interactive() ||
+      quiet ||
       !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {
