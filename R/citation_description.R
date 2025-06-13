@@ -56,31 +56,6 @@ citation_description <- function(meta) {
   )
 }
 
-#' @importFrom assertthat assert_that
-known_affiliation <- function(target, org) {
-  assert_that(inherits(org, "org_list"))
-  target <- gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", target)
-  vapply(
-    names(org),
-    FUN.VALUE = logical(1),
-    target = target,
-    org = org$get_organisation,
-    FUN = function(x, org, target) {
-      grepl(target, org[[x]]$affiliation) |>
-        any()
-    }
-  ) -> org
-  assert_that(
-    sum(org) < 2,
-    msg = paste(
-      "multiple matching organisations:",
-      paste(names(org)[org], collapse = "; ")
-    )
-  )
-  c(names(org)[org], "") |>
-    head(1)
-}
-
 description_url <- function(urls) {
   urls <- urls[!grepl("https://github.com/", urls)]
   doi_regexp <- "https://doi.org/(.*)"
