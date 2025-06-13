@@ -27,7 +27,8 @@ test_that("create_package() works", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,
-      language = "en-GB"
+      language = "en-GB",
+      quiet = TRUE
     ),
     regexp = sprintf("package created at `.*%s`", package)
   )
@@ -38,6 +39,7 @@ test_that("create_package() works", {
   git_config_set("user.email", "unit@test.com", repo = repo)
   git_add(list.files(repo, recursive = TRUE), repo = repo)
   git_commit("initial commit", repo = repo)
+  gert::git_remote_remove("origin", repo = repo)
 
   expect_false(git_branch_exists("gh-pages", repo = repo))
   old_head <- git_info(repo = repo)$head
