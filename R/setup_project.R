@@ -17,10 +17,10 @@ setup_project <- function(path = ".") {
   if (is_file(checklist_file)) {
     x <- read_checklist(path)
   } else {
-    lang <- menu_first(
+    lang <- org$get_languages[menu_first(
       choices = org$get_languages,
       title = "Language of the project?"
-    )
+    )]
     x <- checklist$new(x = path, language = lang, package = FALSE)
     x$allowed()
     x$set_ignore(c(".github", "LICENSE.md"))
@@ -35,7 +35,7 @@ setup_project <- function(path = ".") {
   }
   repo <- setup_vc(path = path)
   renv_activate(path = path)
-  files <- create_readme(path = path)
+  files <- create_readme(path = path, lang = x$default)
   checks <- c(
     "checklist",
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
@@ -167,13 +167,15 @@ setup_vc <- function(path) {
 #' This function creates a new RStudio project with `checklist` functionality.
 #' @param path The folder in which to create the project as a folder.
 #' @param project The name of the project.
+#' @inheritParams create_package
 #' @export
-#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom fs dir_create dir_exists file_copy is_dir path
 #' @family setup
-create_project <- function(path, project) {
+create_project <- function(path, project, quiet = FALSE) {
   assert_that(is.string(path), noNA(path), is_dir(path))
   assert_that(is.string(project), noNA(project))
+  assert_that(is.flag(quiet), noNA(quiet))
   assert_that(!dir_exists(path(path, project)), msg = "Existing project folder")
   dir_create(path(path, project))
 
@@ -190,6 +192,7 @@ create_project <- function(path, project) {
 
   if (
     !interactive() ||
+      quiet ||
       !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {
@@ -215,8 +218,8 @@ create_readme <- function(path, org, lang) {
     c(author, extra) |>
       `attr<-`(which = "footnote", value = footnote) -> author
   }
-  title <- readline(prompt = "Enter the title of the project?")
-  readline(prompt = "Enter one or more keywords separated by `;`") |>
+  title <- readline(prompt = "Enter the title of the project? ")
+  readline(prompt = "Enter one or more keywords separated by `;` ") |>
     strsplit(";") |>
     unlist() |>
     gsub(pattern = "^\\s+", replacement = "") |>
@@ -239,7 +242,7 @@ create_readme <- function(path, org, lang) {
   vapply(
     rightsholder[rightsholder %in% funder],
     FUN = function(x) {
-      list(org$get_person(x, role = c("cph", "fnd")))
+      list(org$get_person(x, role = c("cph", "fnd"), lang = lang))
     },
     FUN.VALUE = vector("list", 1)
   ) |>
@@ -250,7 +253,8 @@ create_readme <- function(path, org, lang) {
           given = x$given,
           family = "",
           orcid = "",
-          affiliation = ""
+          affiliation = "",
+          email = x$email
         ) |>
           author2badge(role = x$role) |>
           list()
@@ -260,7 +264,7 @@ create_readme <- function(path, org, lang) {
       vapply(
         rightsholder[!rightsholder %in% funder],
         FUN = function(x) {
-          list(org$get_person(x, role = "cph"))
+          list(org$get_person(x, role = "cph", lang = lang))
         },
         FUN.VALUE = vector("list", 1)
       ) |>
@@ -271,7 +275,8 @@ create_readme <- function(path, org, lang) {
               given = x$given,
               family = "",
               orcid = "",
-              affiliation = ""
+              affiliation = "",
+              email = x$email
             ) |>
               author2badge(role = x$role) |>
               list()
@@ -280,7 +285,7 @@ create_readme <- function(path, org, lang) {
       vapply(
         funder[!funder %in% rightsholder],
         FUN = function(x) {
-          list(org$get_person(x, role = "fnd"))
+          list(org$get_person(x, role = "fnd", lang = lang))
         },
         FUN.VALUE = vector("list", 1)
       ) |>
@@ -291,7 +296,8 @@ create_readme <- function(path, org, lang) {
               given = x$given,
               family = "",
               orcid = "",
-              affiliation = ""
+              affiliation = "",
+              email = x$email
             ) |>
               author2badge(role = x$role) |>
               list()
@@ -347,7 +353,9 @@ create_readme <- function(path, org, lang) {
     "",
     sprintf(
       "<!-- community: %s -->",
-      paste(org$get_community, collapse = "; ")
+      c(rightsholder, funder) |>
+        org$get_zenodo_by_email() |>
+        paste(collapse = "; ")
     ),
     "",
     "<!-- description: start -->",

@@ -217,8 +217,19 @@ author2badge <- function(df, role = "aut") {
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
   if (is.na(df$orcid) || df$orcid == "") {
-    ifelse(df$family == "", "", paste0(df$family, ", ")) |>
-      paste0(df$given, role_link) -> badge
+    if (is.na(df$email) || df$email == "") {
+      ifelse(df$family == "", "", paste0(df$family, ", ")) |>
+        paste0(df$given, role_link) -> badge
+    } else {
+      df$email |>
+        gsub(pattern = "@", replacement = "%40") |>
+        sprintf(
+          fmt = "[%2$s%3$s](mailto:%1$s)%4$s",
+          ifelse(df$family == "", "", paste0(df$family, ", ")),
+          df$given,
+          role_link
+        ) -> badge
+    }
   } else {
     badge <- paste0(
       "[%s, %s![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/",

@@ -16,9 +16,11 @@ store_authors <- function(x = ".") {
       cbind(usage = 1) |>
       rbind(cbind(current, role = "")) -> new_author_df
   } else {
-    citation_meta$new(x)$get_meta$authors |>
+    citation_meta$new(x)$get_person |>
+      author2df() |>
       cbind(usage = 1, email = "") -> cit_meta
-    cit_meta <- cit_meta[,
+    cit_meta <- cit_meta[
+      cit_meta$family != "",
       c("given", "family", "email", "orcid", "affiliation", "usage")
     ]
     new_author_df <- rbind(current, cit_meta)

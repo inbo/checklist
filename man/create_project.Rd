@@ -4,12 +4,16 @@
 \alias{create_project}
 \title{Initialise a new R project}
 \usage{
-create_project(path, project)
+create_project(path, project, quiet = FALSE)
 }
 \arguments{
 \item{path}{The folder in which to create the project as a folder.}
 
 \item{project}{The name of the project.}
+
+\item{quiet}{If \code{TRUE}, don't open the project in RStudio.
+If \code{FALSE}, open the project in RStudio when RStudio is available.
+Defaults to \code{FALSE}.}
 }
 \description{
 This function creates a new RStudio project with \code{checklist} functionality.

@@ -28,7 +28,8 @@ test_that("check_spelling() on a package", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       language = "en-GB",
-      keywords = "dummy"
+      keywords = "dummy",
+      quiet = TRUE
     )
   )
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
@@ -156,9 +157,11 @@ test_that("check_spelling() on a project", {
 
   r_user_dir <- tempfile("author")
   dir.create(r_user_dir)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(r_user_dir, "config.yml"))
   stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
   stub(new_author, "ask_orcid", mock(""))
-  org <- read_organisation()
+  org <- org_list$new()$read(r_user_dir)
   expect_output(
     new_author(current = data.frame(), root = r_user_dir, org = org)
   )
@@ -169,7 +172,7 @@ test_that("check_spelling() on a project", {
       hide_create <- tempfile(fileext = ".txt")
       defer(file_delete(hide_create))
       sink(hide_create)
-      z <- create_project(path, "spelling")
+      z <- create_project(path, "spelling", quiet = TRUE)
       sink()
     }
   )
@@ -245,12 +248,15 @@ test_that("check_spelling() on a project", {
     unique() |>
     add_words(path(path, "spelling", "inst", "en_gb"))
   sink()
-  expect_is(check_project(path(path, "spelling"), quiet = TRUE), "checklist")
+  expect_is(
+    check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE),
+    "checklist"
+  )
 
   path(path, "spelling") |>
     read_checklist() -> x
   stub(change_language_interactive, "menu", 3)
-  stub(change_language_interactive2, "menu", 1, 2)
+  stub(change_language_interactive, "menu", 1, 2)
   expect_is(
     {
       hide_output <- tempfile(fileext = ".txt")

@@ -33,7 +33,11 @@ citation_meta <- R6Class(
         meta <- switch(
           private$type,
           package = citation_description(self),
-          citation_readme(self)
+          citation_readme(
+            self,
+            org = org_list$new()$read(x$get_path),
+            lang = x$default
+          )
         )
         meta$meta$language <- x$default
       }

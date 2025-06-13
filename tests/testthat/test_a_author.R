@@ -88,7 +88,13 @@ test_that("author tools", {
   badge <- "Doe, John[^aut]"
   attr(badge, "footnote") <- "[^aut]: author"
   expect_equal(
-    data.frame(given = "John", family = "Doe", orcid = "", affiliation = "") |>
+    data.frame(
+      given = "John",
+      family = "Doe",
+      orcid = "",
+      affiliation = "",
+      email = ""
+    ) |>
       author2badge(),
     badge
   )
@@ -96,7 +102,13 @@ test_that("author tools", {
   badge <- "INBO[^cph][^fnd]"
   attr(badge, "footnote") <- c("[^cph]: copyrightholder", "[^fnd]: funder")
   expect_equal(
-    data.frame(given = "INBO", family = "", orcid = "", affiliation = "") |>
+    data.frame(
+      given = "INBO",
+      family = "",
+      orcid = "",
+      affiliation = "",
+      email = ""
+    ) |>
       author2badge(role = c("cph", "fnd")),
     badge
   )

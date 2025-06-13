@@ -308,6 +308,7 @@ org_list <- R6Class(
         }
       ) |>
         unlist() |>
+        c("en-GB") |>
         unique()
     },
     #' @field which_funder The required rightsholders.
@@ -626,7 +627,7 @@ git_org <- function(x) {
   remotes <- git_remote_list(repo = x)
   stopifnot("no git remote `origin` found" = any(remotes$name == "origin"))
   url <- remotes$url[remotes$name == "origin"]
-  org_url <- gsub("\\/\\w+?\\.git$", "", url, perl = TRUE)
+  org_url <- gsub("\\/[\\w-]+?\\.git$", "", url, perl = TRUE)
   if (!grepl("^https:\\/\\/", org_url)) {
     org_url <- gsub("^git@(.*):", "https://\\1/", org_url, perl = TRUE)
   }
