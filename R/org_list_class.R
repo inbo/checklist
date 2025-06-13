@@ -376,16 +376,19 @@ ol_validate_rules <- function(
   type = c("rightsholder", "funder")
 ) {
   type <- match.arg(type)
+  if (length(person) == 0) {
+    return(sprintf("no %s listed", type))
+  }
   if (!inherits(person, "person")) {
     return(sprintf("`%s` is not a `person` object", type))
   }
   if (is.null(person$email)) {
     return(sprintf("all `%s` without email", type))
   }
+  if (!all(unlist(person$email) %in% names(items))) {
+    return(sprintf("`%s` without matching email in `organisation.yml`", type))
+  }
   c(
-    sprintf("`%s` without matching email in `organisation.yml`", type)[
-      !all(unlist(person$email) %in% names(items))
-    ],
     # fmt:skip
     sprintf(
       "missing required `%s`:\n - %s",

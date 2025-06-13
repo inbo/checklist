@@ -26,7 +26,8 @@ test_that("update_citation() works", {
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.",
     maintainer = maintainer,
-    language = "en-GB"
+    language = "en-GB",
+    quiet = TRUE
   )
 
   hide_output <- tempfile(fileext = ".txt")
@@ -59,46 +60,51 @@ test_that("update_citation() works", {
   )
   writeLines(old_citation, path(path, package, "inst", "CITATION"))
 
-  org <- organisation$new()
+  org <- org_list$new()$read(path(path, package))
 
   this_description <- desc(path(path, package))
   this_description$add_urls("https://doi.org/10.5281/zenodo.4028303")
-  gsub("([\\(\\)])", "\\\\\\1", org$get_rightsholder) |>
-    this_description$del_author()
+  rightsholder <- this_description$get_author(role = "cph")
+  this_description$del_author(email = rightsholder$email)
   expect_equal(length(this_description$get_authors()), 1)
   this_description$write(path(path, package))
-  expect_is(
+  expect_warning(
     z <- update_citation(path(path, package), quiet = TRUE),
-    "checklist"
+    "Citation files not updated"
   )
   expect_equal(
-    z$.__enclos_env__$private$notes,
+    z$.__enclos_env__$private$errors$CITATION,
     c("no rightsholder listed", "no funder listed")
   )
   this_description$add_author(given = "unit", family = "test", role = "ctb")
   this_description$add_author(given = "test", family = "unit", role = "cph")
   this_description$write(path(path, package))
   file_delete(path(path, package, ".Rbuildignore"))
-  expect_is(
+  expect_warning(
     z <- update_citation(path(path, package), quiet = TRUE),
-    "checklist"
+    "Citation files not updated"
   )
   expect_equal(
-    z$.__enclos_env__$private$notes,
+    z$.__enclos_env__$private$errors$CITATION,
+    c("all `rightsholder` without email", "no funder listed")
+  )
+
+  this_description$del_author(given = "test", family = "unit", role = "cph")
+  this_description$add_author(
+    given = "test",
+    email = "info@test.be",
+    role = "cph"
+  )
+  this_description$write(path(path, package))
+  expect_warning(
+    z <- update_citation(path(path, package), quiet = TRUE),
+    "Citation files not updated"
+  )
+  expect_equal(
+    z$.__enclos_env__$private$errors$CITATION,
     c(
-      "no funder listed",
-      sprintf("rightsholder differs from `%s`", org$get_rightsholder)
+      "`rightsholder` without matching email in `organisation.yml`",
+      "no funder listed"
     )
   )
-  new_org <- organisation$new(
-    email = NA_character_,
-    funder = NA_character_,
-    rightsholder = "test"
-  )
-  write_organisation(new_org, path(path, package))
-  expect_is(
-    z <- update_citation(path(path, package), quiet = TRUE),
-    "checklist"
-  )
-  expect_length(z$.__enclos_env__$private$notes, 0)
 })
