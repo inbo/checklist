@@ -37,6 +37,16 @@ organisation <- R6Class(
     #'   Use an empty list in case you don't want to set this.
     #' @importFrom assertthat assert_that is.string is.flag
     initialize = function(...) {
+      .Deprecated(
+        new = "org_list$new()",
+        package = "checklist",
+        msg = paste(
+          c(
+            "The `organisation` class is deprecated.",
+            "Please use the `org_list` class instead."
+          )
+        )
+      )
       dots <- list(...)
       private$community <- use_first_non_null(dots$community, "inbo")
       stopifnot("`community` must be a string" = is.string(private$community))
