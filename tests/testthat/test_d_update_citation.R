@@ -26,8 +26,7 @@ test_that("update_citation() works", {
     title = "testing the ability of checklist to create a minimal package",
     description = "A dummy package.",
     maintainer = maintainer,
-    language = "en-GB",
-    quiet = TRUE
+    language = "en-GB"
   )
 
   hide_output <- tempfile(fileext = ".txt")

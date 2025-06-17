@@ -264,7 +264,6 @@ Please send a pull request if you need support for this license.",
   system.file("generic_template", official, package = "checklist") |>
     readLines() -> official
   if (current_license == "MIT + file LICENSE") {
-    org <- org_list$new()$read(x$get_path)
     author <- this_desc$get_author(role = "cph")
     stopifnot("no copyrightholder found" = length(author) > 0)
     cph <- paste(c(author$given, author$family), collapse = " ")

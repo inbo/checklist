@@ -29,6 +29,7 @@ spelling:
   - .github
   - LICENSE.md
   - inst/bookdown
+  - inst/generic_template/cc0.md
   - inst/generic_template/cc_by_4_0.md
   - inst/generic_template/cc_by_sa_4_0.md
   - inst/generic_template/gplv3.md

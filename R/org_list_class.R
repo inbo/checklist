@@ -291,6 +291,22 @@ org_list <- R6Class(
         x$get_default_name
       })
     },
+    #' @field get_default_funder The default funder.
+    get_default_funder = function() {
+      funder <- self$which_funder
+      if (length(funder$required) > 0) {
+        return(funder$required)
+      }
+      funder$alternative
+    },
+    #' @field get_default_rightsholder The default rightsholder.
+    get_default_rightsholder = function() {
+      rightsholder <- self$which_rightsholder
+      if (length(rightsholder$required) > 0) {
+        return(rightsholder$required)
+      }
+      rightsholder$alternative
+    },
     #' @field get_email The organisations email.
     get_email = function() {
       vapply(private$items, FUN.VALUE = character(1), FUN = function(x) {
@@ -389,34 +405,28 @@ ol_validate_rules <- function(
     return(sprintf("`%s` without matching email in `organisation.yml`", type))
   }
   c(
-    # fmt:skip
-    sprintf(
-      "missing required `%s`:\n - %s",
-      type,
-      paste(unlist(which_person), collapse = "\n -")
-    )[
-      !(
-        (
-          length(which_person[["required"]]) == 0 &&
-            length(which_person[["alternative"]]) == 0
-        ) ||
-          (
-            length(which_person[["required"]]) > 0 &&
-              all(which_person[["required"]] %in% person$email)
-          ) ||
-          (
-            length(which_person[["alternative"]]) > 0 &&
-              which_person[["alternative"]] %in% person$email
-          )
-      )
-    ],
+    required_rule(which_person = which_person, type, person),
     # fmt:skip
     sprintf("incompatible rules for `%s`", type)[
-      length(person) > 0 &&
-        !(items[[unlist(person$email)]]$get_rightsholder |>
-            ol_valid_rules())
+      !(items[[unlist(person$email)]]$get_rightsholder |>
+          ol_valid_rules())
     ]
   )
+}
+
+required_rule <- function(which_person, type, person) {
+  error <- sprintf(
+    "missing required `%s`:\n - %s",
+    type,
+    paste(unlist(which_person), collapse = "\n -")
+  )
+  if (length(which_person[["required"]]) > 0) {
+    return(error[!all(which_person[["required"]] %in% person$email)])
+  }
+  if (length(which_person[["alternative"]]) > 0) {
+    return(error[!all(which_person[["alternative"]] %in% person$email)])
+  }
+  return(character(0))
 }
 
 ol_validate_persons <- function(person, lang, items) {

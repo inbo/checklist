@@ -20,9 +20,6 @@
 #' Belgian Dutch.
 #' @param license What type of license should be used?
 #' @param keywords A vector of keywords.
-#' @param quiet If `TRUE`, don't open the project in RStudio.
-#' If `FALSE`, open the project in RStudio when RStudio is available.
-#' Defaults to `FALSE`.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom desc description
@@ -57,8 +54,7 @@ create_package <- function(
   keywords,
   language = "en-GB",
   license,
-  maintainer,
-  quiet = FALSE
+  maintainer
 ) {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
@@ -67,14 +63,6 @@ create_package <- function(
       "`install.packages(\"roxygen2\")`"
     )
   )
-  if (missing(maintainer)) {
-    cat("Please select the maintainer")
-    maintainer <- author2person(role = c("aut", "cre"))
-    while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
-      maintainer <- c(maintainer, author2person())
-    }
-  }
-  assert_that(inherits(maintainer, "person"), is.flag(quiet), noNA(quiet))
 
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
@@ -96,13 +84,8 @@ create_package <- function(
   dir_create(path(path, "R"))
 
   org <- org_list$new()$read(path)
-  rightsholder <- org$which_rightsholder
-  if (length(rightsholder$required) > 0) {
-    rightsholder <- rightsholder$required
-  } else {
-    rightsholder <- rightsholder$alternative
-  }
-  allowed <- org$get_allowed_licenses(rightsholder, type = "package")
+  org$get_default_rightsholder |>
+    org$get_allowed_licenses(type = "package") -> allowed
   if (missing(license)) {
     stopifnot(
       "no `license` given and no required licenses" = length(allowed) > 0
@@ -110,10 +93,7 @@ create_package <- function(
     names(allowed) |>
       head(1) -> license
   }
-  assert_that(
-    license = is.string(license),
-    noNA(license)
-  )
+  assert_that(license = is.string(license), noNA(license))
   assert_that(
     length(allowed) == 0 || license %in% names(allowed),
     msg = paste(
@@ -121,39 +101,6 @@ create_package <- function(
       paste(names(allowed), collapse = ", ")
     )
   )
-  funder <- org$which_funder
-  if (length(funder$required) > 0) {
-    funder <- funder$required
-  } else {
-    funder <- funder$alternative
-  }
-  c(
-    maintainer,
-    c(
-      vapply(
-        rightsholder[rightsholder %in% funder],
-        FUN = function(x) {
-          list(org$get_person(x, role = c("cph", "fnd"), lang = language))
-        },
-        FUN.VALUE = vector("list", 1)
-      ),
-      vapply(
-        rightsholder[!rightsholder %in% funder],
-        FUN = function(x) {
-          list(org$get_person(x, role = "cph", lang = language))
-        },
-        FUN.VALUE = vector("list", 1)
-      ),
-      vapply(
-        funder[!funder %in% rightsholder],
-        FUN = function(x) {
-          list(org$get_person(x, role = "fnd", lang = language))
-        },
-        FUN.VALUE = vector("list", 1)
-      )
-    ) |>
-      do.call(what = c)
-  ) -> maintainer
 
   # add checklist.yml
   x <- checklist$new(x = path, package = TRUE, language = language)
@@ -166,7 +113,8 @@ create_package <- function(
   desc$set("Package", package)
   desc$set("Title", toTitleCase(title))
   desc$set_version("0.0.0")
-  desc$set_authors(maintainer)
+  package_maintainer(maintainer = maintainer, org = org, lang = language) |>
+    desc$set_authors()
   desc$set("Description", description)
   desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
   org_url <- gsub("\\.git$", "", git, perl = TRUE)
@@ -176,17 +124,10 @@ create_package <- function(
   desc$set_urls(org_url)
   desc$set("BugReports", sprintf("%s/issues", org_url))
 
-  vapply(rightsholder, FUN.VALUE = vector(mode = "list", 1), FUN = function(x) {
-    list(org$get_zenodo_by_email(x))
-  }) |>
-    unlist() |>
-    unique() -> communities
-  if (length(communities)) {
-    desc$set(
-      "Config/checklist/communities",
-      paste(communities, collapse = "; ")
-    )
-  }
+  desc <- append_communities(
+    desc = desc,
+    org = org
+  )
   desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
   desc$set("Encoding", "UTF-8")
   desc$set("Language", language)
@@ -373,7 +314,6 @@ create_package <- function(
 
   if (
     !interactive() ||
-      quiet ||
       !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {
@@ -385,6 +325,47 @@ create_package <- function(
 valid_package_name <- function(x) {
   grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
 }
+
+package_maintainer <- function(maintainer, org, lang) {
+  if (missing(maintainer)) {
+    cat("Please select the maintainer")
+    maintainer <- author2person(role = c("aut", "cre"))
+    while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
+      maintainer <- c(maintainer, author2person())
+    }
+  }
+  assert_that(inherits(maintainer, "person"))
+  rightsholder <- org$get_default_rightsholder
+  funder <- org$get_default_funder
+  c(
+    maintainer,
+    c(
+      vapply(
+        rightsholder[rightsholder %in% funder],
+        FUN = function(x) {
+          list(org$get_person(x, role = c("cph", "fnd"), lang = lang))
+        },
+        FUN.VALUE = vector("list", 1)
+      ),
+      vapply(
+        rightsholder[!rightsholder %in% funder],
+        FUN = function(x) {
+          list(org$get_person(x, role = "cph", lang = lang))
+        },
+        FUN.VALUE = vector("list", 1)
+      ),
+      vapply(
+        funder[!funder %in% rightsholder],
+        FUN = function(x) {
+          list(org$get_person(x, role = "fnd", lang = lang))
+        },
+        FUN.VALUE = vector("list", 1)
+      )
+    ) |>
+      do.call(what = c)
+  )
+}
+
 
 #' @importFrom assertthat on_failure<-
 on_failure(valid_package_name) <- function(call, env) {
@@ -407,4 +388,20 @@ insert_file <- function(repo, filename, template, target, new_name) {
   }
   git_add(new_name, force = TRUE, repo = repo)
   return(invisible(NULL))
+}
+
+append_communities <- function(desc, org) {
+  org$get_default_rightsholder |>
+    vapply(FUN.VALUE = vector(mode = "list", 1), FUN = function(x) {
+      list(org$get_zenodo_by_email(x))
+    }) |>
+    unlist() |>
+    unique() -> communities
+  if (length(communities) == 0) {
+    return(desc)
+  }
+  desc$set(
+    "Config/checklist/communities",
+    paste(communities, collapse = "; ")
+  )
 }

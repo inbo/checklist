@@ -20,6 +20,10 @@ Other class:
 \describe{
 \item{\code{get_default_name}}{The organisations default name.}
 
+\item{\code{get_default_funder}}{The default funder.}
+
+\item{\code{get_default_rightsholder}}{The default rightsholder.}
+
 \item{\code{get_email}}{The organisations email.}
 
 \item{\code{get_languages}}{The different languages of the organisations.}

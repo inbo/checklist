@@ -12,8 +12,7 @@ create_package(
   keywords,
   language = "en-GB",
   license,
-  maintainer,
-  quiet = FALSE
+  maintainer
 )
 }
 \arguments{
@@ -38,10 +37,6 @@ Belgian Dutch.}
 \item{maintainer}{When missing, the function interactively lets you add the
 maintainer and other authors.
 Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
-
-\item{quiet}{If \code{TRUE}, don't open the project in RStudio.
-If \code{FALSE}, open the project in RStudio when RStudio is available.
-Defaults to \code{FALSE}.}
 }
 \description{
 Creates a package template in a new folder.
