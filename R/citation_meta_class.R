@@ -202,6 +202,7 @@ validate_citation <- function(meta) {
     },
     FUN.VALUE = logical(1)
   )]
+  contact <- any("cre" %in% unlist(persons$role))
   c(rightsholder$email, funder$email) |>
     org$get_zenodo_by_email() -> required_communities
   org$validate_person(persons, lang = meta$get_meta$language) |>
@@ -214,7 +215,8 @@ validate_citation <- function(meta) {
       )[
         length(required_communities) > 0 &&
           !all(required_communities %in% meta$get_meta$community)
-      ]
+      ],
+      "no author with `corresponding: true` or role `cre`"[!contact]
     )
 }
 

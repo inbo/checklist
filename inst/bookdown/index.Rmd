@@ -20,8 +20,16 @@ keywords: checklist; unit test
 community: checklist; inbo
 publication_type: publication-report
 publisher: Research Institute for Nature and Forest (INBO)
-funder: Research Institute for Nature and Forest (INBO)
-rightsholder: Research Institute for Nature and Forest (INBO)
+funder:
+  - name:
+      given: Instituut voor Natuur- en Bosonderzoek (INBO)
+    email: info@inbo.be
+    ror: https://ror.org/00j54wy13
+rightsholder:
+  - name:
+      given: Instituut voor Natuur- en Bosonderzoek (INBO)
+    email: info@inbo.be
+    ror: https://ror.org/00j54wy13
 site: bookdown::bookdown_site
 output:
   bookdown::gitbook: default

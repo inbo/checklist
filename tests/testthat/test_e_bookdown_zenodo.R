@@ -94,49 +94,10 @@ test_that("bookdown_zenodo() works", {
     label = paste("Remove Zenodo sandbox record", x$links$self_html)
   )
 
-  # test without community
-  c("---", index[!grepl("^community:", index)]) |>
-    writeLines(path(root, "index.Rmd"))
-  organisation$new(
-    github = NA_character_,
-    community = NA_character_,
-    email = NA_character_,
-    funder = NA_character_,
-    rightsholder = NA_character_
-  ) |>
-    write_organisation(root)
-  zenodo_out3 <- tempfile(fileext = ".txt")
-  defer(file_delete(zenodo_out3))
-  sink(zenodo_out3)
-  suppressMessages(
-    x <- bookdown_zenodo(
-      root,
-      logger = NULL,
-      sandbox = TRUE,
-      token = sandbox_token
-    )
-  )
-  sink()
-  expect_true(
-    manager$deleteRecord(x$id),
-    label = paste("Remove Zenodo sandbox record", x$links$self_html)
-  )
-
   path(root, "index.Rmd") |>
     readLines() -> index
-  head(index, 3) |>
-    c("  - Josiah Carberry", tail(index, -10)) |>
-    writeLines(path(root, "index.Rmd"))
-  expect_warning(
-    x <- citation_meta$new(root),
-    "Errors found parsing citation meta data"
-  )
-  expect_identical(
-    x$get_errors,
-    c("no author with `corresponding: true`", "person must be a list")
-  )
-  head(index, 3) |>
-    c("  - name: Josiah Carberry", tail(index, -10)) |>
+  head(index, 4) |>
+    c("  - Josiah Carberry", tail(index, -11)) |>
     writeLines(path(root, "index.Rmd"))
   expect_warning(
     x <- citation_meta$new(root),
@@ -145,9 +106,22 @@ test_that("bookdown_zenodo() works", {
   expect_identical(
     x$get_errors,
     c(
-      "no author with `corresponding: true`",
-      "person `name` element is not a list"
+      `Josiah Carberry` = paste(
+        "`Josiah Carberry` is not in the required person format.",
+        "Please update the YAML"
+      )
     )
+  )
+  head(index, 9) |>
+    c(tail(index, -11)) |>
+    writeLines(path(root, "index.Rmd"))
+  expect_warning(
+    x <- citation_meta$new(root),
+    "Errors found parsing citation meta data"
+  )
+  expect_identical(
+    x$get_errors,
+    "no author with `corresponding: true` or role `cre`"
   )
   path(root, "index.Rmd") |>
     writeLines(text = index)
@@ -192,13 +166,4 @@ test_that("bookdown_zenodo() works", {
     "Errors found parsing citation meta data"
   )
   expect_match(x$get_errors, "index.Rmd not found")
-})
-
-test_that("yaml_author_format", {
-  x <- yaml_author_format(person = "me")
-  expect_identical(class(x), "list")
-  expect_identical(attr(x[[1]], "errors")[[1]], "person must be a list")
-  x <- yaml_author_format(person = list("me"))
-  expect_identical(class(x), "list")
-  expect_identical(attr(x[[1]], "errors")[[1]], "person has no `name` element")
 })

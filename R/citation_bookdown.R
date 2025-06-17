@@ -134,58 +134,66 @@ split_community <- function(community) {
 
 #' @importFrom assertthat has_name
 yaml_author <- function(yaml) {
-  author <- vapply(
+  vapply(
     X = yaml$author,
     role = "aut",
     FUN = yaml_author_format,
     FUN.VALUE = vector(mode = "list", 1)
-  )
-  reviewer <- vapply(
-    X = yaml$reviewer,
-    FUN = yaml_author_format,
-    role = "rev",
-    FUN.VALUE = vector(mode = "list", 1)
-  )
-  funder <- vapply(
-    X = yaml$funder,
-    FUN = yaml_author_format,
-    role = "fnd",
-    FUN.VALUE = vector(mode = "list", 1)
-  )
-  rightsholder <- vapply(
-    X = yaml$rightsholder,
-    FUN = yaml_author_format,
-    role = "cph",
-    FUN.VALUE = vector(mode = "list", 1)
-  )
+  ) |>
+    c(
+      vapply(
+        X = yaml$reviewer,
+        FUN = yaml_author_format,
+        role = "rev",
+        FUN.VALUE = vector(mode = "list", 1)
+      ),
+      vapply(
+        X = yaml$funder,
+        FUN = yaml_author_format,
+        role = "fnd",
+        FUN.VALUE = vector(mode = "list", 1)
+      ),
+      vapply(
+        X = yaml$rightsholder,
+        FUN = yaml_author_format,
+        role = "cph",
+        FUN.VALUE = vector(mode = "list", 1)
+      )
+    ) -> authors
   list(
-    person = c(
-      author$person,
-      reviewer$person,
-      funder$person,
-      rightsholder$person
+    person = vapply(
+      authors,
+      function(x) {
+        list(x$person)
+      },
+      FUN.VALUE = vector(mode = "list", 1)
     ) |>
-      do.call(what = "c"),
-    errors = c(
-      author$error,
-      reviewer$error,
-      funder$error,
-      rightsholder$error
+      do.call(what = c),
+    errors = vapply(
+      authors,
+      function(x) {
+        list(x$errors)
+      },
+      FUN.VALUE = vector(mode = "list", 1)
     ) |>
-      do.call(what = "c")
+      do.call(what = c)
   )
 }
 
 #' @importFrom assertthat has_name is.flag
 yaml_author_format <- function(person, role) {
-  if (!inherits(person, "list")) {
-    return(list(
-      person = NULL,
-      error = sprintf(
+  if (
+    !inherits(person, "list") ||
+      !has_name(person, "name") ||
+      !has_name(person$name, "given")
+  ) {
+    return(list(list(
+      person = person(),
+      errors = sprintf(
         "`%s` is not in the required person format. Please update the YAML",
         person
       )
-    ))
+    )))
   }
   comment <- person[c("orcid", "affiliation", "ror")]
   names(comment)[names(comment) == "orcid"] <- "ORCID"
@@ -198,7 +206,8 @@ yaml_author_format <- function(person, role) {
     comment = unlist(comment),
     role = c(role, "cre"[isTRUE(person$corresponding)])
   )
-  list(person = person, error = NULL)
+  list(person = person, errors = character(0)) |>
+    list()
 }
 
 #' @family utils
