@@ -58,25 +58,6 @@ Actions.
 \item the set-up for a \code{pkgdown} website using the INBO corporate identity.
 }
 }
-\examples{
-# maintainer in `utils::person()` format
-maintainer <- person(
-  given = "Thierry",
-  family = "Onkelinx",
-  role = c("aut", "cre"),
-  email = "thierry.onkelinx@inbo.be",
-  comment = c(ORCID = "0000-0001-8804-4216")
-)
-
-# creating the package
-path <- tempfile()
-dir.create(path)
-create_package(
-  path = path, package = "packagename", title = "package title",
-  description = "A short description.", maintainer = maintainer,
-  language = "en-GB", keywords = "keyword"
-)
-}
 \seealso{
 Other setup: 
 \code{\link{create_project}()},
