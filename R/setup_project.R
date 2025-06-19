@@ -167,15 +167,13 @@ setup_vc <- function(path) {
 #' This function creates a new RStudio project with `checklist` functionality.
 #' @param path The folder in which to create the project as a folder.
 #' @param project The name of the project.
-#' @inheritParams create_package
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom fs dir_create dir_exists file_copy is_dir path
 #' @family setup
-create_project <- function(path, project, quiet = FALSE) {
+create_project <- function(path, project) {
   assert_that(is.string(path), noNA(path), is_dir(path))
   assert_that(is.string(project), noNA(project))
-  assert_that(is.flag(quiet), noNA(quiet))
   assert_that(!dir_exists(path(path, project)), msg = "Existing project folder")
   dir_create(path(path, project))
 
@@ -192,7 +190,6 @@ create_project <- function(path, project, quiet = FALSE) {
 
   if (
     !interactive() ||
-      quiet ||
       !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {

@@ -4,7 +4,7 @@
 \alias{create_project}
 \title{Initialise a new R project}
 \usage{
-create_project(path, project, quiet = FALSE)
+create_project(path, project)
 }
 \arguments{
 \item{path}{The folder in which to create the project as a folder.}

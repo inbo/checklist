@@ -27,8 +27,7 @@ test_that("create_package() works", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       maintainer = maintainer,
-      language = "en-GB",
-      quiet = TRUE
+      language = "en-GB"
     ),
     regexp = sprintf("package created at `.*%s`", package)
   )

@@ -28,8 +28,7 @@ test_that("check_spelling() on a package", {
       title = "testing the ability of checklist to create a minimal package",
       description = "A dummy package.",
       language = "en-GB",
-      keywords = "dummy",
-      quiet = TRUE
+      keywords = "dummy"
     )
   )
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
@@ -172,7 +171,7 @@ test_that("check_spelling() on a project", {
       hide_create <- tempfile(fileext = ".txt")
       defer(file_delete(hide_create))
       sink(hide_create)
-      z <- create_project(path, "spelling", quiet = TRUE)
+      z <- create_project(path, "spelling")
       sink()
     }
   )
