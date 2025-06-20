@@ -640,17 +640,18 @@ git_org <- function(x) {
   remotes <- git_remote_list(repo = x)
   stopifnot("no git remote `origin` found" = any(remotes$name == "origin"))
   url <- remotes$url[remotes$name == "origin"]
-  org_url <- gsub("\\/[\\w-]+?\\.git$", "", url, perl = TRUE)
-  if (!grepl("^https:\\/\\/", org_url)) {
-    org_url <- gsub("^git@(.*):", "https://\\1/", org_url, perl = TRUE)
+  if (!grepl("^https:\\/\\/", url)) {
+    url <- gsub("^git@(.*):", "https://\\1/", url, perl = TRUE)
   }
-  if (!grepl("^(https:|git@)", org_url, perl = TRUE)) {
+  url <- gsub("oauth2:.*?@", "", url)
+  if (!grepl("^https://)", url, perl = TRUE)) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
+  url <- gsub("(https:\\/\\/.+?\\/.+?)\\/.*", "\\1", url, perl = TRUE)
   # fmt: skip
   stopifnot(
     "downloading org_list from git is to do" =
-      org_url == "https://github.com/inbo"
+      url == "https://github.com/inbo"
   )
   org_list$new(
     git = "https://github.com/inbo",
