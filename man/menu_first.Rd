@@ -26,6 +26,7 @@ Other utils:
 \code{\link{c_sort}()},
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
+\code{\link{get_default_org_list}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},
 \code{\link{validate_email}()},

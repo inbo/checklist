@@ -24,6 +24,7 @@ Other utils:
 \code{\link{bookdown_zenodo}()},
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
+\code{\link{get_default_org_list}()},
 \code{\link{menu_first}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},

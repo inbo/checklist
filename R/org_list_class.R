@@ -191,6 +191,8 @@ org_list <- R6Class(
         }
       )
       cat(rules())
+      cat("git organisation:", private$git)
+      cat(rules())
       return(invisible(self))
     },
     #' @description  Read the `org_list` object from an `organisation.yml` file.
@@ -199,11 +201,10 @@ org_list <- R6Class(
     #' @importFrom fs is_dir path
     #' @importFrom yaml read_yaml
     read = function(x = ".") {
+      stopifnot("`x` is not an existing directory" = is_dir(x))
       checklist <- try(read_checklist(x = x), silent = TRUE)
       if (inherits(checklist, "checklist")) {
         x <- checklist$get_path
-      } else {
-        stopifnot("`x` is not an existing directory" = is_dir(x))
       }
       if (!file_exists(path(x, "organisation.yml"))) {
         return(git_org(x))
@@ -633,7 +634,7 @@ ol_select_relevant_org <- function(
   relevant <- relevant[which_aff]
 }
 
-git_org <- function(x) {
+git_org <- function(x = ".") {
   if (!is_repository(x)) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
@@ -654,10 +655,11 @@ git_org <- function(x) {
     R_user_dir("checklist", "config") |>
       path(config_name) -> config_path
     if (file_exists(path(config_path, "organisation.yml"))) {
-      org <- org_list()$new$read(config_path)
+      org <- org_list$new()$read(config_path)
       org$write(x)
       return(org)
     }
+    message("no local `org_list` information found. See ?get_default_org_list")
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   org_list$new(
