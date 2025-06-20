@@ -1,4 +1,11 @@
-# checklist 0.4.3
+# checklist 0.5.0
+
+## Breaking changes
+
+* The `organisation` class is superseeded by the `org_list` and `org_item`
+  classes.
+
+## Other changes
 
 * `check_lintr()` turns missing dependencies into an error.
 
