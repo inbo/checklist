@@ -644,15 +644,22 @@ git_org <- function(x) {
     url <- gsub("^git@(.*):", "https://\\1/", url, perl = TRUE)
   }
   url <- gsub("oauth2:.*?@", "", url)
-  if (!grepl("^https://)", url, perl = TRUE)) {
+  if (!grepl("^https://", url, perl = TRUE)) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   url <- gsub("(https:\\/\\/.+?\\/.+?)\\/.*", "\\1", url, perl = TRUE)
-  # fmt: skip
-  stopifnot(
-    "downloading org_list from git is to do" =
-      url == "https://github.com/inbo"
-  )
+  if (url != "https://github.com/inbo") {
+    gsub("https://", "", url) |>
+      tolower() -> config_name
+    R_user_dir("checklist", "config") |>
+      path(config_name) -> config_path
+    if (file_exists(path(config_path, "organisation.yml"))) {
+      org <- org_list()$new$read(config_path)
+      org$write(x)
+      return(org)
+    }
+    return(org_list$new(org_item$new(email = "info@inbo.be")))
+  }
   org_list$new(
     git = "https://github.com/inbo",
     org_item$new(
