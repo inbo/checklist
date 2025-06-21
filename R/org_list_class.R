@@ -7,6 +7,26 @@
 org_list <- R6Class(
   "org_list",
   public = list(
+    #' @description Add one or more `org_item` objects to the list.
+    #' @param ... One or more `org_item` objects.
+    add_item = function(...) {
+      dots <- list(...)
+      vapply(dots, inherits, logical(1), what = "org_item") |>
+        as.list() -> ok
+      names(ok) <- sprintf("element %i is not an `org_item`", seq_along(dots))
+      do.call(stopifnot, ok)
+      private$items <- c(private$items, dots)
+      names(private$items) <- self$get_email
+      vapply(private$items, FUN.VALUE = character(1), FUN = function(x) {
+        x$get_rightsholder
+      }) |>
+        compatible_rules()
+      vapply(private$items, FUN.VALUE = character(1), FUN = function(x) {
+        x$get_funder
+      }) |>
+        compatible_rules()
+      return(self)
+    },
     #' @description Return the allowed licenses.
     #' @param email The email addresses of the organisations.
     #' @param type The type of license to return.

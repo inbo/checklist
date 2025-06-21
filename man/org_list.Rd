@@ -37,6 +37,7 @@ Other class:
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-org_list-add_item}{\code{org_list$add_item()}}
 \item \href{#method-org_list-get_allowed_licenses}{\code{org_list$get_allowed_licenses()}}
 \item \href{#method-org_list-get_person}{\code{org_list$get_person()}}
 \item \href{#method-org_list-get_zenodo_by_email}{\code{org_list$get_zenodo_by_email()}}
@@ -49,6 +50,23 @@ Other class:
 \item \href{#method-org_list-validate_rules}{\code{org_list$validate_rules()}}
 \item \href{#method-org_list-write}{\code{org_list$write()}}
 \item \href{#method-org_list-clone}{\code{org_list$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-add_item"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-add_item}{}}}
+\subsection{Method \code{add_item()}}{
+Add one or more \code{org_item} objects to the list.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$add_item(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{One or more \code{org_item} objects.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
