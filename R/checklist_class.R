@@ -301,11 +301,12 @@ Please contact the maintainer of the `checklist` package."
       "documentation",
       "R CMD check",
       "codemeta",
-      "license",
-      "repository secret",
       "filename conventions",
       "folder conventions",
+      "license",
       "lintr",
+      "organisation",
+      "repository secret",
       "spelling"
     ),
     # stores a named logical vector of checked items.

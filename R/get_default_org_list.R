@@ -29,7 +29,7 @@ get_default_org_list <- function(x = ".") {
     url,
     target
   ) |>
-    system(intern = FALSE)
+    system()
   org <- org_list$new()$read(target)
   gsub("https://", "", url) |>
     tolower() -> config_name

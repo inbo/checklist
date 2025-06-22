@@ -43,6 +43,10 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     x <- update_citation(x = x, quiet = quiet)
   }
 
+  org <- org_list$new()$read(x$get_path)
+  org$check(x = x$get_path) |>
+    x$add_error(item = "organisation") -> x
+
   print(x, quiet = quiet)
   if (!x$fail) {
     quiet_cat("\nNo problems found. Good job!\n\n", quiet = quiet)

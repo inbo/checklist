@@ -18,7 +18,7 @@
 #' @family git
 set_tag <- function(x = ".") {
   if (
-    !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
+    !isTRUE(as.logical(Sys.getenv("GITHUB_ACTIONS", "false"))) ||
       !Sys.getenv("GITHUB_REF") %in%
         c("refs/heads/main", "refs/heads/master") ||
       Sys.getenv("GITHUB_EVENT_NAME") != "push"

@@ -67,6 +67,9 @@ check_package <- function(
 
   x <- check_environment(x)
   x <- check_folder(x)
+  org <- org_list$new()$read(x$get_path)
+  org$check(x = x$get_path) |>
+    x$add_error(item = "organisation") -> x
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")

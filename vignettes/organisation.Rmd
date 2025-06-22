@@ -16,6 +16,13 @@ opts_chunk$set(
 )
 ```
 
+## New philosophy
+
+`checklist 0.5.0` had a major change in the way it handles organisation information.
+The old `organisation` object was replaced by two new classes: `org_item` and `org_list`.
+Another important change is that an organisation can define minimum rules for the organisation.
+This set of rules is stored in a repository called `checklist` in the organisation's git organisation.
+
 ## What is an `organisation` in the `checklist` context
 
 The `organisation` object defines rules about the organisation related to the project (or package).

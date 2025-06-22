@@ -27,6 +27,12 @@ org_list <- R6Class(
         compatible_rules()
       return(self)
     },
+    #' @description Check if the organisation list is compatible with the
+    #' default as set in the organisations git repository.
+    #' @param x The path to the project directory
+    check = function(x = ".") {
+      ol_check(local_org = self, x = x)
+    },
     #' @description Return the allowed licenses.
     #' @param email The email addresses of the organisations.
     #' @param type The type of license to return.
@@ -306,6 +312,17 @@ org_list <- R6Class(
     }
   ),
   active = list(
+    #' @field as_list The list of `org_item` objects.
+    as_list = function() {
+      vapply(
+        private$items,
+        FUN.VALUE = vector(mode = "list", 1L),
+        FUN = function(x) {
+          list(x$as_list)
+        }
+      ) |>
+        c(git = private$git)
+    },
     #' @field get_default_name The organisations default name.
     get_default_name = function() {
       vapply(private$items, FUN.VALUE = character(1), FUN = function(x) {
@@ -759,5 +776,52 @@ git_org <- function(x = ".") {
         data = character(0)
       )
     )
+  )
+}
+
+ol_check <- function(local_org, x) {
+  if (!is_repository(x)) {
+    return(character(0))
+  }
+  if (isTRUE(as.logical(Sys.getenv("GITHUB_ACTIONS", "false")))) {
+    remote_org <- get_default_org_list(x)
+  } else {
+    remote_org <- git_org(x)
+  }
+  remote_org <- remote_org$as_list
+  local_org <- local_org$as_list
+  problems <- sprintf("git organisation doesn't match `%s`", remote_org$git)[
+    local_org$git != remote_org$git
+  ]
+  remote_org$git <- NULL
+  local_org$git <- NULL
+  common <- names(remote_org) %in% names(local_org)
+  missing_org <- names(remote_org)[!common]
+  local_org <- local_org[names(remote_org)[common]]
+  remote_org <- remote_org[common]
+  remote_rightsholder <- vapply(remote_org, `[[`, character(1), "rightsholder")
+  remote_funder <- vapply(remote_org, `[[`, character(1), "funder")
+  local_rightsholder <- vapply(local_org, `[[`, character(1), "rightsholder")
+  local_funder <- vapply(local_org, `[[`, character(1), "funder")
+  not_equal <- local_rightsholder != remote_rightsholder
+  local_rightsholder <- local_rightsholder[not_equal]
+  remote_rightsholder <- remote_rightsholder[not_equal]
+  not_equal <- local_funder != remote_funder
+  local_funder <- local_funder[not_equal]
+  remote_funder <- remote_funder[not_equal]
+  c(
+    problems,
+    sprintf(
+      "organisation missing locally:\n%s",
+      paste(missing_org, collapse = "\n")
+    )[length(missing_org) > 0],
+    sprintf(
+      "organisation with different rule for rightholder",
+      paste(names(local_rightsholder), sep = "\n")
+    )[length(local_rightsholder > 0)],
+    sprintf(
+      "organisation with different rule for funder",
+      paste(names(local_funder), sep = "\n")
+    )[length(local_funder > 0)]
   )
 }

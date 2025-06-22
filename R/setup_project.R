@@ -48,6 +48,7 @@ setup_project <- function(path = ".") {
         )
       )
     ],
+    "organisation",
     "spelling"[isTRUE(ask_yes_no("Check spelling?"))],
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )

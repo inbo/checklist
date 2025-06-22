@@ -18,6 +18,8 @@ Other class:
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{as_list}}{The list of \code{org_item} objects.}
+
 \item{\code{get_default_name}}{The organisations default name.}
 
 \item{\code{get_default_funder}}{The default funder.}
@@ -38,6 +40,7 @@ Other class:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-org_list-add_item}{\code{org_list$add_item()}}
+\item \href{#method-org_list-check}{\code{org_list$check()}}
 \item \href{#method-org_list-get_allowed_licenses}{\code{org_list$get_allowed_licenses()}}
 \item \href{#method-org_list-get_person}{\code{org_list$get_person()}}
 \item \href{#method-org_list-get_zenodo_by_email}{\code{org_list$get_zenodo_by_email()}}
@@ -65,6 +68,24 @@ Add one or more \code{org_item} objects to the list.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{One or more \code{org_item} objects.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-check"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-check}{}}}
+\subsection{Method \code{check()}}{
+Check if the organisation list is compatible with the
+default as set in the organisations git repository.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$check(x = ".")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{The path to the project directory}
 }
 \if{html}{\out{</div>}}
 }

@@ -52,7 +52,7 @@ test_that("set_tag() works", {
   current_ref <- Sys.getenv("GITHUB_REF")
   defer(Sys.setenv(GITHUB_REF = current_ref))
   Sys.setenv(GITHUB_REF = "")
-  current_actions <- Sys.getenv("GITHUB_ACTIONS")
+  current_actions <- Sys.getenv("GITHUB_ACTIONS", "false")
   defer(Sys.setenv(GITHUB_ACTIONS = current_actions))
   Sys.setenv(GITHUB_ACTIONS = "")
   current_event <- Sys.getenv("GITHUB_EVENT_NAME")

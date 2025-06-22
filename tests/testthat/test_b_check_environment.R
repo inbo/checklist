@@ -4,7 +4,7 @@ test_that("check_environment() works", {
   defer(file_delete(tmp_dir))
   checklist$new(tmp_dir, language = "en-GB", package = FALSE) |>
     write_checklist()
-  old_gha <- Sys.getenv("GITHUB_ACTIONS")
+  old_gha <- Sys.getenv("GITHUB_ACTIONS", "false")
   old_codecov <- Sys.getenv("CODECOV_TOKEN")
 
   Sys.setenv(GITHUB_ACTIONS = "")
