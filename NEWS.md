@@ -2,12 +2,31 @@
 
 ## Breaking changes
 
-* The `organisation` class is superseeded by the `org_list` and `org_item`
+* The `organisation` class is superseded by the `org_list` and `org_item`
   classes.
+* Updated the `vignette("organisation", package = "checklist")`
+  to reflect the changes in the `organisation` class.
+* `organisation` class and its related function like `default_organisation()`,
+  `read_organisation()` and `write_organisation()` are deprecated.
+* The new `org_list` enforces the use of the INBO ROR (#153).
+
+## New functions
+
+* `get_default_org_list()` returns the default organisation list depending on
+  the git remote `origin`.
 
 ## Other changes
 
+* Updated the formatting of the code with
+  [`air`](https://posit-dev.github.io/air/).
+* The GitHub Actions now install missing packages on the fly (#152).
+* Improved output on missing warning and notes (#155).
+* `check_folders()` now handles nested folders (#156).
+* `check_project()` now works on GitHub Actions with projects using `renv`
+  (#158).
 * `check_lintr()` turns missing dependencies into an error.
+* `check_source()` is now defunct.
+* Removed the defunct `orcid2person()`.
 
 # checklist 0.4.2
 
