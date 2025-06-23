@@ -23,130 +23,165 @@ The old `organisation` object was replaced by two new classes: `org_item` and `o
 Another important change is that an organisation can define minimum rules for the organisation.
 This set of rules is stored in a repository called `checklist` in the organisation's git organisation.
 
-## What is an `organisation` in the `checklist` context
+### Why bother to set an `org_list` object?
 
-The `organisation` object defines rules about the organisation related to the project (or package).
-`checklist` assumes by default that a project is a part of the [Research Institute for Nature and Forest (INBO)](https://www.vlaanderen.be/inbo/).
-And it will enforce to mention INBO as copyright holder and funder.
+`check_package()` and `check_project()` use this information to check if the project is compliant with the organisation's rules about naming conventions, copyright holder and funder.
+This allows the organisation to enforce a consistent set of rules across all its projects.
 
-Such a rule limits the use of `checklist` outside of INBO.
-Therefore we added the `organisation` object.
-It contains the following elements:
+## The `org_item` class
 
-- [GitHub](https://github.com) organisation
-- copyright holder
-- funder
-- organisation e-mail
-- [Zenodo](https://zenodo.org) community
-- a list of organisation affiliations
+The `org_item` class is used to store information about an organisation.
+It contains the two mandatory fields: `name` and `email`.
+The name must be a named vector using a language code as name.
+This allows the organisation name to be used in different languages.
+The first name will be used as the default name when no match is available.
+The email served a double purpose:
+1. Having an organisation email in the metadata allows users to contact the organisation in case that the individual authors are not available or do not respond.
+2. `checklist` uses the domain of the email to match other persons to this organisation based on email.
 
-The organisation affiliations must be a named list using the email domain names as names.
-Every element is a list containing the elements `affiliation` and `orcid`.
-`affiliation` is a character vector with one or more allowed organisation names.
-Use multiple values to add optional translations of the organisation name.
-`orcid` must be either `TRUE` or `FALSE`.
-Setting `orcid` to `TRUE` requires every author with matching e-mail to have an [ORCID](https://orcid.org/) number.
+Optionally, you can define the organisations [ROR identifier](https://ror.org/); if matching persons must having an [ORCID identifier](https://orcid.org/); if the projects must list a specific [Zenodo community](https://zenodo.org/communities#community-info) and what kind of licenses are allowed for packages, projects and data.
 
-## Defining a specific `organisation` for a project
+The `org_item` defines the required status of the organisation as a copyright holder or funder.
+By default, this is set to `"optional"`, which means that the organisation is not required to be listed as a copyright holder or funder but it can be listed as such.
+`"single"` is the other side of the spectrum, which means that the organisation must be listed as a copyright holder or funder and no other organisation can be listed as such.
+`"shared"` is a weaker version of `"single"` where the organisation must be listed as a copyright holder or funder but other organisations can be listed as such too.
+Finally, `"when no other"` means that the organisation must be listed as a copyright holder or funder when no other organisation is listed as such.
 
-First generate the object with `organisation$new()`.
-Then store this object in your project with `write_organisation()`.
-The function stores the information in `organisation.yml`, a plain text file in YAML format.
+## The `org_list` class
 
-```{r}
+The `org_list` class is used to store a list of `org_item` elements.
+The rules of the different `org_item` within a single `org_list` must be compatible.
+E.g. if one organisation is set to `"single"` as copyright holder, then no other organisation can be set to `"single"` or `"shared"` as copyright holder.
+
+Additionally, it contains the URL of the main organisations git organisation.
+The `checklist` repository at that URL is used to store the minimum rules for the organisation.
+E.g. when the URL is set to `https://github.com/inbo`, then we look for the minimum rules at `https://github.com/inbo/checklist`.
+
+## Using the organisations default `org_list`
+
+### Setting the default
+
+First you need to create the `org_item` objects that will make up the default `org_list`.
+
+```{r create-org-item}
 library(checklist)
-# create a dummy project
-my_project_path <- tempfile("my_project")
-dir.create(my_project_path)
-# create an organisation object
-org <- organisation$new(
-  rightsholder = "Vlaamse overheid", funder = "Vlaamse overheid",
-  email = "info@vlaanderen.be", github = "vlaanderen",
-  community = NA_character_,
-  organisation = list(
-    "vlaanderen.be" = list(
-      affiliation = "Vlaamse overheid", orcid = FALSE
-    )
+inbo <- org_item$new(
+  name = c(
+    "nl-BE" = "Instituut voor Natuur- en Bosonderzoek (INBO)",
+    "fr-FR" = "Institut de Recherche sur la Nature et les Forêts (INBO)",
+    "en-GB" = "Research Institute for Nature and Forest (INBO)",
+    "de-DE" = "Institut für Natur- und Waldforschung (INBO)"
+  ),
+  email = "info@inbo.be",
+  ror = "https://ror.org/00j54wy13",
+  orcid = TRUE,
+  zenodo = "inbo",
+  rightsholder = "shared",
+  funder = "when no other",
+  license = list(
+    package = c("GPL-3 ", "MIT"), project = "CC BY 4.0", data = "CC0"
   )
 )
-# store the organisation in the dummy project
-write_organisation(org, my_project_path)
+inbo
+anb <- org_item$new(
+  name = c(
+    `nl-BE` = "Agentschap voor Natuur en Bos (ANB)",
+    `en-GB` = "Agency for Nature & Forests (ANB)"
+  ),
+  email = "natuurenbos@vlaanderen.be",
+  ror = "https://ror.org/04wcznf70",
+  license = list(
+    package = character(0),
+    project = character(0),
+    data = character(0)
+  )
+)
+anb
 ```
 
-## Defining a default `organisation` object for your machine
+Then you can create the `org_list` object.
 
-Store the organisation as a default with `default_organisation(org = org)`.
+```{r create-org-list}
+inbo_org <- org_list$new(inbo, anb, git = "https://github.com/inbo")
+inbo_org
+```
 
-Whenever `checklist` needs the `organisation` information, it will retrieve it with `read_organisation()`.
-It first looks at project root folder for the `organisation.yml` file.
-When missing it looks for the machines default `organisation.yml`.
-In this case it will copy the machines default `organisation.yml` into the project.
-Hence the `organisation` information is a part of the project, which is required to use the information during checks on other machines.
-When `read_organisation()` finds neither a project `organisation.yml` nor a machines default `organisation.yml`, it reverts to the INBO `organisation`.
+The final step is to store the `org_list` into a `checklist` repository.
+The `write()` method creates a `organisation.yml` file in the root of the repository.
+Commit this file to the repository and push it to the remote.
 
-## Technical requirements
+```{r store-org-list}
+path_to_checklist_repo <- tempfile("checklist")
+dir.create(path_to_checklist_repo, recursive = TRUE)
+inbo_org$write(path_to_checklist_repo)
+```
 
-- shall: required
-- should: recommended but optional
+### Getting the default
 
-### Items
+Run `get_default_org_list()` in a project to get the default organisation list.
+This function determines the organisation based on the git remote `origin` of the project.
+Hence it only works for git projects.
+It look for the an `organisation.yml` file in the root of the `main` branch of the repository `checklist` of the git organisation.
+Note that you can have projects from different organisations on the same machine.
 
-- An item shall be either a single person or a single organisation.
-- Every item shall have at least one attribute from this list:
-    - author
-    - maintainer
-    - contributor
-    - copyright holder
-    - funder
+`get_default_org_list()` stores the information in the configuration settings of `checklist`.
+You only need to run it once for every organisation in case the organisations defaults change.
+After that you can simply run `org_list$new()$read()`.
+That function either returns the local `organisation.yml` file or fetches the default from the `checklist` configuration.
 
-### Organisations
+```{r get-org-list}
+# setting up a demo git repository
+test_dir <- tempfile("test")
+dir.create(test_dir)
+library(gert)
+git_init(test_dir)
+git_remote_add(
+  url = "https://github.com/ThierryO/test", name = "origin", repo = test_dir
+)
+# get the default organisation list from https://github.com/ThierryO/checklist
+my_org <- get_default_org_list(test_dir)
+my_org
+```
 
-- An organisation shall have a single default language and a single name for that language.
-- An organisation shall have a root domain name.
-  E.g. `inbo.be` or `vlaanderen.be`.
-- An organisation should have a single name for other languages.
-- An organisation should have a single email.
-- An organisation should have a single [ROR](https://ror.org/) number.
-- An organisation should have a [Zenodo community](https://help.zenodo.org/docs/communities/).
-- An organisation should have a git organisation name as an absolute URL.
-  E.g. https://github.com/inbo
+### Adding an `org_item` to an `org_list` object
 
-### Persons
+You can add an `org_item` to an `org_list` object using the `add_item()` method.
+At this point it is required to use the `write()` method to store the `org_list` object in the local `organisation.yml` file.
 
-- A person shall have a given name and a family name.
-- A person should have a single [ORCID](https://orcid.org) number.
-- A person should have one or more email.
-- A person should have one or more one or more affiliations.
-- A persons affiliation shall match the organisation name for the project language.
-- A person shall be liked to an organisation based on the domain name of the persons email and the organisation domain name.
+```{r update-org-list}
+# let's create an empty org_list so we can use its methods
+empty_org <- org_list$new()
+# read the organisation list
+# because we didn't write the organisation.yml file, it will fetch the
+# default from the configuration
+list.files(test_dir)
+empty_org$read(test_dir)
+# add an organisation item to the organisation list
+my_org <- my_org$add_item(anb)
+my_org
+# it still isn't written to the local organisation.yml file
+list.files(test_dir)
+empty_org$read(test_dir)
+# use the write method to create the organisation.yml file
+my_org$write(test_dir)
+list.files(test_dir)
+empty_org$read(test_dir)
+```
 
-### Information stored in the `organisation.yml` file
+## FAQ
 
-- The fill shall contain one or more organisations.
-- One organisation shall be marked as the primary organisation.
-- The primary organisation shall have a git organisation name as an absolute URL.
-- The primary organisation should define if the `DESCRIPTION` or `README.md` file shall have at least one copyright holder.
-- The primary organisation should define if the `DESCRIPTION` or `README.md` file shall have at least one funder.
-- Every organisation should indicate whether is shall be used as copyright holder.
-- Every organisation should indicate whether other items shall not be used as copyright holder.
-  Using another item as copyright holder shall return an error.
-- Every organisation should indicate whether other items should not be used as copyright holder.
-  Using another item as copyright holder shall return a warning.
-- Every organisation should indicate whether is shall be used as funder.
-- Every organisation should indicate whether other items shall not be used as funder.
-  Using another item as funder shall return an error.
-- Every organisation should indicate whether other items should not be used as funder.
-  Using another item as funder shall return a warning.
-- Every organisation should indicate whether every person in its organisation shall have a [ORCID](https://orcid.org) number.
-- The rules in the `organisation.yml` file of a project repository shall abide all rules define in the organisations `checklist` repository `organisation.yml` file.
-  This is is ignored when not checking via a GitHub Action or when the organisation has no `checklist` repository.
-- The `organisation.yml` file of a project repository should define more strict rules that the rules define in the organisations `checklist` repository `organisation.yml` file.
+1. Can I use `checklist` without git?
 
-### Citation information stored in the `DESCRIPTION` or `README.md` file
+   Yes, you can use `checklist` without git.
+   `checklist` will only check the rules defined in the local `organisation.yml`
 
-- The fill shall contain a language attribute.
-- The file shall contain at least one item.
-- One item shall have the maintainer attribute.
-- One or more items should have the copyright holder attribute.
-- One or more items should have the funder attribute.
-- When the organisation provides an email, an [ROR](https://ror.org/) number or Zenodo community; then the `DESCRIPTION` or `README.md` file in every project shall have that information listed with the name of the organisation.
+1. Is a `checklist` repository at the organisation level required to use `checklist`?
+
+   No, you can use `checklist` without a `checklist` repository.
+   Having no `checklist` repository means that you don't enforce any organisation rules.
+
+
+1. Do I need to add an `organisation.yml` file to my project?
+
+   No, you do not need to add an `organisation.yml` file to your project unless you want to add specific rules for your project.
+   Note that these still need to comply with the organisation rules defined in the `checklist` repository.

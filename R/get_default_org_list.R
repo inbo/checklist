@@ -23,6 +23,11 @@ get_default_org_list <- function(x = ".") {
   url <- gsub("oauth2:.*?@", "", url)
   stopifnot("no online origin" = grepl("^https://", url, perl = TRUE))
   url <- gsub("(https:\\/\\/.+?\\/.+?)\\/.*", "\\1", url, perl = TRUE)
+  paste0(url, "/checklist") |>
+    HEAD() -> url_head
+  list(url_head$status_code == 200) |>
+    setNames(sprintf("no public `checklist` repo found at %s", url)) |>
+    do.call(what = stopifnot)
   target <- tempfile("checklist-organisation")
   sprintf(
     "git clone --single-branch --branch=main --depth=1 %s/checklist %s",

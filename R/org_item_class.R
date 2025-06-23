@@ -12,8 +12,9 @@ org_item <- R6Class(
     #'   languages.
     #'   The first item in the vector is the default language.
     #'   The names of the vector must match the language code.
-    #' @param email An optional email address for the organisation.
+    #' @param email An email address for the organisation.
     #'   Used to contact the organisation.
+    #'   And used to detect if a person is affiliated with the organisation.
     #' @param orcid Whether the organisation requires an ORCID for every person
     #'   that uses this organisation as affiliation.
     #' @param rightsholder The required copyright holder status for the
@@ -23,7 +24,7 @@ org_item <- R6Class(
     #' `"single"` means that the organisation must be the only copyright holder.
     #' `"shared"` means that the organisation must be one of the copyright
     #' holders.
-    #' `"no other"` means that if no other copyright holder is specified,
+    #' `"when no other"` means that if no other copyright holder is specified,
     #' the organisation must be the copyright holder.
     #' @param funder The required funder status for the organisation.
     #' The categories are the same as for `rightsholder`.

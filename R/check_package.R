@@ -42,6 +42,14 @@ check_package <- function(
   assert_that(is.flag(pkgdown), noNA(pkgdown))
   assert_that(is.flag(quiet), noNA(quiet))
 
+  x <- read_checklist(x = x)
+  stopifnot("`check_package()` is only relevant for packages." = x$package)
+
+  quiet_cat("Checking organisation settings\n", quiet = quiet)
+  org <- org_list$new()$read(x$get_path)
+  org$check(x = x$get_path) |>
+    x$add_error(item = "organisation") -> x
+
   quiet_cat("Checking spelling\n", quiet = quiet)
   x <- check_spelling(x = x, quiet = quiet)
 
@@ -67,9 +75,6 @@ check_package <- function(
 
   x <- check_environment(x)
   x <- check_folder(x)
-  org <- org_list$new()$read(x$get_path)
-  org$check(x = x$get_path) |>
-    x$add_error(item = "organisation") -> x
 
   if (pkgdown) {
     old_ci <- Sys.getenv("CI")

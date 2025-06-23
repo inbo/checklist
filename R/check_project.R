@@ -13,6 +13,10 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     return(check_package(x = x, fail = fail, quiet = quiet))
   }
 
+  org <- org_list$new()$read(x$get_path)
+  org$check(x = x$get_path) |>
+    x$add_error(item = "organisation") -> x
+
   if ("spelling" %in% x$get_required) {
     quiet_cat("Checking spelling\n", quiet = quiet)
     x <- check_spelling(x = x, quiet = quiet)
@@ -42,10 +46,6 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
     quiet_cat("Checking the citation information\n", quiet = quiet)
     x <- update_citation(x = x, quiet = quiet)
   }
-
-  org <- org_list$new()$read(x$get_path)
-  org$check(x = x$get_path) |>
-    x$add_error(item = "organisation") -> x
 
   print(x, quiet = quiet)
   if (!x$fail) {
