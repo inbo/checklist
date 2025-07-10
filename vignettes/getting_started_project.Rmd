@@ -30,6 +30,7 @@ Use `setup_project()` when you want to change the settings later.
 - Do you want version control with git?
   When you answer yes, you get the `check_project` GitHub Action.
   This runs `check_project()` automatically when you (or a contributor) pushed code to GitHub.
+  To add your project to GitHub, follow the instructions below ([To do once after activating version control](#setup-github)) after creating the project.
     - Do you want a file describing the code of conduct for contributing to your project?
       This is a template which you may alter to suit your needs.
     - Do you want a file describing guidelines for contributing to your project?
@@ -68,14 +69,15 @@ In case of a previous set-up, it will take that into account.
 - Do you want to check spelling with `check_spelling()`.
 - Do you want to update the citation files?
 
-# To do once after activating version control
+# To do once after activating version control (#setup-github)
 
 - Make sure you have at least one commit.
 - Checkout the main branch.
 - Login to https://github.com
 - Create a new repository without adding a `README`, `.gitignore` and license.
   `checklist` will add those files for you.
-- Run the code listed under "...or push an existing repository from the command line" in the command line.
+  (A public repository for organisation INBO can be created in https://github.com/inbo on tab `Repositories`.)
+- Copy the code listed in your newly created repository on GitHub under "...or push an existing repository from the command line" and run it in the command line.
 - Go on https://github.com to the "Settings" panel of the repository.
     - General
         - activate "Always suggest updating pull request branches"
