@@ -77,7 +77,7 @@ In case of a previous set-up, it will take that into account.
 - Create a new repository without adding a `README`, `.gitignore` and license.
   `checklist` will add those files for you.
   (A public repository for organisation INBO can be created in https://github.com/inbo on tab `Repositories`.)
-- Copy the code listed in your newly created repository on GitHub under "...or push an existing repository from the command line" and run it in the command line.
+- Copy the code listed in your newly created repository on GitHub under "...or push an existing repository from the command line" and run it in the terminal.
 - Go on https://github.com to the "Settings" panel of the repository.
     - General
         - activate "Always suggest updating pull request branches"
