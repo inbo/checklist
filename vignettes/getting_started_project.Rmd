@@ -69,7 +69,7 @@ In case of a previous set-up, it will take that into account.
 - Do you want to check spelling with `check_spelling()`.
 - Do you want to update the citation files?
 
-# To do once after activating version control (#setup-github)
+# To do once after activating version control {#setup-github}
 
 - Make sure you have at least one commit.
 - Checkout the main branch.
