@@ -66,6 +66,9 @@ spelling_parse_r <- function(r_file, wordlist) {
     sprintf(fmt = "^#'\\s*@(%s) .*") |>
     gsub("", text) -> text
 
+  # remove words with UTF-8 characters coded as \\uXXXX
+  text <- gsub("\\S*\\\\\\\\u[0-9a-fA-F]{4}\\S*", "", text)
+
   # remove roxygen comment signs
   text <- gsub("^#'", "", text)
 
