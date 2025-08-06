@@ -204,6 +204,8 @@ validate_citation <- function(meta) {
   )]
   contact <- any("cre" %in% unlist(persons$role))
   c(rightsholder$email, funder$email) |>
+    unlist() |>
+    unique() |>
     org$get_zenodo_by_email() -> required_communities
   org$validate_person(persons, lang = meta$get_meta$language) |>
     attr("errors") |>
