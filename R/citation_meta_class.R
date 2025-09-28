@@ -318,8 +318,8 @@ format_zenodo <- function(x, type = TRUE) {
     type = zenodo_role(x$role)
   )[c(
     TRUE,
-    !is.na(x$comment["ORCID"]),
-    !is.na(x$comment["affiliation"]),
+    "affiliation" %in% names(x$comment),
+    "ORCID" %in% names(x$comment),
     type
   )] |>
     list()
