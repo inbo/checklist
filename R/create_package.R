@@ -69,11 +69,11 @@ create_package <- function(
   org$get_default_rightsholder |>
     org$get_allowed_licenses(type = "package") -> allowed
   if (missing(license)) {
+    names(allowed) |>
+      head(1) -> license
     stopifnot(
       "no `license` given and no required licenses" = length(allowed) > 0
     )
-    names(allowed) |>
-      head(1) -> license
   }
   assert_that(license = is.string(license), noNA(license))
   assert_that(
