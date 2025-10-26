@@ -164,7 +164,7 @@ org_list <- R6Class(
         "`git` is not a character" = inherits(git, "character"),
         "`git` cannot contain multiple values" = length(git) <= 1,
         "`git` cannot contain `NA`" = noNA(git),
-        "`git` must be a valid URL to an organisation" = grepl(
+        "`git` must be a valid URL to an organisation or user" = grepl(
           "^https:\\/\\/[\\w\\.]+?\\/\\w+$",
           git,
           perl = TRUE
@@ -696,7 +696,11 @@ git_org <- function(x = ".") {
       org$write(x)
       return(org)
     }
-    message("no local `org_list` information found. See ?get_default_org_list")
+    message(
+      "no local `org_list` information found.",
+      "See ?get_default_org_list",
+      "Using default settings."
+    )
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   org_list$new(
