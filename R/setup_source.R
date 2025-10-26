@@ -14,7 +14,6 @@
 #' @family setup
 setup_source <- function(path = ".", language = "en-GB") {
   # nocov start
-  .Deprecated(new = "setup_project", package = "checklist")
-  setup_project(path = path)
+  .Defunct(new = "setup_project", package = "checklist")
   # nocov end
 }
