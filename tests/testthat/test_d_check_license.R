@@ -1,35 +1,52 @@
 library(mockery)
 test_that("check_license() works", {
-  maintainer <- person(
-    given = "Thierry",
-    family = "Onkelinx",
-    role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be",
-    comment = c(ORCID = "0000-0001-8804-4216")
+  cache <- tempfile("cache")
+  dir_create(file.path(cache, "data"))
+  defer(unlink(cache, recursive = TRUE))
+  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
+  stub(new_author, "ask_orcid", mock(""))
+  new_author(
+    current = data.frame(),
+    root = file.path(cache, "data"),
+    org = org_list$new()$read()
   )
+
+  mock_r_user_dir <- function(alt_dir) {
+    function(package, which = c("data", "config", "cache")) {
+      which <- match.arg(which)
+      return(file.path(alt_dir, which))
+    }
+  }
+
+  git_init(cache)
+  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  org <- get_default_org_list(cache)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(cache, "config.yml"))
+
   path <- tempfile("check_license")
   dir.create(path)
   oldwd <- setwd(path)
   defer(setwd(oldwd))
   defer(unlink(path, recursive = TRUE))
 
-  cache <- tempfile("cache")
-  dir_create(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
-    writeLines(path(cache, "config.yml"))
-  stub(create_package, "R_user_dir", cache, depth = 2)
   package <- "checklicense"
-  suppressMessages(
-    create_package(
-      path = path,
-      package = package,
-      keywords = "dummy",
-      title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.",
-      maintainer = maintainer,
-      license = "MIT"
-    )
+  stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
+  stub(create_package, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(
+    create_package,
+    "readline",
+    mock("This is the title", "This is the description.")
   )
+  stub(create_package, "ask_keywords", c("key", "word"))
+  stub(create_package, "ask_language", "en-GB")
+  stub(create_package, "ask_license", "MIT")
+  hide_output <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output))
+  sink(hide_output)
+  suppressMessages(create_package(path = path, package = package))
+  sink()
   repo <- path(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)

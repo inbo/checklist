@@ -1,53 +1,59 @@
 library(mockery)
 test_that("create_package() works", {
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
-  maintainer <- person(
-    given = "Thierry",
-    family = "Onkelinx",
-    role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be",
-    comment = c(
-      ORCID = "0000-0001-8804-4216",
-      affiliation = "Research Institute for Nature and Forest (INBO)"
-    )
-  )
-  path <- tempfile("create_package")
-  dir.create(path)
-  defer(unlink(path, recursive = TRUE))
 
-  package <- "create"
   cache <- tempfile("cache")
-  dir_create(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
-    writeLines(path(cache, "config.yml"))
-  stub(create_package, "R_user_dir", cache, depth = 2)
-  expect_message(
-    create_package(
-      path = path,
-      package = package,
-      keywords = "dummy",
-      title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.",
-      maintainer = maintainer,
-      language = "en-GB"
-    ),
-    regexp = sprintf("package created at `.*%s`", package)
-  )
-
-  repo <- path(path, package)
-
-  r_user_dir <- tempfile("author")
-  dir.create(r_user_dir)
+  defer(unlink(cache, recursive = TRUE))
+  dir_create(file.path(cache, "data"))
   stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
   stub(new_author, "ask_orcid", mock(""))
   expect_output(
     new_author(
       current = data.frame(),
-      root = r_user_dir,
+      root = file.path(cache, "data"),
       org = org_list$new()$read()
     )
   )
-  stub(store_authors, "R_user_dir", r_user_dir)
+
+  mock_r_user_dir <- function(alt_dir) {
+    function(package, which = c("data", "config", "cache")) {
+      which <- match.arg(which)
+      return(file.path(alt_dir, which))
+    }
+  }
+
+  git_init(cache)
+  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  org <- get_default_org_list(cache)
+  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+    writeLines(path(cache, "config.yml"))
+
+  path <- tempfile("create_package")
+  dir.create(path)
+  defer(unlink(path, recursive = TRUE))
+
+  package <- "create"
+  stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
+  stub(create_package, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(
+    create_package,
+    "readline",
+    mock("This is the title", "This is the description.")
+  )
+  stub(create_package, "ask_keywords", c("key", "word"))
+  stub(create_package, "ask_language", "en-GB")
+  hide_output <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output))
+  sink(hide_output)
+  expect_message(
+    create_package(path = path, package = package),
+    regexp = sprintf("package created at `.*%s`", package)
+  )
+  sink()
+
+  repo <- path(path, package)
+  stub(store_authors, "R_user_dir", mock_r_user_dir(cache))
   expect_invisible(store_authors(repo))
 
   new_files <- c(
