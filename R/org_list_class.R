@@ -37,19 +37,26 @@ org_list <- R6Class(
     #' @param email The email addresses of the organisations.
     #' @param type The type of license to return.
     #' Can be one of `"package"`, `"project"` or `"data"`.
+    #' @importFrom assertthat assert_that noNA
     get_allowed_licenses = function(
       email,
       type = c("package", "project", "data")
     ) {
+      assert_that(is.character(email), noNA(email))
       type <- match.arg(type)
-      private$items[email] |>
-        vapply(
-          FUN.VALUE = vector(mode = "list", 1),
-          type = type,
-          FUN = function(x, type) {
-            list(x$get_license(type = type))
-          }
-        ) |>
+      if (length(email) == 0) {
+        selection <- private$items
+      } else {
+        selection <- private$items[email]
+      }
+      vapply(
+        selection,
+        FUN.VALUE = vector(mode = "list", 1),
+        type = type,
+        FUN = function(x, type) {
+          list(x$get_license(type = type))
+        }
+      ) |>
         unname() -> licenses
       licenses <- licenses[
         vapply(licenses, FUN.VALUE = integer(1), FUN = length) > 0
@@ -671,21 +678,24 @@ ol_select_relevant_org <- function(
   relevant <- relevant[which_aff]
 }
 
+ssh_http <- function(url) {
+  if (!grepl("^https:\\/\\/", url)) {
+    url <- gsub("^git@(.*):", "https://\\1/", url, perl = TRUE)
+  }
+  url <- gsub("oauth2:.*?@", "", url)
+  gsub("(https:\\/\\/.+?\\/.+?)\\/.*", "\\1", url, perl = TRUE)
+}
+
 git_org <- function(x = ".") {
   if (!is_repository(x)) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   remotes <- git_remote_list(repo = x)
   stopifnot("no git remote `origin` found" = any(remotes$name == "origin"))
-  url <- remotes$url[remotes$name == "origin"]
-  if (!grepl("^https:\\/\\/", url)) {
-    url <- gsub("^git@(.*):", "https://\\1/", url, perl = TRUE)
-  }
-  url <- gsub("oauth2:.*?@", "", url)
+  url <- ssh_http(remotes$url[remotes$name == "origin"])
   if (!grepl("^https://", url, perl = TRUE)) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
-  url <- gsub("(https:\\/\\/.+?\\/.+?)\\/.*", "\\1", url, perl = TRUE)
   if (url != "https://github.com/inbo") {
     gsub("https://", "", url) |>
       tolower() -> config_name

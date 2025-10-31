@@ -9,12 +9,6 @@ setup_source(path = ".", language = "en-GB")
 \arguments{
 \item{path}{The path to the project.
 Defaults to \code{"."}.}
-
-\item{language}{Language of the project in \code{xx-YY} format.
-\code{xx} is the two letter code for the language.
-\code{YY} is the two letter code for the language variant.
-E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
-Belgian Dutch.}
 }
 \description{
 This adds the required GitHub workflows to run \code{check_source()} automatically

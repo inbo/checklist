@@ -236,7 +236,7 @@ change_language_interactive <- function(
   ignore = character(0)
 ) {
   print(x)
-  answer <- menu(
+  answer <- menu_first(
     c(
       "Keep current configuration.",
       sprintf("Use %s for all files.", main),
@@ -274,7 +274,7 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
   for (i in unique(first_path)) {
     current <- which(first_path == i)
     print(c_sort(x$path[current]))
-    answer <- menu(
+    answer <- menu_first(
       c(
         paste("ignore", "all files"[length(current) > 1]),
         paste(

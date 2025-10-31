@@ -29,12 +29,15 @@ get_default_org_list <- function(x = ".") {
     setNames(sprintf("no public `checklist` repo found at %s", url)) |>
     do.call(what = stopifnot)
   target <- tempfile("checklist-organisation")
-  sprintf(
-    "git clone --single-branch --branch=main --depth=1 %s/checklist %s",
-    url,
+  c(
+    "clone",
+    "--single-branch",
+    "--branch=main",
+    "--depth=1",
+    paste0(url, "/checklist"),
     target
   ) |>
-    system()
+    system2(command = "git", stderr = FALSE, stdout = FALSE) -> junk_output
   org <- org_list$new()$read(target)
   gsub("https://", "", url) |>
     tolower() -> config_name
@@ -43,4 +46,13 @@ get_default_org_list <- function(x = ".") {
   dir_create(config_path, recurse = TRUE)
   org$write(config_path)
   return(org)
+}
+
+org_list_from_url <- function(git) {
+  ssh_http(git) |>
+    gsub(pattern = "https://", replacement = "") |>
+    tolower() -> config_name
+  R_user_dir("checklist", "config") |>
+    path(config_name) -> config_path
+  org_list$new()$read(config_path)
 }

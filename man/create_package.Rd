@@ -4,39 +4,12 @@
 \alias{create_package}
 \title{Create an R package according to INBO requirements}
 \usage{
-create_package(
-  package,
-  path = ".",
-  title,
-  description,
-  keywords,
-  language = "en-GB",
-  license,
-  maintainer
-)
+create_package(package, path = ".")
 }
 \arguments{
 \item{package}{Name of the new package.}
 
 \item{path}{Where to create the package directory.}
-
-\item{title}{A single sentence with the title of the package.}
-
-\item{description}{A single paragraph describing the package.}
-
-\item{keywords}{A vector of keywords.}
-
-\item{language}{Language of the project in \code{xx-YY} format.
-\code{xx} is the two letter code for the language.
-\code{YY} is the two letter code for the language variant.
-E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
-Belgian Dutch.}
-
-\item{license}{What type of license should be used?}
-
-\item{maintainer}{When missing, the function interactively lets you add the
-maintainer and other authors.
-Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
 }
 \description{
 Creates a package template in a new folder.

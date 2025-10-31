@@ -8,18 +8,6 @@
 #'
 #' @param package Name of the new package.
 #' @param path Where to create the package directory.
-#' @param title A single sentence with the title of the package.
-#' @param description A single paragraph describing the package.
-#' @param maintainer When missing, the function interactively lets you add the
-#' maintainer and other authors.
-#' Otherwise it must be the output of [utils::person()].
-#' @param language Language of the project in `xx-YY` format.
-#' `xx` is the two letter code for the language.
-#' `YY` is the two letter code for the language variant.
-#' E.g. `en-GB` for British English, `en-US` for American English, `nl-BE` for
-#' Belgian Dutch.
-#' @param license What type of license should be used?
-#' @param keywords A vector of keywords.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom desc description
@@ -28,16 +16,7 @@
 #' @importFrom tools toTitleCase
 #' @importFrom utils installed.packages
 #' @family setup
-create_package <- function(
-  package,
-  path = ".",
-  title,
-  description,
-  keywords,
-  language = "en-GB",
-  license,
-  maintainer
-) {
+create_package <- function(package, path = ".") {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
     msg = paste(
@@ -45,44 +24,32 @@ create_package <- function(
       "`install.packages(\"roxygen2\")`"
     )
   )
-
+  # validate user input
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
-  assert_that(is.character(keywords), length(keywords) > 0)
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,
     msg = sprintf("`%s` is not an empty directory", path)
   )
-  assert_that(is.string(title))
-  validate_language(language)
 
-  dir_create(path)
-  repo <- git_init(path = path)
+  # ask interactive information
+  title <- readline(prompt = "Enter the title: ")
+  description <- readline(prompt = "Enter the description: ")
+  keywords <- ask_keywords()
   preferred_protocol() |>
     sprintf(package) -> git
+  org <- org_list_from_url(git)
+  license <- ask_license(org, type = "package")
+  language <- ask_language(org)
+  authors <- package_maintainer(org = org, lang = language)
+
+  # start creating package
+  dir_create(path)
+  repo <- git_init(path = path)
   git_remote_add(url = git, name = "origin", repo = repo)
   dir_create(path(path, "R"))
-
-  org <- org_list$new()$read(path)
-  org$get_default_rightsholder |>
-    org$get_allowed_licenses(type = "package") -> allowed
-  if (missing(license)) {
-    names(allowed) |>
-      head(1) -> license
-    stopifnot(
-      "no `license` given and no required licenses" = length(allowed) > 0
-    )
-  }
-  assert_that(license = is.string(license), noNA(license))
-  assert_that(
-    length(allowed) == 0 || license %in% names(allowed),
-    msg = paste(
-      "`license` must be one of the following:",
-      paste(names(allowed), collapse = ", ")
-    )
-  )
 
   # add checklist.yml
   x <- checklist$new(x = path, package = TRUE, language = language)
@@ -95,8 +62,7 @@ create_package <- function(
   desc$set("Package", package)
   desc$set("Title", toTitleCase(title))
   desc$set_version("0.0.0")
-  package_maintainer(maintainer = maintainer, org = org, lang = language) |>
-    desc$set_authors()
+  desc$set_authors(authors)
   desc$set("Description", description)
   desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
   org_url <- gsub("\\.git$", "", git, perl = TRUE)
@@ -106,10 +72,7 @@ create_package <- function(
   desc$set_urls(org_url)
   desc$set("BugReports", sprintf("%s/issues", org_url))
 
-  desc <- append_communities(
-    desc = desc,
-    org = org
-  )
+  desc <- append_communities(desc = desc, org = org)
   desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
   desc$set("Encoding", "UTF-8")
   desc$set("Language", language)
@@ -172,28 +135,35 @@ create_package <- function(
   git_add("NEWS.md", repo = repo)
 
   # add README.Rmd
-  license_batch <- switch(
+  license_badge <- switch(
     license,
     "GPL-3" = "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
-    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat"
+    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat",
+    ""
   )
   license_site <- switch(
     license,
     "GPL-3" = "https://spdx.org/licenses/GPL-3.0-only.html",
-    "MIT" = "https://opensource.org/licenses/MIT"
+    "MIT" = "https://opensource.org/licenses/MIT",
+    ""
   )
   path("package_template", "README.Rmd") |>
     system.file(package = "checklist") |>
     readLines() |>
-    gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
-    gsub(
-      pattern = "\\{\\{\\{ license batch \\}\\}\\}",
-      replacement = license_batch
-    ) |>
-    gsub(
-      pattern = "\\{\\{\\{ license site \\}\\}\\}",
-      replacement = license_site
-    ) |>
+    gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) -> rdme
+  if (license_badge != "") {
+    rdme |>
+      gsub(
+        pattern = "\\{\\{\\{ license badge \\}\\}\\}",
+        replacement = license_badge
+      ) |>
+      gsub(
+        pattern = "\\{\\{\\{ license site \\}\\}\\}",
+        replacement = license_site
+      ) -> rdme
+  }
+  rdme |>
+    gsub(pattern = ".*\\{\\{\\{ license badge \\}\\}\\}.*", replacement = "") |>
     writeLines(path(path, "README.Rmd"))
   git_add("README.Rmd", repo = repo)
 
@@ -308,17 +278,30 @@ valid_package_name <- function(x) {
   grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
 }
 
-package_maintainer <- function(maintainer, org, lang) {
-  if (missing(maintainer)) {
-    cat("Please select the maintainer")
-    maintainer <- author2person(role = c("aut", "cre"))
-    while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
-      maintainer <- c(maintainer, author2person())
+package_maintainer <- function(org, lang) {
+  message("Please select the maintainer")
+  maintainer <- author2person(role = c("aut", "cre"), lang = lang)
+  while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
+    maintainer <- c(maintainer, author2person(role = "aut", lang = lang))
+  }
+  available <- org$get_default_name
+  funder <- character(0)
+  while (
+    length(available) > 0 &&
+      isTRUE(ask_yes_no("Add a funder?", default = FALSE))
+  ) {
+    c("default funder", available) |>
+      menu_first(title = "Select a funder:") -> selected
+    if (selected > 1) {
+      funder <- c(funder, names(available)[selected + 1])
+    } else {
+      funder <- org$get_default_funder
     }
   }
-  assert_that(inherits(maintainer, "person"))
+  if (length(funder) == 0) {
+    funder <- org$get_default_funder
+  }
   rightsholder <- org$get_default_rightsholder
-  funder <- org$get_default_funder
   c(
     maintainer,
     c(
@@ -347,7 +330,6 @@ package_maintainer <- function(maintainer, org, lang) {
       do.call(what = c)
   )
 }
-
 
 #' @importFrom assertthat on_failure<-
 on_failure(valid_package_name) <- function(call, env) {
@@ -386,4 +368,48 @@ append_communities <- function(desc, org) {
     "Config/checklist/communities",
     paste(communities, collapse = "; ")
   )
+}
+
+ask_keywords <- function() {
+  while (TRUE) {
+    readline(prompt = "Enter one or more keywords separated by `;` ") |>
+      strsplit(";") |>
+      unlist() |>
+      gsub(pattern = "^\\s+", replacement = "") |>
+      gsub(pattern = "\\s+$", replacement = "") -> keywords
+    keywords <- keywords[keywords != ""]
+    if (length(keywords) > 0) {
+      break
+    }
+    warning("Please enter at least one keyword.")
+  }
+  return(keywords)
+}
+
+ask_license <- function(org, type = c("package", "project", "data")) {
+  type <- match.arg(type)
+  org$get_default_rightsholder |>
+    org$get_allowed_licenses(type = type) -> allowed
+  stopifnot("no licenses found for this organisation" = length(allowed) > 0)
+  if (length(allowed) > 1) {
+    allowed <- allowed[menu_first(
+      choices = names(allowed),
+      title = "Select the license you want to use:"
+    )]
+  }
+  return(names(allowed))
+}
+
+ask_language <- function(org) {
+  available <- org$get_languages
+  c(available, "other") |>
+    menu_first(title = "Which language?") -> selected
+  if (selected <= length(available)) {
+    return(validate_language(available[selected]))
+  }
+  language <- readline(prompt = "Please enter the language code: ")
+  while (inherits(try(validate_language(language)), "try-error")) {
+    language <- readline(prompt = "Please enter the language code: ")
+  }
+  return(language)
 }
