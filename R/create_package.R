@@ -185,7 +185,7 @@ create_package <- function(package, path = ".") {
   insert_file(
     repo = repo,
     filename = "CONTRIBUTING.md",
-    template = "package_template",
+    template = "generic_template",
     target = target
   )
 

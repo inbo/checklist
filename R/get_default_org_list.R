@@ -37,7 +37,7 @@ get_default_org_list <- function(x = ".") {
     paste0(url, "/checklist"),
     target
   ) |>
-    system2(command = "git", stderr = FALSE, stdout = FALSE) -> junk_output
+    system2(command = "git", stderr = FALSE, stdout = FALSE)
   org <- org_list$new()$read(target)
   gsub("https://", "", url) |>
     tolower() -> config_name

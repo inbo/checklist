@@ -1,12 +1,6 @@
 #' @importFrom fs dir_create file_copy file_exists is_file path
 #' @importFrom gert git_add git_find git_init git_remote_add
-setup_vc <- function(
-  path,
-  url,
-  use_vc,
-  use_cc = use_vc && ask_yes_no("Add a default code of conduct?"),
-  use_cg = use_vc && ask_yes_no("Add default contributing guidelines?")
-) {
+setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
   if (!is_repository(path)) {
     if (missing(use_vc)) {
       use_vc <- ask_yes_no("Use version control?")
@@ -19,7 +13,6 @@ setup_vc <- function(
     list.files(path, recursive = TRUE) |>
       c(".Rprofile") |>
       git_add(force = TRUE, repo = path)
-  } else {
   }
 
   # add .gitignore
@@ -49,31 +42,41 @@ setup_vc <- function(
     target = target
   )
 
-  # Add code of conduct
-  if (missing(use_cc)) {
-    use_cc <- ask_yes_no("Add a default code of conduct?")
-  }
-  if (use_cc && !file_exists(path(path, ".github", "CODE_OF_CONDUCT.md"))) {
-    target <- path(path, ".github")
-    insert_file(
-      repo = path,
-      filename = "CODE_OF_CONDUCT.md",
-      template = "generic_template",
-      target = target
-    )
-  }
+  add_code_conduct(path, use_cc = use_cc)
+  add_contributing_guidelines(path, use_cg = use_cg)
+  return(path)
+}
 
-  # Add contributing guidelines
+add_code_conduct <- function(path, use_cc) {
+  if (!is_repository(path)) {
+    return(path)
+  }
+  if (missing(use_cc)) {
+    use_cc <- ask_yes_no("Add default code of conduct?")
+  }
+  target <- path(path, ".github")
+  insert_file(
+    repo = path,
+    filename = "CODE_OF_CONDUCT.md",
+    template = "generic_template",
+    target = target
+  )
+  return(path)
+}
+
+add_contributing_guidelines <- function(path, use_cg) {
+  if (!is_repository(path)) {
+    return(path)
+  }
   if (missing(use_cg)) {
     use_cg <- ask_yes_no("Add default contributing guidelines?")
   }
-  if (use_cg && !file_exists(path(path, ".github", "CONTRIBUTING.md"))) {
-    insert_file(
-      repo = path,
-      filename = "CONTRIBUTING.md",
-      template = "package_template",
-      target = target
-    )
-  }
+  target <- path(path, ".github")
+  insert_file(
+    repo = path,
+    filename = "CONTRIBUTING.md",
+    template = "generic_template",
+    target = target
+  )
   return(path)
 }
