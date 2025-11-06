@@ -168,7 +168,7 @@ create_package <- function(package, path = ".") {
   git_add("README.Rmd", repo = repo)
 
   # add LICENSE.md
-  set_license(x)
+  set_license(x, license = license, org = org)
   git_add("LICENSE.md", repo = repo)
 
   # Add code of conduct

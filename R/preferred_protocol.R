@@ -39,6 +39,8 @@ preferred_protocol <- function() {
       sort() |>
       unique() -> config[["git"]][["organisation"]]
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
+    ssh_http(org_url) |>
+      cache_org()
   } else {
     org_url <- config[["git"]][["organisation"]][org_choice]
   }

@@ -25,7 +25,9 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   ) {
     zen_rec$setAccessPolicyEmbargo(TRUE, as.Date(cit_meta$embargo_date))
   }
-  zen_rec$setLicense(tolower(cit_meta$license), sandbox = sandbox)
+  gsub(" ", "-", cit_meta$license) |>
+    tolower() |>
+    zen_rec$setLicense(sandbox = sandbox)
   zen_rec$addLanguage(cit_meta$language)
   zen_creator(zen_rec, cit_meta$creator) |>
     zen_contributor(cit_meta$contributors) -> zen_rec

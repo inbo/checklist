@@ -40,8 +40,8 @@ org_item <- R6Class(
     #' Use `character(0)` to indicate that the organisation does not
     #' require a specific license for that item.
     #' `package` defaults to `c("GPL-3.0", "MIT")`.
-    #' `project` defaults to `"CC-BY-4.0"`.
-    #' `data` defaults to `"CC-0"`.
+    #' `project` defaults to `"CC BY 4.0"`.
+    #' `data` defaults to `"CC0 1.0"`.
     #' @param zenodo The optional Zenodo community ID of the organisation.
     initialize = function(
       name,
@@ -51,11 +51,31 @@ org_item <- R6Class(
       funder = c("optional", "single", "shared", "when no other"),
       license = list(
         package = c(
-          `GPL-3.0` = "generic_template/gplv3.md",
-          MIT = "generic_template/mit.md"
+          `GPL-3.0` = paste(
+            "https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+            "inst/generic_template/gplv3.md",
+            sep = "/"
+          ),
+          MIT = paste(
+            "https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+            "inst/generic_template/mit.md",
+            sep = "/"
+          )
         ),
-        project = c(`CC-BY-4.0` = "generic_template/cc_by_4_0.md"),
-        data = c(`CC0-1.0` = "generic_template/cc0.md")
+        project = c(
+          `CC BY 4.0` = paste(
+            "https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+            "inst/generic_template/cc_by_4_0.md",
+            sep = "/"
+          )
+        ),
+        data = c(
+          `CC0` = paste(
+            "https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+            "inst/generic_template/cc0.md",
+            sep = "/"
+          )
+        )
       ),
       ror,
       zenodo
@@ -83,11 +103,31 @@ org_item <- R6Class(
         private$zenodo <- "inbo"
         private$license <- list(
           package = c(
-            `GPL-3` = "generic_template/gplv3.md",
-            MIT = "generic_template/mit.md"
+            `GPL-3` = paste(
+              "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+              "main/inst/generic_template/gplv3.md",
+              sep = "/"
+            ),
+            MIT = paste(
+              "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+              "main/inst/generic_template/mit.md",
+              sep = "/"
+            )
           ),
-          project = c(`CC BY 4.0` = "generic_template/cc_by_4_0.md"),
-          data = c(CC0 = "generic_template/cc0.md")
+          project = c(
+            `CC BY 4.0` = paste(
+              "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+              "main/inst/generic_template/cc_by_4_0.md",
+              sep = "/"
+            )
+          ),
+          data = c(
+            `CC0` = paste(
+              "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+              "main/inst/generic_template/cc0.md",
+              sep = "/"
+            )
+          )
         )
         return(self)
       }
@@ -99,24 +139,9 @@ org_item <- R6Class(
         "`name` cannot have empty names" = all(names(name) != ""),
         "`name` cannot have empty values" = noNA(name),
         "`orcid` must be `TRUE` or `FALSE`" = is.flag(orcid),
-        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid),
-        "`license` must be a list" = inherits(license, "list"),
-        # fmt:skip
-        "`license` must contain `package`, `project`, and `data`" =
-          all(c("package", "project", "data") %in% names(license)),
-        "`license` must contain character vectors" = all(
-          vapply(license, is.character, FUN.VALUE = logical(1))
-        ),
-        "`license` must contain named vectors" = all(
-          vapply(
-            license,
-            function(x) {
-              length(x) == 0 || (!is.null(names(x)) && all(names(x) != ""))
-            },
-            FUN.VALUE = logical(1)
-          )
-        )
+        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid)
       )
+      validate_license(license)
       private$name <- name
       private$orcid <- orcid
       private$email <- email
@@ -201,8 +226,12 @@ org_item <- R6Class(
     #' Can be one of `"package"`, `"project"`, or `"data"`.
     #' Defaults to `"package"`.
     #' @return A named character vector with the allowed licenses.
-    get_license = function(type = c("package", "project", "data")) {
+    get_license = function(type = c("package", "project", "data", "all")) {
       type <- match.arg(type)
+      if (type == "all") {
+        available <- unlist(unname(private$license))
+        return(available[unique(names(available))])
+      }
       private$license[[type]]
     },
     #' @description Print the `org_item` object.
@@ -291,3 +320,42 @@ org_item <- R6Class(
     funder = "single"
   )
 )
+
+validate_license <- function(license) {
+  stopifnot(
+    "`license` must be a list" = inherits(license, "list"),
+    # fmt:skip
+    "`license` must contain `package`, `project`, and `data`" =
+      all(c("package", "project", "data") %in% names(license)),
+    "`license` must contain character vectors" = all(
+      vapply(license, is.character, FUN.VALUE = logical(1))
+    ),
+    "`license` must contain named vectors" = all(
+      vapply(
+        license,
+        function(x) {
+          length(x) == 0 || (!is.null(names(x)) && all(names(x) != ""))
+        },
+        FUN.VALUE = logical(1)
+      )
+    ),
+    "`license` must contain uniquely named vectors" = all(
+      vapply(
+        license,
+        function(x) {
+          length(x) == 0 || anyDuplicated(names(x)) == 0
+        },
+        FUN.VALUE = logical(1)
+      )
+    ),
+    "`license` must contain vectors with unique licenses" = all(
+      vapply(
+        license,
+        function(x) {
+          length(x) == 0 || anyDuplicated(x) == 0
+        },
+        FUN.VALUE = logical(1)
+      )
+    )
+  )
+}

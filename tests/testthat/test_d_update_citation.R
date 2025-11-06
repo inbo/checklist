@@ -21,10 +21,13 @@ test_that("update_citation() works", {
   }
 
   git_init(cache)
-  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
-  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  git_remote_add(
+    "https://gitlab.com/thierryo/checklist_dummy.git",
+    repo = cache
+  )
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache), depth = 2)
   org <- get_default_org_list(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+  c("git:", "  protocol: ssh", "  organisation: https://gitlab.com/thierryo") |>
     writeLines(path(cache, "config.yml"))
 
   path <- tempfile("citation")
@@ -32,7 +35,7 @@ test_that("update_citation() works", {
   defer(unlink(path, recursive = TRUE))
   package <- "citation"
   stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
-  stub(create_package, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
     create_package,
     "readline",
@@ -40,11 +43,15 @@ test_that("update_citation() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
-  suppressMessages(create_package(path = path, package = package))
-
   hide_output <- tempfile(fileext = ".txt")
   defer(file_delete(hide_output))
   sink(hide_output)
+  suppressMessages(create_package(path = path, package = package))
+  sink()
+
+  hide_output2 <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output2))
+  sink(hide_output2)
   expect_output(x <- update_citation(path(path, package)))
   sink()
   expect_is(x, "checklist")

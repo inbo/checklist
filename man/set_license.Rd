@@ -4,11 +4,20 @@
 \alias{set_license}
 \title{Set the proper license}
 \usage{
-set_license(x = ".")
+set_license(x = ".", license, org)
 }
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{license}{the license to set.
+If missing, the user will be prompted to choose a license.}
+
+\item{org}{An \code{organisation} object.
+If missing, the organisation will be read from the project.}
+}
+\value{
+Invisible \code{NULL}.
 }
 \description{
 Set the proper license

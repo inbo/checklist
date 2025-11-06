@@ -39,7 +39,7 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
 
   if ("license" %in% x$get_required) {
     quiet_cat("Checking the license\n", quiet = quiet)
-    x <- check_license(x = x)
+    x <- check_license(x = x, org = org)
   }
 
   if ("CITATION" %in% x$get_required) {

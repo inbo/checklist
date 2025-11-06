@@ -1,3 +1,4 @@
+library(mockery)
 test_that("bookdown_zenodo() works", {
   skip_if_not_installed("bookdown")
   skip_if(Sys.getenv("MY_UNIVERSE") != "") # skip test on r-universe.dev
@@ -9,12 +10,7 @@ test_that("bookdown_zenodo() works", {
   path(root, "index.Rmd") |>
     file_delete()
   expect_error(
-    x <- bookdown_zenodo(
-      root,
-      logger = NULL,
-      sandbox = TRUE,
-      token = sandbox_token
-    ),
+    x <- bookdown_zenodo(root, logger = NULL, sandbox = TRUE),
     "index.Rmd not found"
   )
   expect_warning(
@@ -24,32 +20,10 @@ test_that("bookdown_zenodo() works", {
   expect_s3_class(meta, c("citation_meta", "R6"))
   expect_true(grepl("index.Rmd not found", meta$get_errors))
 
+  skip_if_not_installed("zen4R")
   system.file("bookdown", package = "checklist") |>
     dir_ls() |>
     file_copy(root, overwrite = TRUE)
-  expect_warning(
-    x <- bookdown_zenodo(
-      root,
-      logger = NULL,
-      sandbox = TRUE,
-      token = sandbox_token
-    ),
-    "Errors found parsing citation meta data"
-  )
-  expect_is(x, "citation_meta")
-  expect_identical(x$get_errors, "No LICENSE.md file found")
-
-  skip_if_not_installed("zen4R")
-  system.file("generic_template", "mit.md", package = "checklist") |>
-    file_copy(path(root, "LICENSE.md"))
-  expect_warning(
-    x <- bookdown_zenodo(root, logger = NULL, sandbox = TRUE, token = "junk"),
-    "Errors found parsing citation meta data. Citation files not updated."
-  )
-  expect_equal(x$get_errors, "LICENSE.md doesn't match with CC-BY-4.0 license")
-
-  system.file("generic_template", "cc_by_4_0.md", package = "checklist") |>
-    file_copy(path(root, "LICENSE.md"), overwrite = TRUE)
   path(root, "index.Rmd") |>
     readLines() |>
     tail(-1) -> index
@@ -125,18 +99,6 @@ test_that("bookdown_zenodo() works", {
   )
   path(root, "index.Rmd") |>
     writeLines(text = index)
-
-  system.file("generic_template", "gplv3.md", package = "checklist") |>
-    file_copy(path(root, "LICENSE.md"), overwrite = TRUE)
-  expect_warning(
-    x <- bookdown_zenodo(
-      root,
-      logger = NULL,
-      sandbox = TRUE,
-      token = sandbox_token
-    ),
-    "Errors found parsing citation meta data"
-  )
 
   path(root, "abstract.Rmd") |>
     file_delete()

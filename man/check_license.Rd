@@ -4,7 +4,7 @@
 \alias{check_license}
 \title{Check the license of a package}
 \usage{
-check_license(x = ".")
+check_license(x = ".", org)
 }
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.

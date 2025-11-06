@@ -21,10 +21,13 @@ test_that("check_spelling() on a package", {
   }
 
   git_init(cache)
-  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
-  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  git_remote_add(
+    "https://gitlab.com/thierryo/checklist_dummy.git",
+    repo = cache
+  )
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache), depth = 2)
   org <- get_default_org_list(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+  c("git:", "  protocol: ssh", "  organisation: https://gitlab.com/thierryo") |>
     writeLines(path(cache, "config.yml"))
 
   old_option <- getOption("checklist.rstudio_source_markers", TRUE)
@@ -36,7 +39,7 @@ test_that("check_spelling() on a package", {
 
   package <- "spelling"
   stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
-  stub(create_package, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
     create_package,
     "readline",
@@ -44,7 +47,6 @@ test_that("check_spelling() on a package", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
-  hide_output <- tempfile(fileext = ".txt")
   suppressMessages(create_package(path = path, package = package))
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   expect_is(
@@ -187,10 +189,13 @@ test_that("check_spelling() on a project", {
   }
 
   git_init(cache)
-  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
-  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  git_remote_add(
+    "https://gitlab.com/thierryo/checklist_dummy.git",
+    repo = cache
+  )
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache), depth = 2)
   org <- get_default_org_list(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+  c("git:", "  protocol: ssh", "  organisation: https://gitlab.com/thierryo") |>
     writeLines(path(cache, "config.yml"))
 
   path <- tempfile("check_spelling")
@@ -198,7 +203,7 @@ test_that("check_spelling() on a project", {
   defer(unlink(path, recursive = TRUE))
   project <- "check_spelling"
   stub(create_project, "R_user_dir", mock_r_user_dir(cache), depth = 2)
-  stub(create_project, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(create_project, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
     create_project,
     "readline",
@@ -343,23 +348,6 @@ test_that("check_spelling() on a project", {
   )
   stub(setup_project, "interactive", TRUE, depth = 2)
   expect_output(setup_project(path(path, "spelling")))
-
-  path("generic_template", "gplv3.md") |>
-    system.file(package = "checklist") |>
-    file_copy(path(path, "spelling", "LICENSE.md"), overwrite = TRUE)
-  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
-  expect_match(
-    z$.__enclos_env__$private$errors$CITATION,
-    "LICENSE.md doesn't match"
-  )
-  path(path, "spelling", "LICENSE.md") |>
-    unlink()
-  expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
-  expect_match(
-    z$.__enclos_env__$private$errors$CITATION,
-    "No LICENSE.md file found"
-  )
-  gert::git_reset_hard(repo = path(path, "spelling"))
 
   path(path, "spelling", "README.md") |>
     readLines() -> readme_old

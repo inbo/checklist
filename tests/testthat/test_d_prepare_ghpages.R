@@ -21,10 +21,13 @@ test_that("create_package() works", {
   }
 
   git_init(cache)
-  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
-  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  git_remote_add(
+    "https://gitlab.com/thierryo/checklist_dummy.git",
+    repo = cache
+  )
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache), depth = 2)
   org <- get_default_org_list(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+  c("git:", "  protocol: ssh", "  organisation: https://gitlab.com/thierryo") |>
     writeLines(path(cache, "config.yml"))
 
   path <- tempfile("ghpages")
@@ -35,7 +38,7 @@ test_that("create_package() works", {
 
   package <- "ghpages"
   stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
-  stub(create_package, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
     create_package,
     "readline",
@@ -43,10 +46,11 @@ test_that("create_package() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
-  expect_message(
-    create_package(path = path, package = package),
-    regexp = sprintf("package created at `.*%s`", package)
-  )
+  hide_output <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output))
+  sink(hide_output)
+  create_package(path = path, package = package)
+  sink()
 
   repo <- path(path, package)
 

@@ -5,11 +5,11 @@ test_that("check_license() works", {
   defer(unlink(cache, recursive = TRUE))
   stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
   stub(new_author, "ask_orcid", mock(""))
-  new_author(
+  expect_output(new_author(
     current = data.frame(),
     root = file.path(cache, "data"),
     org = org_list$new()$read()
-  )
+  ))
 
   mock_r_user_dir <- function(alt_dir) {
     function(package, which = c("data", "config", "cache")) {
@@ -19,21 +19,22 @@ test_that("check_license() works", {
   }
 
   git_init(cache)
-  git_remote_add("https://github.com/inbo/checklist_dummy.git", repo = cache)
-  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache))
+  git_remote_add(
+    "https://gitlab.com/thierryo/checklist_dummy.git",
+    repo = cache
+  )
+  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache), depth = 2)
   org <- get_default_org_list(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://github.com/inbo") |>
+  c("git:", "  protocol: ssh", "  organisation: https://gitlab.com/thierryo") |>
     writeLines(path(cache, "config.yml"))
 
   path <- tempfile("check_license")
   dir.create(path)
-  oldwd <- setwd(path)
-  defer(setwd(oldwd))
   defer(unlink(path, recursive = TRUE))
 
   package <- "checklicense"
   stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
-  stub(create_package, "preferred_protocol", "git@github.com:inbo/%s.git")
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
     create_package,
     "readline",
@@ -66,7 +67,7 @@ test_that("check_license() works", {
     file.exists(path(repo, "LICENSE")),
     TRUE
   )
-  x <- check_license(repo)
+  x <- check_license(repo, org = org)
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     character(0)
@@ -75,7 +76,7 @@ test_that("check_license() works", {
   # copyright holder mismatch
   mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"), " INBO")
   writeLines(mit, path(repo, "LICENSE.md"))
-  expect_is(x <- check_license(repo), "checklist")
+  expect_is(x <- check_license(repo, org = org), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     c(
@@ -85,7 +86,7 @@ test_that("check_license() works", {
   )
 
   file_delete(path(repo, "LICENSE.md"))
-  expect_is(x <- check_license(repo), "checklist")
+  expect_is(x <- check_license(repo, org = org), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     "No LICENSE.md file"

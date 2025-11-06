@@ -28,6 +28,10 @@ Other class:
 
 \item{\code{get_email}}{The organisations email.}
 
+\item{\code{get_git}}{The git organisation URL.}
+
+\item{\code{get_listed_licenses}}{Return the available licenses.}
+
 \item{\code{get_languages}}{The different languages of the organisations.}
 
 \item{\code{which_funder}}{The required rightsholders.}
@@ -296,7 +300,7 @@ Validate the rules for the rightsholder and funder.
 \subsection{Method \code{write()}}{
 Write the \code{org_list} object to an \code{organisation.yml} file.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{org_list$write(x = ".")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{org_list$write(x = ".", license = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -304,8 +308,13 @@ Write the \code{org_list} object to an \code{organisation.yml} file.
 \describe{
 \item{\code{x}}{The path to the directory where the \code{organisation.yml} file
 should be written.}
+
+\item{\code{license}}{Whether to include license information.}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The path to the written \code{organisation.yml} file.
 }
 }
 \if{html}{\out{<hr>}}

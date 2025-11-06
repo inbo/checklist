@@ -4,7 +4,7 @@
 \alias{setup_source}
 \title{Add or update the checklist infrastructure to a repository with source files.}
 \usage{
-setup_source(path = ".", language = "en-GB")
+setup_source(path = ".")
 }
 \arguments{
 \item{path}{The path to the project.

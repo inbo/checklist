@@ -114,8 +114,8 @@ check_description <- function(x = ".") {
   )
 
   this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
-  org_list$new()$read(x$get_path) |>
-    check_authors(this_desc = this_desc) -> updated_authors
+  org <- org_list$new()$read(x$get_path)
+  updated_authors <- check_authors(this_desc = this_desc, org = org)
   this_desc$set_authors(updated_authors)
   path(x$get_path, "DESCRIPTION") |>
     this_desc$write()
@@ -131,7 +131,7 @@ check_description <- function(x = ".") {
     x$add_error(item = "DESCRIPTION", keep = FALSE)
   x$add_notes(notes, item = "DESCRIPTION")
 
-  check_license(x = x)
+  check_license(x = x, org = org)
 }
 
 #' Make your DESCRIPTION tidy
@@ -221,8 +221,11 @@ unchanged_repo <- function(repo, old_status) {
 #' @importFrom fs file_exists path
 #' @export
 #' @family package
-check_license <- function(x = ".") {
+check_license <- function(x = ".", org) {
   x <- read_checklist(x = x)
+  if (missing(org)) {
+    org <- org_list$new()$read(x$get_path)
+  }
   if (x$package) {
     this_desc <- description$new(
       file = path(x$get_path, "DESCRIPTION")
@@ -230,16 +233,55 @@ check_license <- function(x = ".") {
 
     # check if the license is allowed
     current_license <- this_desc$get_field("License")
-    problems <- sprintf(
-      "%s license currently not allowed.
-Please send a pull request if you need support for this license.",
-      this_desc$get_field("License")
+    this_desc$get_author(role = "cph")$email |>
+      org$get_allowed_licenses(type = "package") -> allowed_licenses
+    names(allowed_licenses)[
+      names(allowed_licenses) == "MIT"
+    ] <- "MIT + file LICENSE"
+    fmt <- paste(
+      "%s license is not allowed in this organisation.",
+      "Allowed licenses are: %s."
+    )
+    sprintf(
+      fmt = fmt,
+      current_license,
+      paste(names(allowed_licenses), collapse = "; ")
     )[
-      !current_license %in% c("GPL-3", "MIT + file LICENSE")
-    ]
+      !current_license %in% names(allowed_licenses)
+    ] -> problems
   } else {
-    current_license <- "CC-BY"
-    problems <- character(0)
+    path(x$get_path, "README.md") |>
+      readLines() -> readme
+    regex <- paste0(
+      "^\\[!\\[(.*)\\]\\(https:\\/\\/img\\.shields\\.io\\/badge\\/License-.*?",
+      "-brightgreen\\)\\]\\((.*)\\)"
+    )
+    which_badge <- grep(regex, readme)
+    c(
+      "No standard license badge found in README.md"[length(which_badge) == 0],
+      "Multiple license badges found in README.md"[length(which_badge) > 1]
+    ) -> problems
+    gsub(regex, "\\2", readme[which_badge]) |>
+      setNames(gsub(regex, "\\1", readme[which_badge])) -> current_license
+    regex <- ".*mailto:(.*?)\\)\\[\\^cph\\].*"
+    which_badge <- grep(regex, readme)
+    gsub(regex, "\\1", readme[which_badge]) |>
+      gsub(pattern = "%40", replacement = "@") |>
+      org$get_allowed_licenses(type = "project") -> allowed_license
+    fmt <- paste(
+      "%s license is not allowed in this organisation.",
+      "Allowed licenses are: %s."
+    )
+    c(
+      sprintf(fmt, names(current_license), names(allowed_license))[
+        !names(current_license) %in% names(allowed_license)
+      ],
+      sprintf("`%s` is not the allowed license URL", current_license)[
+        current_license != allowed_license[names(current_license)]
+      ],
+      problems
+    ) -> problems
+    current_license <- names(current_license)
   }
 
   # check if LICENSE.md exists
@@ -249,19 +291,14 @@ Please send a pull request if you need support for this license.",
       item = "license",
       keep = FALSE
     )
+    set_license(x = x, license = current_license, org = org)
     return(x)
   }
 
   # check if LICENSE.md matches the official version
   path(x$get_path, "LICENSE.md") |>
     readLines() -> current
-  official <- switch(
-    current_license,
-    "GPL-3" = "gplv3.md",
-    "MIT + file LICENSE" = "mit.md",
-    "CC-BY" = "cc_by_4_0.md"
-  )
-  system.file("generic_template", official, package = "checklist") |>
+  get_official_license_location(license = current_license, org = org) |>
     readLines() -> official
   if (current_license == "MIT + file LICENSE") {
     author <- this_desc$get_author(role = "cph")
@@ -296,7 +333,7 @@ Please send a pull request if you need support for this license.",
       problems,
       "LICENSE.md doesn't match the version in the checklist package"
     )
-    set_license(x)
+    set_license(x, license = current_license, org = org)
   }
   x$add_error(
     errors = problems,

@@ -13,9 +13,8 @@ citation_readme <- function(meta, org, lang) {
       )
     )
   }
-  readme_file |>
-    readLines() |>
-    readme_badges() |>
+  readme <- readLines(readme_file)
+  readme_badges(readme) |>
     readme_title() |>
     readme_author(org = org, lang = lang) |>
     readme_version() |>
@@ -31,24 +30,6 @@ citation_readme <- function(meta, org, lang) {
       paste0("/") -> cit_meta$meta$source
   }
   cit_meta$meta$upload_type <- "software"
-  license_file <- path(meta$get_path, "LICENSE.md")
-  if (!is_file(license_file)) {
-    cit_meta$errors <- c(cit_meta$errors, "No LICENSE.md file found")
-  } else {
-    license <- readLines(license_file)
-    path("generic_template", "cc_by_4_0.md") |>
-      system.file(package = "checklist") |>
-      readLines() |>
-      identical(license) -> license_ok
-    if (license_ok) {
-      cit_meta$meta$license <- "CC-BY-4.0"
-    } else {
-      cit_meta$errors <- c(
-        cit_meta$errors,
-        "LICENSE.md doesn't match with CC-BY-4.0 license"
-      )
-    }
-  }
   return(cit_meta)
 }
 
@@ -89,7 +70,7 @@ readme_badges <- function(text) {
     "badges section in README.md should only contain images"[
       !all(grepl(badge_regexp, badges, perl = TRUE))
     ],
-    "every line in the badges section README.md should hold only on image"[
+    "every line in the badges section README.md should hold only one image"[
       !all(grepl("^\\s*$", gsub(badge_regexp, "", badges, perl = TRUE)))
     ]
   )

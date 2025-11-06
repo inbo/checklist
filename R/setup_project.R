@@ -38,7 +38,7 @@ setup_project <- function(path = ".") {
       file_copy(path(path, "source", "checklist.R"))
   }
   renv_activate(path = path)
-  files <- create_readme(path = path, org = org, lang = language)
+  create_readme(path = path, org = org, lang = language, type = "project")
   checks <- c(
     "checklist",
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
@@ -57,11 +57,11 @@ setup_project <- function(path = ".") {
   )
 
   if ("license" %in% checks && !file_exists(path(path, "LICENSE.md"))) {
-    set_license(x)
+    set_license(x, org = org)
   }
 
   x$set_required(checks = checks)
   write_checklist(x = x)
-  repo <- setup_vc(path = path, url = git)
+  setup_vc(path = path, url = git)
   return(invisible(NULL))
 }

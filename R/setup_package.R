@@ -201,7 +201,7 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   insert_file(
     repo = path,
     filename = "CONTRIBUTING.md",
-    template = "package_template",
+    template = "generic_template",
     target = target
   )
 

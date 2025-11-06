@@ -2,11 +2,7 @@
 % Please edit documentation in R/get_default_org_list.R
 \name{get_default_org_list}
 \alias{get_default_org_list}
-\title{Get the default organization list
-This function retrieves the default organisation list from the
-\code{organisation.yml} file in the organisations \code{checklist} repository.
-The \code{origin} of the repository is used to determine the root URL of the
-organisation.}
+\title{Get the default organization list}
 \usage{
 get_default_org_list(x = ".")
 }
@@ -19,7 +15,6 @@ An \code{org_list} object containing the organisation list.
 The function also stores the information in the user's R configuration.
 }
 \description{
-Get the default organization list
 This function retrieves the default organisation list from the
 \code{organisation.yml} file in the organisations \code{checklist} repository.
 The \code{origin} of the repository is used to determine the root URL of the

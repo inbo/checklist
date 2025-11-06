@@ -67,7 +67,10 @@ create_project <- function(path, project) {
     authors = authors,
     title = title,
     description = description,
-    keywords = keywords
+    keywords = keywords,
+    org = org,
+    license = license,
+    type = "project"
   )
   renv_activate(path = path, use_renv = use_renv)
   x <- checklist$new(x = path, language = language, package = FALSE)
@@ -77,10 +80,7 @@ create_project <- function(path, project) {
   x$set_required(checks = checks)
   write_checklist(x)
 
-  if ("license" %in% checks) {
-    set_license(x)
-  }
-
+  set_license(x, license = license, org = org)
   setup_vc(path = path, url = git, use_vc = use_vc, use_cc = cc, use_cg = cg)
 
   if (

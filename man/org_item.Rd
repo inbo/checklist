@@ -59,9 +59,16 @@ Initialize a new \code{org_item} object.
   orcid = FALSE,
   rightsholder = c("optional", "single", "shared", "when no other"),
   funder = c("optional", "single", "shared", "when no other"),
-  license = list(package = c(`GPL-3.0` = "generic_template/gplv3.md", MIT =
-    "generic_template/mit.md"), project = c(`CC-BY-4.0` =
-    "generic_template/cc_by_4_0.md"), data = c(`CC0-1.0` = "generic_template/cc0.md")),
+  license = list(package = c(`GPL-3.0` =
+    paste("https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+    "inst/generic_template/gplv3.md", sep = "/"), MIT =
+    paste("https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+    "inst/generic_template/mit.md", sep = "/")), project = c(`CC BY 4.0` =
+    paste("https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
+    "inst/generic_template/cc_by_4_0.md", sep = "/")), data = c(CC0 =
+    paste("https://raw.githubusercontent.com/inbo/checklist/refs/heads/main", 
+    
+    "inst/generic_template/cc0.md", sep = "/"))),
   ror,
   zenodo
 )}\if{html}{\out{</div>}}
@@ -106,8 +113,8 @@ file with the license text.
 Use \code{character(0)} to indicate that the organisation does not
 require a specific license for that item.
 \code{package} defaults to \code{c("GPL-3.0", "MIT")}.
-\code{project} defaults to \code{"CC-BY-4.0"}.
-\code{data} defaults to \code{"CC-0"}.}
+\code{project} defaults to \code{"CC BY 4.0"}.
+\code{data} defaults to \code{"CC0 1.0"}.}
 
 \item{\code{ror}}{The optional ROR ID of the organisation.}
 
@@ -165,7 +172,7 @@ organisation names but in a different order.
 \subsection{Method \code{get_license()}}{
 Get the organisation license.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{org_item$get_license(type = c("package", "project", "data"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{org_item$get_license(type = c("package", "project", "data", "all"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

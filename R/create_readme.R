@@ -6,7 +6,9 @@ create_readme <- function(
   title,
   description,
   keywords,
-  lang
+  lang,
+  license,
+  type = c("package", "project", "data")
 ) {
   if (file_exists(path(path, "README.md"))) {
     return(character(0))
@@ -23,14 +25,24 @@ create_readme <- function(
   if (missing(keywords)) {
     keywords <- ask_keywords()
   }
-
+  if (missing(license)) {
+    license <- ask_license(org = org, type = type)
+  }
   paste0(
     "[![Project Status: Concept - Minimal or no implementation has been done ",
     "yet, or the repository is only intended to be a limited example, demo, ",
     "or proof-of-concept.]",
     "(https://www.repostatus.org/badges/latest/concept.svg)]",
     "(https://www.repostatus.org/#concept)"
-  ) -> badges
+  ) |>
+    c(
+      sprintf(
+        "[![%s](https://img.shields.io/badge/License-%s-brightgreen)](%s)",
+        license,
+        gsub(" ", "_", license),
+        license_local_remote(org$get_listed_licenses[license])$remote_file
+      )
+    ) -> badges
   if (is_repository(path)) {
     remotes <- git_remote_list(repo = path)
     remotes$url[remotes$name == "origin"] |>
@@ -41,12 +53,12 @@ create_readme <- function(
       gsub("https://github.com/", "", repo_url) |>
         sprintf(
           fmt = paste0(
-            "![GitHub](https://img.shields.io/github/license/%1$s)\n",
             "![GitHub Workflow Status](https://img.shields.io/github/actions/",
             "workflow/status/%1$s/check-project)\n",
             "![GitHub repo size](https://img.shields.io/github/repo-size/%1$s)"
           )
-        ) -> badges
+        ) |>
+        c(badges) -> badges
     }
   }
   c(

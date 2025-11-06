@@ -290,10 +290,14 @@ org_list <- R6Class(
     #' @description  Write the `org_list` object to an `organisation.yml` file.
     #' @param x The path to the directory where the `organisation.yml` file
     #' should be written.
+    #' @param license Whether to include license information.
+    #' @return The path to the written `organisation.yml` file.
+    #' @importFrom assertthat assert_that is.string noNA is.flag
     #' @importFrom fs path
     #' @importFrom sessioninfo session_info
     #' @importFrom yaml write_yaml
-    write = function(x = ".") {
+    write = function(x = ".", license = FALSE) {
+      assert_that(is.string(x), noNA(x), is.flag(license), noNA(license))
       checklist <- try(read_checklist(x = x), silent = TRUE)
       if (inherits(checklist, "checklist")) {
         x <- checklist$get_path
@@ -315,6 +319,10 @@ org_list <- R6Class(
         yaml
       ) |>
         write_yaml(file = path(x, "organisation.yml"))
+      if (!license) {
+        return(path(x, "organisation.yml"))
+      }
+      download_licenses(self$get_listed_licenses, x)
       return(path(x, "organisation.yml"))
     }
   ),
@@ -357,6 +365,24 @@ org_list <- R6Class(
       vapply(private$items, FUN.VALUE = character(1), FUN = function(x) {
         x$get_email
       })
+    },
+    #' @field get_git The git organisation URL.
+    get_git = function() {
+      private$git
+    },
+    #' @field get_listed_licenses Return the available licenses.
+    get_listed_licenses = function() {
+      vapply(
+        private$items,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        FUN = function(item) {
+          item$get_license(type = "all") |>
+            list()
+        }
+      ) |>
+        unname() |>
+        unlist() -> available
+      available[unique(names(available))]
     },
     #' @field get_languages The different languages of the organisations.
     get_languages = function() {
@@ -837,5 +863,36 @@ ol_check <- function(local_org, x) {
       "organisation with different rule for funder",
       paste(names(local_funder), sep = "\n")
     )[length(local_funder > 0)]
+  )
+}
+
+license_local_remote <- function(license) {
+  data.frame(
+    local_file = gsub("[ -]", "_", names(license)) |>
+      tolower() |>
+      paste0(".md"),
+    remote_file = unname(license)
+  )
+}
+
+#' @importFrom utils download.file
+download_licenses <- function(listed_licenses, x) {
+  if (length(listed_licenses) == 0) {
+    return(invisible(NULL))
+  }
+  license_local_remote(listed_licenses) |>
+    apply(
+      1,
+      FUN = function(z, x) {
+        download.file(
+          url = z["remote_file"],
+          destfile = path(x, z["local_file"]),
+          quiet = TRUE
+        )
+      },
+      x = x
+    ) -> downloaded
+  stopifnot(
+    "failed to download at least one of the licenses" = all(downloaded) == 0
   )
 }

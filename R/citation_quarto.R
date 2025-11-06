@@ -58,11 +58,11 @@ citation_quarto <- function(meta) {
       readLines() |>
       identical(license) -> license_ok
     if (license_ok) {
-      cit_meta$meta$license <- "CC-BY-4.0"
+      cit_meta$meta$license <- "CC BY 4.0"
     } else {
       cit_meta$errors <- c(
         cit_meta$errors,
-        "LICENSE.md doesn't match with CC-BY-4.0 license"
+        "LICENSE.md doesn't match with CC BY 4.0 license"
       )
     }
   }
