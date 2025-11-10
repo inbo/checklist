@@ -53,7 +53,7 @@ create_package <- function(package, path = ".") {
 
   # add checklist.yml
   x <- checklist$new(x = path, package = TRUE, language = language)
-  x$set_ignore(c(".github", "LICENSE.md"))
+  x$set_ignore(c(".github", "LICENSE.md", "docs"))
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
