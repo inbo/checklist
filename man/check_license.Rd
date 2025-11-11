@@ -9,6 +9,9 @@ check_license(x = ".", org)
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
+
+\item{org}{An \code{organisation} object.
+If missing, the organisation will be read from the project.}
 }
 \description{
 Every package needs a clear license.

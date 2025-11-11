@@ -216,6 +216,7 @@ unchanged_repo <- function(repo, old_status) {
 #' We will consider pull requests adding support for other open source licenses.
 #'
 #' @inheritParams read_checklist
+#' @inheritParams set_license
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
 #' @importFrom fs file_exists path
