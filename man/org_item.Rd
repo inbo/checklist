@@ -66,9 +66,10 @@ Initialize a new \code{org_item} object.
     "inst/generic_template/mit.md", sep = "/")), project = c(`CC BY 4.0` =
     paste("https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
     "inst/generic_template/cc_by_4_0.md", sep = "/")), data = c(CC0 =
-    paste("https://raw.githubusercontent.com/inbo/checklist/refs/heads/main", 
-    
-    "inst/generic_template/cc0.md", sep = "/"))),
+    paste("https://raw.githubusercontent.com/inbo/checklist",
+    "131fe5829907079795533bfea767bf7df50c3cfd/inst/generic_template", 
+     "cc0.md", sep
+    = "/"))),
   ror,
   zenodo
 )}\if{html}{\out{</div>}}

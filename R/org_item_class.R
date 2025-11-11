@@ -71,8 +71,9 @@ org_item <- R6Class(
         ),
         data = c(
           `CC0` = paste(
-            "https://raw.githubusercontent.com/inbo/checklist/refs/heads/main",
-            "inst/generic_template/cc0.md",
+            "https://raw.githubusercontent.com/inbo/checklist",
+            "131fe5829907079795533bfea767bf7df50c3cfd/inst/generic_template",
+            "cc0.md",
             sep = "/"
           )
         )
@@ -123,8 +124,9 @@ org_item <- R6Class(
           ),
           data = c(
             `CC0` = paste(
-              "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
-              "main/inst/generic_template/cc0.md",
+              "https://raw.githubusercontent.com/inbo/checklist",
+              "131fe5829907079795533bfea767bf7df50c3cfd/inst/generic_template",
+              "cc0.md",
               sep = "/"
             )
           )
