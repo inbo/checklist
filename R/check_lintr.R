@@ -22,11 +22,11 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   stopifnot(
     "Please install the `cyclocomp` package" = requireNamespace("cyclocomp")
   )
-  options(lintr.linter_file = system.file("lintr", package = "checklist"))
+  x <- read_checklist(x = x)
+  options(lintr.linter_file = select_lintr_file(x$get_path))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)
   options(lintr.rstudio_source_markers = interactive())
   defer(options(lintr.rstudio_source_markers = old_lint_option))
-  x <- read_checklist(x = x)
   missing_packages <- list_missing_packages(x$get_path)
   paste(missing_packages, collapse = ", ") |>
     sprintf(
@@ -76,4 +76,28 @@ list_missing_packages <- function(x = ".") {
   installed.packages() |>
     rownames() -> installed_packages
   required_packages[!required_packages %in% installed_packages]
+}
+
+select_lintr_file <- function(x) {
+  if (!is_repository(x)) {
+    return(system.file("lintr", package = "checklist"))
+  }
+  org <- org_list$new()$read(x)
+  if (!grepl("^https://", org$get_git, perl = TRUE)) {
+    return(system.file("lintr", package = "checklist"))
+  }
+  if (org$get_git == "https://github.com/inbo") {
+    return(system.file("lintr", package = "checklist"))
+  }
+  R_user_dir("checklist", "config") |>
+    path(
+      tolower(org$get_git) |>
+        gsub(pattern = "https://", replacement = ""),
+      ".lintr"
+    ) -> linter_file
+  ifelse(
+    file_exists(linter_file),
+    linter_file,
+    system.file("lintr", package = "checklist")
+  )
 }
