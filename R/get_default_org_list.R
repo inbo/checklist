@@ -16,13 +16,13 @@ get_default_org_list <- function(x = ".") {
   remotes <- git_remote_list(repo = x)
   stopifnot("no git remote `origin` found" = any(remotes$name == "origin"))
   url <- ssh_http(remotes$url[remotes$name == "origin"])
-  cache_org(url)
+  cache_org(url, config_folder = R_user_dir("checklist", "config"))
 }
 
 #' @importFrom fs dir_create path
 #' @importFrom httr HEAD
 #' @importFrom tools R_user_dir
-cache_org <- function(url) {
+cache_org <- function(url, config_folder) {
   paste0(url, "/checklist") |>
     HEAD() -> url_head
   list(url_head$status_code == 200) |>
@@ -41,8 +41,7 @@ cache_org <- function(url) {
   org <- org_list$new()$read(target)
   gsub("https://", "", url) |>
     tolower() -> config_name
-  R_user_dir("checklist", "config") |>
-    path(config_name) -> config_path
+  config_path <- path(config_folder, config_name)
   dir_create(config_path, recurse = TRUE)
   org$write(config_path, license = TRUE)
   return(org)

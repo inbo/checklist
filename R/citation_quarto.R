@@ -23,6 +23,7 @@ citation_quarto <- function(meta) {
   }
   yaml$lang <- coalesce(yaml$lang, language)
   cit_meta <- yaml_author(yaml = yaml)
+  cit_meta$warnings <- cit_meta$notes <- character(0)
   description <- quarto_description(meta$get_path)
   cit_meta$meta$description <- description$description
   cit_meta$errors <- c(cit_meta$errors, description$errors)
@@ -48,24 +49,14 @@ citation_quarto <- function(meta) {
   } else {
     cit_meta$meta$access_right <- "open"
   }
-  license_file <- path(meta$get_path, "LICENSE.md")
-  if (!is_file(license_file)) {
-    cit_meta$errors <- c(cit_meta$errors, "No LICENSE.md file found")
-  } else {
-    license <- readLines(license_file)
-    path("generic_template", "cc_by_4_0.md") |>
-      system.file(package = "checklist") |>
-      readLines() |>
-      identical(license) -> license_ok
-    if (license_ok) {
-      cit_meta$meta$license <- "CC BY 4.0"
-    } else {
-      cit_meta$errors <- c(
-        cit_meta$errors,
-        "LICENSE.md doesn't match with CC BY 4.0 license"
-      )
-    }
+  if (!has_name(yaml, "license")) {
+    cit_meta$errors <- c(
+      cit_meta$errors,
+      "No `license` element found in YAML"
+    )
+    return(cit_meta)
   }
+  cit_meta$meta$license <- yaml$license
   if (has_name(yaml, "lang")) {
     cit_meta$meta$language <- yaml$lang
   }
@@ -120,14 +111,12 @@ citation_quarto <- function(meta) {
   ) |>
     c(cit_meta$errors) -> cit_meta$errors
   c(
-    "No `community` element found"[!has_name(yaml, "community")],
     "No `publication_type` element found"[!has_name(yaml, "publication_type")]
   ) |>
     c(cit_meta$notes) -> cit_meta$notes
   cit_meta$meta$community <- split_community(cit_meta$meta$community)
   return(cit_meta)
 }
-
 
 quarto_description <- function(path) {
   for (i in dir_ls(path, regexp = "\\.q?md$", recurse = TRUE)) {

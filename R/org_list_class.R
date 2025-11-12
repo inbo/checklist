@@ -35,18 +35,19 @@ org_list <- R6Class(
     },
     #' @description Return the allowed licenses.
     #' @param email The email addresses of the organisations.
+    #' Returns all available licenses if missing.
     #' @param type The type of license to return.
-    #' Can be one of `"package"`, `"project"` or `"data"`.
+    #' Can be one of `"package"`, `"project"`, `"data"` or `"all"`.
     #' @importFrom assertthat assert_that noNA
     get_allowed_licenses = function(
       email,
-      type = c("package", "project", "data")
+      type = c("package", "project", "data", "all")
     ) {
-      assert_that(is.character(email), noNA(email))
       type <- match.arg(type)
-      if (length(email) == 0) {
+      if (missing(email) || length(email) == 0) {
         selection <- private$items
       } else {
+        assert_that(is.character(email), noNA(email))
         selection <- private$items[email]
       }
       vapply(
@@ -506,7 +507,11 @@ ol_validate_persons <- function(person, lang, items) {
     person,
     lang = lang,
     FUN = function(x, lang) {
-      list(ol_validate_person(person = x, lang = lang, items = items))
+      list(ol_validate_person(
+        person = x,
+        lang = lang,
+        items = items
+      ))
     },
     FUN.VALUE = vector(mode = "list", length = 1)
   ) -> updated_person
@@ -623,35 +628,11 @@ ol_validate_person <- function(person, lang, items) {
     choices = names(relevant[[1]]$name),
     x = lang
   )
-  problems <- c(
-    sprintf("`%s`: `given` is empty", person_name)[
-      is.null(person$given) || person$given == ""
-    ],
-    sprintf("`%s`: `family` is empty", person_name)[
-      is.null(person$family) || person$family == ""
-    ],
-    sprintf(
-      "`%s`: `affiliation` must contain `%s`",
-      person_name,
-      relevant[[1]]$name[lang]
-    )[
-      is.null(person$comment) ||
-        !has_name(person$comment, "affiliation") ||
-        !relevant[[1]]$name[lang] %in% person$comment["affiliation"]
-    ],
-    sprintf(
-      "`%s`: `ORCID` required for `%s`",
-      person_name,
-      relevant[[1]]$name[lang]
-    )[
-      is.null(person$comment) || !has_name(person$comment, "ORCID")
-    ],
-    sprintf(
-      "`%s`: `ROR` is only relevant for organisations",
-      person_name
-    )[
-      is.null(person$comment) || has_name(person$comment, "ROR")
-    ]
+  problems <- ol_validate_person_problems(
+    person = person,
+    person_name = person_name,
+    relevant = relevant,
+    lang = lang
   )
   comment <- first_non_null(
     person$comment,
@@ -673,6 +654,40 @@ ol_validate_person <- function(person, lang, items) {
   )
   attr(updated_person, "errors") <- problems
   return(updated_person)
+}
+
+ol_validate_person_problems <- function(person, person_name, relevant, lang) {
+  c(
+    sprintf("`%s`: `given` is empty", person_name)[
+      is.null(person$given) || person$given == ""
+    ],
+    sprintf("`%s`: `family` is empty", person_name)[
+      is.null(person$family) || person$family == ""
+    ],
+    sprintf(
+      "`%s`: `affiliation` must contain `%s`",
+      person_name,
+      relevant[[1]]$name[lang]
+    )[
+      is.null(person$comment) ||
+        !has_name(person$comment, "affiliation") ||
+        !relevant[[1]]$name[lang] %in% person$comment["affiliation"]
+    ],
+    sprintf(
+      "`%s`: `ORCID` required for `%s`",
+      person_name,
+      relevant[[1]]$name[lang]
+    )[
+      relevant[[1]]$orcid &&
+        (is.null(person$comment) || !has_name(person$comment, "ORCID"))
+    ],
+    sprintf(
+      "`%s`: `ROR` is only relevant for organisations",
+      person_name
+    )[
+      is.null(person$comment) || has_name(person$comment, "ROR")
+    ]
+  )
 }
 
 ol_select_relevant_org <- function(

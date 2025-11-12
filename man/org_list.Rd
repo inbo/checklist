@@ -100,16 +100,20 @@ default as set in the organisations git repository.
 \subsection{Method \code{get_allowed_licenses()}}{
 Return the allowed licenses.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{org_list$get_allowed_licenses(email, type = c("package", "project", "data"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_allowed_licenses(
+  email,
+  type = c("package", "project", "data", "all")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{The email addresses of the organisations.}
+\item{\code{email}}{The email addresses of the organisations.
+Returns all available licenses if missing.}
 
 \item{\code{type}}{The type of license to return.
-Can be one of \code{"package"}, \code{"project"} or \code{"data"}.}
+Can be one of \code{"package"}, \code{"project"}, \code{"data"} or \code{"all"}.}
 }
 \if{html}{\out{</div>}}
 }

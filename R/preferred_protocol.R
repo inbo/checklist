@@ -5,8 +5,8 @@
 #' @importFrom yaml read_yaml write_yaml
 preferred_protocol <- function() {
   config <- list()
-  R_user_dir("checklist", which = "config") |>
-    path("config.yml") -> config_file
+  config_folder <- R_user_dir("checklist", which = "config")
+  config_file <- path(config_folder, "config.yml")
   if (file_exists(config_file)) {
     config <- read_yaml(config_file)
   }
@@ -40,7 +40,7 @@ preferred_protocol <- function() {
       unique() -> config[["git"]][["organisation"]]
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
     ssh_http(org_url) |>
-      cache_org()
+      cache_org(config_folder = config_folder)
   } else {
     org_url <- config[["git"]][["organisation"]][org_choice]
   }

@@ -1,39 +1,14 @@
 library(mockery)
 test_that("check_license() works", {
-  cache <- tempfile("cache")
-  dir_create(file.path(cache, "data"))
-  defer(unlink(cache, recursive = TRUE))
-  stub(new_author, "readline", mock("John", "Doe", "john@doe.com", ""))
-  stub(new_author, "ask_orcid", mock(""))
-  expect_output(new_author(
-    current = data.frame(),
-    root = file.path(cache, "data"),
-    org = org_list$new()$read()
-  ))
-
-  mock_r_user_dir <- function(alt_dir) {
-    function(package, which = c("data", "config", "cache")) {
-      which <- match.arg(which)
-      return(file.path(alt_dir, which))
-    }
-  }
-
-  git_init(cache)
-  git_remote_add(
-    "https://gitlab.com/thierryo/checklist_dummy.git",
-    repo = cache
-  )
-  stub(get_default_org_list, "R_user_dir", mock_r_user_dir(cache), depth = 2)
-  org <- get_default_org_list(cache)
-  c("git:", "  protocol: ssh", "  organisation: https://gitlab.com/thierryo") |>
-    writeLines(path(cache, "config.yml"))
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
 
   path <- tempfile("check_license")
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
 
   package <- "checklicense"
-  stub(create_package, "R_user_dir", mock_r_user_dir(cache), depth = 2)
+  stub(create_package, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
   stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
     create_package,
