@@ -40,18 +40,16 @@ org_list <- R6Class(
     #' Can be one of `"package"`, `"project"`, `"data"` or `"all"`.
     #' @importFrom assertthat assert_that noNA
     get_allowed_licenses = function(
-      email,
+      email = character(0),
       type = c("package", "project", "data", "all")
     ) {
       type <- match.arg(type)
-      if (missing(email) || length(email) == 0) {
-        selection <- private$items
-      } else {
-        assert_that(is.character(email), noNA(email))
-        selection <- private$items[email]
+      assert_that(is.character(email), noNA(email))
+      if (length(email) == 0) {
+        email <- names(private$items)
       }
       vapply(
-        selection,
+        private$items[email],
         FUN.VALUE = vector(mode = "list", 1),
         type = type,
         FUN = function(x, type) {
@@ -64,7 +62,7 @@ org_list <- R6Class(
       ]
       # fmt: skip
       stopifnot(
-        "multiple copyrightholders with licenses requirements not yet handled" =
+        "multiple copyrightholders with license requirements not yet handled" =
           length(licenses) <= 1
       )
       return(unlist(licenses))

@@ -101,7 +101,7 @@ default as set in the organisations git repository.
 Return the allowed licenses.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{org_list$get_allowed_licenses(
-  email,
+  email = character(0),
   type = c("package", "project", "data", "all")
 )}\if{html}{\out{</div>}}
 }
