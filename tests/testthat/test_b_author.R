@@ -136,4 +136,16 @@ test_that("author tools", {
       author2badge(role = "ctb"),
     badge
   )
+
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  org <- org_list_from_url("https://github.com/inbo/checklist.git")
+  current <- stored_authors(root)
+  stub(new_author, "readline", mock("Ned", "Flanders", "ned@vlaanderen.be"))
+  stub(new_author, "ask_orcid", "")
+  expect_output(new_author(
+    current = current,
+    root = root,
+    org = org,
+    lang = "nl-BE"
+  ))
 })
