@@ -705,15 +705,6 @@ ol_select_relevant_org <- function(
     FUN.VALUE = logical(1)
   ) |>
     which() -> which_aff
-  if (length(which_aff) == 0) {
-    updated_person <- person
-    attr(updated_person, "errors") <- sprintf(
-      "`%s`: matching `affiliation` required for `%s`",
-      person_name,
-      email_domain
-    )
-    return(updated_person)
-  }
   relevant <- relevant[which_aff]
 }
 
