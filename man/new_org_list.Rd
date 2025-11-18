@@ -4,7 +4,12 @@
 \alias{new_org_list}
 \title{Interactively create a new organisation list}
 \usage{
-new_org_list()
+new_org_list(git)
+}
+\arguments{
+\item{git}{An optional string with the absolute path to a git
+organisation.
+E.g. \code{"https://github.com/inbo"}}
 }
 \description{
 An interactive alternative for \code{org_list$new()}.

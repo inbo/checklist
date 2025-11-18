@@ -42,7 +42,7 @@ create_package <- function(package, path = ".") {
     sprintf(package) -> git
   org <- org_list_from_url(git)
   license <- ask_license(org, type = "package")
-  language <- ask_language(org)
+  language <- ask_language(org, "Which is the main language of the package?")
   authors <- package_maintainer(org = org, lang = language)
 
   # start creating package
@@ -400,10 +400,10 @@ ask_license <- function(org, type = c("package", "project", "data")) {
   return(names(allowed))
 }
 
-ask_language <- function(org) {
+ask_language <- function(org, prompt = "Which language?") {
   available <- org$get_languages
   c(available, "other") |>
-    menu_first(title = "Which language?") -> selected
+    menu_first(title = prompt) -> selected
   if (selected <= length(available)) {
     return(validate_language(available[selected]))
   }

@@ -25,9 +25,10 @@ get_default_org_list <- function(x = ".") {
 cache_org <- function(url, config_folder) {
   paste0(url, "/checklist") |>
     HEAD() -> url_head
-  list(url_head$status_code == 200) |>
-    setNames(sprintf("no public `checklist` repo found at %s", url)) |>
-    do.call(what = stopifnot)
+  if (url_head$status_code != 200) {
+    warning(sprintf("no public `checklist` repo found at %s", url))
+    return(invisible(NULL))
+  }
   target <- tempfile("checklist-organisation")
   c(
     "clone",
@@ -51,7 +52,14 @@ org_list_from_url <- function(git) {
   ssh_http(git) |>
     gsub(pattern = "https://", replacement = "") |>
     tolower() -> config_name
-  R_user_dir("checklist", "config") |>
-    path(config_name) -> config_path
-  org_list$new()$read(config_path)
+  config_folder <- R_user_dir("checklist", "config")
+  path(config_folder, config_name) -> config_path
+  if (file_test("-d", config_path)) {
+    return(org_list$new()$read(config_path))
+  }
+  org <- cache_org(url = ssh_http(git), config_folder = config_folder)
+  if (!is.null(org) || !interactive()) {
+    return(org)
+  }
+  return(new_org_list(git = git))
 }

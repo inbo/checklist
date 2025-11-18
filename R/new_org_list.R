@@ -2,9 +2,12 @@
 #'
 #' An interactive alternative for `org_list$new()`.
 #' Reuses available organisations where possible.
+#' @param git An optional string with the absolute path to a git
+#' organisation.
+#' E.g. `"https://github.com/inbo"`
 #' @seealso [`org_list`], [`org_item`]
 #' @export
-new_org_list <- function() {
+new_org_list <- function(git) {
   available <- get_available_organisations()
   rf_option <- c("optional", "single", "shared", "when no other")
   orgs <- list()
@@ -24,9 +27,9 @@ new_org_list <- function() {
           choices = rf_option,
           title = "What are the funder requirements for this organisation"
         )],
-        orcid = orcid[names(available$names)[selected]],
-        zenodo = zenodo[names(available$names)[selected]],
-        ror = ror[names(available$names)[selected]]
+        orcid = available$orcid[names(available$names)[selected]],
+        zenodo = available$zenodo[names(available$names)[selected]],
+        ror = available$ror[names(available$names)[selected]]
       )
       available$names <- available$names[-selected]
     } else {
@@ -40,19 +43,24 @@ new_org_list <- function() {
       break
     }
   }
-  readline("The optional git URL of the main organisation repository: ") -> git
-  orgs[["git"]] <- git[git != ""]
+  if (!missing(git)) {
+    orgs[["git"]] <- ssh_http(git)
+  }
   do.call(org_list$new, orgs)
 }
 
 new_org_item <- function(languages, licenses) {
   email <- ask_email("The organisations' email address: ")
   name <- readline(prompt = "The organisations' name: ")
-  lang <- ask_language(org = list(get_languages = languages))
+  lang <- ask_language(
+    org = list(get_languages = languages),
+    prompt = "What is the language of this name?"
+  )
   names(name) <- lang
   while (ask_yes_no("Add a name in another language?", default = FALSE)) {
     lang <- ask_language(
-      org = list(get_languages = languages[!languages %in% names(name)])
+      org = list(get_languages = languages[!languages %in% names(name)]),
+      prompt = "In what language?"
     )
     extra <- readline(
       prompt = sprintf("The organisations' name in %s: ", lang)

@@ -16,13 +16,17 @@ create_project <- function(path, project) {
   title <- readline(prompt = "Enter the title: ")
   description <- readline(prompt = "Enter the description: ")
   keywords <- ask_keywords()
-  preferred_protocol() |>
-    sprintf(project) -> git
-  org <- org_list_from_url(git)
-  license <- ask_license(org, type = "project")
-  language <- ask_language(org)
-  authors <- project_maintainer(org, language)
   use_vc <- ask_yes_no("Use version control?")
+  if (use_vc) {
+    preferred_protocol() |>
+      sprintf(project) -> git
+    org <- org_list_from_url(git)
+  } else {
+    org <- new_org_list()
+  }
+  license <- ask_license(org, type = "project")
+  language <- ask_language(org, prompt = "What is the main project language?")
+  authors <- project_maintainer(org, language)
   cc <- use_vc && ask_yes_no("Add a default code of conduct?")
   cg <- use_vc && ask_yes_no("Add default contributing guidelines?")
   use_renv <- ask_yes_no(
@@ -51,6 +55,7 @@ create_project <- function(path, project) {
 
   # create default folders
   dir_create(path, c("data", "media", "output", "source"))
+  org$write(path)
   # create RStudio project
   file_copy(
     system.file(
