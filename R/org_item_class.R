@@ -148,23 +148,16 @@ org_item <- R6Class(
       private$orcid <- orcid
       private$email <- email
       private$license <- license
-      if (!missing(ror)) {
+      if (!missing(ror) && ror != "") {
         stopifnot(
-          "`ror` must be a string" = is.string(ror),
-          "`ror` cannot be NA" = noNA(ror),
-          "`ror` must be in https://ror.org/id format" = grepl(
-            "^https:\\/\\/ror\\.org\\/0[a-hj-km-np-tv-z|0-9]{6}[0-9]{2}$",
-            ror,
-            perl = TRUE
-          )
+          "`ror` must be in https://ror.org/id format" = validate_ror(ror)
         )
         private$ror <- ror
       }
-      if (!missing(zenodo)) {
+      if (!missing(zenodo) && zenodo != "") {
         stopifnot(
           "`zenodo` must be a string" = is.string(zenodo),
-          "`zenodo` cannot be NA" = noNA(zenodo),
-          "`zenodo` cannot be empty" = zenodo != ""
+          "`zenodo` cannot be NA" = noNA(zenodo)
         )
         private$zenodo <- zenodo
       }
