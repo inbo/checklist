@@ -109,7 +109,7 @@ ask_new_license <- function(licenses, type = c("package", "project", "data")) {
       choices = license_choices,
       title = sprintf("Select a %s license", type)
     )
-    if (license_selected == length(license_choices) + 2) {
+    if (license_selected == length(licenses) + 2) {
       break
     }
     if (license_selected <= length(licenses)) {

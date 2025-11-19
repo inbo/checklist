@@ -78,8 +78,8 @@ org_item <- R6Class(
           )
         )
       ),
-      ror,
-      zenodo
+      ror = "",
+      zenodo = ""
     ) {
       private$rightsholder <- match.arg(rightsholder)
       private$funder <- match.arg(funder)
@@ -148,13 +148,13 @@ org_item <- R6Class(
       private$orcid <- orcid
       private$email <- email
       private$license <- license
-      if (!missing(ror) && ror != "") {
+      if (ror != "") {
         stopifnot(
           "`ror` must be in https://ror.org/id format" = validate_ror(ror)
         )
         private$ror <- ror
       }
-      if (!missing(zenodo) && zenodo != "") {
+      if (zenodo != "") {
         stopifnot(
           "`zenodo` must be a string" = is.string(zenodo),
           "`zenodo` cannot be NA" = noNA(zenodo)

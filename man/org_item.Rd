@@ -70,8 +70,8 @@ Initialize a new \code{org_item} object.
     "131fe5829907079795533bfea767bf7df50c3cfd/inst/generic_template", 
      "cc0.md", sep
     = "/"))),
-  ror,
-  zenodo
+  ror = "",
+  zenodo = ""
 )}\if{html}{\out{</div>}}
 }
 

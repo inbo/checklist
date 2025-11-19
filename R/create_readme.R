@@ -2,15 +2,22 @@
 create_readme <- function(
   path,
   org,
+  lang,
   authors,
   title,
   description,
   keywords,
-  lang,
   license,
   type = c("package", "project", "data")
 ) {
   if (file_exists(path(path, "README.md"))) {
+    warning(
+      "README.md already exists in ",
+      path,
+      ". No changes made.",
+      call. = FALSE,
+      immediate. = TRUE
+    )
     return(character(0))
   }
   if (missing(authors)) {
@@ -84,5 +91,5 @@ create_readme <- function(
     "<!-- description: end -->"
   ) |>
     writeLines(path(path, "README.md"))
-  return("README.md")
+  return(invisible(NULL))
 }

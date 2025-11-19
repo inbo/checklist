@@ -148,4 +148,64 @@ test_that("author tools", {
     org = org,
     lang = "nl-BE"
   ))
+
+  current <- stored_authors(root)
+  new_current <- current
+  new_current$affiliation[3] <- "Agency for Nature & Forests (ANB)"
+  expect_output(
+    z <- validate_author(
+      current = current,
+      selected = 3,
+      org = org,
+      lang = "en-GB"
+    )
+  )
+  expect_identical(z, new_current)
+
+  new_current$email[3] <- "ned@inbo.be"
+  stub(validate_author, "ask_orcid", mock("0000-0002-1825-0097"))
+  hide_out <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_out))
+  sink(hide_out)
+  expect_warning(
+    z <- validate_author(
+      current = new_current,
+      selected = 3,
+      org = org,
+      lang = "en-GB"
+    ),
+    "ORCID is required"
+  )
+  sink()
+
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
+  new_current <- current
+  new_current$affiliation[2] <- "De checklist organisatie"
+  expect_output(
+    z <- validate_author(
+      current = current,
+      selected = 2,
+      org = org,
+      lang = "nl-BE"
+    )
+  )
+  expect_identical(z, new_current)
+
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  expect_warning(
+    org <- org_list_from_url(
+      "https://gitlab.com/emarginatus/checklist_dummy.git"
+    )
+  )
+
+  def_org <- tempfile("def_org")
+  dir.create(def_org)
+  defer(unlink(def_org, recursive = TRUE))
+  git_init(path = def_org)
+  git_remote_add(
+    "https://gitlab.com/thierryo/checklist_dummy.git",
+    repo = def_org
+  )
+  expect_s3_class(org <- get_default_org_list(def_org), "org_list")
 })
