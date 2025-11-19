@@ -11,24 +11,11 @@ project_maintainer <- function(org, lang) {
       `attr<-`(which = "footnote", value = footnote) -> author
   }
 
-  available <- org$get_default_name
-  funder <- character(0)
-  while (
-    length(available) > 0 &&
-      isTRUE(ask_yes_no("Add a funder?", default = FALSE))
-  ) {
-    c("default funder", available) |>
-      menu_first(title = "Select a funder:") -> selected
-    if (selected > 1) {
-      funder <- c(funder, names(available)[selected + 1])
-    } else {
-      funder <- org$get_default_funder
-    }
-  }
-  if (length(funder) == 0) {
-    funder <- org$get_default_funder
-  }
-  rightsholder <- org$get_default_rightsholder
+  info <- ask_rightsholder_funder(org = org, type = "rightsholder")
+  rightsholder <- info$selection
+  info <- ask_rightsholder_funder(org = info$org, type = "funder")
+  funder <- info$selection
+  org <- info$org
   c(
     vapply(
       rightsholder[rightsholder %in% funder],
@@ -74,12 +61,55 @@ project_maintainer <- function(org, lang) {
     c(attr(author, "footnote")) |>
     unique() |>
     sort() -> footnote
-  c(author, unlist(extra)) |>
-    `attr<-`(which = "footnote", value = footnote) |>
-    `attr<-`(
-      which = "zenodo",
-      value = c(rightsholder, funder) |>
-        org$get_zenodo_by_email() |>
-        paste(collapse = "; ")
+  list(
+    authors = c(author, unlist(extra)) |>
+      `attr<-`(which = "footnote", value = footnote) |>
+      `attr<-`(
+        which = "zenodo",
+        value = c(rightsholder, funder) |>
+          org$get_zenodo_by_email() |>
+          paste(collapse = "; ")
+      ),
+    org = org
+  )
+}
+
+ask_rightsholder_funder <- function(org, type = c("rightsholder", "funder")) {
+  type <- match.arg(type)
+  available <- org$get_default_name
+  selection <- character(0)
+  while (
+    length(available) > 0 &&
+      isTRUE(ask_yes_no(sprintf("Add a %s?", type), default = FALSE))
+  ) {
+    c(paste("default", type), available, paste("other", type)) |>
+      menu_first(title = sprintf("Select a %s:", type)) -> selected
+    if (selected > 1) {
+      if (selected > length(available) + 1) {
+        current <- get_available_organisations()
+        org <- org$add_item(
+          new_org_item(
+            languages = current$languages,
+            licenses = current$licenses
+          )
+        )
+        available <- org$get_default_name
+      }
+      selection <- c(selection, names(available)[selected - 1])
+    } else {
+      selection <- ifelse(
+        type == "rightsholder",
+        org$get_default_rightsholder,
+        org$get_default_funder
+      )
+    }
+  }
+  if (length(selection) == 0) {
+    selection <- ifelse(
+      type == "rightsholder",
+      org$get_default_rightsholder,
+      org$get_default_funder
     )
+  }
+  return(list(selection = selection, org = org))
 }

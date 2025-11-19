@@ -43,7 +43,9 @@ create_package <- function(package, path = ".") {
   org <- org_list_from_url(git)
   license <- ask_license(org, type = "package")
   language <- ask_language(org, "Which is the main language of the package?")
-  authors <- package_maintainer(org = org, lang = language)
+  info <- package_maintainer(org = org, lang = language)
+  authors <- info$authors
+  org <- info$org
 
   # start creating package
   dir_create(path)
@@ -56,6 +58,10 @@ create_package <- function(package, path = ".") {
   x$set_ignore(c(".github", "LICENSE.md", "docs"))
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
+
+  # add organsation info
+  org$write(x = path)
+  git_add("organisation.yml", repo = repo)
 
   # create DESCRIPTION
   desc <- desc::description$new("!new")
@@ -284,50 +290,40 @@ package_maintainer <- function(org, lang) {
   while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
     maintainer <- c(maintainer, author2person(role = "aut", lang = lang))
   }
-  available <- org$get_default_name
-  funder <- character(0)
-  while (
-    length(available) > 0 &&
-      isTRUE(ask_yes_no("Add a funder?", default = FALSE))
-  ) {
-    c("default funder", available) |>
-      menu_first(title = "Select a funder:") -> selected
-    if (selected > 1) {
-      funder <- c(funder, names(available)[selected + 1])
-    } else {
-      funder <- org$get_default_funder
-    }
-  }
-  if (length(funder) == 0) {
-    funder <- org$get_default_funder
-  }
-  rightsholder <- org$get_default_rightsholder
-  c(
-    maintainer,
-    c(
-      vapply(
-        rightsholder[rightsholder %in% funder],
-        FUN = function(x) {
-          list(org$get_person(x, role = c("cph", "fnd"), lang = lang))
-        },
-        FUN.VALUE = vector("list", 1)
-      ),
-      vapply(
-        rightsholder[!rightsholder %in% funder],
-        FUN = function(x) {
-          list(org$get_person(x, role = "cph", lang = lang))
-        },
-        FUN.VALUE = vector("list", 1)
-      ),
-      vapply(
-        funder[!funder %in% rightsholder],
-        FUN = function(x) {
-          list(org$get_person(x, role = "fnd", lang = lang))
-        },
-        FUN.VALUE = vector("list", 1)
-      )
-    ) |>
-      do.call(what = c)
+  info <- ask_rightsholder_funder(org = org, type = "rightsholder")
+  rightsholder <- info$selection
+  info <- ask_rightsholder_funder(org = info$org, type = "funder")
+  funder <- info$selection
+  org <- info$org
+  list(
+    authors = c(
+      maintainer,
+      c(
+        vapply(
+          rightsholder[rightsholder %in% funder],
+          FUN = function(x) {
+            list(org$get_person(x, role = c("cph", "fnd"), lang = lang))
+          },
+          FUN.VALUE = vector("list", 1)
+        ),
+        vapply(
+          rightsholder[!rightsholder %in% funder],
+          FUN = function(x) {
+            list(org$get_person(x, role = "cph", lang = lang))
+          },
+          FUN.VALUE = vector("list", 1)
+        ),
+        vapply(
+          funder[!funder %in% rightsholder],
+          FUN = function(x) {
+            list(org$get_person(x, role = "fnd", lang = lang))
+          },
+          FUN.VALUE = vector("list", 1)
+        )
+      ) |>
+        do.call(what = c)
+    ),
+    org = org
   )
 }
 

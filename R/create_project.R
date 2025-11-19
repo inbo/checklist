@@ -26,7 +26,9 @@ create_project <- function(path, project) {
   }
   license <- ask_license(org, type = "project")
   language <- ask_language(org, prompt = "What is the main project language?")
-  authors <- project_maintainer(org, language)
+  info <- project_maintainer(org = org, lang = language)
+  authors <- info$authors
+  org <- info$org
   cc <- use_vc && ask_yes_no("Add a default code of conduct?")
   cg <- use_vc && ask_yes_no("Add default contributing guidelines?")
   use_renv <- ask_yes_no(
@@ -55,7 +57,7 @@ create_project <- function(path, project) {
 
   # create default folders
   dir_create(path, c("data", "media", "output", "source"))
-  org$write(path)
+  org$write(x = path)
   # create RStudio project
   file_copy(
     system.file(
