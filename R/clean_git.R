@@ -86,7 +86,13 @@ clean_git <- function(repo = ".", verbose = TRUE) {
       vapply(
         names(diverged)[unlist(diverged)],
         function(x) {
-          warning("`", x, "` diverged from the origin branch.", call. = FALSE)
+          warning(
+            "`",
+            x,
+            "` diverged from the origin branch.",
+            immediate. = TRUE,
+            call. = FALSE
+          )
           return(list())
         },
         list()
@@ -95,7 +101,13 @@ clean_git <- function(repo = ".", verbose = TRUE) {
       vapply(
         names(diverged)[unlist(diverged)],
         function(x) {
-          warning("`", x, "` ahead of the origin branch.", call. = FALSE)
+          warning(
+            "`",
+            x,
+            "` ahead of the origin branch.",
+            immediate. = TRUE,
+            call. = FALSE
+          )
           return(list())
         },
         list()
@@ -159,6 +171,7 @@ clean_git <- function(repo = ".", verbose = TRUE) {
             "`",
             x,
             "` (no upstream) diverged from the main origin branch.",
+            immediate. = TRUE,
             call. = FALSE
           )
           return(list())

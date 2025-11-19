@@ -141,7 +141,7 @@ ask_email <- function(prompt) {
     if (validate_email(email)) {
       break
     }
-    cat("Please enter a valid email.")
+    warning("Please enter a valid email.", immediate. = TRUE, call. = FALSE)
   }
   return(email)
 }
@@ -164,7 +164,11 @@ ask_ror <- function(prompt) {
     if (ror == "" || validate_ror(ror)) {
       break
     }
-    cat("`ror` must be in https://ror.org/id format")
+    warning(
+      "`ror` must be in https://ror.org/id format",
+      immediate. = TRUE,
+      call. = FALSE
+    )
   }
   return(ror)
 }

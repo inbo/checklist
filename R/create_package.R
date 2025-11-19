@@ -381,7 +381,11 @@ ask_keywords <- function() {
     if (length(keywords) > 0) {
       break
     }
-    warning("Please enter at least one keyword.")
+    warning(
+      "Please enter at least one keyword.",
+      immediate. = TRUE,
+      call. = FALSE
+    )
   }
   return(keywords)
 }

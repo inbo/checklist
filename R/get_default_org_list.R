@@ -26,7 +26,11 @@ cache_org <- function(url, config_folder) {
   paste0(url, "/checklist") |>
     HEAD() -> url_head
   if (url_head$status_code != 200) {
-    warning(sprintf("no public `checklist` repo found at %s", url))
+    warning(
+      sprintf("no public `checklist` repo found at %s", url),
+      immediate. = TRUE,
+      call. = FALSE
+    )
     return(invisible(NULL))
   }
   target <- tempfile("checklist-organisation")

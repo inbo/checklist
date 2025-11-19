@@ -66,7 +66,11 @@ check_lintr <- function(x = ".", quiet = FALSE) {
 #' @importFrom utils installed.packages
 list_missing_packages <- function(x = ".") {
   if (!requireNamespace("renv", quietly = TRUE)) {
-    warning("`renv` is not installed. Please install it.")
+    warning(
+      "`renv` is not installed. Please install it.",
+      call. = FALSE,
+      immediate. = TRUE
+    )
     return(character(0))
   }
   assert_that(is.string(x), noNA(x), is_dir(x))

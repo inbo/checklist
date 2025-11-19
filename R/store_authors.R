@@ -89,7 +89,11 @@ author2df.NULL <- function(person) {
 #' @export
 #' @importFrom utils as.person
 author2df.character <- function(person) {
-  warning("`author2df()` converted a character to a person using `as.person()`")
+  warning(
+    "`author2df()` converted a character to a person using `as.person()`",
+    immediate. = TRUE,
+    call. = FALSE
+  )
   author2df(as.person(person))
 }
 

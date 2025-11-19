@@ -39,7 +39,7 @@ use_author <- function(email, lang) {
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
     if (selected < 1) {
-      cat("You must select a person\n")
+      warning("You must select a person\n", immediate. = TRUE, call. = FALSE)
       next
     }
     if (selected > nrow(current)) {
@@ -155,7 +155,12 @@ new_author <- function(current, root, org, lang) {
   if (length(which_org) == 1) {
     extra$affiliation <- names(which_org)
     while (which_org && extra$orcid == "") {
-      cat("An ORCID is required for", names(which_org))
+      warning(
+        "An ORCID is required for",
+        names(which_org),
+        immediate. = TRUE,
+        call. = FALSE
+      )
       extra$orcid <- ask_orcid(prompt = "orcid: ")
     }
   } else if (length(which_org) == 0) {
@@ -288,7 +293,12 @@ validate_author <- function(current, selected, org, lang) {
   while (
     affiliation[current$affiliation[selected]] && current$orcid[selected] == ""
   ) {
-    cat("\nAn ORCID is required for", current$affiliation[selected])
+    warning(
+      "\nAn ORCID is required for",
+      current$affiliation[selected],
+      immediate. = TRUE,
+      call. = FALSE
+    )
     current$orcid[selected] <- ask_orcid(prompt = "orcid: ")
   }
   cat(

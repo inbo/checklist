@@ -54,6 +54,7 @@ citation_meta <- R6Class(
           "Errors found parsing citation meta data. ",
           "Citation files not updated.",
           call. = FALSE,
+          immediate. = TRUE,
           noBreaks. = TRUE
         )
         return(invisible(self))

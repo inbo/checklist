@@ -72,12 +72,13 @@ ask_yes_no <- function(
   if (!interactive()) {
     return(default)
   }
+  assert_that(is.string(msg), noNA(msg))
   answer <- try(askYesNo(msg = msg, default = default, prompts = prompts))
   while (inherits(answer, "try-error") || is.null(answer)) {
     sprintf("`%s`", prompts) |>
       paste(collapse = ", ") |>
       sprintf(fmt = "Please answer with %s.") |>
-      cat()
+      warning(immediate. = TRUE, call. = FALSE)
     answer <- try(askYesNo(msg = msg, default = default, prompts = prompts))
   }
   return(answer)
