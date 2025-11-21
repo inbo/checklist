@@ -46,6 +46,11 @@ create_readme <- function(
     "(https://www.repostatus.org/#concept)"
   ) |>
     c(
+      paste0(
+        "[![Lifecycle: experimental](https://img.shields.io/badge/",
+        "lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/",
+        "articles/stages.html#experimental)"
+      ),
       sprintf(
         "[![%s](https://img.shields.io/badge/License-%s-brightgreen)](%s)",
         license,
@@ -55,21 +60,37 @@ create_readme <- function(
     ) -> badges
   if (is_repository(path)) {
     remotes <- git_remote_list(repo = path)
-    remotes$url[remotes$name == "origin"] |>
-      gsub(pattern = "git@(.*?):(.*)", replacement = "https://\\1/\\2") |>
-      gsub(pattern = "https://.*?@", replacement = "https://") |>
-      gsub(pattern = "\\.git$", replacement = "") -> repo_url
-    if (length(repo_url) > 0 && grepl("github.com", repo_url)) {
-      gsub("https://github.com/", "", repo_url) |>
-        sprintf(
-          fmt = paste0(
-            "![GitHub Workflow Status](https://img.shields.io/github/actions/",
-            "workflow/status/%1$s/check-project)\n",
-            "![GitHub repo size](https://img.shields.io/github/repo-size/%1$s)"
-          )
-        ) |>
-        c(badges) -> badges
-    }
+    repo_url <- remotes$url[remotes$name == "origin"]
+    repo_org <- gsub("https://.*?/", "", ssh_http(repo_url))
+    repo_name <- gsub(".*/(.*?)\\.git", "\\1", repo_url)
+    c(
+      badges,
+      sprintf(
+        fmt = paste0(
+          "[![Release](https://img.shields.io/github/release/%1$s.svg)]",
+          "(https://github.com/%1$s/releases)\n",
+          "![GitHub Workflow Status](https://img.shields.io/github/actions/",
+          "workflow/status/%1$s/check-%2$s)\n",
+          "![GitHub repo size](https://img.shields.io/github/repo-size/%1$s)\n",
+          "![GitHub code size in bytes](https://img.shields.io/github/",
+          "languages/code-size/%1$s.svg)"
+        ),
+        paste(repo_org, repo_name, sep = "/"),
+        type
+      )[grepl("github.com", repo_url)],
+      sprintf(
+        paste0(
+          "![r-universe name](https://%1$s.r-universe.dev/badges/:name?",
+          "color=c04384)\n![r-universe package](https://%1$s.r-universe.dev/",
+          "badges/%2$s)\n",
+          "[![Codecov test coverage](https://codecov.io/gh/%1$s/%2$s/branch/",
+          "main/graph/badge.svg)](https://app.codecov.io/gh/%1$s/%2$s?",
+          "branch=main)"
+        ),
+        repo_org,
+        repo_name
+      )[type == "package"]
+    ) -> badges
   }
   c(
     "<!-- badges: start -->",
@@ -89,7 +110,48 @@ create_readme <- function(
     "<!-- description: start -->",
     description,
     "<!-- description: end -->"
+  ) -> content
+  if (type != "package") {
+    writeLines(content, path(path, "README.md"))
+    return(invisible(NULL))
+  }
+  c(
+    "---",
+    "output: github_document",
+    "---",
+    "",
+    "<!-- README.md is generated from README.Rmd. Please edit that file -->",
+    "",
+    "```{r, include = FALSE}",
+    "knitr::opts_chunk$set(",
+    "  collapse = TRUE,",
+    "  comment = \"#>\",",
+    "  fig.path = file.path(\"man\", \"figures\", \"README-\"),",
+    "  out.width = \"100%\"",
+    ")",
+    "```",
+    "",
+    content,
+    "",
+    "## Installation",
+    "",
+    "You can install the development version from",
+    "[GitHub](https://github.com/) with:",
+    "",
+    "``` r",
+    "# install.packages(\"remotes\")",
+    sprintf("remotes::install_git(\"%s/%s\")", ssh_http(repo_url), repo_name),
+    "```",
+    "",
+    "## Example",
+    "",
+    "This is a basic example which shows you how to solve a common problem:",
+    "",
+    "```{r example}",
+    sprintf("library(%s)", repo_name),
+    "## basic example code",
+    "```"
   ) |>
-    writeLines(path(path, "README.md"))
+    writeLines(path(path, "README.Rmd"))
   return(invisible(NULL))
 }

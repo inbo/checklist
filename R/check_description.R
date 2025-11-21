@@ -303,7 +303,7 @@ check_license <- function(x = ".", org) {
     readLines() -> official
   if (current_license == "MIT + file LICENSE") {
     author <- this_desc$get_author(role = "cph")
-    stopifnot("no copyrightholder found" = length(author) > 0)
+    stopifnot("no copyright holder found" = length(author) > 0)
     cph <- paste(c(author$given, author$family), collapse = " ")
     cph <- gsub(
       "([\\(\\)\\.\\\\\\|\\[\\]\\{\\}\\^\\$\\*\\+\\?])",

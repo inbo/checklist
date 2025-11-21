@@ -62,7 +62,7 @@ org_list <- R6Class(
       ]
       # fmt: skip
       stopifnot(
-        "multiple copyrightholders with license requirements not yet handled" =
+        "multiple rightholders with license requirements not yet handled" =
           length(licenses) <= 1
       )
       return(unlist(licenses))

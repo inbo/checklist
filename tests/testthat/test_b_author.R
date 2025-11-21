@@ -108,7 +108,7 @@ test_that("author tools", {
   )
 
   badge <- "INBO[^cph][^fnd]"
-  attr(badge, "footnote") <- c("[^cph]: copyrightholder", "[^fnd]: funder")
+  attr(badge, "footnote") <- c("[^cph]: copyright holder", "[^fnd]: funder")
   expect_equal(
     data.frame(
       given = "INBO",

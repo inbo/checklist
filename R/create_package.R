@@ -71,13 +71,8 @@ create_package <- function(package, path = ".") {
   desc$set_authors(authors)
   desc$set("Description", description)
   desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
-  org_url <- gsub("\\.git$", "", git, perl = TRUE)
-  if (!grepl("^https:\\/\\/", org_url)) {
-    org_url <- gsub("^git@(.*):", "https://\\1/", org_url, perl = TRUE)
-  }
-  desc$set_urls(org_url)
-  desc$set("BugReports", sprintf("%s/issues", org_url))
-
+  desc$set_urls(sprintf("%s/%s", ssh_http(git), package))
+  desc$set("BugReports", sprintf("%s/%s/issues", ssh_http(git), package))
   desc <- append_communities(desc = desc, org = org)
   desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
   desc$set("Encoding", "UTF-8")
@@ -141,36 +136,18 @@ create_package <- function(package, path = ".") {
   git_add("NEWS.md", repo = repo)
 
   # add README.Rmd
-  license_badge <- switch(
-    license,
-    "GPL-3" = "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
-    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat",
-    ""
+  create_readme(
+    path = path,
+    org = org,
+    lang = language,
+    authors = author2df(authors) |>
+      author2badge(),
+    title = paste(package, title, sep = ": "),
+    description = description,
+    keywords = keywords,
+    license = license,
+    type = "package"
   )
-  license_site <- switch(
-    license,
-    "GPL-3" = "https://spdx.org/licenses/GPL-3.0-only.html",
-    "MIT" = "https://opensource.org/licenses/MIT",
-    ""
-  )
-  path("package_template", "README.Rmd") |>
-    system.file(package = "checklist") |>
-    readLines() |>
-    gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) -> rdme
-  if (license_badge != "") {
-    rdme |>
-      gsub(
-        pattern = "\\{\\{\\{ license badge \\}\\}\\}",
-        replacement = license_badge
-      ) |>
-      gsub(
-        pattern = "\\{\\{\\{ license site \\}\\}\\}",
-        replacement = license_site
-      ) -> rdme
-  }
-  rdme |>
-    gsub(pattern = ".*\\{\\{\\{ license badge \\}\\}\\}.*", replacement = "") |>
-    writeLines(path(path, "README.Rmd"))
   git_add("README.Rmd", repo = repo)
 
   # add LICENSE.md

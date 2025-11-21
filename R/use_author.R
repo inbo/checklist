@@ -219,6 +219,24 @@ author2person <- function(role = "aut", lang) {
 #' @importFrom assertthat assert_that
 #' @importFrom utils tail
 author2badge <- function(df, role = "aut") {
+  if (nrow(df) > 1) {
+    badges <- character(nrow(df))
+    footnotes <- vector(mode = "list", length = nrow(df))
+    for (i in seq_len(nrow(df))) {
+      if (has_name(df, "role")) {
+        strsplit(df$role[i], ", ") |>
+          unlist() -> this_role
+      } else {
+        this_role <- role
+      }
+      badge <- author2badge(df[i, ], role = this_role)
+      footnotes[[i]] <- attr(badge, "footnote")
+      badges[i] <- badge
+    }
+    attr(badges, which = "footnote") <- unlist(footnotes) |>
+      unique()
+    return(badges)
+  }
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
   if (is.na(df$orcid) || df$orcid == "") {
@@ -245,7 +263,7 @@ author2badge <- function(df, role = "aut") {
   c(
     aut = "author",
     cre = "contact person",
-    cph = "copyrightholder",
+    cph = "copyright holder",
     ctb = "contributor",
     fnd = "funder",
     rev = "reviewer"

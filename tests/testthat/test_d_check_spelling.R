@@ -293,7 +293,7 @@ test_that("check_spelling() on a project", {
     repo = path(path, "spelling")
   )
   stub(setup_project, "interactive", TRUE, depth = 2)
-  expect_output(setup_project(path(path, "spelling")))
+  expect_output(suppressWarnings(setup_project(path(path, "spelling"))))
 
   path(path, "spelling", "README.md") |>
     readLines() -> readme_old
