@@ -216,26 +216,30 @@ author2person <- function(role = "aut", lang) {
   )
 }
 
+authors2badge <- function(df, role = "aut") {
+  badges <- character(nrow(df))
+  footnotes <- vector(mode = "list", length = nrow(df))
+  for (i in seq_len(nrow(df))) {
+    if (has_name(df, "role")) {
+      strsplit(df$role[i], ", ") |>
+        unlist() -> this_role
+    } else {
+      this_role <- role
+    }
+    badge <- author2badge(df[i, ], role = this_role)
+    footnotes[[i]] <- attr(badge, "footnote")
+    badges[i] <- badge
+  }
+  attr(badges, which = "footnote") <- unlist(footnotes) |>
+    unique()
+  return(badges)
+}
+
 #' @importFrom assertthat assert_that
 #' @importFrom utils tail
 author2badge <- function(df, role = "aut") {
   if (nrow(df) > 1) {
-    badges <- character(nrow(df))
-    footnotes <- vector(mode = "list", length = nrow(df))
-    for (i in seq_len(nrow(df))) {
-      if (has_name(df, "role")) {
-        strsplit(df$role[i], ", ") |>
-          unlist() -> this_role
-      } else {
-        this_role <- role
-      }
-      badge <- author2badge(df[i, ], role = this_role)
-      footnotes[[i]] <- attr(badge, "footnote")
-      badges[i] <- badge
-    }
-    attr(badges, which = "footnote") <- unlist(footnotes) |>
-      unique()
-    return(badges)
+    return(authors2badge(df, role = role))
   }
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
