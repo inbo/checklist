@@ -23,6 +23,7 @@ and the checklist configuration file (\code{checklist.yml}).
 Other setup: 
 \code{\link{create_package}()},
 \code{\link{create_project}()},
+\code{\link{new_org_list}()},
 \code{\link{prepare_ghpages}()},
 \code{\link{set_license}()},
 \code{\link{setup_package}()},

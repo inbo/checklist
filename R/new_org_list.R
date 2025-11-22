@@ -6,6 +6,7 @@
 #' organisation.
 #' E.g. `"https://github.com/inbo"`
 #' @seealso [`org_list`], [`org_item`]
+#' @family setup
 #' @export
 new_org_list <- function(git) {
   available <- get_available_organisations()

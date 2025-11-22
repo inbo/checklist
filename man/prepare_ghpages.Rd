@@ -19,6 +19,7 @@ Prepare a \code{gh-pages} branch with a place holder page
 Other setup: 
 \code{\link{create_package}()},
 \code{\link{create_project}()},
+\code{\link{new_org_list}()},
 \code{\link{set_license}()},
 \code{\link{setup_package}()},
 \code{\link{setup_project}()},

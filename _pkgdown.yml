@@ -63,7 +63,7 @@ reference:
 - title: Git related functions
   contents:
   - has_concept("git")
-- title: R6 class behind the checklist package
+- title: R6 classses behind the checklist package
   contents:
   - has_concept("class")
 - title: Auxiliary functions
