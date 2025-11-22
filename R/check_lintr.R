@@ -9,6 +9,14 @@
 #' _Diagnostics_.
 #' Please have a look at `vignette("philosophy")` for more details on the rules.
 #'
+#' @details
+#' When `check_lintr()` runs on a git repository, it checks whether the
+#' organisation has a custom `.lintr` file in their `checklist` repository.
+#' If so, it uses this file.
+#' Otherwise it looks for a local `.lintr` file in the project directory.
+#' If this file is not present, it uses the default `.lintr` file provided
+#' with the `checklist` package.
+#'
 #' @inheritParams read_checklist
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @export
@@ -84,11 +92,11 @@ list_missing_packages <- function(x = ".") {
 
 select_lintr_file <- function(x) {
   if (!is_repository(x)) {
-    return(system.file("lintr", package = "checklist"))
+    return(local_or_default_lintr(x))
   }
   org <- org_list$new()$read(x)
   if (!grepl("^https://", org$get_git, perl = TRUE)) {
-    return(system.file("lintr", package = "checklist"))
+    return(local_or_default_lintr(x))
   }
   if (org$get_git == "https://github.com/inbo") {
     return(system.file("lintr", package = "checklist"))
@@ -102,6 +110,13 @@ select_lintr_file <- function(x) {
   ifelse(
     file_exists(linter_file),
     linter_file,
-    system.file("lintr", package = "checklist")
+    local_or_default_lintr(x)
   )
+}
+
+local_or_default_lintr <- function(x) {
+  if (file_exists(path(x, ".lintr"))) {
+    return(path(x, ".lintr"))
+  }
+  system.file("lintr", package = "checklist")
 }
