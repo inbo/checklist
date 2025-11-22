@@ -11,6 +11,11 @@ if [ -n "$INPUT_CRAN" ]; then
   Rscript --no-save --no-restore -e "$CRAN"
 fi
 Rscript --no-save --no-restore --no-init-file -e 'install.packages(checklist:::list_missing_packages())'
+
+echo '\nGetting the organisation settting...\n'
+Rscript --no-save --no-restore --no-init-file -e 'checklist::get_default_org_list()'
+
+echo '\nChecking the project...\n'
 Rscript --no-save --no-restore --no-init-file -e 'checklist::check_project("'$INPUT_PATH'", fail = TRUE, quiet = FALSE)'
 if [ $? -ne 0 ]; then
   echo '\nThe project failed some checks. Please check the error message above.\n';

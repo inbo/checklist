@@ -29,26 +29,21 @@ COPY docker/upgrade_texlive.sh /rocker_scripts/upgrade_texlive.sh
 RUN /rocker_scripts/upgrade_texlive.sh
 
 RUN Rscript --no-save --no-restore -e 'install.packages("pak")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes")'
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes", dependencies = TRUE)'
 
 ## install INLA
-RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("fmesher")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("sn")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("INLA")'
+RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("fmesher", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("sn", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("INLA", dependencies = TRUE)'
 
 ## install checklist dependencies
-RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("bookdown")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("codemetar")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("covr")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("cyclocomp")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("devtools")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("hunspell")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("mockery")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("pdftools")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("renv")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")'
+RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("assertthat", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("codemetar", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("hunspell", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("renv", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R", dependencies = TRUE)'
 
 ## install checklist
 COPY . /checklist/
