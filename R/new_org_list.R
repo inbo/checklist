@@ -30,7 +30,9 @@ new_org_list <- function(git) {
         )],
         orcid = available$orcid[names(available$names)[selected]],
         zenodo = available$zenodo[names(available$names)[selected]],
-        ror = available$ror[names(available$names)[selected]]
+        ror = available$ror[names(available$names)[selected]],
+        website = available$website[names(available$names)[selected]],
+        logo = available$logo[names(available$names)[selected]],
       )
       available$names <- available$names[-selected]
     } else {
@@ -70,6 +72,8 @@ new_org_item <- function(languages, licenses) {
     name <- c(name, extra)
   }
   ror <- ask_ror("The optional organisations' ROR identifier: ")
+  website <- ask_url("The optional organisations' website URL: ")
+  logo <- ask_url("The optional organisations' logo URL: ")
   zenodo <- readline("The optional Zenodo identifier:")
   orcid <- ask_yes_no(
     "Is an OrcID required for members of this organisation?",
@@ -97,7 +101,9 @@ new_org_item <- function(languages, licenses) {
       package = ask_new_license(licenses, type = "package"),
       project = ask_new_license(licenses, type = "project"),
       data = ask_new_license(licenses, type = "data")
-    )
+    ),
+    website = website,
+    logo = logo
   )
 }
 
@@ -172,4 +178,27 @@ ask_ror <- function(prompt) {
     )
   }
   return(ror)
+}
+
+ask_url <- function(prompt) {
+  while (TRUE) {
+    url <- readline(prompt = prompt)
+    if (url == "" || validate_url(url)) {
+      break
+    }
+    warning("Please enter a valid URL.", immediate. = TRUE, call. = FALSE)
+  }
+  return(url)
+}
+
+validate_url <- function(url) {
+  stopifnot(
+    "`url` must be a string" = is.string(url),
+    "`url` cannot be NA" = noNA(url)
+  )
+  grepl(
+    "^(http|https)://[a-z0-9-]+(\\.[a-z0-9-]+)+(:[0-9]+)?(/.*)?$",
+    url,
+    perl = TRUE
+  )
 }

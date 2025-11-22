@@ -32,6 +32,20 @@ get_available_organisations <- function() {
     },
     character(1)
   )
+  website <- vapply(
+    all_orgs,
+    function(x) {
+      ifelse(is.null(x$website), "", x$website)
+    },
+    character(1)
+  )
+  logo <- vapply(
+    all_orgs,
+    function(x) {
+      ifelse(is.null(x$logo), "", x$logo)
+    },
+    character(1)
+  )
   lapply(all_orgs, "[[", "license") |>
     unname() |>
     unlist(recursive = FALSE) |>
@@ -48,6 +62,8 @@ get_available_organisations <- function() {
     licenses = licenses[sort(unique(names(licenses)))],
     orcid = orcid,
     zenodo = zenodo,
-    ror = ror
+    ror = ror,
+    website = website,
+    logo = logo
   ))
 }

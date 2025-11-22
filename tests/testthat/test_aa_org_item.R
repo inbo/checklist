@@ -64,6 +64,8 @@ test_that("the org_item class works", {
     c(
       "name",
       "email",
+      "website",
+      "logo",
       "ror",
       "orcid",
       "zenodo",

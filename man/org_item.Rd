@@ -71,7 +71,9 @@ Initialize a new \code{org_item} object.
      "cc0.md", sep
     = "/"))),
   ror = "",
-  zenodo = ""
+  zenodo = "",
+  website = "",
+  logo = ""
 )}\if{html}{\out{</div>}}
 }
 
@@ -120,6 +122,10 @@ require a specific license for that item.
 \item{\code{ror}}{The optional ROR ID of the organisation.}
 
 \item{\code{zenodo}}{The optional Zenodo community ID of the organisation.}
+
+\item{\code{website}}{The optional website URL of the organisation.}
+
+\item{\code{logo}}{The optional logo URL of the organisation.}
 }
 \if{html}{\out{</div>}}
 }

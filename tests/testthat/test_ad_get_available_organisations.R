@@ -103,6 +103,36 @@ test_that("get_available_organisations() works", {
         `info@vmm.be` = "",
         `natuurenbos@vlaanderen.be` = "https://ror.org/04wcznf70",
         `omgeving@vlaanderen.be` = ""
+      ),
+      website = c(
+        `ilvo@ilvo.vlaanderen.be` = "https://ilvo.vlaanderen.be/en",
+        `info@inbo.be` = "https://www.vlaanderen.be/inbo/en-gb",
+        `info@organisation.checklist` = "",
+        `info@vlaamsewaterweg.be` = "https://www.vlaamsewaterweg.be/",
+        `info@vlm.be` = "https://www.vlm.be/",
+        `info@vmm.be` = "https://en.vmm.vlaanderen.be/",
+        `natuurenbos@vlaanderen.be` = "https://www.natuurenbos.be/",
+        `omgeving@vlaanderen.be` = "https://omgeving.vlaanderen.be/"
+      ),
+      logo = c(
+        `ilvo@ilvo.vlaanderen.be` = paste0(
+          "https://ilvo.vlaanderen.be/uploads/images/logo-ILVO-2016-eng.png"
+        ),
+        `info@inbo.be` = paste0(
+          "https://inbo.github.io/checklist/reference/figures/logo-en.png"
+        ),
+        `info@organisation.checklist` = "",
+        `info@vlaamsewaterweg.be` = "",
+        `info@vlm.be` = paste0(
+          "https://www.vlm.be/nl/SiteCollectionImages/Logo/",
+          "Logo's%20Vlaamse%20overheid%20en%20VLM/Sponsorlogo_VLM_kleur.jpg"
+        ),
+        `info@vmm.be` = "https://2016.vmm.be/assets/images/logo.svg",
+        `natuurenbos@vlaanderen.be` = "",
+        `omgeving@vlaanderen.be` = paste0(
+          "https://omgeving.vlaanderen.be/sites/default/files/",
+          "entiteitslogo-DOMG-92k2.png"
+        )
       )
     )
   )

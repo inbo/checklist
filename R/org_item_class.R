@@ -43,6 +43,8 @@ org_item <- R6Class(
     #' `project` defaults to `"CC BY 4.0"`.
     #' `data` defaults to `"CC0 1.0"`.
     #' @param zenodo The optional Zenodo community ID of the organisation.
+    #' @param website The optional website URL of the organisation.
+    #' @param logo The optional logo URL of the organisation.
     initialize = function(
       name,
       email,
@@ -79,7 +81,9 @@ org_item <- R6Class(
         )
       ),
       ror = "",
-      zenodo = ""
+      zenodo = "",
+      website = "",
+      logo = ""
     ) {
       private$rightsholder <- match.arg(rightsholder)
       private$funder <- match.arg(funder)
@@ -131,6 +135,10 @@ org_item <- R6Class(
             )
           )
         )
+        private$website <- "https://www.vlaanderen.be/inbo/en-gb"
+        private$logo <- paste0(
+          "https://inbo.github.io/checklist/reference/figures/logo-en.png"
+        )
         return(self)
       }
       name <- unlist(name)
@@ -160,6 +168,20 @@ org_item <- R6Class(
           "`zenodo` cannot be NA" = noNA(zenodo)
         )
         private$zenodo <- zenodo
+      }
+      if (website != "") {
+        stopifnot(
+          "`website` must be a string" = is.string(website),
+          "`website` cannot be NA" = noNA(website)
+        )
+        private$website <- website
+      }
+      if (logo != "") {
+        stopifnot(
+          "`logo` must be a string" = is.string(logo),
+          "`logo` cannot be NA" = noNA(logo)
+        )
+        private$logo <- logo
       }
       return(self)
     },
@@ -238,6 +260,8 @@ org_item <- R6Class(
         sprintf("ROR: %s", private$ror),
         "ORCID is required"[private$orcid],
         sprintf("zenodo community: %s", private$zenodo),
+        sprintf("website: %s", private$website),
+        sprintf("logo: %s", private$logo),
         sprintf("copyright holder: %s", private$rightsholder),
         sprintf("funder: %s", private$funder),
         "allowed licenses:",
@@ -265,6 +289,8 @@ org_item <- R6Class(
       organisation <- list(
         name = as.list(private$name),
         email = private$email,
+        website = private$website,
+        logo = private$logo,
         ror = private$ror,
         orcid = private$orcid,
         zenodo = private$zenodo,
@@ -312,7 +338,9 @@ org_item <- R6Class(
     ror = character(0),
     zenodo = character(0),
     rightsholder = "single",
-    funder = "single"
+    funder = "single",
+    website = character(0),
+    logo = character(0)
   )
 )
 

@@ -11,6 +11,14 @@ test_that("new_org_item", {
   stub(new_org_item, "ask_ror", "")
   stub(
     new_org_item,
+    "ask_url",
+    mock(
+      "https://www.inbo.be",
+      "https://inbo.github.io/checklist/reference/figures/logo-en.png"
+    )
+  )
+  stub(
+    new_org_item,
     "ask_new_license",
     mock(character(0), character(0), character(0))
   )
@@ -27,7 +35,9 @@ test_that("new_org_item", {
         package = character(0),
         project = character(0),
         data = character(0)
-      )
+      ),
+      website = "https://www.inbo.be",
+      logo = "https://inbo.github.io/checklist/reference/figures/logo-en.png"
     )
   )
 })

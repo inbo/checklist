@@ -757,6 +757,7 @@ git_org <- function(x = ".") {
       ),
       email = "natuurenbos@vlaanderen.be",
       ror = "https://ror.org/04wcznf70",
+      website = "https://www.natuurenbos.be/",
       license = list(
         package = character(0),
         project = character(0),
@@ -766,6 +767,11 @@ git_org <- function(x = ".") {
     org_item$new(
       name = c(`nl-BE` = "Department Omgeving"),
       email = "omgeving@vlaanderen.be",
+      website = "https://omgeving.vlaanderen.be/",
+      logo = paste0(
+        "https://omgeving.vlaanderen.be/sites/default/files/",
+        "entiteitslogo-DOMG-92k2.png"
+      ),
       license = list(
         package = character(0),
         project = character(0),
@@ -783,6 +789,8 @@ git_org <- function(x = ".") {
         )
       ),
       email = "ilvo@ilvo.vlaanderen.be",
+      website = "https://ilvo.vlaanderen.be/en",
+      logo = "https://ilvo.vlaanderen.be/uploads/images/logo-ILVO-2016-eng.png",
       ror = "https://ror.org/05cjt1n05",
       license = list(
         package = character(0),
@@ -793,6 +801,11 @@ git_org <- function(x = ".") {
     org_item$new(
       name = c(`nl-BE` = "Vlaamse Landmaatschappij (VLM)"),
       email = "info@vlm.be",
+      website = "https://www.vlm.be/",
+      logo = paste0(
+        "https://www.vlm.be/nl/SiteCollectionImages/Logo/",
+        "Logo's%20Vlaamse%20overheid%20en%20VLM/Sponsorlogo_VLM_kleur.jpg"
+      ),
       license = list(
         package = character(0),
         project = character(0),
@@ -805,6 +818,8 @@ git_org <- function(x = ".") {
         `en-GB` = "Flanders Environment Agency (VMM)"
       ),
       email = "info@vmm.be",
+      website = "https://en.vmm.vlaanderen.be/",
+      logo = "https://2016.vmm.be/assets/images/logo.svg",
       license = list(
         package = character(0),
         project = character(0),
@@ -814,6 +829,7 @@ git_org <- function(x = ".") {
     org_item$new(
       name = c(`nl-BE` = "De Vlaamse Waterweg nv"),
       email = "info@vlaamsewaterweg.be",
+      website = "https://www.vlaamsewaterweg.be/",
       license = list(
         package = character(0),
         project = character(0),
