@@ -10,9 +10,6 @@
 #'
 #' @param path The path to the package.
 #' Defaults to `"."`.
-#' @param license What type of license should be used?
-#' Choice between GPL-3 and MIT.
-#' Default GPL-3.
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
@@ -20,9 +17,8 @@
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
-setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
+setup_package <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
-  license <- match.arg(license)
   assert_that(
     is_file(path(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
@@ -30,6 +26,7 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   descript <- desc(path)
   package <- descript$get("Package")
   version <- descript$get_version()
+  license <- descript$get("License")
 
   assert_that(is_workdir_clean(repo = path))
 
@@ -128,64 +125,24 @@ setup_package <- function(path = ".", license = c("GPL-3", "MIT")) {
   }
 
   # add README.Rmd
-  if (!is_file(path(path, "README.md"))) {
-    # fmt: skip
-    license_batch <- switch(
-      license,
-      "GPL-3" =
-        "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
-      "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat"
-    )
-    license_site <- switch(
-      license,
-      "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",
-      "MIT" = "https://opensource.org/licenses/MIT"
-    )
-    path("package_template", "README.Rmd") |>
-      system.file(package = "checklist") |>
-      readLines() |>
-      gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
-      gsub(
-        pattern = "\\{\\{\\{ license batch \\}\\}\\}",
-        replacement = license_batch
-      ) |>
-      gsub(
-        pattern = "\\{\\{\\{ license site \\}\\}\\}",
-        replacement = license_site
-      ) |>
-      writeLines(path(path, "README.Rmd"))
-    git_add("README.Rmd", force = TRUE, repo = path)
-  }
+  org <- org_list$new()$read(path)
+  create_readme(
+    path = path,
+    org = org,
+    authors = descript$get_authors() |>
+      author2df() |>
+      author2badge(),
+    title = sprintf("%s: %s", package, descript$get_field("Title")),
+    description = descript$get_field("Description"),
+    keywords = descript$get_field("Config/checklist/keywords"),
+    license = license,
+    type = "package"
+  )
+  git_add("README.Rmd", force = TRUE, repo = path)
 
   # add LICENSE.md
-  if (length(dir_ls(path, regexp = "LICEN(S|C)E")) == 0) {
-    switch(license, "GPL-3" = "gplv3.md", "MIT" = "mit.md") |>
-      insert_file(
-        repo = path,
-        template = "generic_template",
-        target = path,
-        new_name = "LICENSE.md"
-      )
-    if (license == "MIT") {
-      writeLines(
-        c(
-          paste0("YEAR: ", format(Sys.Date(), "%Y")),
-          "COPYRIGHT HOLDER: Research Institute for Nature and Forest (INBO)"
-        ),
-        path(path, "LICENSE")
-      )
-      git_add("LICENSE", force = TRUE, repo = path)
-      mit <- readLines(path(path, "LICENSE.md"))
-      mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
-      mit[3] <- gsub(
-        "<COPYRIGHT HOLDERS>",
-        "Research Institute for Nature and Forest (INBO)",
-        mit[3]
-      )
-      writeLines(mit, path(path, "LICENSE.md"))
-    }
-    git_add("LICENSE.md", force = TRUE, repo = path)
-  }
+  set_license(path, org = org, license = descript$get_field("License"))
+  git_add("LICENSE.md", force = TRUE, repo = path)
 
   # Add code of conduct
   target <- path(path, ".github")
