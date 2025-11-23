@@ -23,6 +23,33 @@ get_default_org_list <- function(x = ".") {
 #' @importFrom httr HEAD
 #' @importFrom tools R_user_dir
 cache_org <- function(url, config_folder) {
+  gsub("https://", "", url) |>
+    tolower() -> config_name
+  config_path <- path(config_folder, config_name)
+  if (url == "https://github.com/inbo") {
+    path(config_path, "pkgdown") |>
+      dir.create(showWarnings = FALSE, recursive = TRUE)
+    org <- inbo_org_list()
+    org$write(config_path, license = TRUE)
+    system.file("package_template/pkgdown.css", package = "checklist") |>
+      file.copy(
+        to = path(config_path, "pkgdown.css"),
+        overwrite = TRUE
+      )
+    img_files <- c(
+      "flanders.woff",
+      "flanders.woff2",
+      "logo-en.png",
+      "background-pattern.png"
+    )
+    path("package_template", img_files) |>
+      system.file(package = "checklist") |>
+      file.copy(
+        to = path(config_path, "pkgdown"),
+        overwrite = TRUE
+      )
+    return(org)
+  }
   paste0(url, "/checklist") |>
     HEAD() -> url_head
   if (url_head$status_code != 200) {
@@ -44,11 +71,21 @@ cache_org <- function(url, config_folder) {
   ) |>
     system2(command = "git", stderr = FALSE, stdout = FALSE)
   org <- org_list$new()$read(target)
-  gsub("https://", "", url) |>
-    tolower() -> config_name
-  config_path <- path(config_folder, config_name)
-  dir_create(config_path, recurse = TRUE)
+  path(config_path, "pkgdown") |>
+    dir_create(recurse = TRUE)
   org$write(config_path, license = TRUE)
+  list.files(target, "pkgdown.css", full.names = TRUE) |>
+    file.copy(
+      to = path(config_path, "pkgdown.css"),
+      overwrite = TRUE
+    )
+  path(target, "pkgdown") |>
+    list.files() -> to_do
+  file.copy(
+    from = path(target, "pkgdown", to_do),
+    to = path(config_path, "pkgdown", to_do),
+    overwrite = TRUE
+  )
   return(org)
 }
 

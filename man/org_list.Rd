@@ -50,6 +50,7 @@ Other class:
 \item \href{#method-org_list-get_zenodo_by_email}{\code{org_list$get_zenodo_by_email()}}
 \item \href{#method-org_list-get_match}{\code{org_list$get_match()}}
 \item \href{#method-org_list-get_name_by_domain}{\code{org_list$get_name_by_domain()}}
+\item \href{#method-org_list-get_pkgdown}{\code{org_list$get_pkgdown()}}
 \item \href{#method-org_list-new}{\code{org_list$new()}}
 \item \href{#method-org_list-print}{\code{org_list$print()}}
 \item \href{#method-org_list-read}{\code{org_list$read()}}
@@ -209,6 +210,23 @@ it will return the first available name.
 
 \subsection{Returns}{
 A character vector with the organisation names.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_list-get_pkgdown"></a>}}
+\if{latex}{\out{\hypertarget{method-org_list-get_pkgdown}{}}}
+\subsection{Method \code{get_pkgdown()}}{
+get_pkgdown The pkgdown author field
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_list$get_pkgdown(lang)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{lang}}{The language to use for affiliation.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

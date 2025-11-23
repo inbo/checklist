@@ -160,6 +160,19 @@ org_list <- R6Class(
       names(orcid) <- aff_names
       return(orcid)
     },
+    #' @description get_pkgdown The pkgdown author field
+    #' @param lang The language to use for affiliation.
+    get_pkgdown = function(lang) {
+      vapply(
+        private$items,
+        FUN.VALUE = vector(mode = "list", length = 1),
+        FUN = function(x) {
+          list(x$get_pkgdown(lang = lang))
+        }
+      ) |>
+        unlist() |>
+        paste(collapse = "\n")
+    },
     #' @description Initialize a new `org_list` object.
     #' @param ... One or more `org_item` objects.
     #' @param git An optional string with the absolute path to a git
@@ -726,23 +739,27 @@ git_org <- function(x = ".") {
   if (!grepl("^https://", url, perl = TRUE)) {
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
-  if (url != "https://github.com/inbo") {
-    gsub("https://", "", url) |>
-      tolower() -> config_name
-    R_user_dir("checklist", "config") |>
-      path(config_name) -> config_path
-    if (file_exists(path(config_path, "organisation.yml"))) {
-      org <- org_list$new()$read(config_path)
-      org$write(x)
-      return(org)
-    }
-    message(
-      "no local `org_list` information found.",
-      "See ?get_default_org_list",
-      "Using default settings."
-    )
-    return(org_list$new(org_item$new(email = "info@inbo.be")))
+  if (url == "https://github.com/inbo") {
+    return(inbo_org_list())
   }
+  gsub("https://", "", url) |>
+    tolower() -> config_name
+  R_user_dir("checklist", "config") |>
+    path(config_name) -> config_path
+  if (file_exists(path(config_path, "organisation.yml"))) {
+    org <- org_list$new()$read(config_path)
+    org$write(x)
+    return(org)
+  }
+  message(
+    "no local `org_list` information found.",
+    "See ?get_default_org_list",
+    "Using default settings."
+  )
+  return(org_list$new(org_item$new(email = "info@inbo.be")))
+}
+
+inbo_org_list <- function() {
   org_list$new(
     git = "https://github.com/inbo",
     org_item$new(

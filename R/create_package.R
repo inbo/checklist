@@ -201,49 +201,7 @@ create_package <- function(package, path = ".") {
   )
 
   # prepare pkgdown
-  path("package_template", "_pkgdown.yml") |>
-    system.file(package = "checklist") |>
-    readLines() |>
-    gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
-    writeLines(path(path, "_pkgdown.yml"))
-  git_add("_pkgdown.yml", repo = repo)
-
-  target <- path(path, "pkgdown")
-  dir_create(target)
-  insert_file(
-    repo = repo,
-    filename = "pkgdown.css",
-    template = "package_template",
-    target = target,
-    new_name = "extra.css"
-  )
-
-  target <- path(path, "man", "figures")
-  dir_create(target)
-  insert_file(
-    repo = repo,
-    filename = "logo-en.png",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
-    filename = "background-pattern.png",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
-    filename = "flanders.woff2",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
-    filename = "flanders.woff",
-    template = "package_template",
-    target = target
-  )
+  setup_pkgdown(x = x, org = org, lang = language)
 
   message("package created at `", path, "`")
 

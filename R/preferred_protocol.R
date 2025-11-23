@@ -21,17 +21,11 @@ preferred_protocol <- function() {
   c(config[["git"]][["organisation"]], "new git organisation") |>
     menu_first(title = "Which git organisation?") -> org_choice
   if (org_choice > length(config[["git"]][["organisation"]])) {
-    while (TRUE) {
-      paste(
-        "Enter the URL of the git organisation?",
-        "E.g. `https://github.com/inbo`: "
-      ) |>
-        readline() -> org_url
-      if (grepl("^https:\\/\\/[\\w\\.]+?\\/\\w+$", org_url, perl = TRUE)) {
-        break
-      }
-      message("Please enter a valid URL.")
-    }
+    paste(
+      "Enter the URL of the git organisation?",
+      "E.g. `https://github.com/inbo`: "
+    ) |>
+      ask_url() -> org_url
     c(
       config[["git"]][["organisation"]],
       org_url

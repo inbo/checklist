@@ -55,16 +55,7 @@ test_that("create_package() works", {
       )
     ),
     path("pkgdown", "extra.css"),
-    path(
-      "man",
-      "figures",
-      c(
-        "logo-en.png",
-        "background-pattern.png",
-        "flanders.woff2",
-        "flanders.woff"
-      )
-    )
+    path("man", "figures", "background-pattern.png")
   )
   expect_true(all(is_file(path(path, package, new_files))))
 

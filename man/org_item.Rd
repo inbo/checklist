@@ -43,6 +43,7 @@ Other class:
 \item \href{#method-org_item-as_person}{\code{org_item$as_person()}}
 \item \href{#method-org_item-compare_by_name}{\code{org_item$compare_by_name()}}
 \item \href{#method-org_item-get_license}{\code{org_item$get_license()}}
+\item \href{#method-org_item-get_pkgdown}{\code{org_item$get_pkgdown()}}
 \item \href{#method-org_item-print}{\code{org_item$print()}}
 \item \href{#method-org_item-clone}{\code{org_item$clone()}}
 }
@@ -193,6 +194,23 @@ Defaults to \code{"package"}.}
 }
 \subsection{Returns}{
 A named character vector with the allowed licenses.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-org_item-get_pkgdown"></a>}}
+\if{latex}{\out{\hypertarget{method-org_item-get_pkgdown}{}}}
+\subsection{Method \code{get_pkgdown()}}{
+The pkgdown author field.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{org_item$get_pkgdown(lang)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{lang}}{The language to use for the organisation name.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

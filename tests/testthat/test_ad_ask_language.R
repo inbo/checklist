@@ -1,7 +1,7 @@
 library(mockery)
 test_that("ask_language", {
   org <- cache_org(
-    "https://github.com/inbo",
+    url = "https://github.com/inbo",
     config_folder = path(config_dir, "config")
   )
   expect_identical(ask_language(org), "nl-BE")

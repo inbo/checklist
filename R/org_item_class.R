@@ -156,12 +156,6 @@ org_item <- R6Class(
       private$orcid <- orcid
       private$email <- email
       private$license <- license
-      if (ror != "") {
-        stopifnot(
-          "`ror` must be in https://ror.org/id format" = validate_ror(ror)
-        )
-        private$ror <- ror
-      }
       if (zenodo != "") {
         stopifnot(
           "`zenodo` must be a string" = is.string(zenodo),
@@ -169,20 +163,21 @@ org_item <- R6Class(
         )
         private$zenodo <- zenodo
       }
-      if (website != "") {
-        stopifnot(
-          "`website` must be a string" = is.string(website),
-          "`website` cannot be NA" = noNA(website)
-        )
-        private$website <- website
-      }
-      if (logo != "") {
-        stopifnot(
-          "`logo` must be a string" = is.string(logo),
-          "`logo` cannot be NA" = noNA(logo)
-        )
-        private$logo <- logo
-      }
+      private$ror <- set_non_empty(
+        ror,
+        validate_ror,
+        "`ror` must be in https://ror.org/id format"
+      )
+      private$website <- set_non_empty(
+        website,
+        validate_url,
+        "Please enter a valid website URL."
+      )
+      private$logo <- set_non_empty(
+        logo,
+        validate_url,
+        "Please enter a valid logo URL."
+      )
       return(self)
     },
     #' @description as_person The organisation as a person.
@@ -201,7 +196,7 @@ org_item <- R6Class(
         given = unname(private$name[lang]),
         family = "",
         email = private$email,
-        comment = c(ROR = private$ror)[length(private$ror) > 0],
+        comment = c(ROR = private$ror)[nchar(private$ror) > 0],
         role = role
       )
     },
@@ -251,17 +246,42 @@ org_item <- R6Class(
       }
       private$license[[type]]
     },
+    #' @description The pkgdown author field.
+    #' @param lang The language to use for the organisation name.
+    get_pkgdown = function(lang) {
+      if (private$website == "" && private$logo == "") {
+        return(NULL)
+      }
+      lang <- ifelse(
+        lang %in% names(private$name),
+        lang,
+        names(private$name)[1]
+      )
+      org_name <- private$name[lang]
+      sprintf("  %s:", org_name) |>
+        c(
+          sprintf("    href: \"%s\"", private$website)[private$website != ""],
+          sprintf(
+            "    html: \"<img src='%s' height=24 alt='%s'>\"",
+            private$logo,
+            org_name
+          )[private$logo != ""]
+        ) |>
+        paste(collapse = "\n")
+    },
     #' @description Print the `org_item` object.
     print = function() {
       c(
         "name",
         sprintf("- %s: %s", names(private$name), private$name),
         sprintf("email: %s", private$email),
-        sprintf("ROR: %s", private$ror),
+        sprintf("ROR: %s", private$ror)[nchar(private$ror) > 0],
         "ORCID is required"[private$orcid],
-        sprintf("zenodo community: %s", private$zenodo),
-        sprintf("website: %s", private$website),
-        sprintf("logo: %s", private$logo),
+        sprintf("zenodo community: %s", private$zenodo)[
+          nchar(private$zenodo) > 0
+        ],
+        sprintf("website: %s", private$website)[nchar(private$website) > 0],
+        sprintf("logo: %s", private$logo)[nchar(private$logo) > 0],
         sprintf("copyright holder: %s", private$rightsholder),
         sprintf("funder: %s", private$funder),
         "allowed licenses:",
@@ -289,9 +309,9 @@ org_item <- R6Class(
       organisation <- list(
         name = as.list(private$name),
         email = private$email,
-        website = private$website,
-        logo = private$logo,
-        ror = private$ror,
+        website = private$website[nchar(private$website) > 0],
+        logo = private$logo[nchar(private$logo) > 0],
+        ror = private$ror[nchar(private$ror) > 0],
         orcid = private$orcid,
         zenodo = private$zenodo,
         rightsholder = private$rightsholder,
@@ -339,8 +359,8 @@ org_item <- R6Class(
     zenodo = character(0),
     rightsholder = "single",
     funder = "single",
-    website = character(0),
-    logo = character(0)
+    website = "",
+    logo = ""
   )
 )
 
@@ -381,4 +401,14 @@ validate_license <- function(license) {
       )
     )
   )
+}
+
+set_non_empty <- function(x, fun, prompt) {
+  if (x == "") {
+    return(x)
+  }
+  fun(x) |>
+    setNames(prompt) |>
+    stopifnot()
+  return(x)
 }

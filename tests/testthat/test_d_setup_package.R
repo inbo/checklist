@@ -44,16 +44,7 @@ test_that("setup_package() works", {
       )
     ),
     path("pkgdown", "extra.css"),
-    path(
-      "man",
-      "figures",
-      c(
-        "logo-en.png",
-        "background-pattern.png",
-        "flanders.woff2",
-        "flanders.woff"
-      )
-    )
+    path("man", "figures", "background-pattern.png")
   )
   file_delete(path(path, package, new_files))
   git_add(files = new_files, repo = repo)

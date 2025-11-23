@@ -39,8 +39,12 @@ setup_package <- function(path = ".") {
         package = TRUE
       )
     } else {
-      x <- checklist$new(x = path, language = "en-GB", package = TRUE)
-      descript$set("Language", "en-GB")
+      language <- ask_language(
+        org = org_list$new()$read(path),
+        prompt = "Which is the main language of the package?"
+      )
+      x <- checklist$new(x = path, language = language, package = TRUE)
+      descript$set("Language", language)
       path(x$get_path, "DESCRIPTION") |>
         descript$write()
     }
@@ -191,47 +195,7 @@ setup_package <- function(path = ".") {
   )
 
   # Add pkgdown website
-  path("package_template", "_pkgdown.yml") |>
-    system.file(package = "checklist") |>
-    readLines() -> pkgd
-  pkgd <- gsub("\\{\\{\\{ Package \\}\\}\\}", package, pkgd)
-  writeLines(pkgd, path(path, "_pkgdown.yml"))
-  git_add("_pkgdown.yml", force = TRUE, repo = path)
-  target <- path(path, "pkgdown")
-  dir_create(target)
-  insert_file(
-    repo = path,
-    filename = "pkgdown.css",
-    template = "package_template",
-    target = target,
-    new_name = "extra.css"
-  )
-  target <- path(path, "man", "figures")
-  dir_create(target)
-  insert_file(
-    repo = path,
-    filename = "logo-en.png",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = path,
-    filename = "background-pattern.png",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = path,
-    filename = "flanders.woff2",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = path,
-    filename = "flanders.woff",
-    template = "package_template",
-    target = target
-  )
+  setup_pkgdown(x = path, org = org, lang = x$default)
 
   message("package prepared for checklist::check_package()")
   return(invisible(NULL))
