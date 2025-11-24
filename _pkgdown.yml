@@ -26,11 +26,13 @@ navbar:
       - text: Code of conduct
         href: CODE_OF_CONDUCT.html
     tutorials:
-      text: Tutorials
+      text: Getting started
       href: articles/index.html
       menu:
       - text: Philosophy of the checklist package
         href: articles/philosophy.html
+      - text: Coding style
+        href: articles/coding_style.html
       - text: Setting up checklist for a package
         href: articles/getting_started.html
       - text: Setting up checklist for a project
