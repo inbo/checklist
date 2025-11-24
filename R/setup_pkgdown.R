@@ -1,11 +1,12 @@
 setup_pkgdown <- function(x = ".", org, lang) {
   x <- read_checklist(x = x)
+  stopifnot("setup_pkgdown() is only relevant for packages" = x$package)
 
   authors <- org$get_pkgdown(lang = lang)
   path("package_template", "_pkgdown.yml") |>
     system.file(package = "checklist") |>
     readLines() |>
-    c("authors:"[nchar(authors) > 0], authors) |>
+    c("authors:"[nchar(authors) > 0], authors, githubpages_url(x$get_path)) |>
     writeLines(path(x$get_path, "_pkgdown.yml"))
   git_add("_pkgdown.yml", repo = x$get_path)
 
@@ -32,4 +33,21 @@ setup_pkgdown <- function(x = ".", org, lang) {
   path("man", "figures") |>
     git_add(repo = x$get_path)
   return(invisible(NULL))
+}
+
+githubpages_url <- function(path) {
+  if (!is_repository(path)) {
+    return(character(0))
+  }
+  remotes <- git_remote_list(path)
+  url <- remotes$url[remotes$name == "origin"]
+  if (length(url) == 0 || !grepl("https://github.com", ssh_http(url))) {
+    return(character(0))
+  }
+  ssh_http(url) |>
+    gsub(pattern = "https://github.com/", replacement = "") |>
+    sprintf(
+      fmt = "\nurl: https://%s.github.io/%s",
+      gsub(".*/(.*)\\.git", "\\1", url)
+    )
 }
