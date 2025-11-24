@@ -27,7 +27,20 @@ email_regexp <- paste0(
   "f]{0,3}):){0,6}(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::)|(?!IPv6:)[0-9A-Za-z-]*[",
   "0-9A-Za-z]:[!-Z^-~]+)])"
 )
-graphics_ext <- c("eps", "jpg", "jpeg", "pdf", "png", "ps", "svg")
+graphics_ext <- c(
+  "csl",
+  "eps",
+  "gif",
+  "jpg",
+  "jpeg",
+  "pdf",
+  "png",
+  "ps",
+  "svg",
+  "tiff",
+  "tif",
+  "wmf"
+)
 sprintf("`%s`", graphics_ext) |>
   paste(collapse = ", ") |>
   sprintf(

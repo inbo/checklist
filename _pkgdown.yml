@@ -33,6 +33,8 @@ navbar:
         href: articles/philosophy.html
       - text: Coding style
         href: articles/coding_style.html
+      - text: Naming conventions for folders and files
+        href: articles/filename.html
       - text: Setting up checklist for a package
         href: articles/getting_started.html
       - text: Setting up checklist for a project

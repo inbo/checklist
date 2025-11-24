@@ -21,30 +21,6 @@ The `checklist` package defines a set of standards and provides tools to validat
 You can run these tools interactively on your machine.
 You can also add these checks as [GitHub actions](https://github.com/features/actions), which runs them automatically after every [push](https://github.com/git-guides/git-push) to the repository on [GitHub](https://github.com).
 
-## File name conventions
-
-To make this easier to remember we choose the same name conventions for file names as for objects.
-We acknowledge that these rules sometimes clash with requirements from other sources (e.g. `DESCRIPTION` in an R package, `README.md` on GitHub, `.gitignore` for git, ...).
-In such case we allow the file names as required by R, git or GitHub.
-When `check_filename()` does unfairly not allow a certain file or folder name, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this should be allowed.
-
-### Rules for folder names
-
-- Folder names should only contain lower case letters, numbers and underscore (`_`).
-- They can start with a single dot (`.`).
-
-### Rules for file names
-
-- Base names should only contain lower case letters, numbers and underscore (`_`).
-- File extensions should only contains lower case letters and numbers.
-  Exceptions: file extensions related to R must have an upper case R (`.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
-
-### Rules for graphical file names
-
-- Applies to files with extensions `csl`, `eps`, `jpg`, `jpeg`, `pdf`, `png` and `ps`.
-- Same rules except that you need to use a dash (`-`) as separator instead of an underscore (`_`).
-  We need this exception because underscores cause problems in certain situations.
-
 ## Bundling your code in a package
 
 Most users think of an R package as a collection of generic functions that they can use to run their analysis.
