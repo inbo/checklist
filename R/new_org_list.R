@@ -28,11 +28,11 @@ new_org_list <- function(git) {
           choices = rf_option,
           title = "What are the funder requirements for this organisation"
         )],
-        orcid = available$orcid[names(available$names)[selected]],
-        zenodo = available$zenodo[names(available$names)[selected]],
-        ror = available$ror[names(available$names)[selected]],
-        website = available$website[names(available$names)[selected]],
-        logo = available$logo[names(available$names)[selected]],
+        orcid = unname(available$orcid[names(available$names)[selected]]),
+        zenodo = unname(available$zenodo[names(available$names)[selected]]),
+        ror = unname(available$ror[names(available$names)[selected]]),
+        website = unname(available$website[names(available$names)[selected]]),
+        logo = unname(available$logo[names(available$names)[selected]])
       )
       available$names <- available$names[-selected]
     } else {
