@@ -14,9 +14,14 @@
 
 * `get_default_org_list()` returns the default organisation list depending on
   the git remote `origin`.
+* `new_org_list()` creates a new `org_list` object based on interactive
+  questions.
+* `create_draft_pr()` creates a draft pull request on GitHub.
 
 ## Other changes
 
+* `create_package()` and `create_project()` now fully work based on interactive
+  questions.
 * Updated the formatting of the code with
   [`air`](https://posit-dev.github.io/air/).
 * The GitHub Actions now install missing packages on the fly (#152).
@@ -27,6 +32,8 @@
 * `check_lintr()` turns missing dependencies into an error.
 * `check_source()` is now defunct.
 * Removed the defunct `orcid2person()`.
+* Reworked the `vignette("philosophy", package = "checklist")` and
+  `vignette("getting_started", package = "checklist")`
 
 # checklist 0.4.2
 
