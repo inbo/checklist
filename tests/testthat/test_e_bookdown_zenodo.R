@@ -51,6 +51,8 @@ test_that("bookdown_zenodo() works", {
     )
   )
   sink()
+  skip_on_os(os = "mac")
+  skip_on_os(os = "windows")
   manager <- zen4R::ZenodoManager$new(sandbox = TRUE, token = sandbox_token)
   zen_com <- manager$getCommunityById("checklist")
   sprintf(
