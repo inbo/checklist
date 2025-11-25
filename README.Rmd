@@ -53,32 +53,9 @@ remotes::install_github("inbo/checklist", dependencies = TRUE)
 
 ## Setting a default organisation
 
-We created `checklist` with the Research Institute for Nature and Forest (INBO) in mind.
-When you don't specify the organisation, `checklist` assumes the code was written by INBO personnel.
-INBO has specific requirements which are not relevant for external users of `checklist`.
-
-When you are not writing code for INBO, we recommend that you set a default `organisation`.
-Below we specify the defaults for INBO.
+Originally, we created `checklist` with the Research Institute for Nature and Forest (INBO) in mind.
+We recommend that you set a default organisation list.
 More details in `vignette("organisation", package = "checklist")`.
-
-```{r organisation}
-library(checklist)
-org <- organisation$new(
-  github = "inbo", community = "inbo", email = "info@inbo.be",
-  rightsholder = "Research Institute for Nature and Forest (INBO)",
-  funder = "Research Institute for Nature and Forest (INBO)",
-  organisation = list(
-    "inbo.be" = list(
-      affiliation = c(
-        en = "Research Institute for Nature and Forest (INBO)",
-        nl = "Instituut voor Natuur en Bosonderzoek (INBO)"
-      ),
-      orcid = TRUE
-    ) 
-  )
-)
-default_organisation(org = org)
-```
 
 ## Using `checklist` on a package.
 
