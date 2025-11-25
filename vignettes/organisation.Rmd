@@ -8,14 +8,6 @@ vignette: >
 bibliography: references.bib
 ---
 
-```{r setup, include = FALSE}
-library(knitr)
-opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 ## New philosophy
 
 `checklist 0.5.0` had a major change in the way it handles organisation information.
@@ -39,7 +31,7 @@ The email served a double purpose:
 1. Having an organisation email in the metadata allows users to contact the organisation in case that the individual authors are not available or do not respond.
 2. `checklist` uses the domain of the email to match other persons to this organisation based on email.
 
-Optionally, you can define the organisations [ROR identifier](https://ror.org/); if matching persons must having an [ORCID identifier](https://orcid.org/); if the projects must list a specific [Zenodo community](https://zenodo.org/communities#community-info) and what kind of licenses are allowed for packages, projects and data.
+Optionally, you can define the organisations' [ROR identifier](https://ror.org/); the website; a link to the logo; if matching persons must having an [ORCID identifier](https://orcid.org/); if the projects must list a specific [Zenodo community](https://zenodo.org/communities#community-info) and what kind of licenses are allowed for packages, projects and data.
 
 The `org_item` defines the required status of the organisation as a copyright holder or funder.
 By default, this is set to `"optional"`, which means that the organisation is not required to be listed as a copyright holder or funder but it can be listed as such.
@@ -55,13 +47,22 @@ E.g. if one organisation is set to `"single"` as copyright holder, then no other
 
 Additionally, it contains the URL of the main organisations git organisation.
 The `checklist` repository at that URL is used to store the minimum rules for the organisation.
-E.g. when the URL is set to `https://github.com/inbo`, then we look for the minimum rules at `https://github.com/inbo/checklist`.
+E.g. when the URL is set to https://github.com/inbo, then we look for the minimum rules at https://github.com/inbo/checklist.
 
 ## Using the organisations default `org_list`
 
+We provide a dummy example of an organisations' `checklist` repository at https://gitlab.com/ThierryO/checklist.
+
 ### Setting the default
 
+You can do that interactively with the `new_org_list()` function.
+Or programmatically using the `org_item$new()` constructor.
+
 First you need to create the `org_item` objects that will make up the default `org_list`.
+Note that you must provide a link to a markdown file for the licenses you want to allow.
+We recommend to include these markdown files in your organisations' `checklist` repository.
+`checklist` cache the content of these license files locally.
+And it include them as a `LICENSE.md` file within the package or project.
 
 ```{r create-org-item}
 library(checklist)
@@ -73,13 +74,41 @@ inbo <- org_item$new(
     "de-DE" = "Institut für Natur- und Waldforschung (INBO)"
   ),
   email = "info@inbo.be",
+  website = "https://vlaanderen.be/inbo/en",
+  logo = "https://inbo.github.io/checklist/reference/figures/logo-en.png",
   ror = "https://ror.org/00j54wy13",
   orcid = TRUE,
   zenodo = "inbo",
   rightsholder = "shared",
   funder = "when no other",
   license = list(
-    package = c("GPL-3 ", "MIT"), project = "CC BY 4.0", data = "CC0"
+    package = c(
+      `GPL-3` = paste(
+        "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+        "main/inst/generic_template/gplv3.md",
+        sep = "/"
+      ),
+      MIT = paste(
+        "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+        "main/inst/generic_template/mit.md",
+        sep = "/"
+      )
+    ),
+    project = c(
+      `CC BY 4.0` = paste(
+        "https://raw.githubusercontent.com/inbo/checklist/refs/heads",
+        "main/inst/generic_template/cc_by_4_0.md",
+        sep = "/"
+      )
+    ),
+    data = c(
+      `CC0` = paste(
+        "https://raw.githubusercontent.com/inbo/checklist",
+        "131fe5829907079795533bfea767bf7df50c3cfd/inst/generic_template",
+        "cc0.md",
+        sep = "/"
+      )
+    )
   )
 )
 inbo
@@ -167,6 +196,23 @@ my_org$write(test_dir)
 list.files(test_dir)
 empty_org$read(test_dir)
 ```
+
+### Defining your organisations' coding style rules
+
+You can define your organisations' coding style rules in the organisations' `checklist` repository.
+Create a `.lintr` file in the root of the repository.
+This file will be used by `checklist` when running `check_lintr()` check on
+projects that belong to the organisation.
+For more information on the `.lintr` file, please refer to the [lintr documentation](https://lintr.r-lib.org/articles/lintr.html#configuring-linters).
+
+If you don't provide a `.lintr` file in your organisations' `checklist` repository, the user can provide a local `.lintr` file in the project directory.
+Otherwise the default `.lintr` file provided with the `checklist` package will be used.
+
+### Defining your organisations' `pkgdown` styling
+
+You can provide `css` styling by placing a `pkgdown.css` file at the root of the `checklist` repository.
+You can place other files (e.g. images, fonts, ...) in the `pkgdown` folder of the repository.
+These files will be placed in the `man/figures` folder of the package to make them available when building the `pkgdown` site.
 
 ## FAQ
 
