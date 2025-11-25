@@ -140,13 +140,13 @@ All boxes except _Vignettes_ must be ticked.
 Close the two dialogue boxes by clicking the _OK_ buttons (once for each of box).
 
 Open the `README.Rmd` file and update the content.
-Knit the file and stage the `README.Rmd` and `README.md` files.
 
 Review and commit the changes into an initial commit.
 
 Add at least one function to the package.
 
 [_Build_](https://r-pkgs.org/whole-game.html#install) the package.
+Knit the file and stage the `README.Rmd` and `README.md` files.
 
 Run `x <- checklist::check_package()`.
 Fix any issues that arise during the checks.
