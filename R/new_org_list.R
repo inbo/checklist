@@ -71,10 +71,10 @@ new_org_item <- function(languages, licenses) {
     names(extra) <- lang
     name <- c(name, extra)
   }
-  ror <- ask_ror("The optional organisations' ROR identifier: ")
   website <- ask_url("The optional organisations' website URL: ")
   logo <- ask_url("The optional organisations' logo URL: ")
-  zenodo <- readline("The optional Zenodo identifier:")
+  ror <- ask_ror("The optional organisations' ROR identifier: ")
+  zenodo <- readline("The optional Zenodo community identifier:")
   orcid <- ask_yes_no(
     "Is an OrcID required for members of this organisation?",
     default = FALSE
