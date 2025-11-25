@@ -73,7 +73,7 @@ spelling_parse_r <- function(r_file, wordlist) {
   text <- gsub("^#'", "", text)
 
   # remove backticks
-  text <- gsub("`.*?`", "", text)
+  text <- gsub("\\`.*?\\`", "", text, perl = TRUE)
   # remove links to functions
   text <- gsub("\\[.*?\\(\\)\\]", "", text)
   # remove links
@@ -255,6 +255,8 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     text,
     perl = TRUE
   )
+  # remove text between matching back ticks on the same line
+  text <- gsub("\\`.+?\\`", "", text, perl = TRUE)
   # remove Markdown urls
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
   text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
@@ -266,8 +268,6 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   )
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
-  # remove text between matching back ticks on the same line
-  text <- gsub("`.+?`", "", text)
   # remove markdown comments
   text <- gsub("<!--.*?-->", "", text)
   # remove markdown superscript
@@ -285,6 +285,8 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   text <- gsub("<script.*?>.*<\\/script>", "", text, ignore.case = TRUE)
   start <- grep("<script.*?>", text)
   end <- grep("<\\/script>", text)
+  # remove HTML anchor tags
+  text <- gsub("</?a.*?>", "", text)
   assert_that(
     length(start) == length(end),
     msg = paste("unmatched `<script>` and `</script>` in", md_file)
