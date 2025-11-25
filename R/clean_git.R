@@ -16,7 +16,7 @@
 #' @importFrom withr defer
 #' @export
 #' @family git
-clean_git <- function(repo =  ".", verbose = TRUE) {
+clean_git <- function(repo = ".", verbose = TRUE) {
   assert_that(is_workdir_clean(repo))
 
   current_branch <- git_branch(repo = repo)
@@ -31,7 +31,8 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   # determine main branch
   branch_info <- git_branch_list(repo = repo)
   main_branch <- ifelse(
-    any(branch_info$name == "origin/main"), "main",
+    any(branch_info$name == "origin/main"),
+    "main",
     ifelse(any(branch_info$name == "origin/master"), "master", "unknown")
   )
   assert_that(
@@ -51,11 +52,14 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
     if (nrow(upstream_df) > 0) {
       # warn for diverging branches
       upstream_ab <- vapply(
-        seq_len(nrow(upstream_df)), FUN.VALUE = vector("list", 1), repo = repo,
+        seq_len(nrow(upstream_df)),
+        FUN.VALUE = vector("list", 1),
+        repo = repo,
         FUN = function(i, repo) {
           list(
             git_ahead_behind(
-              upstream = upstream_df$upstream[i], ref = upstream_df$ref[i],
+              upstream = upstream_df$upstream[i],
+              ref = upstream_df$ref[i],
               repo = repo
             )
           )
@@ -64,13 +68,15 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       names(upstream_ab) <- upstream_df$name
 
       ahead <- vapply(
-        upstream_ab, FUN.VALUE = integer(1),
+        upstream_ab,
+        FUN.VALUE = integer(1),
         FUN = function(x) {
           x$ahead
         }
       )
       behind <- vapply(
-        upstream_ab, FUN.VALUE = integer(1),
+        upstream_ab,
+        FUN.VALUE = integer(1),
         FUN = function(x) {
           x$behind
         }
@@ -80,7 +86,13 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       vapply(
         names(diverged)[unlist(diverged)],
         function(x) {
-          warning("`", x, "` diverged from the origin branch.", call. = FALSE)
+          warning(
+            "`",
+            x,
+            "` diverged from the origin branch.",
+            immediate. = TRUE,
+            call. = FALSE
+          )
           return(list())
         },
         list()
@@ -89,7 +101,13 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       vapply(
         names(diverged)[unlist(diverged)],
         function(x) {
-          warning("`", x, "` ahead of the origin branch.", call. = FALSE)
+          warning(
+            "`",
+            x,
+            "` ahead of the origin branch.",
+            immediate. = TRUE,
+            call. = FALSE
+          )
           return(list())
         },
         list()
@@ -121,12 +139,15 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
 
     if (nrow(local_branches_noup) > 0) {
       no_upstream_ab <- vapply(
-        local_branches_noup$ref, FUN.VALUE = vector("list", 1),
-        upstream = origin_main_branch, repo = repo,
+        local_branches_noup$ref,
+        FUN.VALUE = vector("list", 1),
+        upstream = origin_main_branch,
+        repo = repo,
         FUN = function(i, upstream, repo) {
           list(
             git_ahead_behind(
-              upstream = upstream, ref = i,
+              upstream = upstream,
+              ref = i,
               repo = repo
             )
           )
@@ -136,7 +157,8 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
 
       # warn for diverging branches
       diverged <- vapply(
-        no_upstream_ab, FUN.VALUE = logical(1),
+        no_upstream_ab,
+        FUN.VALUE = logical(1),
         FUN = function(x) {
           x$ahead > 0 & x$behind > 0
         }
@@ -146,7 +168,10 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
         names(diverged)[unlist(diverged)],
         function(x) {
           warning(
-            "`", x, "` (no upstream) diverged from the main origin branch.",
+            "`",
+            x,
+            "` (no upstream) diverged from the main origin branch.",
+            immediate. = TRUE,
             call. = FALSE
           )
           return(list())
@@ -157,7 +182,8 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
       # remote full merged branches
       git_branch_checkout(branch = main_branch, repo = repo)
       delete_local <- vapply(
-        no_upstream_ab, FUN.VALUE = logical(1),
+        no_upstream_ab,
+        FUN.VALUE = logical(1),
         FUN = function(x) {
           x$behind >= 0 & x$ahead == 0
         }
@@ -176,11 +202,11 @@ clean_git <- function(repo =  ".", verbose = TRUE) {
   # switch back to original branch if it still exists
   # otherwise select the main branch
   all_branches <- git_branch_list(repo = repo)
-  if (
-    is.null(current_branch) || !current_branch %in% all_branches$name
-  ) {
+  if (is.null(current_branch) || !current_branch %in% all_branches$name) {
     git_branch_create(
-      branch = main_branch, checkout = TRUE, repo = repo,
+      branch = main_branch,
+      checkout = TRUE,
+      repo = repo,
       ref = paste("refs", "remotes", "origin", main_branch, sep = "/")
     )
   } else {

@@ -8,14 +8,14 @@ citation_bookdown <- function(meta) {
   if (!is_file(index_file)) {
     return(
       list(
-        errors = paste(index_file, "not found"), warnings = character(0),
+        errors = paste(index_file, "not found"),
+        warnings = character(0),
         notes = character(0)
       )
     )
   }
   yaml <- yaml_front_matter(index_file)
-  read_organisation(meta$get_path) |>
-    yaml_author(yaml = yaml) -> cit_meta
+  cit_meta <- yaml_author(yaml = yaml)
   description <- bookdown_description(meta$get_path)
   cit_meta$meta$description <- description$description
   cit_meta$errors <- c(cit_meta$errors, description$errors)
@@ -41,42 +41,51 @@ citation_bookdown <- function(meta) {
   } else {
     cit_meta$meta$access_right <- "open"
   }
-  license_file <- path(meta$get_path, "LICENSE.md")
-  if (!is_file(license_file)) {
-    cit_meta$errors <- c(cit_meta$errors, "No LICENSE.md file found")
-  } else {
-    license <- readLines(license_file)
-    path("generic_template", "cc_by_4_0.md") |>
-      system.file(package = "checklist") |>
-      readLines() |>
-      identical(license) -> license_ok
-    if (license_ok) {
-      cit_meta$meta$license <- "CC-BY-4.0"
-    } else {
-      cit_meta$errors <- c(
-        cit_meta$errors, "LICENSE.md doesn't match with CC-BY-4.0 license"
-      )
-    }
+  if (!has_name(yaml, "license")) {
+    cit_meta$errors <- c(
+      cit_meta$errors,
+      "No `license` element found in YAML"
+    )
+    return(cit_meta)
   }
+  cit_meta$meta$license <- yaml$license
   if (has_name(yaml, "lang")) {
     cit_meta$meta$language <- yaml$lang
   }
   extra <- c(
-    "community", "doi", "keywords", "publication_type", "publisher"
+    "community",
+    "doi",
+    "keywords",
+    "publication_type",
+    "publisher"
   )
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
   publication_type <- c(
-    "publication", "publication-annotationcollection", "publication-article",
-    "publication-book", "publication-conferencepaper",
-    "publication-conferenceproceeding", "publication-datamanagementplan",
-    "publication-datapaper", "publication-deliverable",
-    "publication-dissertation", "publication-journal", "publication-milestone",
-    "publication-other", "publication-patent", "publication-peerreview",
-    "publication-preprint", "publication-proposal", "publication-report",
-    "publication-section", "publication-softwaredocumentation",
-    "publication-standard", "publication-taxonomictreatment",
-    "publication-technicalnote", "publication-thesis",
+    "publication",
+    "publication-annotationcollection",
+    "publication-article",
+    "publication-book",
+    "publication-conferencepaper",
+    "publication-conferenceproceeding",
+    "publication-datamanagementplan",
+    "publication-datapaper",
+    "publication-deliverable",
+    "publication-dissertation",
+    "publication-journal",
+    "publication-milestone",
+    "publication-other",
+    "publication-patent",
+    "publication-peerreview",
+    "publication-preprint",
+    "publication-proposal",
+    "publication-report",
+    "publication-section",
+    "publication-softwaredocumentation",
+    "publication-standard",
+    "publication-taxonomictreatment",
+    "publication-technicalnote",
+    "publication-thesis",
     "publication-workingpaper"
   )
   c(
@@ -87,7 +96,8 @@ citation_bookdown <- function(meta) {
       paste(publication_type, collapse = ", "),
       sep = "\n"
     )[
-      has_name(yaml, "publication_type") && is.string(yaml$publication_type) &&
+      has_name(yaml, "publication_type") &&
+        is.string(yaml$publication_type) &&
         !yaml$publication_type %in% publication_type
     ]
   ) |>
@@ -113,120 +123,81 @@ split_community <- function(community) {
 }
 
 #' @importFrom assertthat has_name
-yaml_author <- function(yaml, org) {
-  author <- vapply(
-    X = yaml$author, FUN = yaml_author_format,
-    FUN.VALUE = vector(mode = "list", 1), org = org
-  )
-  yaml$reviewer |>
-    vapply(yaml_author_format, vector(mode = "list", 1), org = org) -> reviewer
-  c(author, reviewer) |>
-    vapply(attr, vector(mode = "list", 1), which = "errors") |>
-    unlist() |>
-    unique() -> errors
-  c(author, reviewer) |>
-    vapply(attr, vector(mode = "list", 1), which = "notes") |>
-    unlist() |>
-    unique() |>
+yaml_author <- function(yaml) {
+  vapply(
+    X = yaml$author,
+    role = "aut",
+    FUN = yaml_author_format,
+    FUN.VALUE = vector(mode = "list", 1)
+  ) |>
     c(
-      "no `funder` element found"[!has_name(yaml, "funder")],
-      "no `rightsholder` element found"[!has_name(yaml, "rightsholder")]
-    ) -> notes
-  author <- do.call(rbind, author)
-  author$id <- seq_along(author$family)
-  c(
-    "no author with `corresponding: true`"[sum(author$contact) == 0],
-    "multiple authors with `corresponding: true`"[sum(author$contact) > 1],
-    errors
-  ) -> errors
-  reviewer <- do.call(rbind, reviewer)
-  reviewer$id <- seq_along(reviewer$family) + nrow(author)
-
-  data.frame(
-    contributor = c(author$id, author$id[author$contact], reviewer$id),
-    role = c(
-      rep("author", nrow(author)), rep("contact person", sum(author$contact)),
-      rep("reviewer", nrow(reviewer))
-    )
-  ) -> roles
-  author <- rbind(author, reviewer)
-  author$contact <- NULL
-  if (has_name(yaml, "funder")) {
-    data.frame(contributor = nrow(author) + 1, role = "funder") |>
-      rbind(roles) -> roles
-    data.frame(
-      id = nrow(author) + 1, given = yaml$funder, family = "", orcid = "",
-      affiliation = "", organisation = known_affiliation(yaml$funder, org = org)
-    ) |>
-      rbind(author) -> author
-  }
-  if (has_name(yaml, "rightsholder")) {
-    data.frame(contributor = nrow(author) + 1, role = "copyright holder") |>
-      rbind(roles) -> roles
-    data.frame(
-      id = nrow(author) + 1, given = yaml$rightsholder, family = "",
-      orcid = "", affiliation = "",
-      organisation = known_affiliation(yaml$rightsholder, org = org)
-    ) |>
-      rbind(author) -> author
-  }
+      vapply(
+        X = yaml$reviewer,
+        FUN = yaml_author_format,
+        role = "rev",
+        FUN.VALUE = vector(mode = "list", 1)
+      ),
+      vapply(
+        X = yaml$funder,
+        FUN = yaml_author_format,
+        role = "fnd",
+        FUN.VALUE = vector(mode = "list", 1)
+      ),
+      vapply(
+        X = yaml$rightsholder,
+        FUN = yaml_author_format,
+        role = "cph",
+        FUN.VALUE = vector(mode = "list", 1)
+      )
+    ) -> authors
   list(
-    meta = list(authors = author, roles = roles), errors = errors, notes = notes
+    person = vapply(
+      authors,
+      function(x) {
+        list(x$person)
+      },
+      FUN.VALUE = vector(mode = "list", 1)
+    ) |>
+      do.call(what = c),
+    errors = vapply(
+      authors,
+      function(x) {
+        list(x$errors)
+      },
+      FUN.VALUE = vector(mode = "list", 1)
+    ) |>
+      do.call(what = c)
   )
 }
 
 #' @importFrom assertthat has_name is.flag
-yaml_author_format <- function(person, org) {
-  person_df <- data.frame(
-    given = character(0), family = character(0), orcid = character(0),
-    affiliation = character(0), contact = logical(0),
-    organisation = character(0)
-  )
-  if (!is.list(person)) {
-    attr(person_df, "errors") <- list("person must be a list")
-    attr(person_df, "notes") <- list(character(0))
-    return(list(person_df))
-  }
-  if (!has_name(person, "name") || !is.list(person$name)) {
-    c(
-      "person has no `name` element"[
-        !has_name(person, "name")
-      ],
-      "person `name` element is not a list"[
-        has_name(person, "name") && !is.list(person$name)
-      ]
-    ) |>
-      list() -> attr(person_df, "errors")
-    attr(person_df, "notes") <- list(character(0))
-    return(list(person_df))
-  }
-  person_df <- data.frame(
-    given = paste0(person$name$given, ""),
-    family = paste0(person$name$family, ""), orcid = paste0(person$orcid, ""),
-    affiliation = paste0(person$affiliation, ""),
-    contact = ifelse(
-      is.null(person$corresponding), FALSE, person$corresponding
-    ),
-    organisation = known_affiliation(paste0(person$affiliation, ""), org = org)
-  )
-  c(
-    "person `name` element is missing a `given` element"[
+yaml_author_format <- function(person, role) {
+  if (
+    !inherits(person, "list") ||
+      !has_name(person, "name") ||
       !has_name(person$name, "given")
-    ],
-    "person `name` element is missing a `family` element"[
-      !has_name(person$name, "family")
-    ],
-    "person `corresponding` element must be true, false or missing"[
-      has_name(person, "corresponding") && !is.flag(person$corresponding)
-    ]
-  ) |>
-    list() -> attr(person_df, "errors")
-  c(
-    "person has no `orcid` element"[!has_name(person, "orcid")],
-    "person has no `affiliation` element"[!has_name(person, "affiliation")]
-  ) |>
-    list() -> attr(person_df, "notes")
-  return(list(person_df))
+  ) {
+    return(list(list(
+      person = person(),
+      errors = sprintf(
+        "`%s` is not in the required person format. Please update the YAML",
+        person
+      )
+    )))
+  }
+  comment <- person[c("orcid", "affiliation", "ror")]
+  names(comment)[names(comment) == "orcid"] <- "ORCID"
+  names(comment)[names(comment) == "ror"] <- "ROR"
+  comment <- comment[comment != ""]
+  person <- person(
+    given = paste0(person$name[["given"]], ""),
+    family = paste0(person$name[["family"]], ""),
+    email = paste0(person$email, ""),
+    comment = unlist(comment),
+    role = c(role, "cre"[isTRUE(person$corresponding)])
+  )
+  list(person = person, errors = character(0)) |>
+    list()
 }
 
 #' @family utils
@@ -251,7 +222,8 @@ bookdown_description <- function(path) {
   if (has_name(description, "meta") || length(description$errors) > 0) {
     return(
       list(
-        description = description$meta$description, errors = description$errors
+        description = description$meta$description,
+        errors = description$errors
       )
     )
   }
@@ -276,7 +248,8 @@ bookdown_description <- function(path) {
   }
   return(
     list(
-      description = description$meta$description, errors = description$errors
+      description = description$meta$description,
+      errors = description$errors
     )
   )
 }

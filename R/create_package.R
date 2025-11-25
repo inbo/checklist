@@ -8,110 +8,72 @@
 #'
 #' @param package Name of the new package.
 #' @param path Where to create the package directory.
-#' @param title A single sentence with the title of the package.
-#' @param description A single paragraph describing the package.
-#' @param maintainer When missing, the function interactively lets you add the
-#' maintainer and other authors.
-#' Otherwise it must be the output of [utils::person()].
-#' @param language Language of the project in `xx-YY` format.
-#' `xx` is the two letter code for the language.
-#' `YY` is the two letter code for the language variant.
-#' E.g. `en-GB` for British English, `en-US` for American English, `nl-BE` for
-#' Belgian Dutch.
-#' @param license What type of license should be used?
-#' Choice between GPL-3 and MIT.
-#' Default GPL-3.
-#' @param keywords A vector of keywords.
-#' @param communities An optional vector of Zenodo community id's.
 #' @export
-#' @importFrom assertthat assert_that is.string
+#' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom desc description
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
 #' @importFrom tools toTitleCase
 #' @importFrom utils installed.packages
 #' @family setup
-#' @examples
-#' # maintainer in `utils::person()` format
-#' maintainer <- person(
-#'   given = "Thierry",
-#'   family = "Onkelinx",
-#'   role = c("aut", "cre"),
-#'   email = "thierry.onkelinx@inbo.be",
-#'   comment = c(ORCID = "0000-0001-8804-4216")
-#' )
-#'
-#' # creating the package
-#' path <- tempfile()
-#' dir.create(path)
-#' create_package(
-#'   path = path, package = "packagename", title = "package title",
-#'   description = "A short description.", maintainer = maintainer,
-#'   language = "en-GB", license = "GPL-3", keywords = "keyword"
-#' )
-create_package <- function(
-  package, path = ".", title, description, keywords, language = "en-GB",
-  license = c("GPL-3", "MIT"), communities = character(0), maintainer
-) {
+create_package <- function(package, path = ".") {
   assert_that(
     length(find.package("roxygen2", quiet = TRUE)) > 0,
-    msg =
-      "Please install the `roxygen2` package. `install.packages(\"roxygen2\")`"
+    msg = paste(
+      "Please install the `roxygen2` package.",
+      "`install.packages(\"roxygen2\")`"
+    )
   )
-  if (missing(maintainer)) {
-    cat("Please select the maintainer")
-    maintainer <- author2person(role = c("aut", "cre"))
-    while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
-      maintainer <- c(maintainer, author2person())
-    }
-  }
-  assert_that(inherits(maintainer, "person"))
-
+  # validate user input
   assert_that(is_dir(path), msg = sprintf("`%s` is not a directory", path))
   assert_that(is.string(package))
   assert_that(valid_package_name(package))
-  assert_that(is.character(keywords), length(keywords) > 0)
-  assert_that(is.character(communities))
-  org <- read_organisation(path)
-  maintainer <- c(maintainer, org$as_person)
   path <- path(path, package)
   assert_that(
     !is_dir(path) || length(dir_ls(path, recurse = TRUE)) == 0,
     msg = sprintf("`%s` is not an empty directory", path)
   )
-  assert_that(is.string(title))
-  validate_language(language)
-  license <- match.arg(license)
 
+  # ask interactive information
+  title <- readline(prompt = "Enter the title: ")
+  description <- readline(prompt = "Enter the description: ")
+  keywords <- ask_keywords()
+  preferred_protocol() |>
+    sprintf(package) -> git
+  org <- org_list_from_url(git)
+  license <- ask_license(org, type = "package")
+  language <- ask_language(org, "Which is the main language of the package?")
+  info <- package_maintainer(org = org, lang = language)
+  authors <- info$authors
+  org <- info$org
+
+  # start creating package
   dir_create(path)
   repo <- git_init(path = path)
+  git_remote_add(url = git, name = "origin", repo = repo)
   dir_create(path(path, "R"))
 
   # add checklist.yml
   x <- checklist$new(x = path, package = TRUE, language = language)
-  x$set_ignore(c(".github", "LICENSE.md"))
+  x$set_ignore(c(".github", "LICENSE.md", "docs"))
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
+  # add organsation info
+  org$write(x = path)
+  git_add("organisation.yml", repo = repo)
 
   # create DESCRIPTION
   desc <- desc::description$new("!new")
   desc$set("Package", package)
   desc$set("Title", toTitleCase(title))
   desc$set_version("0.0.0")
-  desc$set_authors(maintainer)
+  desc$set_authors(authors)
   desc$set("Description", description)
   desc$set("License", ifelse(license == "MIT", "MIT + file LICENSE", license))
-  desc$set_urls(sprintf("https://github.com/%s/%s", org$get_github, package))
-  desc$set(
-    "BugReports",
-    sprintf("https://github.com/%s/%s/issues", org$get_github, package)
-  )
-  if (length(communities)) {
-    desc$set(
-      "Config/checklist/communities", paste(communities, collapse = "; ")
-    )
-  }
+  desc$set_urls(sprintf("%s/%s", ssh_http(git), package))
+  desc$set("BugReports", sprintf("%s/%s/issues", ssh_http(git), package))
+  desc <- append_communities(desc = desc, org = org)
   desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
   desc$set("Encoding", "UTF-8")
   desc$set("Language", language)
@@ -128,31 +90,39 @@ create_package <- function(
 
   # create RStudio project
   insert_file(
-    repo = repo, filename = "rproj.template", template = "package_template",
-    target = path, new_name = paste0(package, ".Rproj")
+    repo = repo,
+    filename = "rproj.template",
+    template = "package_template",
+    new_name = paste0(package, ".Rproj")
   )
 
   # add .gitignore
   insert_file(
-    repo = repo, filename = "gitignore", template = "generic_template",
-    target = path, new_name = ".gitignore"
+    repo = repo,
+    filename = "gitignore",
+    template = "generic_template",
+    new_name = ".gitignore"
   )
 
   # add .Rbuildignore
   insert_file(
-    repo = repo, filename = "rbuildignore", template = "package_template",
-    target = path, new_name = ".Rbuildignore"
+    repo = repo,
+    filename = "rbuildignore",
+    template = "package_template",
+    new_name = ".Rbuildignore"
   )
 
   # add codecov.yml
   insert_file(
-    repo = repo, filename = "codecov.yml", template = "package_template",
-    target = path
+    repo = repo,
+    filename = "codecov.yml",
+    template = "package_template"
   )
 
   # add NEWS.md
   paste(
-    "# %s 0.0.0", "",
+    "# %s 0.0.0",
+    "",
     "* Added a `NEWS.md` file to track changes to the package.",
     "* Add [`checklist`](https://inbo.github.io/checklist/) infrastructure.",
     sep = "\n"
@@ -162,105 +132,77 @@ create_package <- function(
   git_add("NEWS.md", repo = repo)
 
   # add README.Rmd
-  license_batch <- switch(
-    license,
-    "GPL-3" = "https://img.shields.io/badge/license-GPL--3-blue.svg?style=flat",
-    "MIT" = "https://img.shields.io/badge/license-MIT-blue.svg?style=flat"
+  create_readme(
+    path = path,
+    org = org,
+    lang = language,
+    authors = author2df(authors) |>
+      author2badge(),
+    title = paste(package, title, sep = ": "),
+    description = description,
+    keywords = keywords,
+    license = license,
+    type = "package"
   )
-  license_site <- switch(
-    license,
-    "GPL-3" = "https://www.gnu.org/licenses/gpl-3.0.html",
-    "MIT" = "https://opensource.org/licenses/MIT"
-  )
-  path("package_template", "README.Rmd") |>
-    system.file(package = "checklist") |>
-    readLines() |>
-    gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
-    gsub(
-      pattern = "\\{\\{\\{ license batch \\}\\}\\}", replacement = license_batch
-    ) |>
-    gsub(
-      pattern = "\\{\\{\\{ license site \\}\\}\\}", replacement = license_site
-    ) |>
-    writeLines(path(path, "README.Rmd"))
   git_add("README.Rmd", repo = repo)
 
   # add LICENSE.md
-  set_license(x)
+  set_license(x, license = license, org = org)
   git_add("LICENSE.md", repo = repo)
 
   # Add code of conduct
-  target <- path(path, ".github")
-  dir_create(target)
+  dir_create(path(path, ".github"))
   insert_file(
-    repo = repo, filename = "CODE_OF_CONDUCT.md",
-    template = "generic_template", target = target
+    repo = repo,
+    filename = "CODE_OF_CONDUCT.md",
+    template = "generic_template",
+    target = ".github"
   )
 
   # Add contributing guidelines
   insert_file(
-    repo = repo, filename = "CONTRIBUTING.md",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "CONTRIBUTING.md",
+    template = "generic_template",
+    target = ".github"
   )
 
   # Add GitHub actions
-  target <- path(path, ".github", "workflows")
-  dir_create(target)
+  target <- path(".github", "workflows")
+  dir_create(path(path, target))
   insert_file(
-    repo = repo, filename = "check_on_branch.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "check_on_branch.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = repo, filename = "check_on_main.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "check_on_main.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = repo, filename = "check_on_different_r_os.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "check_on_different_r_os.yml",
+    template = "package_template",
+    target = target
   )
   insert_file(
-    repo = repo, filename = "release.yml",
-    template = "package_template", target = target
+    repo = repo,
+    filename = "release.yml",
+    template = "package_template",
+    target = target
   )
 
   # prepare pkgdown
-  path("package_template", "_pkgdown.yml") |>
-    system.file(package = "checklist") |>
-    readLines() |>
-    gsub(pattern = "\\{\\{\\{ Package \\}\\}\\}", replacement = package) |>
-    writeLines(path(path, "_pkgdown.yml"))
-  git_add("_pkgdown.yml", repo = repo)
-
-  target <- path(path, "pkgdown")
-  dir_create(target)
-  insert_file(
-    repo = repo, filename = "pkgdown.css", template = "package_template",
-    target = target, new_name = "extra.css"
-  )
-
-  target <- path(path, "man", "figures")
-  dir_create(target)
-  insert_file(
-    repo = repo, filename = "logo-en.png", template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo, filename = "background-pattern.png",
-    template = "package_template", target = target
-  )
-  insert_file(
-    repo = repo, filename = "flanders.woff2", template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo, filename = "flanders.woff", template = "package_template",
-    target = target
-  )
+  setup_pkgdown(x = x, org = org, lang = language)
 
   message("package created at `", path, "`")
 
   if (
-    !interactive() || !requireNamespace("rstudioapi", quietly = TRUE) ||
+    !interactive() ||
+      !requireNamespace("rstudioapi", quietly = TRUE) ||
       !rstudioapi::isAvailable()
   ) {
     return(invisible(NULL))
@@ -272,6 +214,49 @@ valid_package_name <- function(x) {
   grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
 }
 
+package_maintainer <- function(org, lang) {
+  message("Please select the maintainer")
+  maintainer <- author2person(role = c("aut", "cre"), lang = lang)
+  while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
+    maintainer <- c(maintainer, author2person(role = "aut", lang = lang))
+  }
+  info <- ask_rightsholder_funder(org = org, type = "rightsholder")
+  rightsholder <- info$selection
+  info <- ask_rightsholder_funder(org = info$org, type = "funder")
+  funder <- info$selection
+  org <- info$org
+  list(
+    authors = c(
+      maintainer,
+      c(
+        vapply(
+          rightsholder[rightsholder %in% funder],
+          FUN = function(x) {
+            list(org$get_person(x, role = c("cph", "fnd"), lang = lang))
+          },
+          FUN.VALUE = vector("list", 1)
+        ),
+        vapply(
+          rightsholder[!rightsholder %in% funder],
+          FUN = function(x) {
+            list(org$get_person(x, role = "cph", lang = lang))
+          },
+          FUN.VALUE = vector("list", 1)
+        ),
+        vapply(
+          funder[!funder %in% rightsholder],
+          FUN = function(x) {
+            list(org$get_person(x, role = "fnd", lang = lang))
+          },
+          FUN.VALUE = vector("list", 1)
+        )
+      ) |>
+        do.call(what = c)
+    ),
+    org = org
+  )
+}
+
 #' @importFrom assertthat on_failure<-
 on_failure(valid_package_name) <- function(call, env) {
   paste(deparse(call$x), "is not a valid package name.")
@@ -279,18 +264,88 @@ on_failure(valid_package_name) <- function(call, env) {
 
 #' @importFrom fs file_copy path
 #' @importFrom gert git_add
-insert_file <- function(repo, filename, template, target, new_name) {
+insert_file <- function(repo, filename, template, target = ".", new_name) {
   if (missing(new_name)) {
-    new_name <- path(target, filename)
-  } else {
+    new_name <- filename
+  }
+  if (target != ".") {
     new_name <- path(target, new_name)
   }
   path(template, filename) |>
     system.file(package = "checklist") |>
-    file_copy(new_name, overwrite = TRUE)
+    file_copy(path(repo, new_name), overwrite = TRUE)
   if (is.null(repo)) {
     return(invisible(NULL))
   }
   git_add(new_name, force = TRUE, repo = repo)
   return(invisible(NULL))
+}
+
+append_communities <- function(desc, org) {
+  org$get_default_rightsholder |>
+    vapply(FUN.VALUE = vector(mode = "list", 1), FUN = function(x) {
+      list(org$get_zenodo_by_email(x))
+    }) |>
+    unlist() |>
+    unique() -> communities
+  if (length(communities) == 0) {
+    return(desc)
+  }
+  desc$set(
+    "Config/checklist/communities",
+    paste(communities, collapse = "; ")
+  )
+}
+
+ask_keywords <- function() {
+  while (TRUE) {
+    readline(prompt = "Enter one or more keywords separated by `;` ") |>
+      strsplit(";") |>
+      unlist() |>
+      gsub(pattern = "^\\s+", replacement = "") |>
+      gsub(pattern = "\\s+$", replacement = "") -> keywords
+    keywords <- keywords[keywords != ""]
+    if (length(keywords) > 0) {
+      break
+    }
+    warning(
+      "Please enter at least one keyword.",
+      immediate. = TRUE,
+      call. = FALSE
+    )
+  }
+  return(keywords)
+}
+
+ask_license <- function(org, type = c("package", "project", "data")) {
+  type <- match.arg(type)
+  org$get_default_rightsholder |>
+    org$get_allowed_licenses(type = type) -> allowed
+  stopifnot("no licenses found for this organisation" = length(allowed) > 0)
+  if (length(allowed) > 1) {
+    allowed <- allowed[menu_first(
+      choices = names(allowed),
+      title = "Select the license you want to use:"
+    )]
+  }
+  return(names(allowed))
+}
+
+ask_language <- function(org, prompt = "Which language?") {
+  available <- org$get_languages
+  c(available, "other") |>
+    menu_first(title = prompt) -> selected
+  if (selected <= length(available)) {
+    return(validate_language(available[selected]))
+  }
+  language <- readline(prompt = "Please enter the language code: ")
+  while (
+    inherits(
+      try(validate_language(language), silent = interactive()),
+      "try-error"
+    )
+  ) {
+    language <- readline(prompt = "Please enter the language code: ")
+  }
+  return(language)
 }

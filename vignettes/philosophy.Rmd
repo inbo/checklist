@@ -5,124 +5,147 @@ vignette: >
   %\VignetteIndexEntry{Philosophy of the checklist package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-references:
-- type: article-journal
-  id: Baath2012
-  author:
-  - family: Bååth
-    given: Rasmus
-  issued:
-    date-parts:
-    - - 2012
-      - 12
-  title: The State of Naming Conventions in R
-  container-title: The R Journal
-  volume: 4
-  number: 2
-  page: 74--75
-  doi: 10.32614/RJ-2012-018
-  URL: https://doi.org/10.32614/RJ-2012-018
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 Everybody develops its own coding habits and style.
 Some people take a lot of effort in making their source code [readable](https://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code), while others don't bother at all.
-Working together with different people is easier when everyone uses the same standard.
+Working together with other people is easier when everyone uses the same standard.
+
 The `checklist` package defines a set of standards and provides tools to validate whether your project or R package adheres to these standards.
-You can run these tools interactively on your machine.
+It integrates several existing tools like [`rcmdcheck`](https://rcmdcheck.r-lib.org/), [`lintr`](https://lintr.r-lib.org/), [`devtools`](https://devtools.r-lib.org/), [`desc`](https://desc.r-lib.org/), [`hunspell`](https://docs.ropensci.org/hunspell/), [`pkgdown`](https://pkgdown.r-lib.org/).
+`checklist` always uses these tools with hard-coded settings, ensuring that everyone uses the same settings.
+Since version 0.5.0, every organisation can define its own settings in a central repository.
+More information on that in `vignette("organisation")`.
+
+`checklist` tries to make on-boarding as easy as possible.
+We do this by providing the interactive functions `create_package()` and `create_project()`.
+These function don't just provide a template which the user must fill in.
+Instead they guide the user through a series of questions to set up the project or package according to the best practices.
+Hence the user can start from a solid basis rather than having to figure out all the best practices by him/herself.
+We deliberately choose the highest quality level for R packages by enforcing all relevant checks.
+In case of project we allow the user to choose which checks to apply.
+More information on that in `vignette("getting_started")` or `vignette("getting_started_project")`.
+You can apply (or update) the checklist setting to an existing project or package using `setup_package()` or `setup_project()`.
+However, we recommend that you first get used to `checklist` by creating a new project or package from scratch.
+Since `checklist` enforces several best practices, it is easier to learn them from the start rather than trying to adapt an existing project.
+You might need to refactor some parts of your existing code to meet the quality standards.
+
+## Available checks
+
+Currently, `checklist` handles two different types of projects: R packages and non-package R projects.
+For both types of projects, `checklist` provides a set of checks to validate the quality of your code.
+You can either choose to run the entire set of checks at once, or run individual checks.
+
+We have a set of rules that are relevant for both packages and non-package projects.
+
+- `check_spelling()`: checks the spelling in R code and markdown files using `hunspell`.
+  More information in `vignette("spelling")`.
+- `check_lintr()`: runs `lintr::lint_dir()` to check the code style.
+  More information in `vignette("coding_style")`.
+- `check_filename()`: checks whether all file names meet the naming conventions.
+  More information in `vignette("file_name")`.
+- `check_folder()`: checks whether the folder structure meets the conventions.
+  More information in `vignette("file_name")`.
+- `check_license()`: checks whether a valid license is present.
+- `update_citation()`: checks the citation metadata and update the citation files
+
+On a package, you can run `check_package()` to run these additional checks.
+
+- `check_cran()`: runs `rcmdcheck::rcmdcheck()` to check whether the package meets CRAN standards.
+- `check_description()`: checks the `DESCRIPTION` file for common problems.
+- `check_documentation()`: checks whether the documentation is up-to-date.
+- `check_codemeta()`: checks whether the `codemeta.json` file is present and valid.
+- build the documentation website with `pkgdown`
+- check the code coverage of the unit tests with `covr::package_coverage()`.
+  Adding more code should not (significantly) decrease the code coverage.
+
+You can run these functions interactively on your machine.
+We recommend to run the individual checks while developing your code to fix problems as soon as they arise.
+Before pushing your code to GitHub, always run `check_package()` or `check_project()`.
 You can also add these checks as [GitHub actions](https://github.com/features/actions), which runs them automatically after every [push](https://github.com/git-guides/git-push) to the repository on [GitHub](https://github.com).
+We recommend to set up these checks as required checks on GitHub.
+This prevents merging code to the main branch that does not meet the quality standards.
+In case of an R package, merging a pull request on GitHub will update the pkgdown website automatically too and creates a release of the new version.
+Therefore you must increase the version of the package in the `DESCRIPTION` file when starting a new branch.
 
-## Coding style
+## Extensive report on checks
 
-The most visible part of a coding style is the naming convention.
-People use many different styles of naming conventions within the R ecosystem [@Baath2012].
-Popular ones are `alllowercase`, `period.separated`, `underscore_separated`, `lowerCamelCase` and `UpperCamelCase`.
-We picked `underscore_separated` because that is the naming convention of the [`tidyverse`](https://www.tidyverse.org) packages.
-It is also the default setting in the [`lintr`](https://github.com/r-lib/lintr/blob/master/README.md) package which we use to do the [static code analysis](https://en.wikipedia.org/wiki/Static_program_analysis).
+Both `check_package()` and `check_project()` generate an extensive report on the checks that were performed.
+The report contains the following sections:
 
-At first this seems a lot to memorise.
-RStudio makes things easier when you activate all diagnostic options (_Tools_ > _Global options_ > _Code_ > _Diagnostics_).
-This highlights several problems by showing a squiggly line and/or a warning icon at the line number.
-Instead of learning all the rules by heart, run `check_lintr()` regularly and fix any issues that come up.
-Do this when working on every single project.
-Doing so enforces you to consistently use the same coding style, making it easy to learn and use it.
+- used organisation settings
+- output of the individual checks
+- extracted citation metadata
+- list of files for spell checking, aggregated by language
+- session info with loaded packages and their version
+- any changes made to files during the checks
+- a summary of errors, warnings and notes
 
-### Rules for coding style
+### Errors, warnings and notes
 
-- `underscore_separated` names for functions, parameters and variables.
-- A line of code or comments must be no longer than 80 characters.
-  Pro tip: have RStudio display this margin in the editor.
-  _Tools_ > _Global options_ > _Code_ > _Display_ > _Show margin_
-- Object names must not be longer than 30 characters.
-- Start a new line
-    - after the pipe (`%>%`)
-    - never before but always after `{`
-    - before `}`
-- Use spaces instead of tabs.
-  Pro tip: make RStudio place 2 spaces when you hit the tab key.
-  _Tools_ > _Global options_ > _Code_ > _Editing_ > _Insert spaces for tabs_
-- Use spaces consistently
-    - Use exactly one space before and after
-        - assignments `<-`, `->`, `=`
-        - operators like `+`, `-`,`*`, `/`, ...
-    - No space before and one space after `,`
-    - No space after or before `(` or `[`
-        - except in constructs like `if ()`, `for ()`, `while ()`
-    - One space between `)` and `{`, e.g. `function () {`
-- Use double quotes (`"`) to define character strings.
-- No trailing whitespace
-    - spaces at the end of a line
-    - blank lines at the end of the script
+The report lists all errors, warnings and notes that were found during the checks.
+You can use this report to fix the problems in your code.
+After fixing the problems, you can run the checks again to see whether all problems are solved.
+You must fix all errors in order to pass `check_package()` or `check_project()`.
+You should try to fix as many warnings and notes as possible too.
+Some warnings and notes might be acceptable in certain situations.
+You can document these exceptions via `write_checklist()` in the `checklist.yml` file.
+The report can have three categories of warnings and notes: "new", "allowed" and "missing".
 
-### Static code analysis checks
+- **New** warnings and notes are those that were found during the checks, but are not yet documented as allowed exceptions.
+  You should try to fix these problems.
+  They result in failing `check_package()` or `check_project()`.
+  Allow them, when fixing is not possible at the moment.
+- **Allowed** warnings and notes are those that were found during the checks and are documented as allowed exceptions.
+  Allowing warnings and notes require a short motivation.
+  This motivation is included in the report and in the `checklist.yml` file.
+  They don't result in failing `check_package()` or `check_project()`.
+- **Missing** warnings and notes are those that were documented as allowed exceptions, but are no longer found during the checks.
+  They result in failing `check_package()` or `check_project()`.
+  You should remove these exceptions from the documentation via `write_checklist()`.
 
-- Is an object defined before you use it?
-- Do you use an object after you defined it?
-- Use `<-` or `->` to assign something.
-  Only use `=` to pass arguments to a function (e.g. `check_package(fail = TRUE)`).
-- Use `is.na(x)` instead of `x == NA`.
-- Use `seq_len()` or `seq_along()` instead of `1:length(x)`, `1:nrow(x)`, ...
-  Advantage: when `length(x) == 0`, `1:length(x)` yields `c(1, 0)`, whereas `seq_along(x)` would yield an empty vector.
-- Don't store code in comments.
-  If you don't want to lose code, use version control systems like [`git`](https://git-scm.com/).
-  If it is code that you need to run only under special circumstances, then either put the code in a separate script and run is manually or write an if-else were you run the code automatically when needed.
-- Avoid code with lots of nested loop or if statements.
-  If the code is too complex, you'll get a warning that the [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) is too high.
-  Tips for reducing the code complexity:
-    - Use `assertthat::assert_that()` to validate object or conditions instead of `if() stop()`.
-    - See if you can use `ifelse()` instead of `if()`.
-    - Split the main function of your code over sub functions.
-    - Don't use else if not strictly necessary.
+### Changes
 
-## File name conventions
+When you use version control like `git`, `checklist` can detect which files were changed since the last commit.
+This is useful because some checks rewrite an improved version of a file.
+E.g. `check_documentation()` regenerates the documentation files from the `roxygen2` tags in the R code.
+If you forgot to regenerate the documentation after changing the code, `check_documentation()` will detect that the documentation files are out-of-date.
+The `checklist` will report this and show which changes took place.
 
-To make this easier to remember we choose the same name conventions for file names as for objects.
-We acknowledge that these rules sometimes clash with requirements from other sources (e.g. `DESCRIPTION` in an R package, `README.md` on GitHub, `.gitignore` for git, ...).
-In such case we allow the file names as required by R, git or GitHub.
-When `check_filename()` does unfairly not allow a certain file or folder name, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this should be allowed.
+### Session info
 
-### Rules for folder names
+Most problems are related to the R version or the versions of the packages that are used.
+To help you debug problems, the report contains the session info.
+This is especially important when checks pass locally but fail on GitHub Actions.
+When this occurs, you can compare the session info of your local machine with the session info on GitHub Actions to find out which package versions differ.
+Then use the same package versions locally to reproduce and fix the problem.
 
-- Folder names should only contain lower case letters, numbers and underscore (`_`).
-- They can start with a single dot (`.`).
+The GitHub Actions run on a Docker image based on [`rocker/verse:latest`](https://hub.docker.com/r/rocker/verse).
+It should contain the latest R version and the latest versions of the most common R packages.
+Any other packages that your code need are installed on the fly.
 
-### Rules for file names
+## Making code findable and citable
 
-- Base names should only contain lower case letters, numbers and underscore (`_`).
-- File extensions should only contains lower case letters and numbers.
-  Exceptions: file extensions related to R must have an upper case R (`.R`, `.Rmd`, `.Rd`, `.Rnw`, `.Rproj`).
+When you share your code with other people, you want them to be able to find it easily.
+You also want them to be able to cite a specific version of your code in a report or paper.
+`checklist` helps you to achieve this by enforcing a strict usage of metadata either in the `DESCRIPTION` (package) or `README.md` (non-package).
+Because of the strict format of the person information, we recommend to add most people when creating the project or package via the interactive functions `create_project()` or `create_package()`.
+The functions not only add the people to the metadata, but also store their information for later reuse.
 
-### Rules for graphical file names
+You can define a list of default organisations in your organisations' `checklist` repository.
+This ensures that everyone in the organisation uses the standard names of these organisations.
+Based on matching e-mail domains, `checklist` enforces that persons use their official organisation name as affiliation.
+More information in `vignette("organisation")`.
 
-- Applies to files with extensions `csl`, `eps`, `jpg`, `jpeg`, `pdf`, `png` and `ps`.
-- Same rules except that you need to use a dash (`-`) as separator instead of an underscore (`_`).
-  We need this exception because underscores cause problems in certain situations.
+### Integration with Zenodo and ORCID
+
+When you push your code to GitHub, you can use the [GitHub-Zenodo integration](https://docs.github.com/repositories/archiving-a-github-repository/referencing-and-citing-content) to create a DOI for every release of your code.
+`checklist` automatically adds the required metadata to a `.zenodo.json` in your repository so that Zenodo can create a proper citation for your code.
+When authors add their ORCID to their person information, this ORCID is included in the Zenodo metadata too.
+Then every release of your code can automatically flow into you ORCID profile.
+Which makes it easier to maintain an up-to-date list of your publications.
+And your organisation can import the publications of all its researchers based on their ORCID.
+More information in `vignette("zenodo")`.
 
 ## Bundling your code in a package
 
@@ -139,13 +162,13 @@ Try to start by packaging a recurrent analysis or standardised report when you w
 Once you have some experience, it is little overhead to do it for smaller analysis.
 Keep in mind that you seldom run an analysis _exactly_ once.
 
-### Benefits
+### Benefits of using a package for your analysis
 
 - The package itself is a way to cite (a specific version of) the analysis in a report or paper.
 - You have to list all dependencies on other R packages.
   This makes installing your code as simple as running `remotes::install_github("inbo/packagename")`.
 - You must split your analysis in a set of functions.
-  Say goodbye to scripts with thousands lines of code.
+  Say goodbye to unreadable scripts with thousands lines of code.
 - Functions make it easy to re-use code.
   Need to run the same thing with a different parameter value?
   Add the parameter as an argument to the function and run the function once for every different parameter value.
@@ -164,5 +187,3 @@ Keep in mind that you seldom run an analysis _exactly_ once.
 - Most likely you would still need a short script that combines a few high level functions of your package to run the analysis.
   The `inst` folder is an ideal place to bundle such scripts within the package.
   You can also use it to store small (!) datasets or rmarkdown reports.
-
-## References

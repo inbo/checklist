@@ -9,6 +9,8 @@ A class which contains citation information.
 \seealso{
 Other class: 
 \code{\link{checklist}},
+\code{\link{org_item}},
+\code{\link{org_list}},
 \code{\link{organisation}},
 \code{\link{spelling}}
 }
@@ -21,6 +23,9 @@ Other class:
 \item{\code{get_meta}}{Return the meta data as a list}
 
 \item{\code{get_notes}}{Return the notes}
+
+\item{\code{get_person}}{Return the authors and organisations as a list of
+\code{person} objects.}
 
 \item{\code{get_type}}{A string indicating the type of source.}
 

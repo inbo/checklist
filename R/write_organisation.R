@@ -13,6 +13,7 @@
 #' @export
 #' @family both
 write_organisation <- function(org, x = ".") {
+  .Deprecated(new = "org_list$new()$write", package = "checklist")
   assert_that(inherits(org, "organisation"))
   checklist <- try(read_checklist(x = x), silent = TRUE)
   if (inherits(checklist, "checklist")) {

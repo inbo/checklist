@@ -15,21 +15,8 @@ Defaults to \code{TRUE} on non-interactive session and \code{FALSE} on an intera
 session.}
 }
 \description{
-A convenience function that runs test on a project with only \code{.R} and \code{.Rmd}
-files.
-The details section lists the relevant functions.
-When you fixed a problem, you can speed things up by running only the related
-check.
-We still recommend to run \code{check_source()} before you push to GitHub.
-And only push when the functions indicate that there are no problems.
-This catches most problems before sending the code to GitHub.
-}
-\details{
-List of checks in order:
-\enumerate{
-\item \code{check_lintr()}
-\item \code{check_filename()}
-}
+Defunct function.
+Please use \code{check_project()} instead.
 }
 \seealso{
 Other project: 

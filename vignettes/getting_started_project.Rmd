@@ -7,13 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 Go to `vignette("getting_started", package = "checklist")` when you want to use `checklist` on an R package.
 
 # Starting a new project from scratch
@@ -23,13 +16,18 @@ Run `create_project(path, project)`.
 `project` is the name of the project.
 `create_project()` creates the project as a subdirectory of `path` with name `project`.
 It then guides you interactively through the process by asking questions on your preferences on the project.
-We recommend to answer yes to all yes/no questions.
+All yes/no question have a sensible default.
+You can use that default by simply pressing enter.
+Most other questions are similar to that of `create_package()`.
+Please refer to `vignette("getting_started", package = "checklist")` for more details on those.
+
 Use `setup_project()` when you want to change the settings later.
 
 - You always get an RStudio project with name `project`.
 - Do you want version control with git?
   When you answer yes, you get the `check_project` GitHub Action.
   This runs `check_project()` automatically when you (or a contributor) pushed code to GitHub.
+  To add your project to GitHub, follow the instructions below ([To do once after activating version control](#setup-github)) after creating the project.
     - Do you want a file describing the code of conduct for contributing to your project?
       This is a template which you may alter to suit your needs.
     - Do you want a file describing guidelines for contributing to your project?
@@ -44,11 +42,8 @@ Use `setup_project()` when you want to change the settings later.
   This uses the default language you set in the previous question.
   Note that you can set a different language on specific files.
   See `vignette("spelling", package = "checklist")` for more details on that.
-- Do you want to set a license file?
-  This will set the Creative Commons [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) license.
-  That license allows others to reuse your work provided that you get appropriate credit and they indicate if and which changes they made to your work.
-    - Do you want to check the license file?
-      This compares the `LICENSE.md` in your project with the `LICENSE.md` as defined in `checklist`.
+- Do you want to check the license file?
+  This compares the `LICENSE.md` in your project with the `LICENSE.md`.
 - Do you want to update the citation files?
   
 # Add or update `checklist` tools in an existing project
@@ -68,14 +63,14 @@ In case of a previous set-up, it will take that into account.
 - Do you want to check spelling with `check_spelling()`.
 - Do you want to update the citation files?
 
-# To do once after activating version control
+# To do once after activating version control {#setup-github}
 
 - Make sure you have at least one commit.
 - Checkout the main branch.
 - Login to https://github.com
 - Create a new repository without adding a `README`, `.gitignore` and license.
   `checklist` will add those files for you.
-- Run the code listed under "...or push an existing repository from the command line" in the command line.
+- Copy the code listed in your newly created repository on GitHub under "...or push an existing repository from the command line" and run it in the terminal.
 - Go on https://github.com to the "Settings" panel of the repository.
     - General
         - activate "Always suggest updating pull request branches"

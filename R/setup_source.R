@@ -9,12 +9,10 @@
 #' and the checklist configuration file (`checklist.yml`).
 #' @param path The path to the project.
 #' Defaults to `"."`.
-#' @inheritParams create_package
 #' @export
 #' @family setup
-setup_source <- function(path = ".", language = "en-GB") {
+setup_source <- function(path = ".") {
   # nocov start
-  .Deprecated(new = "setup_project", package = "checklist")
-  setup_project(path = path)
+  .Defunct(new = "setup_project", package = "checklist")
   # nocov end
 }

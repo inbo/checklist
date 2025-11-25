@@ -4,12 +4,18 @@
 \alias{use_author}
 \title{Which author to use}
 \usage{
-use_author(email)
+use_author(email, lang)
 }
 \arguments{
 \item{email}{An optional email address.
 When given and it matches with a single person, the function immediately
 returns the information of that person.}
+
+\item{lang}{The language to use for the affiliation.
+Defaults to the first language in the \code{name} vector of the
+\code{org_list} object.
+When the affiliation is not available in that language,
+it will use the first available language.}
 }
 \value{
 A data.frame with author information.
@@ -26,8 +32,8 @@ Other utils:
 \code{\link{c_sort}()},
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
+\code{\link{get_default_org_list}()},
 \code{\link{menu_first}()},
-\code{\link{orcid2person}()},
 \code{\link{store_authors}()},
 \code{\link{validate_email}()},
 \code{\link{validate_orcid}()},

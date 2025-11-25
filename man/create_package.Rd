@@ -4,44 +4,12 @@
 \alias{create_package}
 \title{Create an R package according to INBO requirements}
 \usage{
-create_package(
-  package,
-  path = ".",
-  title,
-  description,
-  keywords,
-  language = "en-GB",
-  license = c("GPL-3", "MIT"),
-  communities = character(0),
-  maintainer
-)
+create_package(package, path = ".")
 }
 \arguments{
 \item{package}{Name of the new package.}
 
 \item{path}{Where to create the package directory.}
-
-\item{title}{A single sentence with the title of the package.}
-
-\item{description}{A single paragraph describing the package.}
-
-\item{keywords}{A vector of keywords.}
-
-\item{language}{Language of the project in \code{xx-YY} format.
-\code{xx} is the two letter code for the language.
-\code{YY} is the two letter code for the language variant.
-E.g. \code{en-GB} for British English, \code{en-US} for American English, \code{nl-BE} for
-Belgian Dutch.}
-
-\item{license}{What type of license should be used?
-Choice between GPL-3 and MIT.
-Default GPL-3.}
-
-\item{communities}{An optional vector of Zenodo community id's.}
-
-\item{maintainer}{When missing, the function interactively lets you add the
-maintainer and other authors.
-Otherwise it must be the output of \code{\link[utils:person]{utils::person()}}.}
 }
 \description{
 Creates a package template in a new folder.
@@ -63,28 +31,10 @@ Actions.
 \item the set-up for a \code{pkgdown} website using the INBO corporate identity.
 }
 }
-\examples{
-# maintainer in `utils::person()` format
-maintainer <- person(
-  given = "Thierry",
-  family = "Onkelinx",
-  role = c("aut", "cre"),
-  email = "thierry.onkelinx@inbo.be",
-  comment = c(ORCID = "0000-0001-8804-4216")
-)
-
-# creating the package
-path <- tempfile()
-dir.create(path)
-create_package(
-  path = path, package = "packagename", title = "package title",
-  description = "A short description.", maintainer = maintainer,
-  language = "en-GB", license = "GPL-3", keywords = "keyword"
-)
-}
 \seealso{
 Other setup: 
 \code{\link{create_project}()},
+\code{\link{new_org_list}()},
 \code{\link{prepare_ghpages}()},
 \code{\link{set_license}()},
 \code{\link{setup_package}()},

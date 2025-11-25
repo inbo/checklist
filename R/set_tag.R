@@ -18,7 +18,7 @@
 #' @family git
 set_tag <- function(x = ".") {
   if (
-    !as.logical(Sys.getenv("GITHUB_ACTIONS", "false")) ||
+    !isTRUE(as.logical(Sys.getenv("GITHUB_ACTIONS", "false"))) ||
       !Sys.getenv("GITHUB_REF") %in%
         c("refs/heads/main", "refs/heads/master") ||
       Sys.getenv("GITHUB_EVENT_NAME") != "push"
@@ -59,12 +59,15 @@ set_tag <- function(x = ".") {
   old_config <- git_config(repo = repo)
   defer(
     git_config_set(
-      "user.name", old_config$value[old_config$name == "user.name"], repo = repo
+      "user.name",
+      old_config$value[old_config$name == "user.name"],
+      repo = repo
     )
   )
   defer(
     git_config_set(
-      "user.email", old_config$value[old_config$name == "user.email"],
+      "user.email",
+      old_config$value[old_config$name == "user.email"],
       repo = repo
     )
   )
@@ -75,7 +78,9 @@ set_tag <- function(x = ".") {
   body[nchar(body) > 0] |>
     paste(collapse = "\n") -> tag_message
   git_tag_create(
-    name = paste0("v", version), message = tag_message, repo = repo
+    name = paste0("v", version),
+    message = tag_message,
+    repo = repo
   )
   return(invisible(NULL))
 }

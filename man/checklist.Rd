@@ -9,6 +9,8 @@ A class which contains all checklist results.
 \seealso{
 Other class: 
 \code{\link{citation_meta}},
+\code{\link{org_item}},
+\code{\link{org_list}},
 \code{\link{organisation}},
 \code{\link{spelling}}
 }
@@ -96,13 +98,16 @@ Add errors
 \subsection{Method \code{add_linter()}}{
 Add results from \code{lintr::lint_package()}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{checklist$add_linter(linter)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{checklist$add_linter(linter, error = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{linter}}{A vector with linter errors.}
+
+\item{\code{error}}{A logical indicating if the linter should be considered an
+error.}
 }
 \if{html}{\out{</div>}}
 }

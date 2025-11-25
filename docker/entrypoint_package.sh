@@ -20,7 +20,7 @@ if [ ! -z "$INPUT_APTGET" ]; then
 fi
 
 echo '\nTrying to install the package...\n'
-Rscript --no-save --no-restore -e 'remotes::install_local(dependencies = TRUE, force = TRUE)'
+Rscript --no-save --no-restore --no-init-file -e 'remotes::install_local(dependencies = TRUE, force = TRUE)'
 if [ $? -ne 0 ]; then
   echo '\nBuilding the package failed. Please check the error message above.\n';
   exit 1
@@ -31,22 +31,35 @@ ROXYGEN_LINE=$(cat DESCRIPTION | grep "^RoxygenNote:")
 RO_VERSION=${ROXYGEN_LINE#*: }
 Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
 
+Rscript --no-save --no-restore -e 'install.packages(checklist:::list_missing_packages())'
+if [ $? -ne 0 ]; then
+  echo '\nFailed to install missing packages. Please check the error message above.\n';
+  exit 1
+fi
+
+echo '\nGetting the organisation settting...\n'
+Rscript --no-save --no-restore --no-init-file -e 'checklist::get_default_org_list()'
+
 echo '\nChecking the package...\n'
-Rscript --no-save --no-restore -e 'checklist::check_package()'
+Rscript --no-save --no-restore --no-init-file -e 'checklist::check_package()'
 if [ $? -ne 0 ]; then
   echo '\nThe package failed some checks. Please check the error message above.\n';
   exit 1
 fi
 
 echo '\nChecking code coverage...\n'
-Rscript --no-save --no-restore -e 'result <- covr::codecov(quiet = FALSE, commit="'$GITHUB_SHA'"); message(result$message)'
+Rscript --no-save --no-restore --no-init-file -e 'result <- covr::codecov(quiet = FALSE, commit="'$GITHUB_SHA'"); message(result$message)'
 if [ $? -ne 0 ]; then
   echo '\nChecking code coverage failed. Please check the error message above.\n';
   exit 1
 fi
 
 echo '\nBuilding pkgdown website...\n'
-Rscript --no-save --no-restore -e 'pkgdown::build_site()'
+Rscript --no-save --no-restore --no-init-file -e 'pkgdown::build_site(preview = FALSE)'
+if [ $? -ne 0 ]; then
+  echo '\nBuilding the packagedown website failed. Please check the error message above.\n';
+  exit 1
+fi
 
 echo 'GitHub actions:' $GITHUB_ACTIONS
 echo 'Event name:' $GITHUB_EVENT_NAME
@@ -65,7 +78,7 @@ if [ "$GITHUB_REF" != "refs/heads/main" ] && [ "$GITHUB_REF" != "refs/heads/mast
 fi
 echo '\nUpdating tag...\n';
 git rev-parse --abbrev-ref origin/HEAD | sed 's/origin\///' | xargs git checkout
-Rscript --no-save --no-restore -e 'checklist::set_tag()';
+Rscript --no-save --no-restore --no-init-file -e 'checklist::set_tag()';
 git push --tags
 
 echo '\nPush pkgdown website...\n'

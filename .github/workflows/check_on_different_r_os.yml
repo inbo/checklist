@@ -48,7 +48,7 @@ jobs:
           sudo apt install -y --no-install-recommends libcurl4-openssl-dev \
             libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev \
             libjpeg-dev libmagick++-dev libpng-dev libpoppler-cpp-dev \
-            libsecret-1-dev libtiff5-dev
+            libsecret-1-dev libsodium-dev libtiff5-dev libxml2-dev zlib1g-dev
           sudo apt install -y --no-install-recommends r-cran-assertthat \
             r-cran-bookdown r-cran-covr r-cran-curl r-cran-desc \
             r-cran-devtools r-cran-fs r-cran-gert r-cran-httr r-cran-hunspell \

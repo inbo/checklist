@@ -8,7 +8,8 @@ citation_quarto <- function(meta) {
   if (!is_file(index_file)) {
     return(
       list(
-        errors = paste(index_file, "not found"), warnings = character(0),
+        errors = paste(index_file, "not found"),
+        warnings = character(0),
         notes = character(0)
       )
     )
@@ -21,8 +22,8 @@ citation_quarto <- function(meta) {
     yaml <- yaml$book
   }
   yaml$lang <- coalesce(yaml$lang, language)
-  read_organisation(meta$get_path) |>
-    yaml_author(yaml = yaml) -> cit_meta
+  cit_meta <- yaml_author(yaml = yaml)
+  cit_meta$warnings <- cit_meta$notes <- character(0)
   description <- quarto_description(meta$get_path)
   cit_meta$meta$description <- description$description
   cit_meta$errors <- c(cit_meta$errors, description$errors)
@@ -48,42 +49,51 @@ citation_quarto <- function(meta) {
   } else {
     cit_meta$meta$access_right <- "open"
   }
-  license_file <- path(meta$get_path, "LICENSE.md")
-  if (!is_file(license_file)) {
-    cit_meta$errors <- c(cit_meta$errors, "No LICENSE.md file found")
-  } else {
-    license <- readLines(license_file)
-    path("generic_template", "cc_by_4_0.md") |>
-      system.file(package = "checklist") |>
-      readLines() |>
-      identical(license) -> license_ok
-    if (license_ok) {
-      cit_meta$meta$license <- "CC-BY-4.0"
-    } else {
-      cit_meta$errors <- c(
-        cit_meta$errors, "LICENSE.md doesn't match with CC-BY-4.0 license"
-      )
-    }
+  if (!has_name(yaml, "license")) {
+    cit_meta$errors <- c(
+      cit_meta$errors,
+      "No `license` element found in YAML"
+    )
+    return(cit_meta)
   }
+  cit_meta$meta$license <- yaml$license
   if (has_name(yaml, "lang")) {
     cit_meta$meta$language <- yaml$lang
   }
   extra <- c(
-    "community", "doi", "keywords", "publication_type", "publisher"
+    "community",
+    "doi",
+    "keywords",
+    "publication_type",
+    "publisher"
   )
   extra <- extra[extra %in% names(yaml)]
   cit_meta$meta <- c(cit_meta$meta, yaml[extra])
   publication_type <- c(
-    "publication", "publication-annotationcollection", "publication-article",
-    "publication-book", "publication-conferencepaper",
-    "publication-conferenceproceeding", "publication-datamanagementplan",
-    "publication-datapaper", "publication-deliverable",
-    "publication-dissertation", "publication-journal", "publication-milestone",
-    "publication-other", "publication-patent", "publication-peerreview",
-    "publication-preprint", "publication-proposal", "publication-report",
-    "publication-section", "publication-softwaredocumentation",
-    "publication-standard", "publication-taxonomictreatment",
-    "publication-technicalnote", "publication-thesis",
+    "publication",
+    "publication-annotationcollection",
+    "publication-article",
+    "publication-book",
+    "publication-conferencepaper",
+    "publication-conferenceproceeding",
+    "publication-datamanagementplan",
+    "publication-datapaper",
+    "publication-deliverable",
+    "publication-dissertation",
+    "publication-journal",
+    "publication-milestone",
+    "publication-other",
+    "publication-patent",
+    "publication-peerreview",
+    "publication-preprint",
+    "publication-proposal",
+    "publication-report",
+    "publication-section",
+    "publication-softwaredocumentation",
+    "publication-standard",
+    "publication-taxonomictreatment",
+    "publication-technicalnote",
+    "publication-thesis",
     "publication-workingpaper"
   )
   c(
@@ -94,20 +104,19 @@ citation_quarto <- function(meta) {
       paste(publication_type, collapse = ", "),
       sep = "\n"
     )[
-      has_name(yaml, "publication_type") && is.string(yaml$publication_type) &&
+      has_name(yaml, "publication_type") &&
+        is.string(yaml$publication_type) &&
         !yaml$publication_type %in% publication_type
     ]
   ) |>
     c(cit_meta$errors) -> cit_meta$errors
   c(
-    "No `community` element found"[!has_name(yaml, "community")],
     "No `publication_type` element found"[!has_name(yaml, "publication_type")]
   ) |>
     c(cit_meta$notes) -> cit_meta$notes
   cit_meta$meta$community <- split_community(cit_meta$meta$community)
   return(cit_meta)
 }
-
 
 quarto_description <- function(path) {
   for (i in dir_ls(path, regexp = "\\.q?md$", recurse = TRUE)) {
@@ -131,7 +140,8 @@ quarto_description <- function(path) {
   }
   return(
     list(
-      description = description$meta$description, errors = description$errors
+      description = description$meta$description,
+      errors = description$errors
     )
   )
 }

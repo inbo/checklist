@@ -1,3 +1,40 @@
+# checklist 0.5.0
+
+## Breaking changes
+
+* The `organisation` class is superseded by the `org_list` and `org_item`
+  classes.
+* Updated the `vignette("organisation", package = "checklist")`
+  to reflect the changes in the `organisation` class.
+* `organisation` class and its related function like `default_organisation()`,
+  `read_organisation()` and `write_organisation()` are deprecated.
+* The new `org_list` enforces the use of the INBO ROR (#153).
+
+## New functions
+
+* `get_default_org_list()` returns the default organisation list depending on
+  the git remote `origin`.
+* `new_org_list()` creates a new `org_list` object based on interactive
+  questions.
+* `create_draft_pr()` creates a draft pull request on GitHub.
+
+## Other changes
+
+* `create_package()` and `create_project()` now fully work based on interactive
+  questions.
+* Updated the formatting of the code with
+  [`air`](https://posit-dev.github.io/air/).
+* The GitHub Actions now install missing packages on the fly (#152).
+* Improved output on missing warning and notes (#155).
+* `check_folders()` now handles nested folders (#156).
+* `check_project()` now works on GitHub Actions with projects using `renv`
+  (#158).
+* `check_lintr()` turns missing dependencies into an error.
+* `check_source()` is now defunct.
+* Removed the defunct `orcid2person()`.
+* Reworked the `vignette("philosophy", package = "checklist")` and
+  `vignette("getting_started", package = "checklist")`
+
 # checklist 0.4.2
 
 * `check_lintr()` checks for missing dependencies.

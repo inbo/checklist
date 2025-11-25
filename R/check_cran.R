@@ -38,12 +38,16 @@ check_cran <- function(x = ".", quiet = FALSE) {
   check_output <- with_path(
     dirname(pandoc_exec()),
     rcmdcheck(
-      path = x$get_path, args = c("--timings", "--as-cran", "--no-manual"),
-      error_on = "never", quiet = quiet, timeout = Inf
+      path = x$get_path,
+      args = c("--timings", "--as-cran", "--no-manual"),
+      error_on = "never",
+      quiet = quiet,
+      timeout = Inf
     )
   )
   main_branch <- ifelse(
-    is.na(git_info(repo = x$get_path)$head), "none",
+    is.na(git_info(repo = x$get_path)$head),
+    "none",
     ifelse(git_branch_exists("main", repo = x$get_path), "main", "master")
   )
   if (
@@ -51,15 +55,20 @@ check_cran <- function(x = ".", quiet = FALSE) {
       git_ahead_behind(upstream = main_branch, repo = x$get_path)$upstream ==
         git_ahead_behind(upstream = main_branch, repo = x$get_path)$local &&
       any(grepl("Insufficient package version", check_output$warnings))
-  ) { # nocov start
+  ) {
+    # nocov start
     incoming <- grepl(
-      "checking CRAN incoming feasibility", check_output$warnings
+      "checking CRAN incoming feasibility",
+      check_output$warnings
     )
-    gsub("
+    gsub(
+      "
 
 Insufficient package version \\(submitted: .*, existing: .*\\)
 
-Days since last update: [0-9]+", "", check_output$warnings[incoming]
+Days since last update: [0-9]+",
+      "",
+      check_output$warnings[incoming]
     ) -> new_incoming
     if (length(strsplit(new_incoming, "\n")[[1]]) == 2) {
       check_output$warnings <- check_output$warnings[!incoming]
@@ -73,7 +82,8 @@ Days since last update: [0-9]+", "", check_output$warnings[incoming]
   check_output$warnings <- gsub(" \\[\\d+s\\]", "", check_output$warnings)
   check_output$notes <- gsub(" \\[\\d+s\\]", "", check_output$notes)
   x$add_rcmdcheck(
-    errors = check_output$errors, warnings = check_output$warnings,
+    errors = check_output$errors,
+    warnings = check_output$warnings,
     notes = check_output$notes
   )
   return(x)
@@ -86,7 +96,9 @@ clean_incoming <- function(issues) {
   if (any(grepl("Days since last update", issues))) {
     last_update <- grep("Days since last update", issues) # nocov start
     issues[last_update] <- gsub(
-      "\n\nDays since last update: [0-9]+", "", issues[last_update]
+      "\n\nDays since last update: [0-9]+",
+      "",
+      issues[last_update]
     )
     if (length(strsplit(issues[last_update], "\n")[[1]]) == 2) {
       issues <- issues[-last_update]

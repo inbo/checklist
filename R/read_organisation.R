@@ -10,23 +10,18 @@
 #' @importFrom yaml read_yaml
 #' @family both
 read_organisation <- function(x = ".") {
+  .Deprecated(new = "org_list$new()$read", package = "checklist")
   checklist <- try(read_checklist(x = x), silent = TRUE)
   if (inherits(checklist, "checklist")) {
     x <- checklist$get_path
   }
   organisation_file <- path(x, "organisation.yml")
   if (is_file(organisation_file)) {
-    read_yaml(organisation_file) |>
-      do.call(what = organisation$new) -> org
-    return(org)
+    yaml <- read_yaml(organisation_file)
+    if (!has_name(yaml, "checklist version")) {
+      org <- do.call(yaml, what = organisation$new)
+      return(org)
+    }
   }
-  R_user_dir("checklist", which = "config") |>
-    path("organisation.yml") -> organisation_default
-  if (is_file(organisation_default)) {
-    read_yaml(organisation_default) |>
-      do.call(what = organisation$new) -> org
-    write_organisation(org = org, x = x)
-    return(org)
-  }
-  return(organisation$new())
+  org_list$new()$read(x)
 }

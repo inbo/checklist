@@ -1,9 +1,8 @@
+library(mockery)
 test_that("create_package() works", {
-  maintainer <- person(
-    given = "Thierry", family = "Onkelinx", role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be",
-    comment = c(ORCID = "0000-0001-8804-4216")
-  )
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
+
   path <- tempfile("ghpages")
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
@@ -11,15 +10,20 @@ test_that("create_package() works", {
   defer(unlink(origin_repo, recursive = TRUE))
 
   package <- "ghpages"
-  expect_message(
-    create_package(
-      path = path, package = package, keywords = "dummy", communities = "inbo",
-      title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.", maintainer = maintainer,
-      language = "en-GB"
-    ),
-    regexp = sprintf("package created at `.*%s`", package)
+  stub(create_package, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
+  stub(
+    create_package,
+    "readline",
+    mock("This is the title", "This is the description.")
   )
+  stub(create_package, "ask_keywords", c("key", "word"))
+  stub(create_package, "ask_language", "en-GB")
+  hide_output <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output))
+  sink(hide_output)
+  create_package(path = path, package = package)
+  sink()
 
   repo <- path(path, package)
 
@@ -27,6 +31,7 @@ test_that("create_package() works", {
   git_config_set("user.email", "unit@test.com", repo = repo)
   git_add(list.files(repo, recursive = TRUE), repo = repo)
   git_commit("initial commit", repo = repo)
+  gert::git_remote_remove("origin", repo = repo)
 
   expect_false(git_branch_exists("gh-pages", repo = repo))
   old_head <- git_info(repo = repo)$head
@@ -36,7 +41,8 @@ test_that("create_package() works", {
 
   gert::git_remote_add(origin_repo, repo = repo)
   expect_error(
-    prepare_ghpages(repo), "no branch `origin/main` or `origin/master` found"
+    prepare_ghpages(repo),
+    "no branch `origin/main` or `origin/master` found"
   )
 
   git_push(repo = repo, verbose = FALSE)

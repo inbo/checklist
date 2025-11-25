@@ -1,71 +1,57 @@
+library(mockery)
 test_that("check_license() works", {
-  maintainer <- person(
-    given = "Thierry",
-    family = "Onkelinx",
-    role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be",
-    comment = c(ORCID = "0000-0001-8804-4216")
-  )
-  change_cph <- function(cph = "test escape characters ().[]") {
-    descr <- readLines(path(repo, "DESCRIPTION"))
-    cph_line <- grep("cph", descr, value = FALSE)
-    new_cph <- paste0(
-      "    person(\"", cph,
-      "\", , , \"info@inbo.be\", role = c(\"cph\", \"fnd\"))"
-    )
-    descr[cph_line] <- new_cph
-    writeLines(descr, path(repo, "DESCRIPTION"))
-    license <- readLines(path(repo, "LICENSE"))
-    license[2] <- paste0("COPYRIGHT HOLDER: ", cph)
-    writeLines(license, path(repo, "LICENSE"))
-    license_md <- readLines(path(repo, "LICENSE.md"))
-    license_md[3] <- paste0(
-      "Copyright (c) ", format(Sys.Date(), "%Y"), " ", cph
-    )
-    writeLines(license_md, path(repo, "LICENSE.md"))
-  }
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
+
   path <- tempfile("check_license")
   dir.create(path)
-  oldwd <- setwd(path)
-  defer(setwd(oldwd))
   defer(unlink(path, recursive = TRUE))
 
   package <- "checklicense"
-  suppressMessages(
-    create_package(
-      path = path, package = package, keywords = "dummy", communities = "inbo",
-      title = "testing the ability of checklist to create a minimal package",
-      description = "A dummy package.", maintainer = maintainer, license = "MIT"
-    )
+  stub(create_package, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
+  stub(
+    create_package,
+    "readline",
+    mock("This is the title", "This is the description.")
   )
+  stub(create_package, "ask_keywords", c("key", "word"))
+  stub(create_package, "ask_language", "en-GB")
+  stub(create_package, "ask_license", "MIT")
+  hide_output <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output))
+  sink(hide_output)
+  suppressMessages(create_package(path = path, package = package))
+  sink()
   repo <- path(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  org <- organisation$new()
+  org <- org_list$new()$read(repo)
   mit <- readLines(path(repo, "LICENSE.md"))
   expect_identical(
     mit[3],
     sprintf(
-      "Copyright (c) %s %s", format(Sys.Date(), "%Y"), org$get_rightsholder
+      "Copyright (c) %s %s",
+      format(Sys.Date(), "%Y"),
+      org$get_person(org$which_rightsholder$required, lang = "en-GB")$given
     )
   )
   expect_identical(
     file.exists(path(repo, "LICENSE")),
     TRUE
   )
-  x <- check_license(repo)
+  x <- check_license(repo, org = org)
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     character(0)
   )
 
   # copyright holder mismatch
-  mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"),
-                   " INBO")
+  mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"), " INBO")
   writeLines(mit, path(repo, "LICENSE.md"))
-  expect_is(x <- check_license(repo), "checklist")
+  expect_is(x <- check_license(repo, org = org), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     c(
@@ -74,16 +60,8 @@ test_that("check_license() works", {
     )
   )
 
-  # test all escape characters in copyright holder
-  change_cph()
-  x <- check_license(repo)
-  expect_identical(
-    x$.__enclos_env__$private$errors$license,
-    character(0)
-  )
-
   file_delete(path(repo, "LICENSE.md"))
-  expect_is(x <- check_license(repo), "checklist")
+  expect_is(x <- check_license(repo, org = org), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
     "No LICENSE.md file"

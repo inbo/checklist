@@ -12,7 +12,8 @@ custom_dictionary <- function(issues) {
   )
 
   vapply(
-    unique(issues$language), FUN.VALUE = logical(1),
+    unique(issues$language),
+    FUN.VALUE = logical(1),
     FUN = function(lang) {
       dict_file <- tolower(gsub("-", "_", lang))
       dict_file <- path(attr(issues, "checklist_path"), "inst", dict_file)

@@ -10,6 +10,8 @@ A class with the configuration for spell checking
 Other class: 
 \code{\link{checklist}},
 \code{\link{citation_meta}},
+\code{\link{org_item}},
+\code{\link{org_list}},
 \code{\link{organisation}}
 }
 \concept{class}

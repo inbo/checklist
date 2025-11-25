@@ -2,11 +2,15 @@ test_that("clean_git with `main` as main branch", {
   origin_repo <- git_init(tempfile("clean_git_origin"), bare = TRUE)
   defer(unlink(origin_repo, recursive = TRUE))
   repo <- gert::git_clone(
-    url = origin_repo, path = tempfile("clean_git"), verbose = FALSE
+    url = origin_repo,
+    path = tempfile("clean_git"),
+    verbose = FALSE
   )
   defer(unlink(repo, recursive = TRUE))
   repo2 <- gert::git_clone(
-    url = origin_repo, path = tempfile("clean_git2"), verbose = FALSE
+    url = origin_repo,
+    path = tempfile("clean_git2"),
+    verbose = FALSE
   )
   defer(unlink(repo2, recursive = TRUE))
 
@@ -21,14 +25,19 @@ test_that("clean_git with `main` as main branch", {
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
   git_push(
-    remote = "origin", refspec =  refspec, set_upstream = TRUE, repo = repo
+    remote = "origin",
+    refspec = refspec,
+    set_upstream = TRUE,
+    repo = repo
   )
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
   writeLines("foo", path(repo, "junk2.txt"))
   git_add("junk2.txt", repo = repo)
   junk2 <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(
-    remote = "origin", set_upstream = TRUE, repo = repo,
+    remote = "origin",
+    set_upstream = TRUE,
+    repo = repo,
     refspec = "refs/heads/branch"
   )
 
@@ -51,7 +60,8 @@ test_that("clean_git with `main` as main branch", {
   git_push(repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo2)
   gert::git_branch_set_upstream(
-    upstream = "origin/branch", repo = repo2
+    upstream = "origin/branch",
+    repo = repo2
   )
   expect_invisible(clean_git(repo = repo2, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
@@ -62,7 +72,9 @@ test_that("clean_git with `main` as main branch", {
   )
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch",
+    ref = "branch",
+    repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(0L, 0L))
@@ -77,14 +89,18 @@ test_that("clean_git with `main` as main branch", {
   junk <- gert::git_commit(message = "branch commit", repo = repo2)
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch",
+    ref = "branch",
+    repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 0L))
   expect_invisible(suppressWarnings(clean_git(repo = repo2, verbose = FALSE)))
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch",
+    ref = "branch",
+    repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 0L))
@@ -103,11 +119,14 @@ test_that("clean_git with `main` as main branch", {
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)
   expect_warning(
-    clean_git(repo = repo2, verbose = FALSE), "diverged from the origin branch"
+    clean_git(repo = repo2, verbose = FALSE),
+    "diverged from the origin branch"
   )
 
   ab <- git_ahead_behind(
-    upstream = "origin/branch", ref = "branch", repo = repo2
+    upstream = "origin/branch",
+    ref = "branch",
+    repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 1L))
@@ -125,7 +144,8 @@ test_that("clean_git with `main` as main branch", {
   expect_invisible(clean_git(repo = repo, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
   expect_identical(
-    branch_info_repo$name, c(mainbranch, paste0("origin/", mainbranch))
+    branch_info_repo$name,
+    c(mainbranch, paste0("origin/", mainbranch))
   )
   expect_identical(git_branch(repo = repo), mainbranch)
 
@@ -141,7 +161,9 @@ test_that("clean_git with `main` as main branch", {
   )
 
   ab <- git_ahead_behind(
-    upstream = paste0("origin/", mainbranch), ref = "branch", repo = repo2
+    upstream = paste0("origin/", mainbranch),
+    ref = "branch",
+    repo = repo2
   )
 
   expect_identical(c(ab$ahead, ab$behind), c(1L, 1L))

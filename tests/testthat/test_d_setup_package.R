@@ -1,42 +1,50 @@
+library(mockery)
 test_that("setup_package() works", {
-  maintainer <- person(
-    given = "Thierry",
-    family = "Onkelinx",
-    role = c("aut", "cre"),
-    email = "thierry.onkelinx@inbo.be",
-    comment = c(ORCID = "0000-0001-8804-4216")
-  )
+  stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
+  org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
+
   path <- tempfile("setup_package")
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
 
   package <- "setuppackage"
-  create_package(
-    path = path, package = package, keywords = "dummy", communities = "inbo",
-    title = "testing the ability of checklist to create a minimal package",
-    description = "A dummy package.", maintainer = maintainer,
-    language = "en-GB"
+  stub(create_package, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
+  stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
+  stub(
+    create_package,
+    "readline",
+    mock("This is the title", "This is the description.")
   )
+  stub(create_package, "ask_keywords", c("key", "word"))
+  stub(create_package, "ask_language", "en-GB")
+  hide_output <- tempfile(fileext = ".txt")
+  defer(file_delete(hide_output))
+  sink(hide_output)
+  suppressMessages(create_package(path = path, package = package))
+  sink()
   repo <- path(path, package)
   new_files <- c(
-    "_pkgdown.yml", ".gitignore", ".Rbuildignore", "checklist.yml",
-    "codecov.yml", "LICENSE.md", "NEWS.md", "README.Rmd",
+    "_pkgdown.yml",
+    ".gitignore",
+    ".Rbuildignore",
+    "checklist.yml",
+    "codecov.yml",
+    "LICENSE.md",
+    "NEWS.md",
+    "README.Rmd",
     path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
     path(
-      ".github", "workflows",
+      ".github",
+      "workflows",
       c(
-        "check_on_branch.yml", "check_on_different_r_os.yml",
-        "check_on_main.yml", "release.yml"
+        "check_on_branch.yml",
+        "check_on_different_r_os.yml",
+        "check_on_main.yml",
+        "release.yml"
       )
     ),
     path("pkgdown", "extra.css"),
-    path(
-      "man", "figures",
-      c(
-        "logo-en.png", "background-pattern.png", "flanders.woff2",
-        "flanders.woff"
-      )
-    )
+    path("man", "figures", "background-pattern.png")
   )
   file_delete(path(path, package, new_files))
   git_add(files = new_files, repo = repo)

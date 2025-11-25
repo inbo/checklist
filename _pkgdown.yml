@@ -26,25 +26,29 @@ navbar:
       - text: Code of conduct
         href: CODE_OF_CONDUCT.html
     tutorials:
-      text: Tutorials
+      text: Getting started
       href: articles/index.html
       menu:
       - text: Philosophy of the checklist package
         href: articles/philosophy.html
-      - text: Setting up checklist for a package
-        href: articles/getting_started.html
-      - text: Setting up checklist for a project
-        href: articles/getting_started_project.html
-      - text: Organisations
-        href: articles/organisation.html
+      - text: Coding style
+        href: articles/coding_style.html
+      - text: Naming conventions for folders and files
+        href: articles/filename.html
       - text: Spell checking with checklist
         href: articles/spelling.html
       - text: Recommended folder structure
         href: articles/folder.html
-      - text: File paths in code
-        href: articles/path.html
+      - text: Organisations
+        href: articles/organisation.html
+      - text: Setting up checklist for a package
+        href: articles/getting_started.html
+      - text: Setting up checklist for a project
+        href: articles/getting_started_project.html
       - text: Setting up the integration between GitHub, Zenodo and ORCID
         href: articles/zenodo.html
+      - text: File paths in code
+        href: articles/path.html
 
 reference:
 - title: Functions relevant for checking packages
@@ -63,7 +67,7 @@ reference:
 - title: Git related functions
   contents:
   - has_concept("git")
-- title: R6 class behind the checklist package
+- title: R6 classses behind the checklist package
   contents:
   - has_concept("class")
 - title: Auxiliary functions

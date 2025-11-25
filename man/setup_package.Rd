@@ -4,15 +4,11 @@
 \alias{setup_package}
 \title{Add or update the checklist infrastructure to an existing package}
 \usage{
-setup_package(path = ".", license = c("GPL-3", "MIT"))
+setup_package(path = ".")
 }
 \arguments{
 \item{path}{The path to the package.
 Defaults to \code{"."}.}
-
-\item{license}{What type of license should be used?
-Choice between GPL-3 and MIT.
-Default GPL-3.}
 }
 \description{
 Use this function when you have an existing package and you want to use the
@@ -40,6 +36,7 @@ Actions.
 Other setup: 
 \code{\link{create_package}()},
 \code{\link{create_project}()},
+\code{\link{new_org_list}()},
 \code{\link{prepare_ghpages}()},
 \code{\link{set_license}()},
 \code{\link{setup_project}()},

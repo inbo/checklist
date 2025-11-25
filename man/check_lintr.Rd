@@ -21,6 +21,14 @@ You can find this in the menu \emph{Tools} > \emph{Global options} > \emph{Code}
 \emph{Diagnostics}.
 Please have a look at \code{vignette("philosophy")} for more details on the rules.
 }
+\details{
+When \code{check_lintr()} runs on a git repository, it checks whether the
+organisation has a custom \code{.lintr} file in their \code{checklist} repository.
+If so, it uses this file.
+Otherwise it looks for a local \code{.lintr} file in the project directory.
+If this file is not present, it uses the default \code{.lintr} file provided
+with the \code{checklist} package.
+}
 \seealso{
 Other both: 
 \code{\link{add_badges}()},

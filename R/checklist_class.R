@@ -5,12 +5,10 @@
 #' @importFrom R6 R6Class
 #' @family class
 checklist <- R6Class(
-
   "checklist",
 
   inherit = spelling,
   public = list(
-
     #' @description Add errors
     #' @param errors A vector with errors.
     #' @param item The item on which to store the errors.
@@ -31,11 +29,15 @@ checklist <- R6Class(
 
     #' @description Add results from `lintr::lint_package()`
     #' @param linter A vector with linter errors.
-    add_linter = function(linter) {
+    #' @param error A logical indicating if the linter should be considered an
+    #' error.
+    add_linter = function(linter, error = FALSE) {
       assert_that(inherits(linter, "lints"))
       private$linter <- linter
       private$checked["lintr"] <- ifelse(
-        "lintr" %in% private$required, length(linter) > 0, NA
+        "lintr" %in% private$required,
+        error || length(linter) > 0,
+        NA
       )
       invisible(self)
     },
@@ -109,7 +111,9 @@ checklist <- R6Class(
       assert_that(inherits(issues, "checklist_spelling"))
       private$spelling <- issues
       private$checked["spelling"] <- ifelse(
-        "spelling" %in% private$required, nrow(issues) > 0, NA
+        "spelling" %in% private$required,
+        nrow(issues) > 0,
+        NA
       )
       invisible(self)
     },
@@ -203,10 +207,16 @@ checklist <- R6Class(
       super$print(...)
       cat("\n\n")
       checklist_print(
-        path = private$path, warnings = private$warnings,
-        allowed_warnings = private$allowed_warnings, notes = private$notes,
-        allowed_notes = private$allowed_notes, linter = private$linter,
-        errors = private$errors, spelling = private$spelling
+        path = private$path,
+        warnings = private$warnings,
+        allowed_warnings = private$allowed_warnings,
+        notes = private$notes,
+        allowed_notes = private$allowed_notes,
+        linter = private$linter,
+        errors = private$errors,
+        spelling = private$spelling,
+        package = self$package,
+        failed = self$fail
       )
     },
 
@@ -218,7 +228,8 @@ checklist <- R6Class(
       assert_that(
         all(ok),
         msg = paste(
-          "unknown checks", paste0("`", checks[!ok], "`", collapse = ", ")
+          "unknown checks",
+          paste0("`", checks[!ok], "`", collapse = ", ")
         )
       )
       private$required <- c_sort(unique(c(
@@ -230,7 +241,6 @@ checklist <- R6Class(
   ),
 
   active = list(
-
     #' @field get_checked A vector with checked topics.
     get_checked = function() {
       return(names(private$checked))
@@ -272,8 +282,10 @@ Please contact the maintainer of the `checklist` package."
     #' @field template A list for a check list template.
     template = function() {
       checklist_template(
-        package = self$package, warnings = private$allowed_warnings,
-        notes = private$allowed_notes, spelling = super$settings,
+        package = self$package,
+        warnings = private$allowed_warnings,
+        notes = private$allowed_notes,
+        spelling = super$settings,
         required = c_sort(unique(private$required))
       )
     }
@@ -283,9 +295,19 @@ Please contact the maintainer of the `checklist` package."
     allowed_notes = list(),
     allowed_warnings = list(),
     available_checks = c(
-      "checklist", "CITATION", "DESCRIPTION", "documentation",
-      "R CMD check", "codemeta", "license", "repository secret",
-      "filename conventions", "folder conventions", "lintr", "spelling"
+      "checklist",
+      "CITATION",
+      "DESCRIPTION",
+      "documentation",
+      "R CMD check",
+      "codemeta",
+      "filename conventions",
+      "folder conventions",
+      "license",
+      "lintr",
+      "organisation",
+      "repository secret",
+      "spelling"
     ),
     # stores a named logical vector of checked items.
     # names must match the available checks
@@ -300,10 +322,15 @@ Please contact the maintainer of the `checklist` package."
     required = "checklist",
     spelling = structure(
       list(
-        type = character(0), file = character(0), line = integer(0),
-        column = integer(0), message = character(0), language = character(0)
+        type = character(0),
+        file = character(0),
+        line = integer(0),
+        column = integer(0),
+        message = character(0),
+        language = character(0)
       ),
-      class = c("checklist_spelling", "data.frame"), row.names = integer(0),
+      class = c("checklist_spelling", "data.frame"),
+      row.names = integer(0),
       checklist_path = "."
     ),
     warnings = character(0)

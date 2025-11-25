@@ -12,6 +12,14 @@
 #' @export
 #' @family both
 default_organisation <- function(org = organisation$new()) {
+  .Deprecated(
+    new = "org_list$new()",
+    package = "checklist",
+    msg = paste(
+      "The `default_organisation()` function is deprecated.",
+      "Please use the `org_list` class instead."
+    )
+  )
   assert_that(inherits(org, "organisation"))
   target <- R_user_dir("checklist", which = "config")
   dir_create(target)

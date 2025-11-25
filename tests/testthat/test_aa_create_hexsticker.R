@@ -6,7 +6,8 @@ test_that("create_hexsticker", {
 
   sticker_logo <- tempfile("logo", fileext = ".svg")
   create_hexsticker(
-    "coolname", filename = sticker_logo,
+    "coolname",
+    filename = sticker_logo,
     icon = system.file("check-box.svg", package = "checklist")
   )
   expect_true(file.exists(sticker_logo))

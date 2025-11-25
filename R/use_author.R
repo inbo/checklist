@@ -6,15 +6,20 @@
 #' @param email An optional email address.
 #' When given and it matches with a single person, the function immediately
 #' returns the information of that person.
+#' @param lang The language to use for the affiliation.
+#' Defaults to the first language in the `name` vector of the
+#' `org_list` object.
+#' When the affiliation is not available in that language,
+#' it will use the first available language.
 #' @importFrom assertthat assert_that is.string noNA
 #' @importFrom fs path
 #' @importFrom tools R_user_dir
 #' @importFrom utils write.table
 #' @family utils
 #' @export
-use_author <- function(email) {
+use_author <- function(email, lang) {
   root <- R_user_dir("checklist", which = "data")
-  org <- read_organisation()
+  org <- org_list$new()$read()
   current <- stored_authors(root)
   assert_that(
     interactive() || nrow(current) > 0,
@@ -34,37 +39,51 @@ use_author <- function(email) {
       c("new person") |>
       menu_first("Which person information do you want to use?") -> selected
     if (selected < 1) {
-      cat("You must select a person\n")
+      warning("You must select a person\n", immediate. = TRUE, call. = FALSE)
       next
     }
     if (selected > nrow(current)) {
       current <- new_author(current = current, root = root, org = org)
     }
-    cat(
-      "given name: ", current$given[selected],
-      "\nfamily name:", current$family[selected],
-      "\ne-mail:     ", current$email[selected],
-      "\norcid:      ", current$orcid[selected],
-      "\naffiliation:", current$affiliation[selected]
-    )
     current <- validate_author(
-      current = current, selected = selected, org = org
+      current = current,
+      selected = selected,
+      org = org,
+      lang = lang
     )
     final <- menu_first(choices = c("use ", "update", "other"))
     if (final == 1) {
       break
     }
     if (final == 2) {
-      current <- update_author(current, selected, root, org)
+      current <- update_author(
+        current = current,
+        selected = selected,
+        root = root,
+        org = org,
+        lang = lang
+      )
       next
     }
   }
   current$usage[selected] <- pmax(current$usage[selected], 0) + 1
   write.table(
-    current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+    current,
+    file = path(root, "author.txt"),
+    sep = "\t",
+    row.names = FALSE,
     fileEncoding = "UTF8"
   )
   message("author information stored at ", path(root, "author.txt"))
+  aff <- org$get_name_by_domain(current$email[selected], lang = lang)
+  if (length(aff) == 1) {
+    current$affiliation[selected] <- names(aff)
+  } else if (length(aff) > 1) {
+    default_aff <- org$get_name_by_domain(current$email[selected])
+    current$affiliation[selected] <- names(aff[
+      names(default_aff) == current$affiliation[selected]
+    ])
+  }
   return(current[selected, ])
 }
 
@@ -81,19 +100,15 @@ menu_first <- function(choices, graphics = FALSE, title = NULL) {
 
 #' @importFrom fs path
 #' @importFrom utils menu write.table
-update_author <- function(current, selected, root, org) {
+update_author <- function(current, selected, root, org, lang) {
   original <- current
   item <- c("given", "family", "email", "orcid", "affiliation")
   while (TRUE) {
-    cat(
-      "given name: ", current$given[selected],
-      "\nfamily name:", current$family[selected],
-      "\ne-mail:     ", current$email[selected],
-      "\norcid:      ", current$orcid[selected],
-      "\naffiliation:", current$affiliation[selected]
-    )
     current <- validate_author(
-      current = current, selected = selected, org = org
+      current = current,
+      selected = selected,
+      org = org,
+      lang = lang
     )
     command <- menu(
       choices = c(item, "save and exit", "undo changes and exit"),
@@ -103,7 +118,9 @@ update_author <- function(current, selected, root, org) {
       break
     }
     sprintf(
-      "current %s: %s\n", item[command], current[selected, item[command]]
+      "current %s: %s\n",
+      item[command],
+      current[selected, item[command]]
     ) |>
       cat()
     current[selected, item[command]] <- readline(
@@ -114,7 +131,10 @@ update_author <- function(current, selected, root, org) {
     return(original)
   }
   write.table(
-    current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+    current,
+    file = path(root, "author.txt"),
+    sep = "\t",
+    row.names = FALSE,
     fileEncoding = "UTF8"
   )
   message("author information stored at ", path(root, "author.txt"))
@@ -122,9 +142,8 @@ update_author <- function(current, selected, root, org) {
 }
 
 #' @importFrom assertthat assert_that
-new_author <- function(current, root, org) {
-  assert_that(inherits(org, "organisation"))
-  org <- org$get_organisation
+new_author <- function(current, root, org, lang) {
+  assert_that(inherits(org, "org_list"))
   cat("Please provide person information.\n")
   data.frame(
     given = readline(prompt = "given name:  "),
@@ -132,33 +151,46 @@ new_author <- function(current, root, org) {
     email = readline(prompt = "e-mail:      "),
     orcid = ask_orcid(prompt = "orcid:       ")
   ) -> extra
-  gsub(".*@", "", extra$email) |>
-    grepl(names(org), ignore.case = TRUE) |>
-    which() -> which_org
-  if (extra$email != "" && length(which_org) > 0) {
-    org <- org[which_org]
-    while (org[[1]]$orcid && extra$orcid == "") {
-      cat("An ORCID is required for", names(org))
+  which_org <- org$get_name_by_domain(extra$email, lang = lang)
+  if (length(which_org) == 1) {
+    extra$affiliation <- names(which_org)
+    while (which_org && extra$orcid == "") {
+      warning(
+        "An ORCID is required for",
+        names(which_org),
+        immediate. = TRUE,
+        call. = FALSE
+      )
       extra$orcid <- ask_orcid(prompt = "orcid: ")
     }
-    names(org[[1]]$affiliation) |>
-      menu_first(title = "Which default language for the affiliation?") -> lang
-    extra$affiliation <- org[[1]]$affiliation[lang]
-  } else {
+  } else if (length(which_org) == 0) {
     extra$affiliation <- readline(prompt = "affiliation: ")
+  } else {
+    menu_first(
+      choices = c(names(which_org), "other"),
+      title = "Which organisation for the affiliation?"
+    ) -> selection
+    if (selection == length(which_org) + 1) {
+      extra$affiliation <- readline(prompt = "affiliation: ")
+    } else {
+      extra$affiliation <- names(which_org)[selection]
+    }
   }
   extra$usage <- 0
   rbind(current, extra) -> current
   write.table(
-    current, file = path(root, "author.txt"), sep = "\t", row.names = FALSE,
+    current,
+    file = path(root, "author.txt"),
+    sep = "\t",
+    row.names = FALSE,
     fileEncoding = "UTF8"
   )
   message("author information stored at ", path(root, "author.txt"))
   return(current)
 }
 
-author2person <- function(role = "aut") {
-  df <- use_author()
+author2person <- function(role = "aut", lang) {
+  df <- use_author(lang = lang)
   if (is.na(df$email) || df$email == "") {
     email <- NULL
   } else {
@@ -176,20 +208,55 @@ author2person <- function(role = "aut") {
     comment <- NULL
   }
   person(
-    given = df$given, family = df$family, email = email, comment = comment,
+    given = df$given,
+    family = df$family,
+    email = email,
+    comment = comment,
     role = role
   )
 }
 
+authors2badge <- function(df, role = "aut") {
+  badges <- character(nrow(df))
+  footnotes <- vector(mode = "list", length = nrow(df))
+  for (i in seq_len(nrow(df))) {
+    if (has_name(df, "role")) {
+      strsplit(df$role[i], ", ") |>
+        unlist() -> this_role
+    } else {
+      this_role <- role
+    }
+    badge <- author2badge(df[i, ], role = this_role)
+    footnotes[[i]] <- attr(badge, "footnote")
+    badges[i] <- badge
+  }
+  attr(badges, which = "footnote") <- unlist(footnotes) |>
+    unique()
+  return(badges)
+}
+
 #' @importFrom assertthat assert_that
 #' @importFrom utils tail
-author2badge <- function(role = "aut", org) {
-  assert_that(inherits(org, "organisation"))
-  df <- use_author()
+author2badge <- function(df, role = "aut") {
+  if (nrow(df) > 1) {
+    return(authors2badge(df, role = role))
+  }
   sprintf("[^%s]", role) |>
     paste(collapse = "") -> role_link
   if (is.na(df$orcid) || df$orcid == "") {
-    badge <- sprintf("%s, %s%s", df$family, df$given, role_link)
+    if (is.na(df$email) || df$email == "") {
+      ifelse(df$family == "", "", paste0(df$family, ", ")) |>
+        paste0(df$given, role_link) -> badge
+    } else {
+      df$email |>
+        gsub(pattern = "@", replacement = "%40") |>
+        sprintf(
+          fmt = "[%2$s%3$s](mailto:%1$s)%4$s",
+          ifelse(df$family == "", "", paste0(df$family, ", ")),
+          df$given,
+          role_link
+        ) -> badge
+    }
   } else {
     badge <- paste0(
       "[%s, %s![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/",
@@ -198,72 +265,75 @@ author2badge <- function(role = "aut", org) {
       sprintf(df$family, df$given, df$orcid, role_link)
   }
   c(
-    aut = "author", cre = "contact person", cph = "copyrightholder",
-    ctb = "contributor", fnd = "funder", rev = "reviewer"
+    aut = "author",
+    cre = "contact person",
+    cph = "copyright holder",
+    ctb = "contributor",
+    fnd = "funder",
+    rev = "reviewer"
   )[role] |>
     sprintf(fmt = "[^%2$s]: %1$s", role) -> attr(badge, "footnote")
   if (is.na(df$affiliation) || df$affiliation == "") {
     return(badge)
   }
-  org <- org$get_organisation
-  vapply(
-    names(org), FUN.VALUE = vector(mode = "list", length = 1L),
-    FUN = function(x) {
-      data.frame(domain = x, affiliation = org[[x]]$affiliation) |>
-        list()
-    }
-  ) |>
-    do.call(what = rbind) -> aff_domain
-  aff <- aff_domain$domain[aff_domain$affiliation == df$affiliation]
-  gsub(".*\\((.+)\\).*", "\\1", df$affiliation) |>
-    abbreviate() |>
-    c(aff) |>
-    tail(1) -> aff
+  if (grepl("\\(.+\\)", df$affiliation)) {
+    aff <- gsub(".*\\((.+)\\).*", "\\1", df$affiliation)
+  } else {
+    aff <- abbreviate(df$affiliation)
+  }
+
   sprintf("%s[^%s]", badge, aff) |>
     `attr<-`(
       which = "footnote",
       value = c(
-        attr(badge, "footnote"), sprintf("[^%s]: %s", aff, df$affiliation)
+        attr(badge, "footnote"),
+        sprintf("[^%s]: %s", aff, df$affiliation)
       )
     )
 }
 
-validate_author <- function(current, selected, org) {
-  assert_that(inherits(org, "organisation"))
-  org <- org$get_organisation
-  names(org) |>
-    gsub(pattern = "\\.", replacement = "\\\\.") |>
-    paste(collapse = "|") |>
-    sprintf(fmt = "@%s$") -> rg
-  if (!grepl(rg, current$email[selected], ignore.case = TRUE)) {
+validate_author <- function(current, selected, org, lang) {
+  assert_that(inherits(org, "org_list"))
+  affiliation <- org$get_name_by_domain(current$email[selected], lang = lang)
+  if (length(affiliation) == 0) {
     return(current)
   }
-  this_org <- org[gsub(".*@", "", current$email[selected])]
+  if (!current$affiliation[selected] %in% names(affiliation)) {
+    if (length(affiliation) == 1) {
+      current$affiliation[selected] <- names(affiliation)
+    } else {
+      menu_first(
+        choices = names(affiliation),
+        title = paste(
+          "Which organisation for the affiliation?",
+          "Update `organisation.yml` if not listed."
+        )
+      ) -> selected_affiliation
+      current$affiliation[selected] <- names(affiliation)[selected_affiliation]
+    }
+  }
   while (
-    this_org[[1]]$orcid &&
-      (is.na(current$orcid[selected]) || current$orcid[selected] == "")
+    affiliation[current$affiliation[selected]] && current$orcid[selected] == ""
   ) {
-    cat("\nAn ORCID is required for", names(this_org))
+    warning(
+      "\nAn ORCID is required for",
+      current$affiliation[selected],
+      immediate. = TRUE,
+      call. = FALSE
+    )
     current$orcid[selected] <- ask_orcid(prompt = "orcid: ")
   }
-  if (current$affiliation[selected] %in% this_org[[1]]$affiliation) {
-    return(current)
-  }
-  names(this_org[[1]]$affiliation) |>
-    menu_first(
-      title = sprintf(
-        "\nNon standard affiliation for `%s`.\n
-Which default language for the affiliation?",
-        names(this_org)
-      )
-    ) -> lang
-  current$affiliation[selected] <- this_org[[1]]$affiliation[lang]
   cat(
-    "given name: ", current$given[selected],
-    "\nfamily name:", current$family[selected],
-    "\ne-mail:     ", current$email[selected],
-    "\norcid:      ", current$orcid[selected],
-    "\naffiliation:", current$affiliation[selected]
+    "given name: ",
+    current$given[selected],
+    "\nfamily name:",
+    current$family[selected],
+    "\ne-mail:     ",
+    current$email[selected],
+    "\norcid:      ",
+    current$orcid[selected],
+    "\naffiliation:",
+    current$affiliation[selected]
   )
   return(current)
 }
@@ -291,7 +361,7 @@ validate_orcid <- function(orcid) {
     matrix(ncol = 1) -> powers
   apply(digits[-16, , drop = FALSE], 1, as.integer, simplify = FALSE) |>
     do.call(what = rbind) |>
-    crossprod(2 ^ powers) |>
+    crossprod(2^powers) |>
     as.vector() -> total
   remainder <- (12 - (total %% 11)) %% 11
   remainder <- as.character(remainder)

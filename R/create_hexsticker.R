@@ -28,8 +28,12 @@
 #' @importFrom fs path
 #' @importFrom utils browseURL
 create_hexsticker <- function(
-  package_name, filename = path("man", "figures", "logo.svg"), icon,
-  x = 0, y = 0, scale = 1
+  package_name,
+  filename = path("man", "figures", "logo.svg"),
+  icon,
+  x = 0,
+  y = 0,
+  scale = 1
 ) {
   assert_that(
     tolower(Sys.info()[["sysname"]]) != "darwin",
@@ -46,14 +50,18 @@ create_hexsticker <- function(
   svg_name$x <- svg_name$x + 260
   svg_name$y <- svg_name$y + 374
   svg_name <- sprintf(
-    "%s %.2f %.2f%s", svg_name$command, svg_name$x, svg_name$y,
+    "%s %.2f %.2f%s",
+    svg_name$command,
+    svg_name$x,
+    svg_name$y,
     c("", " Z")[c(0, diff(svg_name$path)) + 1]
   )
   svg_name <- sprintf(
     "  <g id=\"package: %s\">
     <path style=\"fill:#3C3D00\"  d=\"%s\"/>
   </g>",
-    package_name, paste(svg_name, collapse = " ")
+    package_name,
+    paste(svg_name, collapse = " ")
   )
   if (missing(icon)) {
     writeLines(c(head(base, -1), svg_name, tail(base, 1)), filename)
@@ -64,7 +72,11 @@ create_hexsticker <- function(
   icon_svg <- prepare_icon(icon)
   viewbox <- sprintf(
     "<svg viewBox=\"0 0 %s %s\" x=\"%.1f\" y=\"%.1f\" width=\"%.1f%%\">",
-    icon_svg$width, icon_svg$height, x, y, 100 * scale
+    icon_svg$width,
+    icon_svg$height,
+    x,
+    y,
+    100 * scale
   )
   dir.create(dirname(filename), recursive = TRUE, showWarnings = FALSE)
   writeLines(
@@ -134,10 +146,14 @@ prepare_icon <- function(icon) {
     height <- view_box[4]
   } else {
     width <- gsub(
-      ".*<svg.*width=\"(.*)p(t|x)\" height=\"(.*)p(t|x)\".*>", "\\1", base
+      ".*<svg.*width=\"(.*)p(t|x)\" height=\"(.*)p(t|x)\".*>",
+      "\\1",
+      base
     )
     height <- gsub(
-      ".*<svg.*width=\"(.*)p(t|x)\" height=\"(.*)p(t|x)\".*>", "\\3", base
+      ".*<svg.*width=\"(.*)p(t|x)\" height=\"(.*)p(t|x)\".*>",
+      "\\3",
+      base
     )
   }
   base <- gsub(".*<svg.*?>(.*)</svg>", "\\1", base)

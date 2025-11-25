@@ -37,6 +37,16 @@ organisation <- R6Class(
     #'   Use an empty list in case you don't want to set this.
     #' @importFrom assertthat assert_that is.string is.flag
     initialize = function(...) {
+      .Deprecated(
+        new = "org_list$new()",
+        package = "checklist",
+        msg = paste(
+          c(
+            "The `organisation` class is deprecated.",
+            "Please use the `org_list` class instead."
+          )
+        )
+      )
       dots <- list(...)
       private$community <- use_first_non_null(dots$community, "inbo")
       stopifnot("`community` must be a string" = is.string(private$community))
@@ -45,11 +55,13 @@ organisation <- R6Class(
       private$github <- use_first_non_null(dots$github, "inbo")
       stopifnot("`github` must be a string" = is.string(private$github))
       private$funder <- use_first_non_null(
-        dots$funder, "Research Institute for Nature and Forest (INBO)"
+        dots$funder,
+        "Research Institute for Nature and Forest (INBO)"
       )
       stopifnot("`funder` must be a string" = is.string(private$funder))
       private$rightsholder <- use_first_non_null(
-        dots$rightsholder, "Research Institute for Nature and Forest (INBO)"
+        dots$rightsholder,
+        "Research Institute for Nature and Forest (INBO)"
       )
       stopifnot(
         "`rightsholder` must be a string" = is.string(private$rightsholder)
@@ -69,12 +81,14 @@ organisation <- R6Class(
         orcid = TRUE
       )
       stopifnot(
-        "`organisation` must be a named list or NULL" =
-          !is.null(names(private$organisation)) &&
+        "`organisation` must be a named list or NULL" = !is.null(names(
+          private$organisation
+        )) &&
           all(names(private$organisation) != "")
       )
       vapply(
-        names(private$organisation), FUN.VALUE = logical(1),
+        names(private$organisation),
+        FUN.VALUE = logical(1),
         FUN = function(x) {
           assert_that(
             is.list(private$organisation[[x]]),
@@ -129,23 +143,32 @@ organisation <- R6Class(
     print = function(...) {
       dots <- list(...)
       c(
-        "rightsholder:  %s", "funder:        %s", "organisation email:  %s",
-        "GitHub organisation: %s", "Zenodo community:    %s",
+        "rightsholder:  %s",
+        "funder:        %s",
+        "organisation email:  %s",
+        "GitHub organisation: %s",
+        "Zenodo community:    %s",
         "email domain settings"
       ) |>
         paste(collapse = "\n") |>
         sprintf(
-          self$get_rightsholder, self$get_funder, self$get_email,
-          self$get_github, self$get_community
+          self$get_rightsholder,
+          self$get_funder,
+          self$get_email,
+          self$get_github,
+          self$get_community
         ) |>
         cat()
       org <- self$get_organisation
       for (domain in names(org)) {
         cat(
-          "\n-", domain, "\n  mandatory ORCID iD"[org[[domain]]$orcid],
+          "\n-",
+          domain,
+          "\n  mandatory ORCID iD"[org[[domain]]$orcid],
           "\n  affiliations",
           sprintf(
-            "\n    %s: %s", names(org[[domain]]$affiliation),
+            "\n    %s: %s",
+            names(org[[domain]]$affiliation),
             org[[domain]]$affiliation
           )
         )
@@ -158,7 +181,8 @@ organisation <- R6Class(
     #' @importFrom utils person
     as_person = function() {
       person(
-        given = private$rightsholder, email = private$email,
+        given = private$rightsholder,
+        email = private$email,
         role = c("cph", "fnd")
       )
     },
@@ -189,9 +213,12 @@ organisation <- R6Class(
     #' @field template A list for a check list template.
     template = function() {
       list(
-        community = private$community, email = private$email,
-        github = private$github, funder = private$funder,
-        rightsholder = private$rightsholder, organisation = private$organisation
+        community = private$community,
+        email = private$email,
+        github = private$github,
+        funder = private$funder,
+        rightsholder = private$rightsholder,
+        organisation = private$organisation
       )
     }
   ),
