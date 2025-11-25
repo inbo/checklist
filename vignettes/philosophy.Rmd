@@ -7,13 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 Everybody develops its own coding habits and style.
 Some people take a lot of effort in making their source code [readable](https://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code), while others don't bother at all.
 Working together with other people is easier when everyone uses the same standard.
@@ -78,6 +71,15 @@ Therefore you must increase the version of the package in the `DESCRIPTION` file
 ## Extensive report on checks
 
 Both `check_package()` and `check_project()` generate an extensive report on the checks that were performed.
+The report contains the following sections:
+
+- used organisation settings
+- output of the individual checks
+- extracted citation metadata
+- list of files for spell checking, aggregated by language
+- session info with loaded packages and their version
+- any changes made to files during the checks
+- a summary of errors, warnings and notes
 
 ### Errors, warnings and notes
 
