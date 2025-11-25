@@ -93,7 +93,6 @@ create_package <- function(package, path = ".") {
     repo = repo,
     filename = "rproj.template",
     template = "package_template",
-    target = path,
     new_name = paste0(package, ".Rproj")
   )
 
@@ -102,7 +101,6 @@ create_package <- function(package, path = ".") {
     repo = repo,
     filename = "gitignore",
     template = "generic_template",
-    target = path,
     new_name = ".gitignore"
   )
 
@@ -111,7 +109,6 @@ create_package <- function(package, path = ".") {
     repo = repo,
     filename = "rbuildignore",
     template = "package_template",
-    target = path,
     new_name = ".Rbuildignore"
   )
 
@@ -119,8 +116,7 @@ create_package <- function(package, path = ".") {
   insert_file(
     repo = repo,
     filename = "codecov.yml",
-    template = "package_template",
-    target = path
+    template = "package_template"
   )
 
   # add NEWS.md
@@ -155,13 +151,12 @@ create_package <- function(package, path = ".") {
   git_add("LICENSE.md", repo = repo)
 
   # Add code of conduct
-  target <- path(path, ".github")
-  dir_create(target)
+  dir_create(path(path, ".github"))
   insert_file(
     repo = repo,
     filename = "CODE_OF_CONDUCT.md",
     template = "generic_template",
-    target = target
+    target = ".github"
   )
 
   # Add contributing guidelines
@@ -169,12 +164,12 @@ create_package <- function(package, path = ".") {
     repo = repo,
     filename = "CONTRIBUTING.md",
     template = "generic_template",
-    target = target
+    target = ".github"
   )
 
   # Add GitHub actions
-  target <- path(path, ".github", "workflows")
-  dir_create(target)
+  target <- path(".github", "workflows")
+  dir_create(path(path, target))
   insert_file(
     repo = repo,
     filename = "check_on_branch.yml",
@@ -269,15 +264,16 @@ on_failure(valid_package_name) <- function(call, env) {
 
 #' @importFrom fs file_copy path
 #' @importFrom gert git_add
-insert_file <- function(repo, filename, template, target, new_name) {
+insert_file <- function(repo, filename, template, target = ".", new_name) {
   if (missing(new_name)) {
-    new_name <- path(target, filename)
-  } else {
+    new_name <- filename
+  }
+  if (target != ".") {
     new_name <- path(target, new_name)
   }
   path(template, filename) |>
     system.file(package = "checklist") |>
-    file_copy(new_name, overwrite = TRUE)
+    file_copy(path(repo, new_name), overwrite = TRUE)
   if (is.null(repo)) {
     return(invisible(NULL))
   }

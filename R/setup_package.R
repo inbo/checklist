@@ -74,7 +74,6 @@ setup_package <- function(path = ".") {
       repo = path,
       filename = "gitignore",
       template = "generic_template",
-      target = path,
       new_name = ".gitignore"
     )
   }
@@ -95,7 +94,6 @@ setup_package <- function(path = ".") {
       repo = path,
       filename = "rbuildignore",
       template = "package_template",
-      target = path,
       new_name = ".Rbuildignore"
     )
   }
@@ -104,8 +102,7 @@ setup_package <- function(path = ".") {
   insert_file(
     repo = path,
     filename = "codecov.yml",
-    template = "package_template",
-    target = path
+    template = "package_template"
   )
 
   # add NEWS.md
@@ -149,13 +146,13 @@ setup_package <- function(path = ".") {
   git_add("LICENSE.md", force = TRUE, repo = path)
 
   # Add code of conduct
-  target <- path(path, ".github")
-  dir_create(target)
+  path(path, ".github") |>
+    dir_create()
   insert_file(
     repo = path,
     filename = "CODE_OF_CONDUCT.md",
     template = "generic_template",
-    target = target
+    target = ".github"
   )
 
   # Add contributing guidelines
@@ -163,35 +160,35 @@ setup_package <- function(path = ".") {
     repo = path,
     filename = "CONTRIBUTING.md",
     template = "generic_template",
-    target = target
+    target = ".github"
   )
 
   # Add GitHub actions
-  target <- path(path, ".github", "workflows")
-  dir_create(target)
+  path(path, ".github", "workflows") |>
+    dir_create()
   insert_file(
     repo = path,
     filename = "check_on_branch.yml",
     template = "package_template",
-    target = target
+    target = path(".github", "workflows")
   )
   insert_file(
     repo = path,
     filename = "check_on_main.yml",
     template = "package_template",
-    target = target
+    target = path(".github", "workflows")
   )
   insert_file(
     repo = path,
     filename = "check_on_different_r_os.yml",
     template = "package_template",
-    target = target
+    target = path(".github", "workflows")
   )
   insert_file(
     repo = path,
     filename = "release.yml",
     template = "package_template",
-    target = target
+    target = path(".github", "workflows")
   )
 
   # Add pkgdown website

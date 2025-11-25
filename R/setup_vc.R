@@ -33,13 +33,13 @@ setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
   git_add(".gitignore", force = TRUE, repo = path)
 
   # Add GitHub actions
-  target <- path(path, ".github", "workflows")
-  dir_create(target)
+  path(path, ".github", "workflows") |>
+    dir_create()
   insert_file(
     repo = path,
     filename = "check_project.yml",
     template = "project_template",
-    target = target
+    target = path(".github", "workflows")
   )
 
   add_code_conduct(path, use_cc = use_cc)
@@ -54,12 +54,11 @@ add_code_conduct <- function(path, use_cc) {
   if (missing(use_cc)) {
     use_cc <- ask_yes_no("Add default code of conduct?")
   }
-  target <- path(path, ".github")
   insert_file(
     repo = path,
     filename = "CODE_OF_CONDUCT.md",
     template = "generic_template",
-    target = target
+    target = ".github"
   )
   return(path)
 }
@@ -71,12 +70,11 @@ add_contributing_guidelines <- function(path, use_cg) {
   if (missing(use_cg)) {
     use_cg <- ask_yes_no("Add default contributing guidelines?")
   }
-  target <- path(path, ".github")
   insert_file(
     repo = path,
     filename = "CONTRIBUTING.md",
     template = "generic_template",
-    target = target
+    target = ".github"
   )
   return(path)
 }
