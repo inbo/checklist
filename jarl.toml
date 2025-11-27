@@ -1,0 +1,5 @@
+[lint]
+select = ["CORR", "PERF", "SUSP", "READ"]
+ignore = ["assignment"]
+default-exclude = true
+assignment = "<-"

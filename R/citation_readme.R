@@ -272,7 +272,7 @@ readme_author <- function(text, org, lang) {
       !all(aff_code_check)
     ],
     "Persons or insitutions without defined role in README.md."[
-      any(vapply(roles, length, integer(1)) == 0)
+      any(lengths(roles) == 0)
     ]
   )
 

@@ -298,7 +298,7 @@ append_communities <- function(desc, org) {
 }
 
 ask_keywords <- function() {
-  while (TRUE) {
+  repeat {
     readline(prompt = "Enter one or more keywords separated by `;` ") |>
       strsplit(";") |>
       unlist() |>

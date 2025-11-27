@@ -100,7 +100,7 @@ strip_eqn <- function(text) {
   c("deqn", "doi", "eqn", "mathbf", "pkg", "emph", "href") |>
     paste(collapse = "|") -> tags
   find_regexp <- sprintf("\\\\(%s)\\s*\\{.*?\\}", tags)
-  which_eqn <- which(grepl(find_regexp, text))
+  which_eqn <- grep(find_regexp, text)
   if (length(which_eqn) == 0) {
     return(text)
   }

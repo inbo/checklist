@@ -83,7 +83,7 @@ checklist_extract <- function(x, name = "value", prefix = rep("", length(x))) {
 }
 
 checklist_format_error <- function(errors) {
-  error_length <- vapply(errors, length, integer(1))
+  error_length <- lengths(errors)
   vapply(
     names(errors)[error_length > 0],
     function(x) {

@@ -103,7 +103,7 @@ menu_first <- function(choices, graphics = FALSE, title = NULL) {
 update_author <- function(current, selected, root, org, lang) {
   original <- current
   item <- c("given", "family", "email", "orcid", "affiliation")
-  while (TRUE) {
+  repeat {
     current <- validate_author(
       current = current,
       selected = selected,
@@ -349,7 +349,7 @@ validate_author <- function(current, selected, org, lang) {
 validate_orcid <- function(orcid) {
   assert_that(is.character(orcid), noNA(orcid))
   format_ok <- grepl("^(\\d{4}-){3}\\d{3}[\\dX]$", orcid, perl = TRUE)
-  if (all(!format_ok)) {
+  if (!any(format_ok)) {
     return(orcid == "" | format_ok)
   }
   gsub("-", "", orcid[format_ok]) |>
