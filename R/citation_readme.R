@@ -98,6 +98,23 @@ readme_badges <- function(text) {
     meta <- list(doi = doi)
   }
 
+  license_regexp <- paste0(
+    "\\[\\!\\[(.*?)\\]\\(https:\\/\\/img\\.shields\\.io\\/badge\\/",
+    "License-.*?-brightgreen\\)\\]\\(.*?\\)"
+  )
+  license_line <- grep(license_regexp, badges)
+  errors <- c(
+    errors,
+    "multiple license badges found in README.md"[length(license_line) > 1]
+  )
+  notes <- c(
+    notes,
+    "no standard license badge found in README.md"[length(license_line) == 0]
+  )
+  if (length(license_line) == 1) {
+    meta$license <- gsub(license_regexp, "\\1", badges[license_line])
+  }
+
   paste0(
     "\\[!\\[website\\]\\(https://img.shields.io/badge/website-(.*?)-c04384\\)",
     "\\]\\((.*)\\)"
