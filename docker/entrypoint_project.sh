@@ -6,9 +6,19 @@ cd check
 git config advice.detachedHead false
 git checkout $GITHUB_SHA
 
+
+if [ ! -z "$INPUT_APTGET" ]; then
+  apt-get update
+  apt-get install -y --no-install-recommends $INPUT_APTGET
+fi
+
+if [ -f renv.lock ]; then
+  Rscript --no-save --no-restore --no-init-file -e 'renv::restore()'
+fi
+
 if [ -n "$INPUT_CRAN" ]; then
   CRAN='remotes::install_cran('${INPUT_CRAN}', upgrade = "always")'
-  Rscript --no-save --no-restore -e "$CRAN"
+  Rscript --no-save --no-restore --no-init-file -e "$CRAN"
 fi
 Rscript --no-save --no-restore --no-init-file -e 'install.packages(checklist:::list_missing_packages())'
 
