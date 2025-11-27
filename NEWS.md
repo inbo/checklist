@@ -1,3 +1,8 @@
+# checklist 0.5.1
+
+* bugfix in `check_license()` which failed when no correct license information
+  is available in `README.md`.
+
 # checklist 0.5.0
 
 ## Breaking changes
