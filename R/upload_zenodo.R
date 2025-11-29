@@ -117,7 +117,7 @@ zen_upload <- function(zenodo, zen_rec, path, community = NULL) {
     return(zen_rec)
   }
 
-  zenodo$createReviewRequest(
+  req <- zenodo$createReviewRequest(
     record = zen_rec,
     community = unlist(head(community, 1))
   )
@@ -128,6 +128,7 @@ zen_upload <- function(zenodo, zen_rec, path, community = NULL) {
       "More information at https://inbo.github.io/checklist/."
     )
   )
+  attr(zen_rec, "review_request_id") <- req$id
   if (length(community) > 1) {
     cli_alert_warning("Remember to add the additional communities.")
   }

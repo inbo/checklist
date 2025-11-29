@@ -51,19 +51,13 @@ test_that("bookdown_zenodo() works", {
     )
   )
   sink()
-  skip_on_os(os = "mac")
-  skip_on_os(os = "windows")
   manager <- zen4R::ZenodoManager$new(sandbox = TRUE, token = sandbox_token)
-  zen_com <- manager$getCommunityById("checklist")
-  sprintf(
-    "status:submitted AND receiver.community:%s AND topic.record:%s",
-    zen_com$id,
-    x$id
-  ) |>
-    manager$getRequests() -> reqs
   expect_true(
-    manager$cancelRequest(reqs[[1]]$id),
-    label = paste("Failed to delete review request", reqs[[1]]$id)
+    manager$cancelRequest(attr(x, "review_request_id")),
+    label = paste(
+      "Failed to delete review request",
+      attr(x, "review_request_id")
+    )
   )
   expect_true(
     manager$deleteRecord(x$id),
