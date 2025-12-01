@@ -1,3 +1,8 @@
+# checklist 0.5.2
+
+* Only create the contributing guidelines or code of conduct file when the
+  user answers "yes" on the related questions.
+
 # checklist 0.5.1
 
 * bugfix in `check_license()` which failed when no correct license information
