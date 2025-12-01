@@ -1,0 +1,108 @@
+# Coding style rules
+
+## Coding style
+
+The most visible part of a coding style is the naming convention. People
+use many different styles of naming conventions within the R ecosystem
+(Bååth 2012). Popular ones are `alllowercase`, `period.separated`,
+`underscore_separated`, `lowerCamelCase` and `UpperCamelCase`.
+
+## `checklist` default
+
+We picked `underscore_separated` because that is the naming convention
+of the [`tidyverse`](https://tidyverse.org/) packages. It is also the
+default setting in the
+[`lintr`](https://github.com/r-lib/lintr/blob/master/README.md) package
+which we use to do the [static code
+analysis](https://en.wikipedia.org/wiki/Static_program_analysis).
+
+At first this seems a lot to memorise. RStudio makes things easier when
+you activate all diagnostic options (*Tools* \> *Global options* \>
+*Code* \> *Diagnostics*). This highlights several problems by showing a
+squiggly line and/or a warning icon at the line number. Instead of
+learning all the rules by heart, run
+[`check_lintr()`](https://inbo.github.io/checklist/reference/check_lintr.md)
+regularly and fix any issues that come up. Do this when working on every
+single project. Doing so enforces you to consistently use the same
+coding style, making it easy to learn and use it.
+
+### Rules for coding style
+
+- `underscore_separated` names for functions, parameters and variables.
+- A line of code or comments must be no longer than 80 characters. Pro
+  tip: have RStudio display this margin in the editor. *Tools* \>
+  *Global options* \> *Code* \> *Display* \> *Show margin*
+- Object names must not be longer than 30 characters.
+- Start a new line
+  - after the pipe (`|>` or `%>%`)
+  - never before but always after `{`
+  - before `}`
+- Use spaces instead of tabs. Pro tip: make RStudio place 2 spaces when
+  you hit the tab key. *Tools* \> *Global options* \> *Code* \>
+  *Editing* \> *Insert spaces for tabs*
+- Use spaces consistently
+  - Use exactly one space before and after
+    - assignments `<-`, `->`, `=`
+    - operators like `+`, `-`,`*`, `/`, …
+  - No space before and one space after `,`
+  - No space after or before `(` or `[`
+    - except in constructs like `if ()`, `for ()`, `while ()`
+  - One space between `)` and `{`, e.g. `function () {`
+- Use double quotes (`"`) to define character strings.
+- No trailing whitespace
+  - spaces at the end of a line
+  - blank lines at the end of the script
+
+Pro tip: We strongly recommend to use
+[Air](https://tidyverse.org/blog/2025/02/air/) to format your code
+automatically when saving the file. This works in 99.9% of the cases and
+saves you a lot of time.
+
+### Static code analysis checks
+
+- Is an object defined before you use it?
+- Do you use an object after you defined it?
+- Use `<-` or `->` to assign something. Only use `=` to pass arguments
+  to a function (e.g. `check_package(fail = TRUE)`).
+- Use `is.na(x)` instead of `x == NA`.
+- Use [`seq_len()`](https://rdrr.io/r/base/seq.html) or
+  [`seq_along()`](https://rdrr.io/r/base/seq.html) instead of
+  `1:length(x)`, `1:nrow(x)`, … Advantage: when `length(x) == 0`,
+  `1:length(x)` yields `c(1, 0)`, whereas `seq_along(x)` would yield an
+  empty vector.
+- Don’t store code in comments. If you don’t want to lose code, use
+  version control systems like [`git`](https://git-scm.com/). If it is
+  code that you need to run only under special circumstances, then
+  either put the code in a separate script and run is manually or write
+  an if-else were you run the code automatically when needed.
+- Avoid code with lots of nested loops or if statements. If the code is
+  too complex, you’ll get a warning that the [cyclomatic
+  complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) is
+  too high. Tips for reducing the code complexity:
+  - Use
+    [`assertthat::assert_that()`](https://rdrr.io/pkg/assertthat/man/assert_that.html)
+    to validate object or conditions instead of `if() stop()`.
+  - See if you can use [`ifelse()`](https://rdrr.io/r/base/ifelse.html)
+    instead of `if()`.
+  - Split the main function of your code over sub functions.
+  - Don’t use else if not strictly necessary. Use [early
+    returns](https://dev.to/abgeo/improve-code-readability-with-early-returns-54ag)
+    when ever possible.
+
+## Using a different coding style
+
+`checklist` allows you to define your own set of linters at the
+organisation level. To do so, create a `.lintr` file in the root of your
+organisations’ `checklist` repository. This allows for a different
+coding style that better fits your organisation, but still enforces the
+same style within your organisation.
+
+In case there is no `checklist` repository in your organisation, or
+there is no `.lintr` file in it, `checklist` looks for a local `.lintr`
+file in the root of your project. If this file is not present, it uses
+the default `.lintr` file provided with the `checklist` package.
+
+## References
+
+Bååth, Rasmus. 2012. “The State of Naming Conventions in R.” *The R
+Journal* 4 (December): 2. <https://doi.org/10.32614/RJ-2012-018>.
