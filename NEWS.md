@@ -1,3 +1,12 @@
+# checklist 0.5.1
+
+* bugfix in `check_license()` which failed when no correct license information
+  is available in `README.md` (#166).
+* The `check_project` GitHub Action now restores the R environment using `renv`
+  when a `renv.lock` file is present.
+  It also gains an `APTGET` argument to install system dependencies via
+  `apt-get`.
+
 # checklist 0.5.0
 
 ## Breaking changes

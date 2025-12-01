@@ -142,7 +142,7 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
     return(result)
   }
   problems <- hunspell(text = text, dict = wordlist)
-  relevant <- which(vapply(problems, length, integer(1)) > 0)
+  relevant <- which(lengths(problems) > 0)
   if (length(relevant) == 0) {
     result <- data.frame(
       type = character(0),

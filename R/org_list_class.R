@@ -57,9 +57,7 @@ org_list <- R6Class(
         }
       ) |>
         unname() -> licenses
-      licenses <- licenses[
-        vapply(licenses, FUN.VALUE = integer(1), FUN = length) > 0
-      ]
+      licenses <- licenses[lengths(licenses) > 0]
       # fmt: skip
       stopifnot(
         "multiple rightholders with license requirements not yet handled" =
@@ -895,11 +893,11 @@ ol_check <- function(local_org, x) {
     sprintf(
       "organisation with different rule for rightholder",
       paste(names(local_rightsholder), sep = "\n")
-    )[length(local_rightsholder > 0)],
+    )[length(local_rightsholder) > 0],
     sprintf(
       "organisation with different rule for funder",
       paste(names(local_funder), sep = "\n")
-    )[length(local_funder > 0)]
+    )[length(local_funder) > 0]
   )
 }
 
@@ -924,7 +922,8 @@ download_licenses <- function(listed_licenses, x) {
         download.file(
           url = z["remote_file"],
           destfile = path(x, z["local_file"]),
-          quiet = TRUE
+          quiet = TRUE,
+          mode = "wb"
         )
       },
       x = x

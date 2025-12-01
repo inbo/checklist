@@ -45,7 +45,7 @@ clean_git <- function(repo = ".", verbose = TRUE) {
   ]
 
   # fix local branches
-  if (!all(!branch_info$local)) {
+  if (any(branch_info$local)) {
     # local branches with upstream
     upstream_df <- branch_info[!is.na(branch_info$upstream), ]
 

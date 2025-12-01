@@ -12,7 +12,7 @@ linters: list(
     line_length_linter(length = 80L),
     object_length_linter(length = 30L),
     object_name_linter(styles = "snake_case"),
-    object_usage_linter(interpret_glue = TRUE),
+    object_usage_linter(),
     paren_body_linter(),
     pipe_continuation_linter(),
     quotes_linter(delimiter = "\""),

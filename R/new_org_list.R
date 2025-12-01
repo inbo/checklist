@@ -12,7 +12,7 @@ new_org_list <- function(git) {
   available <- get_available_organisations()
   rf_option <- c("optional", "single", "shared", "when no other")
   orgs <- list()
-  while (TRUE) {
+  repeat {
     names(available$names) |>
       c("Other") |>
       menu_first(title = "Select the organisation's email") -> selected
@@ -110,7 +110,7 @@ new_org_item <- function(languages, licenses) {
 ask_new_license <- function(licenses, type = c("package", "project", "data")) {
   type <- match.arg(type)
   license <- character(0)
-  while (TRUE) {
+  repeat {
     license_choices <- c(names(licenses), "Other license", "No license")
     license_selected <- menu_first(
       choices = license_choices,
@@ -143,7 +143,7 @@ ask_new_license <- function(licenses, type = c("package", "project", "data")) {
 }
 
 ask_email <- function(prompt) {
-  while (TRUE) {
+  repeat {
     email <- readline(prompt = prompt)
     if (validate_email(email)) {
       break
@@ -166,7 +166,7 @@ validate_ror <- function(ror) {
 }
 
 ask_ror <- function(prompt) {
-  while (TRUE) {
+  repeat {
     ror <- readline(prompt = prompt)
     if (ror == "" || validate_ror(ror)) {
       break
@@ -181,7 +181,7 @@ ask_ror <- function(prompt) {
 }
 
 ask_url <- function(prompt) {
-  while (TRUE) {
+  repeat {
     url <- readline(prompt = prompt)
     if (url == "" || validate_url(url)) {
       break

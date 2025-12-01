@@ -262,6 +262,14 @@ check_license <- function(x = ".", org) {
       "No standard license badge found in README.md"[length(which_badge) == 0],
       "Multiple license badges found in README.md"[length(which_badge) > 1]
     ) -> problems
+    if (length(problems)) {
+      x$add_error(
+        errors = problems,
+        item = "license",
+        keep = FALSE
+      )
+      return(x)
+    }
     gsub(regex, "\\2", readme[which_badge]) |>
       setNames(gsub(regex, "\\1", readme[which_badge])) -> current_license
     regex <- ".*mailto:(.*?)\\)\\[\\^cph\\].*"

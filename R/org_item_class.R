@@ -149,7 +149,7 @@ org_item <- R6Class(
         "`name` cannot have empty names" = all(names(name) != ""),
         "`name` cannot have empty values" = noNA(name),
         "`orcid` must be `TRUE` or `FALSE`" = is.flag(orcid),
-        "`orcid` must be `TRUE` or `FALSE`" = noNA(orcid)
+        "`orcid` cannot be `NA`" = noNA(orcid)
       )
       validate_license(license)
       private$name <- name
@@ -318,7 +318,7 @@ org_item <- R6Class(
         funder = private$funder,
         license = lapply(private$license, as.list)
       )
-      relevant <- vapply(organisation, length, FUN.VALUE = integer(1)) > 0
+      relevant <- lengths(organisation) > 0
       organisation[relevant]
     },
     #' @field get_zenodo The organisation Zenodo community.

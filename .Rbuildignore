@@ -17,6 +17,7 @@
 ^docker$
 ^docker-compose.test.yml$
 ^docs$
+^jarl.toml$
 ^man-roxygen$
 ^organisation.yml$
 ^pkgdown$

@@ -16,6 +16,7 @@ setup_project <- function(path = ".") {
   if (is_file(checklist_file)) {
     x <- read_checklist(path)
     language <- x$default
+    org <- org_list$new()$read(path)
   } else {
     if (is_repository(path)) {
       git <- git_remote_list(path)$url

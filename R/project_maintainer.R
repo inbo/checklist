@@ -63,6 +63,7 @@ project_maintainer <- function(org, lang) {
     sort() -> footnote
   list(
     authors = c(author, unlist(extra)) |>
+      paste(collapse = ";\n") |>
       `attr<-`(which = "footnote", value = footnote) |>
       `attr<-`(
         which = "zenodo",

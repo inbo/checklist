@@ -198,8 +198,8 @@ check_news <- function(x) {
   blank_line_after <- news_file[headings + 1] == ""
   doc_error <- c(
     doc_error,
-    "NEWS.md needs a blank line before each heading."[any(!blank_line_before)],
-    "NEWS.md needs a blank line after each heading."[any(!blank_line_after)]
+    "NEWS.md needs a blank line before each heading."[!all(blank_line_before)],
+    "NEWS.md needs a blank line after each heading."[!all(blank_line_after)]
   )
   # remove headings and the surrounding blank lines
   news_file <- news_file[
