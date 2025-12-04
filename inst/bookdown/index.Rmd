@@ -15,7 +15,7 @@ reviewer:
     email: carberry@junk.com
     orcid: 0000-0002-1825-0097
     affiliation: Wesleyan University
-lang: nl
+lang: nl-BE
 keywords: checklist; unit test
 community: checklist; inbo
 publication_type: publication-report
