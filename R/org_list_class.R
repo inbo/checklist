@@ -740,6 +740,9 @@ ssh_http <- function(url) {
 
 git_org <- function(x = ".") {
   if (!is_repository(x)) {
+    if (file_exists(path(x, "organisation.yml"))) {
+      return(org_list$new()$read(x))
+    }
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   remotes <- git_remote_list(repo = x)
@@ -760,12 +763,18 @@ git_org <- function(x = ".") {
     org$write(x)
     return(org)
   }
+
   message(
-    "no local `org_list` information found.",
-    "See ?get_default_org_list",
-    "Using default settings."
+    "no local `org_list` information found. ",
+    "See ?get_default_org_list. ",
+    "\nYou can ignore this message when ",
+    url,
+    "/checklist doesn't exists."
   )
-  return(org_list$new(org_item$new(email = "info@inbo.be")))
+  if (file_exists(path(x, "organisation.yml"))) {
+    return(org_list$new()$read(x))
+  }
+  return(org_list$new(org_item$new(email = "info@inbo.be"), git = url))
 }
 
 inbo_org_list <- function() {
