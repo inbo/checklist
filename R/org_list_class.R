@@ -489,8 +489,19 @@ ol_validate_rules <- function(
     required_rule(which_person = which_person, type, person),
     # fmt:skip
     sprintf("incompatible rules for `%s`", type)[
-      !(items[[unlist(person$email)]]$get_rightsholder |>
-          ol_valid_rules())
+      !vapply(
+        person$email,
+        FUN.VALUE = logical(1),
+        FUN = function(i, items) {
+          switch(
+            type,
+            "rightsholder" = items[[i]]$get_rightsholder,
+            items[[i]]$get_funder
+          ) |>
+            ol_valid_rules()
+        },
+        items = items
+      )
     ]
   )
 }
