@@ -67,7 +67,8 @@ check_spelling <- function(x = ".", quiet = FALSE) {
       return(list(c(md_issues, rd_issues, r_issues)))
     }
   )
-  if (length(issues) == 0) {
+  issues <- do.call(rbind, unlist(issues, recursive = FALSE))
+  if (is.null(issues)) {
     issues <- data.frame(
       type = character(0),
       file = character(0),
@@ -77,8 +78,6 @@ check_spelling <- function(x = ".", quiet = FALSE) {
       language = character(0)
     )
     class(issues) <- c("checklist_spelling", class(issues))
-  } else {
-    issues <- do.call(rbind, unlist(issues, recursive = FALSE))
   }
   rownames(issues) <- NULL
   attr(issues, "checklist_path") <- x$get_path
