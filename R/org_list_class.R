@@ -182,7 +182,7 @@ org_list <- R6Class(
         "`git` cannot contain multiple values" = length(git) <= 1,
         "`git` cannot contain `NA`" = noNA(git),
         "`git` must be a valid URL to an organisation or user" = grepl(
-          "^https:\\/\\/[\\w\\.]+?\\/\\w+$",
+          "^https:\\/\\/[\\w\\.]+?\\/[\\w-]+$",
           git,
           perl = TRUE
         )
