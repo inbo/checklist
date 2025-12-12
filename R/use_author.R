@@ -43,7 +43,12 @@ use_author <- function(email, lang) {
       next
     }
     if (selected > nrow(current)) {
-      current <- new_author(current = current, root = root, org = org)
+      current <- new_author(
+        current = current,
+        root = root,
+        org = org,
+        lang = lang
+      )
     }
     current <- validate_author(
       current = current,
