@@ -69,14 +69,14 @@ create_readme <- function(
         fmt = paste0(
           "[![Release](https://img.shields.io/github/release/%1$s.svg)]",
           "(https://github.com/%1$s/releases)\n",
-          "![GitHub Workflow Status](https://github.com/%1$s/actions/workflows/check_%3$s.yml/badge.svg)\n",
+          "![GitHub Workflow Status](https://github.com/%1$s/actions/",
+          "workflows/check_%2$s.yml/badge.svg)\n",
           "![GitHub repo size](https://img.shields.io/github/repo-size/%1$s)\n",
           "![GitHub code size in bytes](https://img.shields.io/github/",
           "languages/code-size/%1$s.svg)"
         ),
         paste(repo_org, repo_name, sep = "/"),
-        type,
-        ifelse(type == "package", "on_main", "project"),
+        ifelse(type == "package", "on_main", "project")
       )[grepl("github.com", repo_url)],
       sprintf(
         paste0(
