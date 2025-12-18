@@ -249,25 +249,38 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   # remove LaTeX commands
   text <- gsub("\\\\\\w+", "", text)
   # remove Markdown figuren
-  text <- gsub(
-    "!\\[((.|\n)*?)\\]\\(.*?\\)(\\{.*?\\})?\\\\?",
-    " \\1 ",
-    text,
+  text <- mlgsub(
+    pattern = paste0(
+      "\\!\\[([\\w\\s\\d:,;\\.\\!\\?\\\\\\/\\(\\)-]*?)\\]",
+      "\\((.|\\s)*?\\)(\\{(.|\\s)*?\\})?\\\\?"
+    ),
+    replacement = " \\1 ",
+    x = text,
     perl = TRUE
   )
-  # remove text between matching back ticks on the same line
-  text <- gsub("\\`.+?\\`", "", text, perl = TRUE)
   # remove Markdown urls
-  text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub(
-    "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+",
-    "",
-    text,
+  text <- mlgsub(
+    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)\\\\\\/-]*?)\\]\\(.+?\\)",
+    replacement = " \\1 ",
+    x = text,
+    perl = TRUE
+  )
+  text <- mlgsub(
+    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)\\\\\\/-]*?)\\]\\(.+?\\)",
+    replacement = " \\1 ",
+    x = text,
+    perl = TRUE
+  )
+  text <- mlgsub(
+    pattern = "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+",
+    replacement = "",
+    x = text,
     perl = TRUE
   )
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
+  # remove text between matching back ticks on the same line
+  text <- gsub("\\`.+?\\`", "", text, perl = TRUE)
   # remove markdown comments
   text <- gsub("<!--.*?-->", "", text)
   # remove markdown superscript
@@ -440,4 +453,11 @@ spelling_parse_md_yaml <- function(text) {
   text[header][grepl("^shorttitle", text[header])] <- ""
   text[header] <- gsub(".*?:(.*)", "\\1", text[header])
   return(text)
+}
+
+mlgsub <- function(pattern, replacement, x, ...) {
+  paste(x, collapse = "\n") |>
+    gsub(pattern = pattern, replacement = replacement, ...) |>
+    strsplit(split = "\n") |>
+    unlist()
 }
