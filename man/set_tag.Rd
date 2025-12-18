@@ -23,6 +23,7 @@ This tag will turn into a release.
 Other git: 
 \code{\link{clean_git}()},
 \code{\link{create_draft_pr}()},
+\code{\link{get_branches_tags}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()}

@@ -27,6 +27,7 @@ Then it creates the new branch from the (updated) main branch.
 Other git: 
 \code{\link{clean_git}()},
 \code{\link{create_draft_pr}()},
+\code{\link{get_branches_tags}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{set_tag}()}

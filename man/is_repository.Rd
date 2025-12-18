@@ -22,6 +22,7 @@ then the parent's parent, and so on.
 Other git: 
 \code{\link{clean_git}()},
 \code{\link{create_draft_pr}()},
+\code{\link{get_branches_tags}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},
 \code{\link{set_tag}()}
