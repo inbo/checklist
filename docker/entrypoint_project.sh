@@ -20,7 +20,11 @@ if [ -n "$INPUT_CRAN" ]; then
   CRAN='remotes::install_cran('${INPUT_CRAN}', upgrade = "always")'
   Rscript --no-save --no-restore --no-init-file -e "$CRAN"
 fi
-Rscript --no-save --no-restore --no-init-file -e 'install.packages(checklist:::list_missing_packages())'
+Rscript --no-save --no-restore --no-init-file -e 'options(warn = 2); install.packages(checklist:::list_missing_packages(), quiet = TRUE)'
+if [ $? -ne 0 ]; then
+  echo '\nFailed to install missing packages. Please check the error message above.\n';
+  exit 1
+fi
 
 echo '\nGetting the organisation settting...\n'
 Rscript --no-save --no-restore --no-init-file -e 'checklist::get_default_org_list()'

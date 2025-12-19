@@ -31,7 +31,7 @@ ROXYGEN_LINE=$(cat DESCRIPTION | grep "^RoxygenNote:")
 RO_VERSION=${ROXYGEN_LINE#*: }
 Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
 
-Rscript --no-save --no-restore -e 'install.packages(checklist:::list_missing_packages())'
+Rscript --no-save --no-restore --no-init-file -e 'options(warn = 2); install.packages(checklist:::list_missing_packages(), quiet = TRUE)'
 if [ $? -ne 0 ]; then
   echo '\nFailed to install missing packages. Please check the error message above.\n';
   exit 1
