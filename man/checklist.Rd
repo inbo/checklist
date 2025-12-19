@@ -33,6 +33,8 @@ package.}
 
 \item{\code{get_path}}{The path to the package.}
 
+\item{\code{get_pak}}{Packages to install with \code{pak::pkg_install()}.}
+
 \item{\code{get_required}}{A vector with the names of the required checks.}
 
 \item{\code{get_spelling}}{Return the issues found by \code{check_spelling()}}
@@ -57,6 +59,7 @@ package.}
 \item \href{#method-checklist-confirm_motivation}{\code{checklist$confirm_motivation()}}
 \item \href{#method-checklist-new}{\code{checklist$new()}}
 \item \href{#method-checklist-print}{\code{checklist$print()}}
+\item \href{#method-checklist-set_pak}{\code{checklist$set_pak()}}
 \item \href{#method-checklist-set_required}{\code{checklist$set_required()}}
 \item \href{#method-checklist-clone}{\code{checklist$clone()}}
 }
@@ -284,6 +287,23 @@ Add \code{quiet = TRUE} to suppress printing.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{See description.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checklist-set_pak"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-set_pak}{}}}
+\subsection{Method \code{set_pak()}}{
+Set packages to install with \code{pak::pkg_install()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{checklist$set_pak(pkg = character(0))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pkg}}{A vector of packages to install with \code{pak::pkg_install()}.}
 }
 \if{html}{\out{</div>}}
 }

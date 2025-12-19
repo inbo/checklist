@@ -77,6 +77,9 @@ read_checklist <- function(x = ".") {
     x$set_other(allowed$spelling$other)
   }
   x$package <- allowed$package
+  if (has_name(allowed, "pak") && length(allowed$pak) > 0) {
+    x$set_pak(allowed$pak)
+  }
 
   assert_that(has_name(allowed, "description"))
   assert_that(has_name(allowed, "allowed"))
