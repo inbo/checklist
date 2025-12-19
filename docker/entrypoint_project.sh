@@ -16,6 +16,12 @@ if [ -f renv.lock ]; then
   Rscript --no-save --no-restore --no-init-file -e 'renv::restore()'
 fi
 
+Rscript --no-save --no-restore --no-init-file -e 'checklist::install_pak()'
+if [ $? -ne 0 ]; then
+  echo '\nFailed to install missing packages. Please check the error message above.\n';
+  exit 1
+fi
+
 if [ -n "$INPUT_CRAN" ]; then
   CRAN='remotes::install_cran('${INPUT_CRAN}', upgrade = "always")'
   Rscript --no-save --no-restore --no-init-file -e "$CRAN"

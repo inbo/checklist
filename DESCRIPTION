@@ -48,6 +48,7 @@ Suggests:
     curl,
     cyclocomp,
     mockery,
+    pak,
     renv,
     roxygen2,
     rstudioapi,
