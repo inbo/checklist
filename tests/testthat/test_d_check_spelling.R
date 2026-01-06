@@ -295,12 +295,39 @@ test_that("check_spelling() on a project", {
   stub(setup_project, "interactive", TRUE, depth = 2)
   expect_output(suppressWarnings(setup_project(path(path, "spelling"))))
 
+  # add problematic Dutch words
+  c(
+    "een entiteitsoverschrijdende werking",
+    "klei- en zandbodems",
+    "INBO-projecten",
+    "INBO-tijd",
+    "hij/zij",
+    "hem/haar",
+    "Boswijzer"
+  ) |>
+    writeLines(path(path, "spelling", "source", "nederlands.md"))
+  path(path, "spelling", "checklist.yml") |>
+    readLines() -> old_checklist
+  head(old_checklist, -1) |>
+    c(
+      "  other:",
+      "    nl-BE:",
+      "    - source/nederlands.md",
+      tail(old_checklist, 1)
+    ) |>
+    writeLines(path(path, "spelling", "checklist.yml"))
+  z <- check_spelling(x = path(path, "spelling"), quiet = TRUE)
+  expect_equal(nrow(z$get_spelling), 0)
+
+  # fix README
   path(path, "spelling", "README.md") |>
     readLines() -> readme_old
   writeLines(
     readme_old[!grepl("badges: start", readme_old)],
     path(path, "spelling", "README.md")
   )
+  z <- check_spelling(x = path(path, "spelling"), quiet = TRUE)
+
   expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
   expect_true(
     any(grepl("Mismatch between", z$.__enclos_env__$private$errors$CITATION))
