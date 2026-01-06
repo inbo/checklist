@@ -411,12 +411,12 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     divs <- tail(divs, -2)
   }
 
-  main_language <- spelling_check(
-    text = text,
-    raw_text = raw_text,
-    filename = md_file,
-    wordlist = wordlist
-  )
+  ligatures(text = text, lang = attr(wordlist, "checklist_language")) |>
+    spelling_check(
+      raw_text = raw_text,
+      filename = md_file,
+      wordlist = wordlist
+    ) -> main_language
   other_languages <- vapply(
     unique(other_languages$language),
     empty_text = rep("", length(raw_text)),
@@ -427,16 +427,18 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     FUN = function(lang, input, empty_text, raw_text, md_file) {
       empty_text[input[input$language == lang, "line"]] <-
         input[input$language == lang, "text"]
-      list(spelling_check(
-        text = empty_text,
-        raw_text = raw_text,
-        filename = md_file,
-        wordlist = spelling_wordlist(
-          lang = gsub("-", "_", lang),
-          root = x$get_path,
-          package = x$package
-        )
-      ))
+      ligatures(text = empty_text, lang = lang) |>
+        spelling_check(
+          text = empty_text,
+          raw_text = raw_text,
+          filename = md_file,
+          wordlist = spelling_wordlist(
+            lang = gsub("-", "_", lang),
+            root = x$get_path,
+            package = x$package
+          )
+        ) |>
+        list()
     }
   )
   list(do.call(rbind, c(other_languages, list(main_language))))
@@ -460,4 +462,18 @@ mlgsub <- function(pattern, replacement, x, ...) {
     gsub(pattern = pattern, replacement = replacement, ...) |>
     strsplit(split = "\n") |>
     unlist()
+}
+
+ligatures <- function(text, lang) {
+  switch(
+    lang,
+    "nl-BE" = dutch_ligatures(text),
+    "nl-NL" = dutch_ligatures(text),
+    text
+  )
+}
+
+dutch_ligatures <- function(text) {
+  gsub(pattern = "ij", replacement = "\u0133", x = text) |>
+    gsub(pattern = "IJ", replacement = "\u0132")
 }

@@ -211,6 +211,10 @@ spelling_clean_problem <- function(problem) {
   problem <- gsub("\\\\$", "\\\\\\\\", problem)
   # escape special regexp characters
   problem <- gsub("\\+", "\\\\+", problem)
+  # invert ligatures
+  problem |>
+    gsub(pattern = "\u0133", replacement = "ij") |>
+    gsub(pattern = "\u0132", replacement = "IJ") -> problem
   return(problem)
 }
 
