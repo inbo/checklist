@@ -4,10 +4,10 @@ bibentry(
   bibtype = "Manual",
   title = "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.5.2",
   author = c(person(given = "Thierry", family = "Onkelinx")),
-  year = 2025,
+  year = 2026,
   url = "https://inbo.github.io/checklist/",
   abstract = "An opinionated set of rules for R packages and R source code projects.",
-  textVersion = "Onkelinx, Thierry (2025) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.5.2. https://inbo.github.io/checklist/",
+  textVersion = "Onkelinx, Thierry (2026) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.5.2. https://inbo.github.io/checklist/",
   keywords = "quality control; documentation; publication",
   doi = "10.5281/zenodo.4028303",
 )

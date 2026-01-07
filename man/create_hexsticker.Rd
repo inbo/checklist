@@ -51,6 +51,7 @@ Other utils:
 \code{\link{c_sort}()},
 \code{\link{execshell}()},
 \code{\link{get_default_org_list}()},
+\code{\link{install_pak}()},
 \code{\link{menu_first}()},
 \code{\link{store_authors}()},
 \code{\link{use_author}()},

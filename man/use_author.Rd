@@ -33,6 +33,7 @@ Other utils:
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
 \code{\link{get_default_org_list}()},
+\code{\link{install_pak}()},
 \code{\link{menu_first}()},
 \code{\link{store_authors}()},
 \code{\link{validate_email}()},
