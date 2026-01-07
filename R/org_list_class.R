@@ -573,9 +573,7 @@ ol_validate_org <- function(person, this_org, lang) {
       "`%s`: `given` does not match `%s`",
       person_name,
       this_org$name[lang]
-    )[
-      person$given != this_org$name[lang]
-    ],
+    )[person$given != this_org$name[lang]],
     sprintf("`%s`: `family` must be empty", person_name)[
       !is.null(person$family) && person$family != ""
     ],
@@ -592,15 +590,16 @@ ol_validate_org <- function(person, this_org, lang) {
             this_org$ror != person$comment["ROR"]
         )
     ],
-    sprintf(
-      "`%s`: `ORCID` is not relevant for organisations",
-      person_name
-    )[
+    sprintf("`%s`: `ORCID` is not relevant for organisations", person_name)[
       has_name(person, "comment") && has_name(person$comment, "ORCID")
     ]
   )
-  comment <- first_non_null(person$comment, c(ROR = this_org$ror))
-  comment["ROR"] <- this_org$ror
+  if (has_name(this_org, "ror")) {
+    comment <- first_non_null(person$comment, c(ROR = this_org$ror))
+    comment["ROR"] <- this_org$ror
+  } else {
+    comment <- person$comment
+  }
   updated_person <- person(
     given = this_org$name[lang],
     email = this_org$email,
