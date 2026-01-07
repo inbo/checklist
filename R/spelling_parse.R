@@ -411,7 +411,8 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     divs <- tail(divs, -2)
   }
 
-  ligatures(text = text, lang = attr(wordlist, "checklist_language")) |>
+  remove_hyphenated_words(text = text) |>
+    ligatures(lang = attr(wordlist, "checklist_language")) |>
     spelling_check(
       raw_text = raw_text,
       filename = md_file,
@@ -427,9 +428,9 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     FUN = function(lang, input, empty_text, raw_text, md_file) {
       empty_text[input[input$language == lang, "line"]] <-
         input[input$language == lang, "text"]
-      ligatures(text = empty_text, lang = lang) |>
+      remove_hyphenated_words(text = empty_text) |>
+        ligatures(lang = lang) |>
         spelling_check(
-          text = empty_text,
           raw_text = raw_text,
           filename = md_file,
           wordlist = spelling_wordlist(
@@ -476,4 +477,18 @@ ligatures <- function(text, lang) {
 dutch_ligatures <- function(text) {
   gsub(pattern = "ij", replacement = "\u0133", x = text) |>
     gsub(pattern = "IJ", replacement = "\u0132")
+}
+
+remove_hyphenated_words <- function(text) {
+  # remove words ending with a hyphen
+  gsub("\\w+-(\\s)", "\\1", text) |>
+    # splits words connected with hyphens or slashes
+    gsub(pattern = "(\\w+)[-/]+(\\w+)", replacement = "\\1 \\2") |>
+    gsub(pattern = "(\\w+)[-/]+(\\w+)", replacement = "\\1 \\2") |>
+    # remove trailing slashes
+    gsub(pattern = "(\\w+)/\\s", replacement = "\\1 ") |>
+    gsub(pattern = "(\\w+)/$", replacement = "\\1") |>
+    # remove leading hyphens
+    gsub(pattern = "\\s-(\\w+)", replacement = " \\1") |>
+    gsub(pattern = "^-(\\w+)", replacement = "\\1")
 }

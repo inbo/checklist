@@ -297,13 +297,16 @@ test_that("check_spelling() on a project", {
 
   # add problematic Dutch words
   c(
-    "een entiteitsoverschrijdende werking",
+    "INBO-plantenlijsten",
     "klei- en zandbodems",
     "INBO-projecten",
     "INBO-tijd",
     "hij/zij",
     "hem/haar",
-    "Boswijzer"
+    "1-out-all-out",
+    "-berekeningen",
+    "aan-/afwezigheid",
+    "soortnaam/variëteit/"
   ) |>
     writeLines(path(path, "spelling", "source", "nederlands.md"))
   path(path, "spelling", "checklist.yml") |>
