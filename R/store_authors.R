@@ -173,32 +173,32 @@ stored_authors <- function(root) {
     dir_create(root)
     return(
       data.frame(
+        given = character(0),
+        family = character(0),
+        email = character(0),
+        orcid = character(0),
+        affiliation = character(0),
+        usage = integer(0)
+      )
+    )
+  }
+  if (is_file(path(root, "author.txt"))) {
+    path(root, "author.txt") |>
+      read.table(
+        header = TRUE,
+        sep = "\t",
+        colClasses = c(rep("character", 5), "integer")
+      ) -> current
+    return(current)
+  }
+  return(
+    data.frame(
       given = character(0),
       family = character(0),
       email = character(0),
       orcid = character(0),
       affiliation = character(0),
       usage = integer(0)
-      )
-    )
-  }
-  if (is_file(path(root, "author.txt"))) {
-    path(root, "author.txt") |>
-    read.table(
-      header = TRUE,
-      sep = "\t",
-        colClasses = c(rep("character", 5), "integer")
-    ) -> current
-    return(current)
-  }
-  return(
-    data.frame(
-    given = character(0),
-    family = character(0),
-    email = character(0),
-    orcid = character(0),
-    affiliation = character(0),
-    usage = integer(0)
     )
   )
 }

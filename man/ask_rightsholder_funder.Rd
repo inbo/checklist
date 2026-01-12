@@ -9,7 +9,7 @@ ask_rightsholder_funder(org, type = c("rightsholder", "funder"))
 \arguments{
 \item{org}{Organisation object}
 
-\item{type}{Character, either "rightsholder" or "funder"}
+\item{type}{Character, either \code{"rightsholder"} or \code{"funder"}}
 }
 \value{
 A list with the selected names and the updated organisation object
