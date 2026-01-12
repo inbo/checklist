@@ -167,7 +167,9 @@ Fails: `%s`",
 }
 
 split_path <- function(path) {
-  if (dirname(path) %in% c(".", path)) return(basename(path))
+  if (dirname(path) %in% c(".", path)) {
+    return(basename(path))
+  }
   return(c(split_path(dirname(path)), basename(path)))
 }
 

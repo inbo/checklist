@@ -24,6 +24,7 @@ A clean working directory has no staged, unstaged or untracked files.
 Other git: 
 \code{\link{clean_git}()},
 \code{\link{create_draft_pr}()},
+\code{\link{get_branches_tags}()},
 \code{\link{is_repository}()},
 \code{\link{new_branch}()},
 \code{\link{set_tag}()}

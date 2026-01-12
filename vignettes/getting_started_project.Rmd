@@ -70,7 +70,7 @@ In case of a previous set-up, it will take that into account.
 - Login to https://github.com
 - Create a new repository without adding a `README`, `.gitignore` and license.
   `checklist` will add those files for you.
-- Copy the code listed in your newly created repository on GitHub under "...or push an existing repository from the command line" and run it in the terminal.
+- Copy the code listed in your newly created repository on GitHub under "...or push an existing repository from the command line" and run it locally in the git terminal in RStudio.
 - Go on https://github.com to the "Settings" panel of the repository.
     - General
         - activate "Always suggest updating pull request branches"

@@ -9,6 +9,7 @@
 store_authors <- function(x = ".") {
   root <- R_user_dir("checklist", which = "data")
   current <- stored_authors(root)
+  current$ror <- ""
   if (file_exists(path(x, "DESCRIPTION"))) {
     this_desc <- description$new(file = path(x, "DESCRIPTION"))
     this_desc$get_authors() |>
@@ -21,7 +22,7 @@ store_authors <- function(x = ".") {
       cbind(usage = 1, email = "") -> cit_meta
     cit_meta <- cit_meta[
       cit_meta$family != "",
-      c("given", "family", "email", "orcid", "affiliation", "usage")
+      c("given", "family", "email", "orcid", "ror", "affiliation", "usage")
     ]
     new_author_df <- rbind(current, cit_meta)
   }
@@ -69,6 +70,7 @@ author2df.logical <- function(person) {
     family = character(0),
     email = character(0),
     orcid = character(0),
+    ror = character(0),
     affiliation = character(0),
     role = character(0)
   )
@@ -81,6 +83,7 @@ author2df.NULL <- function(person) {
     family = character(0),
     email = character(0),
     orcid = character(0),
+    ror = character(0),
     affiliation = character(0),
     role = character(0)
   )
@@ -133,6 +136,11 @@ author2df.person <- function(person) {
     orcid = ifelse(
       has_name(person$comment, "ORCID"),
       unname(person$comment["ORCID"]),
+      ""
+    ),
+    ror = ifelse(
+      has_name(person$comment, "ROR"),
+      unname(person$comment["ROR"]),
       ""
     ),
     affiliation = ifelse(

@@ -29,6 +29,7 @@ the main branch.
 \seealso{
 Other git: 
 \code{\link{create_draft_pr}()},
+\code{\link{get_branches_tags}()},
 \code{\link{is_repository}()},
 \code{\link{is_workdir_clean}()},
 \code{\link{new_branch}()},

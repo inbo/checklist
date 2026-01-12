@@ -13,6 +13,8 @@ setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
     list.files(path, recursive = TRUE) |>
       c(".Rprofile") |>
       git_add(force = TRUE, repo = path)
+  } else {
+    use_vc <- TRUE
   }
 
   # add .gitignore
@@ -54,6 +56,9 @@ add_code_conduct <- function(path, use_cc) {
   if (missing(use_cc)) {
     use_cc <- ask_yes_no("Add default code of conduct?")
   }
+  if (!use_cc) {
+    return(path)
+  }
   insert_file(
     repo = path,
     filename = "CODE_OF_CONDUCT.md",
@@ -69,6 +74,9 @@ add_contributing_guidelines <- function(path, use_cg) {
   }
   if (missing(use_cg)) {
     use_cg <- ask_yes_no("Add default contributing guidelines?")
+  }
+  if (!use_cg) {
+    return(path)
   }
   insert_file(
     repo = path,

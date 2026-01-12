@@ -49,9 +49,12 @@ citation_bookdown <- function(meta) {
     return(cit_meta)
   }
   cit_meta$meta$license <- yaml$license
-  if (has_name(yaml, "lang")) {
-    cit_meta$meta$language <- yaml$lang
+  lang_check <- validate_language_yaml(yaml)
+  if (has_name(lang_check, "error")) {
+    cit_meta$errors <- c(cit_meta$errors, lang_check$error)
+    return(cit_meta)
   }
+  cit_meta$meta$language <- lang_check$lang
   extra <- c(
     "community",
     "doi",
@@ -252,4 +255,19 @@ bookdown_description <- function(path) {
       errors = description$errors
     )
   )
+}
+
+validate_language_yaml <- function(yaml) {
+  if (!has_name(yaml, "lang")) {
+    if (!has_name(yaml, "language")) {
+      return(list(error = "No `lang` element found in YAML"))
+    }
+    lang <- try(validate_language(yaml$language), silent = TRUE)
+  } else {
+    lang <- try(validate_language(yaml$lang), silent = TRUE)
+  }
+  if (inherits(lang, "try-error")) {
+    return(list(error = "`lang` element in YAML not in xx:YY format"))
+  }
+  return(list(lang = lang))
 }

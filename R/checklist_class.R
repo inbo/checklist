@@ -220,6 +220,15 @@ checklist <- R6Class(
       )
     },
 
+    #' @description Set packages to install with `pak::pkg_install()`.
+    #' @param pkg A vector of packages to install with `pak::pkg_install()`.
+    #' @importFrom assertthat assert_that noNA
+    set_pak = function(pkg = character(0)) {
+      assert_that(is.character(pkg), noNA(pkg))
+      private$pak <- pkg
+      return(invisible(self))
+    },
+
     #' @description set required checks
     #' @param checks a vector of required checks
     set_required = function(checks = character(0)) {
@@ -249,6 +258,11 @@ checklist <- R6Class(
     #' @field get_path The path to the package.
     get_path = function() {
       return(private$path)
+    },
+
+    #' @field get_pak Packages to install with `pak::pkg_install()`.
+    get_pak = function() {
+      return(private$pak)
     },
 
     #' @field get_required A vector with the names of the required checks.
@@ -286,7 +300,8 @@ Please contact the maintainer of the `checklist` package."
         warnings = private$allowed_warnings,
         notes = private$allowed_notes,
         spelling = super$settings,
-        required = c_sort(unique(private$required))
+        required = c_sort(unique(private$required)),
+        pak = private$pak
       )
     }
   ),
@@ -333,7 +348,8 @@ Please contact the maintainer of the `checklist` package."
       row.names = integer(0),
       checklist_path = "."
     ),
-    warnings = character(0)
+    warnings = character(0),
+    pak = character(0)
   )
 )
 

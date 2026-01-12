@@ -98,10 +98,8 @@ description_keywords <- function(keywords) {
 #' @importFrom assertthat assert_that
 description_communities <- function(descript, org) {
   assert_that(inherits(descript, "description"), inherits(org, "org_list"))
-  communities <- descript$get_field(
-    "Config/checklist/communities",
-    default = character(0)
-  )
+  descript$get_field("Config/checklist/communities", default = character(0)) |>
+    split_community() -> communities
   descript$get_author("cph")$email |>
     c(descript$get_author("fnd")$email) |>
     unlist() |>
@@ -119,13 +117,11 @@ description_communities <- function(descript, org) {
     )
   }
   list(
-    meta = list(community = split_community(communities)),
+    meta = list(community = communities),
     warnings = paste(
       "missing communities found in `DESCRIPTION`.",
       "Please make sure to add `Config/checklist/communities:",
       paste(required_communities, collapse = "; ")
-    )[
-      !all(required_communities %in% communities)
-    ]
+    )[!all(required_communities %in% communities)]
   )
 }

@@ -4,6 +4,7 @@ test_that("yesno", {
     family = character(0),
     email = character(0),
     orcid = character(0),
+    ror = character(0),
     affiliation = character(0),
     role = character(0)
   )
@@ -12,6 +13,7 @@ test_that("yesno", {
     family = "Onkelinx",
     email = "",
     orcid = "",
+    ror = "",
     affiliation = "",
     role = ""
   )

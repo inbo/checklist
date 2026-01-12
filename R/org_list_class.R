@@ -182,7 +182,7 @@ org_list <- R6Class(
         "`git` cannot contain multiple values" = length(git) <= 1,
         "`git` cannot contain `NA`" = noNA(git),
         "`git` must be a valid URL to an organisation or user" = grepl(
-          "^https:\\/\\/[\\w\\.]+?\\/\\w+$",
+          "^https:\\/\\/[\\w\\.]+?\\/[\\w-]+$",
           git,
           perl = TRUE
         )
@@ -489,8 +489,19 @@ ol_validate_rules <- function(
     required_rule(which_person = which_person, type, person),
     # fmt:skip
     sprintf("incompatible rules for `%s`", type)[
-      !(items[[unlist(person$email)]]$get_rightsholder |>
-          ol_valid_rules())
+      !vapply(
+        person$email,
+        FUN.VALUE = logical(1),
+        FUN = function(i, items) {
+          switch(
+            type,
+            "rightsholder" = items[[i]]$get_rightsholder,
+            items[[i]]$get_funder
+          ) |>
+            ol_valid_rules()
+        },
+        items = items
+      )
     ]
   )
 }
@@ -562,9 +573,7 @@ ol_validate_org <- function(person, this_org, lang) {
       "`%s`: `given` does not match `%s`",
       person_name,
       this_org$name[lang]
-    )[
-      person$given != this_org$name[lang]
-    ],
+    )[person$given != this_org$name[lang]],
     sprintf("`%s`: `family` must be empty", person_name)[
       !is.null(person$family) && person$family != ""
     ],
@@ -581,15 +590,16 @@ ol_validate_org <- function(person, this_org, lang) {
             this_org$ror != person$comment["ROR"]
         )
     ],
-    sprintf(
-      "`%s`: `ORCID` is not relevant for organisations",
-      person_name
-    )[
+    sprintf("`%s`: `ORCID` is not relevant for organisations", person_name)[
       has_name(person, "comment") && has_name(person$comment, "ORCID")
     ]
   )
-  comment <- first_non_null(person$comment, c(ROR = this_org$ror))
-  comment["ROR"] <- this_org$ror
+  if (has_name(this_org, "ror")) {
+    comment <- first_non_null(person$comment, c(ROR = this_org$ror))
+    comment["ROR"] <- this_org$ror
+  } else {
+    comment <- person$comment
+  }
   updated_person <- person(
     given = this_org$name[lang],
     email = this_org$email,
@@ -729,6 +739,9 @@ ssh_http <- function(url) {
 
 git_org <- function(x = ".") {
   if (!is_repository(x)) {
+    if (file_exists(path(x, "organisation.yml"))) {
+      return(org_list$new()$read(x))
+    }
     return(org_list$new(org_item$new(email = "info@inbo.be")))
   }
   remotes <- git_remote_list(repo = x)
@@ -749,14 +762,23 @@ git_org <- function(x = ".") {
     org$write(x)
     return(org)
   }
+
   message(
-    "no local `org_list` information found.",
-    "See ?get_default_org_list",
-    "Using default settings."
+    "no local `org_list` information found. ",
+    "See ?get_default_org_list. ",
+    "\nYou can ignore this message when ",
+    url,
+    "/checklist doesn't exists."
   )
-  return(org_list$new(org_item$new(email = "info@inbo.be")))
+  if (file_exists(path(x, "organisation.yml"))) {
+    return(org_list$new()$read(x))
+  }
+  return(org_list$new(org_item$new(email = "info@inbo.be"), git = url))
 }
 
+#' The INBO organisation list
+#' @export
+#' @family utils
 inbo_org_list <- function() {
   org_list$new(
     git = "https://github.com/inbo",

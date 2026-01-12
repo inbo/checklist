@@ -87,13 +87,11 @@ spelling_parse_r <- function(r_file, wordlist) {
   )
 
   # remove equations
-  text <- strip_eqn(text)
-
-  list(spelling_check(
-    text = text,
-    filename = r_file,
-    wordlist = wordlist
-  ))
+  strip_eqn(text) |>
+    remove_hyphenated_words() |>
+    ligatures(lang = attr(wordlist, "checklist_language")) |>
+    spelling_check(filename = r_file, wordlist = wordlist) |>
+    list()
 }
 
 strip_eqn <- function(text) {
@@ -249,25 +247,38 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   # remove LaTeX commands
   text <- gsub("\\\\\\w+", "", text)
   # remove Markdown figuren
-  text <- gsub(
-    "!\\[((.|\n)*?)\\]\\(.*?\\)(\\{.*?\\})?\\\\?",
-    " \\1 ",
-    text,
+  text <- mlgsub(
+    pattern = paste0(
+      "\\!\\[([\\w\\s\\d:,;\\.\\!\\?\\\\\\/\\(\\)-]*?)\\]",
+      "\\((.|\\s)*?\\)(\\{(.|\\s)*?\\})?\\\\?"
+    ),
+    replacement = " \\1 ",
+    x = text,
     perl = TRUE
   )
-  # remove text between matching back ticks on the same line
-  text <- gsub("\\`.+?\\`", "", text, perl = TRUE)
   # remove Markdown urls
-  text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub("\\[(.*?)\\]\\(.+?\\)", " \\1 ", text)
-  text <- gsub(
-    "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+",
-    "",
-    text,
+  text <- mlgsub(
+    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)\\\\\\/-]*?)\\]\\(.+?\\)",
+    replacement = " \\1 ",
+    x = text,
+    perl = TRUE
+  )
+  text <- mlgsub(
+    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)\\\\\\/-]*?)\\]\\(.+?\\)",
+    replacement = " \\1 ",
+    x = text,
+    perl = TRUE
+  )
+  text <- mlgsub(
+    pattern = "(http|https|ftp):\\/\\/[\\w\\.\\/\\-\\%:\\?=#]+",
+    replacement = "",
+    x = text,
     perl = TRUE
   )
   # remove e-mail
   text <- gsub(email_regexp, "", text, perl = TRUE)
+  # remove text between matching back ticks on the same line
+  text <- gsub("\\`.+?\\`", "", text, perl = TRUE)
   # remove markdown comments
   text <- gsub("<!--.*?-->", "", text)
   # remove markdown superscript
@@ -398,12 +409,13 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     divs <- tail(divs, -2)
   }
 
-  main_language <- spelling_check(
-    text = text,
-    raw_text = raw_text,
-    filename = md_file,
-    wordlist = wordlist
-  )
+  remove_hyphenated_words(text = text) |>
+    ligatures(lang = attr(wordlist, "checklist_language")) |>
+    spelling_check(
+      raw_text = raw_text,
+      filename = md_file,
+      wordlist = wordlist
+    ) -> main_language
   other_languages <- vapply(
     unique(other_languages$language),
     empty_text = rep("", length(raw_text)),
@@ -414,16 +426,18 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     FUN = function(lang, input, empty_text, raw_text, md_file) {
       empty_text[input[input$language == lang, "line"]] <-
         input[input$language == lang, "text"]
-      list(spelling_check(
-        text = empty_text,
-        raw_text = raw_text,
-        filename = md_file,
-        wordlist = spelling_wordlist(
-          lang = gsub("-", "_", lang),
-          root = x$get_path,
-          package = x$package
-        )
-      ))
+      remove_hyphenated_words(text = empty_text) |>
+        ligatures(lang = lang) |>
+        spelling_check(
+          raw_text = raw_text,
+          filename = md_file,
+          wordlist = spelling_wordlist(
+            lang = gsub("-", "_", lang),
+            root = x$get_path,
+            package = x$package
+          )
+        ) |>
+        list()
     }
   )
   list(do.call(rbind, c(other_languages, list(main_language))))
@@ -440,4 +454,39 @@ spelling_parse_md_yaml <- function(text) {
   text[header][grepl("^shorttitle", text[header])] <- ""
   text[header] <- gsub(".*?:(.*)", "\\1", text[header])
   return(text)
+}
+
+mlgsub <- function(pattern, replacement, x, ...) {
+  paste(x, collapse = "\n") |>
+    gsub(pattern = pattern, replacement = replacement, ...) |>
+    strsplit(split = "\n") |>
+    unlist()
+}
+
+ligatures <- function(text, lang) {
+  switch(
+    lang,
+    "nl-BE" = dutch_ligatures(text),
+    "nl-NL" = dutch_ligatures(text),
+    text
+  )
+}
+
+dutch_ligatures <- function(text) {
+  gsub(pattern = "ij", replacement = "\u0133", x = text) |>
+    gsub(pattern = "IJ", replacement = "\u0132")
+}
+
+remove_hyphenated_words <- function(text) {
+  # remove words ending with a hyphen
+  gsub("\\w+-(\\s)", "\\1", text) |>
+    # splits words connected with hyphens or slashes
+    gsub(pattern = "(\\w+)[-/]+(\\w+)", replacement = "\\1 \\2") |>
+    gsub(pattern = "(\\w+)[-/]+(\\w+)", replacement = "\\1 \\2") |>
+    # remove trailing slashes
+    gsub(pattern = "(\\w+)/\\s", replacement = "\\1 ") |>
+    gsub(pattern = "(\\w+)/$", replacement = "\\1") |>
+    # remove leading hyphens
+    gsub(pattern = "\\s-(\\w+)", replacement = " \\1") |>
+    gsub(pattern = "^-(\\w+)", replacement = "\\1")
 }

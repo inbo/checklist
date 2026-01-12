@@ -100,6 +100,7 @@ test_that("author tools", {
       given = "John",
       family = "Doe",
       orcid = "",
+      ror = "",
       affiliation = "",
       email = ""
     ) |>
@@ -114,6 +115,7 @@ test_that("author tools", {
       given = "INBO",
       family = "",
       orcid = "",
+      ror = "",
       affiliation = "",
       email = ""
     ) |>

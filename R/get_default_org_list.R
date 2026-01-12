@@ -16,7 +16,14 @@ get_default_org_list <- function(x = ".") {
   remotes <- git_remote_list(repo = x)
   stopifnot("no git remote `origin` found" = any(remotes$name == "origin"))
   url <- ssh_http(remotes$url[remotes$name == "origin"])
-  cache_org(url, config_folder = R_user_dir("checklist", "config"))
+  org <- cache_org(url, config_folder = R_user_dir("checklist", "config"))
+  if (!is.null(org)) {
+    return(org)
+  }
+  if (file_exists(path(x, "organisation.yml"))) {
+    return(org_list$new()$read(x))
+  }
+  return(org_list$new(org_item$new(email = "info@inbo.be"), git = url))
 }
 
 #' @importFrom fs dir_create path

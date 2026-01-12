@@ -52,6 +52,8 @@ setup_package <- function(path = ".") {
     x$set_ignore(c(".github", "LICENSE.md"))
     write_checklist(x)
     git_add("checklist.yml", force = TRUE, repo = path)
+  } else {
+    x <- read_checklist(x = path)
   }
 
   # make DESCRIPTION tidy

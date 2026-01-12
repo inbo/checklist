@@ -270,7 +270,14 @@ checklist_summarise_spelling <- function(spelling) {
   paste(messages, collapse = rules("-"))
 }
 
-checklist_template <- function(package, warnings, notes, spelling, required) {
+checklist_template <- function(
+  package,
+  warnings,
+  notes,
+  spelling,
+  required,
+  pak
+) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
     package = package,
@@ -285,6 +292,7 @@ checklist_template <- function(package, warnings, notes, spelling, required) {
     spelling$other <- NULL
   }
   template$spelling <- spelling
+  template$pak <- pak
   return(template)
 }
 

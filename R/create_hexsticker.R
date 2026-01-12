@@ -65,7 +65,9 @@ create_hexsticker <- function(
   )
   if (missing(icon)) {
     writeLines(c(head(base, -1), svg_name, tail(base, 1)), filename)
-    if (interactive()) browseURL(filename)
+    if (interactive()) {
+      browseURL(filename)
+    }
     return(invisible(filename))
   }
   assert_that(is.number(scale), scale > 0, scale <= 1)
@@ -83,7 +85,9 @@ create_hexsticker <- function(
     c(head(base, -1), svg_name, viewbox, icon_svg$svg, "</svg>", tail(base, 1)),
     filename
   )
-  if (interactive()) browseURL(filename)
+  if (interactive()) {
+    browseURL(filename)
+  }
   return(invisible(filename))
 }
 

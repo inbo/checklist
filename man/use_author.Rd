@@ -26,6 +26,7 @@ Allows to update existing author information.
 }
 \seealso{
 Other utils: 
+\code{\link{ask_rightsholder_funder}()},
 \code{\link{ask_yes_no}()},
 \code{\link{author2df}()},
 \code{\link{bookdown_zenodo}()},
@@ -33,6 +34,8 @@ Other utils:
 \code{\link{create_hexsticker}()},
 \code{\link{execshell}()},
 \code{\link{get_default_org_list}()},
+\code{\link{inbo_org_list}()},
+\code{\link{install_pak}()},
 \code{\link{menu_first}()},
 \code{\link{store_authors}()},
 \code{\link{validate_email}()},
