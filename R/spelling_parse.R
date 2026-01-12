@@ -87,13 +87,11 @@ spelling_parse_r <- function(r_file, wordlist) {
   )
 
   # remove equations
-  text <- strip_eqn(text)
-
-  list(spelling_check(
-    text = text,
-    filename = r_file,
-    wordlist = wordlist
-  ))
+  strip_eqn(text) |>
+    remove_hyphenated_words() |>
+    ligatures(lang = attr(wordlist, "checklist_language")) |>
+    spelling_check(filename = r_file, wordlist = wordlist) |>
+    list()
 }
 
 strip_eqn <- function(text) {
