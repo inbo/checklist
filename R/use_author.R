@@ -84,7 +84,7 @@ use_author <- function(email, lang) {
   if (length(aff) == 1) {
     current$affiliation[selected] <- names(aff)
   } else if (length(aff) > 1) {
-    default_aff <- org$get_name_by_domain(current$email[selected])
+    default_aff <- org$get_name_by_domain(current$email[selected], lang = lang)
     current$affiliation[selected] <- names(aff[
       names(default_aff) == current$affiliation[selected]
     ])
