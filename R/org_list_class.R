@@ -776,6 +776,9 @@ git_org <- function(x = ".") {
   return(org_list$new(org_item$new(email = "info@inbo.be"), git = url))
 }
 
+#' The INBO organisation list
+#' @export
+#' @family utils
 inbo_org_list <- function() {
   org_list$new(
     git = "https://github.com/inbo",
