@@ -75,6 +75,12 @@ project_maintainer <- function(org, lang) {
   )
 }
 
+#' @title Ask for rights holder or funder
+#' @param org Organisation object
+#' @param type Character, either "rightsholder" or "funder"
+#' @return A list with the selected names and the updated organisation object
+#' @export
+#' @family utils
 ask_rightsholder_funder <- function(org, type = c("rightsholder", "funder")) {
   type <- match.arg(type)
   available <- org$get_default_name

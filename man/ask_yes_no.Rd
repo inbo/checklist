@@ -37,6 +37,7 @@ It repeats the question until a valid answer is given.
 }
 \seealso{
 Other utils: 
+\code{\link{ask_rightsholder_funder}()},
 \code{\link{author2df}()},
 \code{\link{bookdown_zenodo}()},
 \code{\link{c_sort}()},

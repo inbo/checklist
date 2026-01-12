@@ -19,6 +19,7 @@ Persons with multiple roles will have the roles as a comma separated string.
 }
 \seealso{
 Other utils: 
+\code{\link{ask_rightsholder_funder}()},
 \code{\link{ask_yes_no}()},
 \code{\link{bookdown_zenodo}()},
 \code{\link{c_sort}()},

@@ -17,6 +17,7 @@ A function that asks a yes or no question to the user
 }
 \seealso{
 Other utils: 
+\code{\link{ask_rightsholder_funder}()},
 \code{\link{ask_yes_no}()},
 \code{\link{author2df}()},
 \code{\link{bookdown_zenodo}()},
