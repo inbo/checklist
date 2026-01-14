@@ -153,7 +153,7 @@ validate_language <- function(language) {
   assert_that(is.string(language), noNA(language))
   assert_that(
     grepl("[a-z]{2}-[A-Z]{2}", language),
-    msg = "`language` must be in xx-YY format"
+    msg = "`language` must be in xx-YY format. e.g. 'en-GB', 'nl-BE'"
   )
   return(language)
 }
