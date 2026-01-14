@@ -44,7 +44,7 @@ add_badges <- function(x = ".", ...) {
       "check_project.yml/badge.svg)](https://github.com/%1$s/actions)"
     ),
     doi = paste0(
-      "[![DOI](https://https://zenodo.org/badge/DOI/%1$s.svg)]",
+      "[![DOI](https://zenodo.org/badge/DOI/%1$s.svg)]",
       "(https://doi.org/%1$s)"
     ),
     url =
