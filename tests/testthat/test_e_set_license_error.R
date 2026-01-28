@@ -3,11 +3,11 @@ test_that("set_license() provides helpful error for invalid license", {
   path <- tempfile("set_license_error")
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
-  
+
   # Create a minimal checklist file
   checklist$new(x = path, language = "en-GB") |>
     write_checklist()
-  
+
   # Create an organization with known licenses
   org <- org_list$new()$add_item(
     org_item$new(
@@ -17,16 +17,16 @@ test_that("set_license() provides helpful error for invalid license", {
       funder = "single"
     )
   )
-  
+
   # Get available licenses to verify in error message
   available_licenses <- names(org$get_listed_licenses)
-  
+
   # Ensure we have some licenses to test with
   expect_true(
     length(available_licenses) > 0,
     info = "Organization should have at least one license available"
   )
-  
+
   # Try to set an invalid license and check error message
   error_caught <- tryCatch(
     {
@@ -37,13 +37,13 @@ test_that("set_license() provides helpful error for invalid license", {
     error = function(e) {
       # Check that the error message contains available licenses
       error_msg <- conditionMessage(e)
-      
+
       # Verify error message mentions available licenses
       expect_true(
         grepl("Available licenses:", error_msg),
         info = "Error message should mention 'Available licenses:'"
       )
-      
+
       # Verify error message contains at least some license names
       for (lic in available_licenses) {
         expect_true(
@@ -51,10 +51,10 @@ test_that("set_license() provides helpful error for invalid license", {
           info = sprintf("Error message should contain license '%s'", lic)
         )
       }
-      
+
       TRUE  # Error was caught
     }
   )
-  
+
   expect_true(error_caught, info = "An error should have been thrown")
 })
