@@ -9,10 +9,23 @@ test_that("set_license() provides helpful error for invalid license", {
     write_checklist()
   
   # Create an organization with known licenses
-  org <- org_list$new()
+  org <- org_list$new()$add_item(
+    org_item$new(
+      name = c(`en-GB` = "Test Organization"),
+      email = "test@example.org",
+      rightsholder = "single",
+      funder = "single"
+    )
+  )
   
   # Get available licenses to verify in error message
   available_licenses <- names(org$get_listed_licenses)
+  
+  # Ensure we have some licenses to test with
+  expect_true(
+    length(available_licenses) > 0,
+    info = "Organization should have at least one license available"
+  )
   
   # Try to set an invalid license and check error message
   error_caught <- tryCatch(
