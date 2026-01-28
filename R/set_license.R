@@ -78,7 +78,10 @@ get_official_license_location <- function(license, org) {
   }
   org_licenses <- org$get_listed_licenses
   stopifnot(
-    "license not available in organisation" = license %in% names(org_licenses)
+    sprintf(
+      "license not available in organisation. Available licenses: %s",
+      paste(names(org_licenses), collapse = ", ")
+    ) = license %in% names(org_licenses)
   )
   license_location <- license_local_remote(org_licenses[license])
   url <- ssh_http(org$get_git)
