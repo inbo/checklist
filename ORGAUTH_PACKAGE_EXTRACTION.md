@@ -1,5 +1,19 @@
 # orgauth Package - Extraction Complete
 
+## ⚠️ IMPORTANT: Building the Package Locally
+
+**If you don't have the orgauth folder on your machine**, use the build script to create it:
+
+```bash
+cd checklist
+./build_orgauth_package.sh ../orgauth
+```
+
+📖 **Full instructions**: See `BUILD_ORGAUTH_LOCALLY.md`  
+⚡ **Quick start**: See `QUICK_START_BUILD_ORGAUTH.md`
+
+---
+
 ## Summary
 
 Successfully created the **orgauth** package as a standalone repository at `/home/runner/work/checklist/orgauth`.
