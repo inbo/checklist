@@ -1,5 +1,6 @@
 # checklist 0.5.3
 
+* Add publisher to `.zenodo.json` (#180).
 * Add grant ID for EU-funded Zenodo communities (#182).
 
 # checklist 0.5.2

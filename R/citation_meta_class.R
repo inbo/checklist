@@ -295,6 +295,14 @@ citation_zenodo <- function(meta) {
     zenodo$language <- lang_2_iso_639_3(zenodo$language)
   }
 
+  # Extract publisher
+  publishers <- Filter(function(x) "pbl" %in% x$role, person)
+
+  if (length(publishers) > 0) {
+    stopifnot("Only single publisher possible" = length(publishers) == 1)
+    zenodo$publisher <- publishers$given
+  }
+
   # Remove Zenodo DOI (self-reference)
   if (has_name(zenodo, "doi") && grepl("zenodo", zenodo$doi)) {
     zenodo$doi <- NULL
