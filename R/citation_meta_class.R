@@ -282,6 +282,25 @@ citation_zenodo <- function(meta) {
   }
   zenodo$url <- NULL
   zenodo$source <- NULL
+
+  funders <- Filter(function(x) "fnd" %in% x$role, person)
+  grant_id <- vapply(
+    funders,
+    function(x) {
+      if (!is.null(x$comment) && "id" %in% names(x$comment)) {
+        x$comment[["id"]]
+      } else {
+        NA_character_
+      }
+    },
+    character(1)
+  )
+  grant_id <- grant_id[!is.na(grant_id)]
+  if (length(grant_id) > 0) {
+    stopifnot("Only single grant ID possible" = length(grant_id) == 1)
+    zenodo$grants <- list(list(id = grant_id))
+  }
+
   desc <- tempfile(fileext = ".md")
   writeLines(zenodo$description, desc)
   suppressMessages(pandoc(desc, format = "html"))
