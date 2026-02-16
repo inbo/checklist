@@ -1,6 +1,6 @@
 # checklist 0.5.3
 
-* Add grant ID for EU-funded zenodo communities (#182).
+* Add grant ID for EU-funded Zenodo communities (#182).
 
 # checklist 0.5.2
 
