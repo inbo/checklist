@@ -138,7 +138,7 @@ Authors@R: c(
     "Research Institute for Nature and Forest (INBO)", , ,
     "info@inbo.be",
     role = c("cph", "fnd", "pbl"),
-    comment = c(ROR = "https://ror.org/00j54wy13")
+    comment = c(ROR = "00j54wy13")
   ),
   person(
     given = "European Commission",

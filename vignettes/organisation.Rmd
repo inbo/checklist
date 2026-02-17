@@ -76,7 +76,7 @@ inbo <- org_item$new(
   email = "info@inbo.be",
   website = "https://vlaanderen.be/inbo/en",
   logo = "https://inbo.github.io/checklist/reference/figures/logo-en.png",
-  ror = "https://ror.org/00j54wy13",
+  ror = "00j54wy13",
   orcid = TRUE,
   zenodo = "inbo",
   rightsholder = "shared",

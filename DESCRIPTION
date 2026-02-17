@@ -10,7 +10,7 @@ Authors@R: c(
     person("Hans", "Van Calster", , "hans.vancalster@inbo.be", role = "ctb",
            comment = c(ORCID = "0000-0001-8595-8426", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"),
-           comment = c(ROR = "https://ror.org/00j54wy13"))
+           comment = c(ROR = "00j54wy13"))
   )
 Description: An opinionated set of rules for R packages and R source code
     projects.
