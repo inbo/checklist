@@ -319,7 +319,7 @@ citation_zenodo <- function(meta) {
     funders,
     function(x) {
       if (!is.null(x$comment) && "grant_id" %in% names(x$comment)) {
-        x$comment[["id"]]
+        x$comment[["grant_id"]]
       } else {
         NA_character_
       }
