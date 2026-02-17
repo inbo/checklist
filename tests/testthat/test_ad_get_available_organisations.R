@@ -96,7 +96,7 @@ test_that("get_available_organisations() works", {
       ),
       ror = c(
         `ilvo@ilvo.vlaanderen.be` = "https://ror.org/05cjt1n05",
-        `info@inbo.be` = "00j54wy13",
+        `info@inbo.be` = "https://ror.org/00j54wy13",
         `info@organisation.checklist` = "",
         `info@vlaamsewaterweg.be` = "",
         `info@vlm.be` = "",
