@@ -318,7 +318,7 @@ citation_zenodo <- function(meta) {
   grant_id <- vapply(
     funders,
     function(x) {
-      if (!is.null(x$comment) && "id" %in% names(x$comment)) {
+      if (!is.null(x$comment) && "grant_id" %in% names(x$comment)) {
         x$comment[["id"]]
       } else {
         NA_character_
