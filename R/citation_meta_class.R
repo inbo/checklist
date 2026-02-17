@@ -315,7 +315,7 @@ citation_zenodo <- function(meta) {
   # Extract grant ID from funder (role = "fnd")
   funders <- Filter(function(x) "fnd" %in% x$role, person)
 
-  grant_id <- vapply(
+  grant_ids <- vapply(
     funders,
     function(x) {
       if (!is.null(x$comment) && "grant_id" %in% names(x$comment)) {
@@ -326,11 +326,17 @@ citation_zenodo <- function(meta) {
     },
     character(1)
   )
-  grant_id <- grant_id[!is.na(grant_id)]
+  grant_ids <- grant_ids[!is.na(grant_ids)]
 
-  if (length(grant_id) > 0) {
-    stopifnot("Only single grant ID possible" = length(grant_id) == 1)
-    zenodo$grants <- list(list(id = grant_id))
+  if (length(grant_ids) > 0) {
+    zenodo$grants <- vapply(
+      grant_ids,
+      FUN.VALUE = vector("list", 1),
+      USE.NAMES = FALSE,
+      FUN = function(x) {
+        list(list(id = x))
+      }
+    )
   }
 
   # Extract description (convert Markdown to HTML)
