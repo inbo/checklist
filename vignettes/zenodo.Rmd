@@ -95,3 +95,83 @@ Setting up the integration has the benefit that a new package version automatica
 1. Zenodo detects the new release, creates a DOI and publishes it.
 1. Zenodo passes the citation metadata to ORCID for all contributors with an ORCID listed in `DESCRIPTION`.
   ORCID adds the publication information to the users which have added the DataCite integration.
+
+## Managing Zenodo metadata via `DESCRIPTION`
+
+Zenodo supports structured metadata such as contributors, funding information, publisher and ORCID IDs.
+When using `checklist`, you should not edit `.zenodo.json` manually.
+All citation and Zenodo metadata must be defined in the `DESCRIPTION` file.
+The function `update_citation()` extracts this metadata, validates it and writes the required citation files.
+
+Running:
+
+```r
+update_citation()
+```
+
+will generate or update:
+
+* `.zenodo.json` (Zenodo format)
+* `CITATION.cff` (GitHub format)
+* `inst/CITATION` (R package format)
+
+This ensures that Zenodo, GitHub and R receive consistent citation metadata from a single source.
+
+### Contributor roles
+
+Zenodo-related metadata is defined via `Authors@R` entries and their `role` fields.
+
+Example:
+
+```text
+Authors@R: c(
+  person(
+    given = "Jane",
+    family = "Doe",
+    role = c("aut", "cre"),
+    comment = c(
+      ORCID = "0000-0002-1234-5678",
+      affiliation = "Research Institute for Nature and Forest (INBO)"
+    )
+  ),
+  person(
+    "Research Institute for Nature and Forest (INBO)", , ,
+    "info@inbo.be",
+    role = c("cph", "fnd", "pbl"),
+    comment = c(ROR = "https://ror.org/00j54wy13")
+  ),
+  person(
+    given = "European Commission",
+    role = "fnd",
+    comment = c(grant_id = "10.13039/501100000780::283595")
+  )
+)
+```
+
+Common roles include:
+
+* `"aut"` — author
+* `"cre"` — creator / maintainer
+* `"ctb"` — contributor
+* `"pbl"` — publisher
+* `"fnd"` — funder
+* `"cph"` — copyright holder
+
+### Funding information
+
+Funding metadata is specified using:
+
+```text
+role = "fnd"
+comment = c(grant_id = "<funding-id>")
+```
+
+Supported formats include:
+
+* Grant number only (e.g. `"283595"` for European Commission grants)
+* DOI-prefixed format (for all grants, recommended):
+  `"10.13039/501100000780::283595"`
+
+The DOI prefix identifies the funder, followed by `::` and the grant number.
+
+> Note that funding metadata can be mandatory for some projects (e.g., that belong to EU-funded communities). The GitHub - Zenodo integration may fail in these instances when the grant ID is not specified.
