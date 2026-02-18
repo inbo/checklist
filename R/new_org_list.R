@@ -158,11 +158,7 @@ validate_ror <- function(ror) {
     "`ror` must be a string" = is.string(ror),
     "`ror` cannot be NA" = noNA(ror)
   )
-  grepl(
-    "^https:\\/\\/ror\\.org\\/0[a-hj-km-np-tv-z|0-9]{6}[0-9]{2}$",
-    ror,
-    perl = TRUE
-  )
+  grepl("^0[a-hj-km-np-tv-z|0-9]{6}[0-9]{2}$", ror, perl = TRUE)
 }
 
 ask_ror <- function(prompt) {
@@ -172,7 +168,7 @@ ask_ror <- function(prompt) {
       break
     }
     warning(
-      "`ror` must be in https://ror.org/id format",
+      "`ror` must be in `id` format, not `https://ror.org/id`",
       immediate. = TRUE,
       call. = FALSE
     )

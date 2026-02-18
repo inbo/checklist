@@ -10,10 +10,7 @@ bibliography: references.bib
 
 ```{r setup, include = FALSE}
 library(knitr)
-opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
 ## What is [Zenodo](https://zenodo.org)?
@@ -138,7 +135,7 @@ Authors@R: c(
     "Research Institute for Nature and Forest (INBO)", , ,
     "info@inbo.be",
     role = c("cph", "fnd", "pbl"),
-    comment = c(ROR = "https://ror.org/00j54wy13")
+    comment = c(ROR = "00j54wy13")
   ),
   person(
     given = "European Commission",

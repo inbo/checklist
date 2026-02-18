@@ -76,7 +76,7 @@ inbo <- org_item$new(
   email = "info@inbo.be",
   website = "https://vlaanderen.be/inbo/en",
   logo = "https://inbo.github.io/checklist/reference/figures/logo-en.png",
-  ror = "https://ror.org/00j54wy13",
+  ror = "00j54wy13",
   orcid = TRUE,
   zenodo = "inbo",
   rightsholder = "shared",
@@ -118,7 +118,7 @@ anb <- org_item$new(
     `en-GB` = "Agency for Nature & Forests (ANB)"
   ),
   email = "natuurenbos@vlaanderen.be",
-  ror = "https://ror.org/04wcznf70",
+  ror = "04wcznf70",
   license = list(
     package = character(0),
     project = character(0),
@@ -165,7 +165,9 @@ dir.create(test_dir)
 library(gert)
 git_init(test_dir)
 git_remote_add(
-  url = "https://github.com/ThierryO/test", name = "origin", repo = test_dir
+  url = "https://github.com/ThierryO/test",
+  name = "origin",
+  repo = test_dir
 )
 # get the default organisation list from https://github.com/ThierryO/checklist
 my_org <- get_default_org_list(test_dir)

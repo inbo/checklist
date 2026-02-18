@@ -24,12 +24,12 @@ funder:
   - name:
       given: Instituut voor Natuur- en Bosonderzoek (INBO)
     email: info@inbo.be
-    ror: https://ror.org/00j54wy13
+    ror: 00j54wy13
 rightsholder:
   - name:
       given: Instituut voor Natuur- en Bosonderzoek (INBO)
     email: info@inbo.be
-    ror: https://ror.org/00j54wy13
+    ror: 00j54wy13
 license: CC BY 4.0
 site: bookdown::bookdown_site
 output:

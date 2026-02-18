@@ -793,7 +793,7 @@ inbo_org_list <- function() {
         `en-GB` = "Agency for Nature & Forests (ANB)"
       ),
       email = "natuurenbos@vlaanderen.be",
-      ror = "https://ror.org/04wcznf70",
+      ror = "04wcznf70",
       website = "https://www.natuurenbos.be/",
       license = list(
         package = character(0),
@@ -828,7 +828,7 @@ inbo_org_list <- function() {
       email = "ilvo@ilvo.vlaanderen.be",
       website = "https://ilvo.vlaanderen.be/en",
       logo = "https://ilvo.vlaanderen.be/uploads/images/logo-ILVO-2016-eng.png",
-      ror = "https://ror.org/05cjt1n05",
+      ror = "05cjt1n05",
       license = list(
         package = character(0),
         project = character(0),
