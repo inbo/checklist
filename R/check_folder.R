@@ -101,7 +101,16 @@ check_folder <- function(x = ".") {
     )[
       !all(
         root_dir %in%
-          c(".github", "data", "inst", "media", "output", "renv", "source")
+          c(
+            ".github",
+            ".vscode",
+            "data",
+            "inst",
+            "media",
+            "output",
+            "renv",
+            "source"
+          )
       )
     ],
     sprintf(

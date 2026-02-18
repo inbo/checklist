@@ -38,7 +38,7 @@ test_that("new_org_item", {
         logo = paste0(
           "https://ilvo.vlaanderen.be/uploads/images/logo-ILVO-2016-eng.png"
         ),
-        ror = "https://ror.org/05cjt1n05",
+        ror = "05cjt1n05",
         license = list(
           package = c(
             `GPL-3.0` = paste(

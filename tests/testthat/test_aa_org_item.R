@@ -6,7 +6,7 @@ test_that("the org_item class works", {
         `en-GB` = "Agency for Nature & Forests (ANB)"
       ),
       email = "natuurenbos@vlaanderen.be",
-      ror = "https://ror.org/04wcznf70",
+      ror = "04wcznf70",
       zenodo = "anb",
       license = list(
         package = character(0),
@@ -22,7 +22,7 @@ test_that("the org_item class works", {
       given = "Agentschap voor Natuur en Bos (ANB)",
       email = "natuurenbos@vlaanderen.be",
       role = "fnd",
-      comment = c(ROR = "https://ror.org/04wcznf70")
+      comment = c(ROR = "04wcznf70")
     )
   )
   expect_identical(
@@ -31,7 +31,7 @@ test_that("the org_item class works", {
       given = "Agency for Nature & Forests (ANB)",
       email = "natuurenbos@vlaanderen.be",
       role = "cph",
-      comment = c(ROR = "https://ror.org/04wcznf70")
+      comment = c(ROR = "04wcznf70")
     )
   )
   expect_output(print(anb))
@@ -41,7 +41,7 @@ test_that("the org_item class works", {
       given = "Agentschap voor Natuur en Bos (ANB)",
       email = "natuurenbos@vlaanderen.be",
       role = c("cph", "fnd"),
-      comment = c(ROR = "https://ror.org/04wcznf70")
+      comment = c(ROR = "04wcznf70")
     )
   )
   expect_identical(

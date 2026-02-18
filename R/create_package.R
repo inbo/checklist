@@ -341,7 +341,7 @@ ask_language <- function(org, prompt = "Which language?") {
   language <- readline(prompt = "Please enter the language code: ")
   while (
     inherits(
-      try(validate_language(language), silent = interactive()),
+      try(validate_language(language), silent = !interactive()),
       "try-error"
     )
   ) {

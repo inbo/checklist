@@ -24,12 +24,8 @@ test_that("get_available_organisations() works", {
           `en-GB` = "The checklist organisation",
           `nl-BE` = "De checklist organisatie"
         ),
-        `info@vlaamsewaterweg.be` = list(
-          `nl-BE` = "De Vlaamse Waterweg nv"
-        ),
-        `info@vlm.be` = list(
-          `nl-BE` = "Vlaamse Landmaatschappij (VLM)"
-        ),
+        `info@vlaamsewaterweg.be` = list(`nl-BE` = "De Vlaamse Waterweg nv"),
+        `info@vlm.be` = list(`nl-BE` = "Vlaamse Landmaatschappij (VLM)"),
         `info@vmm.be` = list(
           `nl-BE` = "Vlaamse Milieumaatschappij (VMM)",
           `en-GB` = "Flanders Environment Agency (VMM)"
@@ -38,9 +34,7 @@ test_that("get_available_organisations() works", {
           `nl-BE` = "Agentschap voor Natuur en Bos (ANB)",
           `en-GB` = "Agency for Nature & Forests (ANB)"
         ),
-        `omgeving@vlaanderen.be` = list(
-          `nl-BE` = "Department Omgeving"
-        )
+        `omgeving@vlaanderen.be` = list(`nl-BE` = "Department Omgeving")
       ),
       languages = c("de-DE", "en-GB", "fr-FR", "nl-BE"),
       licenses = c(
@@ -95,13 +89,13 @@ test_that("get_available_organisations() works", {
         `omgeving@vlaanderen.be` = ""
       ),
       ror = c(
-        `ilvo@ilvo.vlaanderen.be` = "https://ror.org/05cjt1n05",
-        `info@inbo.be` = "https://ror.org/00j54wy13",
+        `ilvo@ilvo.vlaanderen.be` = "05cjt1n05",
+        `info@inbo.be` = "00j54wy13",
         `info@organisation.checklist` = "",
         `info@vlaamsewaterweg.be` = "",
         `info@vlm.be` = "",
         `info@vmm.be` = "",
-        `natuurenbos@vlaanderen.be` = "https://ror.org/04wcznf70",
+        `natuurenbos@vlaanderen.be` = "04wcznf70",
         `omgeving@vlaanderen.be` = ""
       ),
       website = c(

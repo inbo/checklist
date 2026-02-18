@@ -104,7 +104,7 @@ org_item <- R6Class(
         )
         private$email <- "info@inbo.be"
         private$orcid <- TRUE
-        private$ror <- "https://ror.org/00j54wy13"
+        private$ror <- "00j54wy13"
         private$zenodo <- "inbo"
         private$license <- list(
           package = c(
@@ -166,7 +166,7 @@ org_item <- R6Class(
       private$ror <- set_non_empty(
         ror,
         validate_ror,
-        "`ror` must be in https://ror.org/id format"
+        "`ror` must be in `id` format, not `https://ror.org/id`"
       )
       private$website <- set_non_empty(
         website,

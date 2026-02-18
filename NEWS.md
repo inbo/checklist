@@ -1,3 +1,10 @@
+# checklist 0.5.3
+
+* Add publisher to `.zenodo.json` (#180).
+* Add grant ID for EU-funded Zenodo communities (#182).
+* Correctly handle ROR (#184)
+* Fix Zenodo DOI badge in README.
+
 # checklist 0.5.2
 
 * Only create the contributing guidelines or code of conduct file when the
