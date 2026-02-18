@@ -1,0 +1,48 @@
+# Setting at the organisation level
+
+Version `0.6.0` introduces breaking changes to the way `checklist` looks
+for the configuration of settings at the organisation level. Since this
+version we split everything related to citation metadata, organisation
+settings and individuals into a separate package called
+[`citeme`](https://inbo.github.io/citeme/). The `citeme` allows to
+define custom [organisation
+settings](https://inbo.github.io/citeme/articles/organisation.html) via
+a `citeme` git repository within your git organisation.
+
+Since `checklist` depends on `citeme`, it will look for the organisation
+settings in the `citeme` repository of your git organisation. And we use
+the same `citeme` repository to store additional information relevant to
+`checklist`.
+
+## Coding style
+
+You can set a coding style for your organisation by placing a `.lintr`
+file in the root of your `citeme` repository. Please refer to the [lintr
+documentation](https://lintr.r-lib.org/articles/lintr.html#the--lintr-file)
+for more information on how to set up a `.lintr` file.
+
+## `pkgdown` style
+
+[`create_package()`](https://inbo.github.io/checklist/reference/create_package.md)
+and
+[`setup_package()`](https://inbo.github.io/checklist/reference/setup_package.md)
+will prepare a `pkgdown` website for your package. You can define a
+custom style for your `pkgdown` website by placing a `pkgdown.css` file
+in the root of your `citeme` repository. This file will be used as the
+custom CSS for all `pkgdown` websites of packages within your git
+organisation. Please refer to the [pkgdown
+documentation](https://pkgdown.r-lib.org) for more information on how to
+customize your `pkgdown` website.
+
+These function will also copy all files in the `pkgdown` folder of your
+`citeme` repository to the `man/figures` folder of your package. Use
+this location to store images or fonts you want to define in the custom
+CSS for your `pkgdown` website.
+
+## License files
+
+When you define an organisation setting in `citeme`, you can also define
+which licenses are allowed for your packages, projects or data. `citeme`
+requires you to provide a public link to a license file for each allowed
+license. Hence the `citeme` repository of your git organisation can also
+be used to store the license files for the allowed licenses.
