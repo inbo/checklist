@@ -1,0 +1,100 @@
+# Setting up checklist for a project
+
+Go to
+[`vignette("getting_started", package = "checklist")`](https://inbo.github.io/checklist/articles/getting_started.md)
+when you want to use `checklist` on an R package.
+
+## Starting a new project from scratch
+
+Run `create_project(path, project)`. `path` must be an existing
+directory. `project` is the name of the project.
+[`create_project()`](https://inbo.github.io/checklist/reference/create_project.md)
+creates the project as a subdirectory of `path` with name `project`. It
+then guides you interactively through the process by asking questions on
+your preferences on the project. All yes/no question have a sensible
+default. You can use that default by simply pressing enter. Most other
+questions are similar to that of
+[`create_package()`](https://inbo.github.io/checklist/reference/create_package.md).
+Please refer to
+[`vignette("getting_started", package = "checklist")`](https://inbo.github.io/checklist/articles/getting_started.md)
+for more details on those.
+
+Use
+[`setup_project()`](https://inbo.github.io/checklist/reference/setup_project.md)
+when you want to change the settings later.
+
+- You always get an RStudio project with name `project`.
+- Do you want version control with git? When you answer yes, you get the
+  `check_project` GitHub Action. This runs
+  [`check_project()`](https://inbo.github.io/checklist/reference/check_project.md)
+  automatically when you (or a contributor) pushed code to GitHub. To
+  add your project to GitHub, follow the instructions below ([To do once
+  after activating version control](#setup-github)) after creating the
+  project.
+  - Do you want a file describing the code of conduct for contributing
+    to your project? This is a template which you may alter to suit your
+    needs.
+  - Do you want a file describing guidelines for contributing to your
+    project? This is a template which you may alter to suit your needs.
+- Add a template for `README.md`.
+  - Which authors do you want to list?
+  - What is the title of the project?
+- Do you want to check the file name conventions with
+  [`check_filename()`](https://inbo.github.io/checklist/reference/check_filename.md)?
+- Do you want to check the coding style with
+  [`check_lintr()`](https://inbo.github.io/checklist/reference/check_lintr.md)?
+- What is the default language of the project?
+- Do you want to spell check the markdown content and R function
+  documentation in your project with
+  [`check_spelling()`](https://inbo.github.io/checklist/reference/check_spelling.md)?
+  This uses the default language you set in the previous question. Note
+  that you can set a different language on specific files. See
+  [`vignette("spelling", package = "checklist")`](https://inbo.github.io/checklist/articles/spelling.md)
+  for more details on that.
+- Do you want to check the license file? This compares the `LICENSE.md`
+  in your project with the `LICENSE.md`.
+- Do you want to update the citation files?
+
+## Add or update `checklist` tools in an existing project
+
+Run `setup_project(path_to_your_project)`. This works on existing
+projects with or without a previous set-up of `checklist`. In case of a
+previous set-up, it will take that into account.
+
+- If you don’t use version control yet, do you want to activate git?
+- Add a `README.md` when missing.
+  - Which authors do you want to list?
+  - What is the title of the project?
+- Do you want to check the file name conventions with
+  [`check_filename()`](https://inbo.github.io/checklist/reference/check_filename.md)?
+- Do you want to check the coding style with
+  [`check_lintr()`](https://inbo.github.io/checklist/reference/check_lintr.md)?
+- Do you want to add a license file?
+  - Do you want to check the license file if set?
+- Do you want to check spelling with
+  [`check_spelling()`](https://inbo.github.io/checklist/reference/check_spelling.md).
+- Do you want to update the citation files?
+
+## To do once after activating version control
+
+- Make sure you have at least one commit.
+- Checkout the main branch.
+- Login to <https://github.com>
+- Create a new repository without adding a `README`, `.gitignore` and
+  license. `checklist` will add those files for you.
+- Copy the code listed in your newly created repository on GitHub under
+  “…or push an existing repository from the command line” and run it
+  locally in the git terminal in RStudio.
+- Go on <https://github.com> to the “Settings” panel of the repository.
+  - General
+    - activate “Always suggest updating pull request branches”
+    - activate “Automatically delete head branches”
+  - Branches
+    - Add branch protection rule
+      - branch name pattern: `main`
+      - activate “Require a pull request before merging”
+        - in case a team works on the project consider to activate
+          “Require approvals”
+      - activate “Require status checks to pass before merging”
+        - search and select “check project with checklist”
+        - activate Require “branches to be up to date before merging”

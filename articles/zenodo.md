@@ -1,0 +1,203 @@
+# Setting up the integration between GitHub, Zenodo and ORCID
+
+## What is [Zenodo](https://zenodo.org)?
+
+Built and developed by researchers, to ensure that everyone can join in
+Open Science.
+
+The OpenAIRE project, in the vanguard of the open access and open data
+movements in Europe was commissioned by the EC to support their nascent
+Open Data policy by providing a catch-all repository for EC funded
+research. CERN, an OpenAIRE partner and pioneer in open source, open
+access and open data, provided this capability and Zenodo was launched
+in May 2013 (European Organization For Nuclear Research and OpenAIRE
+2013).
+
+In support of its research programme CERN has developed tools for Big
+Data management and extended Digital Library capabilities for Open Data.
+Through Zenodo these Big Science tools could be effectively shared with
+the long-tail of research.
+
+Publishing the package code through Zenodo has several benefits.
+
+- The code is archived free of charge.
+- The code remains publicly available, even if the GitHub repository is
+  removed.
+- The code gets a DOI, making it easier to cite the code and track the
+  citations. Every release gets its own release and there is a dedicated
+  DOI which always points at the latest release. This gives the user a
+  choice between citing the code in general or a specific version.
+
+## What is [ORCID](https://orcid.org)?
+
+ORCID, which stands for Open Researcher and Contributor ID, is a global,
+not-for-profit organization sustained by fees from their member
+organizations. They are community-built and governed by a [Board of
+Directors](https://info.orcid.org/orcid-board/) representative of their
+membership with wide stakeholder representation. ORCID is supported by a
+dedicated and knowledgeable [professional
+staff](https://info.orcid.org/orcid-team/).
+
+Individual researchers are the heart of everything ORCID does and will
+always have access to their records and data for free. If you don’t
+already have an ORCID iD, [register for one
+today](https://orcid.org/register)! Researchers can identify themselves
+with this ORCID iD in their publications. This solves potential
+ambiguity dues to several persons with the same name or different
+spellings of a researchers name.
+
+ORCID provides researchers an easy way to publish a list of publication
+on their ORCID profile. The researcher can manually add publications to
+this profile. ORCID has links with several data providers
+(e.g. publishers, Zenodo). The researchers can setup ORCID to add new
+publications automatically to their profile. This makes it easier to
+maintain an updated list of publications.
+
+## Why integrate Zenodo and ORCID with GitHub?
+
+Setting up the integration has the benefit that a new package version
+automatically gets a unique DOI and is added to your ORCID profile.
+
+### Setup ORCID
+
+#### Once
+
+1.  Create an account at <https://orcid.org>
+2.  Go to [DataCite](https://profiles.datacite.org/sign_in) and select
+    “Sign in”.
+3.  Select “Sign in with Globus”, then “Sign in with ORCID iD”.
+4.  Authorise access to Globus Auth.
+
+### Setup Zenodo
+
+#### Once
+
+1.  Create an account using your ORCID at <https://zenodo.org/signup/>
+
+#### Once per repository
+
+1.  Log-in to [Zenodo](https://zenodo.org).
+2.  Go the to drop-down box associated to your account (top right) and
+    choose GitHub.
+3.  Find the repository in the list of repositories. Use the “Sync now”
+    button if you can’t find the repository. Note that you can only use
+    public repositories.
+4.  Flip the switch of the repository to “On”.
+
+### What happens next?
+
+1.  Make sure that you’ve set-up your code as a package with `checklist`
+    support. See
+    [`vignette("getting_started", package = "checklist")`](https://inbo.github.io/checklist/articles/getting_started.md)
+    on how to do that.
+2.  Add the ORCID of all contributors to the `DESCRIPTION`.
+3.  Pushing new commits to GitHub triggers a GitHub action that runs
+    [`check_package()`](https://inbo.github.io/checklist/reference/check_package.md).
+    This makes sure that the citation information in `CITATION`,
+    `CITATION.cff` and `.zenodo.json` are up to date. Zenodo uses the
+    latter as meta data for the new DOI.
+4.  Merging a pull request to the main branch will trigger a GitHub
+    Action workflow that adds a new tag with the version number. This
+    makes that version of the package installable with
+    `remotes::install_github("organisation/package@tag")` (replace
+    *organisation*, *package* and *tag* with the appropriate values).
+    The tag is “v” followed by the version number (e.g. `v0.5.2`).
+5.  Adding the tag triggers another GitHub Action workflow that creates
+    a new release. The relevant content of the `NEWS.md` becomes the
+    description of the release.
+6.  Zenodo detects the new release, creates a DOI and publishes it.
+7.  Zenodo passes the citation metadata to ORCID for all contributors
+    with an ORCID listed in `DESCRIPTION`. ORCID adds the publication
+    information to the users which have added the DataCite integration.
+
+## Managing Zenodo metadata via `DESCRIPTION`
+
+Zenodo supports structured metadata such as contributors, funding
+information, publisher and ORCID IDs. When using `checklist`, you should
+not edit `.zenodo.json` manually. All citation and Zenodo metadata must
+be defined in the `DESCRIPTION` file. The function
+[`update_citation()`](https://inbo.github.io/checklist/reference/update_citation.md)
+extracts this metadata, validates it and writes the required citation
+files.
+
+Running:
+
+``` r
+
+update_citation()
+```
+
+will generate or update:
+
+- `.zenodo.json` (Zenodo format)
+- `CITATION.cff` (GitHub format)
+- `inst/CITATION` (R package format)
+
+This ensures that Zenodo, GitHub and R receive consistent citation
+metadata from a single source.
+
+### Contributor roles
+
+Zenodo-related metadata is defined via `Authors@R` entries and their
+`role` fields.
+
+Example:
+
+``` text
+Authors@R: c(
+  person(
+    given = "Jane",
+    family = "Doe",
+    role = c("aut", "cre"),
+    comment = c(
+      ORCID = "0000-0002-1234-5678",
+      affiliation = "Research Institute for Nature and Forest (INBO)"
+    )
+  ),
+  person(
+    "Research Institute for Nature and Forest (INBO)", , ,
+    "info@inbo.be",
+    role = c("cph", "fnd", "pbl"),
+    comment = c(ROR = "00j54wy13")
+  ),
+  person(
+    given = "European Commission",
+    role = "fnd",
+    comment = c(grant_id = "10.13039/501100000780::283595")
+  )
+)
+```
+
+Common roles include:
+
+- `"aut"` — author
+- `"cre"` — creator / maintainer
+- `"ctb"` — contributor
+- `"pbl"` — publisher
+- `"fnd"` — funder
+- `"cph"` — copyright holder
+
+### Funding information
+
+Funding metadata is specified using:
+
+``` text
+role = "fnd"
+comment = c(grant_id = "<funding-id>")
+```
+
+Supported formats include:
+
+- Grant number only (e.g. `"283595"` for European Commission grants)
+- DOI-prefixed format (for all grants, recommended):
+  `"10.13039/501100000780::283595"`
+
+The DOI prefix identifies the funder, followed by `::` and the grant
+number.
+
+> Note that funding metadata can be mandatory for some projects (e.g.,
+> that belong to EU-funded communities). The GitHub - Zenodo integration
+> may fail in these instances when the grant ID is not specified.
+
+European Organization For Nuclear Research, and OpenAIRE. 2013.
+*Zenodo*. CERN. <https://doi.org/10.25495/7GXK-RD71>.
