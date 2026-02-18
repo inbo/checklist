@@ -229,16 +229,25 @@ validate_citation <- function(meta) {
 #' @importFrom knitr pandoc
 #' @importFrom gert git_find
 citation_zenodo <- function(meta) {
+  # Validate input
   assert_that(inherits(meta, "citation_meta"))
   assert_that(length(meta$get_errors) == 0)
+
+  # Extract base metadata
   zenodo <- meta$get_meta
+
+  # Read and validate person entries from DESCRIPTION
   person <- org_list$new()$read(meta$get_path)$validate_person(
     meta$get_person,
     lang = "en-GB"
   )
+
+  # Extract package version
   if (has_name(zenodo, "version")) {
     zenodo$version <- as.character(zenodo$version)
   }
+
+  # Extract package contributors
   person[vapply(
     person$role,
     FUN = function(x) {
@@ -250,6 +259,8 @@ citation_zenodo <- function(meta) {
       FUN = format_zenodo,
       FUN.VALUE = vector("list", 1)
     ) -> zenodo$contributors
+
+  # Extract package creators (authors)
   person[vapply(
     person$role,
     FUN = function(x) {
@@ -262,7 +273,11 @@ citation_zenodo <- function(meta) {
       type = FALSE,
       FUN.VALUE = vector("list", 1)
     ) -> zenodo$creators
+
+  # Extract package keywords
   zenodo$keywords <- as.list(zenodo$keywords)
+
+  # Extract Zenodo communities
   if (has_name(zenodo, "community")) {
     zenodo$communities <- vapply(
       zenodo$community,
@@ -274,14 +289,57 @@ citation_zenodo <- function(meta) {
     )
     zenodo$community <- NULL
   }
+
+  # Extract language (ISO 639-3)
   if (has_name(zenodo, "language")) {
     zenodo$language <- lang_2_iso_639_3(zenodo$language)
   }
+
+  # Extract publisher
+  publishers <- Filter(function(x) "pbl" %in% x$role, person)
+
+  if (length(publishers) > 0) {
+    stopifnot("Only single publisher possible" = length(publishers) == 1)
+    zenodo$publisher <- publishers$given
+  }
+
+  # Remove Zenodo DOI (self-reference)
   if (has_name(zenodo, "doi") && grepl("zenodo", zenodo$doi)) {
     zenodo$doi <- NULL
   }
+
+  # Remove unsupported fields
   zenodo$url <- NULL
   zenodo$source <- NULL
+
+  # Extract grant ID from funder (role = "fnd")
+  funders <- Filter(function(x) "fnd" %in% x$role, person)
+
+  grant_ids <- vapply(
+    funders,
+    function(x) {
+      if (!is.null(x$comment) && "grant_id" %in% names(x$comment)) {
+        x$comment[["grant_id"]]
+      } else {
+        NA_character_
+      }
+    },
+    character(1)
+  )
+  grant_ids <- grant_ids[!is.na(grant_ids)]
+
+  if (length(grant_ids) > 0) {
+    zenodo$grants <- vapply(
+      grant_ids,
+      FUN.VALUE = vector("list", 1),
+      USE.NAMES = FALSE,
+      FUN = function(x) {
+        list(list(id = x))
+      }
+    )
+  }
+
+  # Extract description (convert Markdown to HTML)
   desc <- tempfile(fileext = ".md")
   writeLines(zenodo$description, desc)
   suppressMessages(pandoc(desc, format = "html"))
@@ -289,9 +347,13 @@ citation_zenodo <- function(meta) {
     readLines() |>
     paste(collapse = " ") |>
     gsub(pattern = " +", replacement = " ") -> zenodo$description
+
+  # Write .zenodo.json file
   citation_file <- path(meta$get_path, ".zenodo.json")
   toJSON(zenodo, pretty = TRUE, auto_unbox = TRUE) |>
     writeLines(citation_file)
+
+  # Check repository status
   errors <- paste(
     citation_file,
     "is modified.",
