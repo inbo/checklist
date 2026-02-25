@@ -19,6 +19,8 @@
 clean_git <- function(repo = ".", verbose = TRUE) {
   assert_that(is_workdir_clean(repo))
 
+  fix_duplicate_git_config(repo = repo)
+
   current_branch <- git_branch(repo = repo)
 
   # fetch the remote
@@ -56,31 +58,21 @@ clean_git <- function(repo = ".", verbose = TRUE) {
         FUN.VALUE = vector("list", 1),
         repo = repo,
         FUN = function(i, repo) {
-          list(
-            git_ahead_behind(
-              upstream = upstream_df$upstream[i],
-              ref = upstream_df$ref[i],
-              repo = repo
-            )
-          )
+          list(git_ahead_behind(
+            upstream = upstream_df$upstream[i],
+            ref = upstream_df$ref[i],
+            repo = repo
+          ))
         }
       )
       names(upstream_ab) <- upstream_df$name
 
-      ahead <- vapply(
-        upstream_ab,
-        FUN.VALUE = integer(1),
-        FUN = function(x) {
-          x$ahead
-        }
-      )
-      behind <- vapply(
-        upstream_ab,
-        FUN.VALUE = integer(1),
-        FUN = function(x) {
-          x$behind
-        }
-      )
+      ahead <- vapply(upstream_ab, FUN.VALUE = integer(1), FUN = function(x) {
+        x$ahead
+      })
+      behind <- vapply(upstream_ab, FUN.VALUE = integer(1), FUN = function(x) {
+        x$behind
+      })
       diverged <- ahead > 0 & behind > 0
       diverged <- diverged[names(diverged) != "gh-pages"]
       vapply(
@@ -134,8 +126,9 @@ clean_git <- function(repo = ".", verbose = TRUE) {
     }
 
     # local branches without upstream
-    local_branches_noup <-
-      branch_info[is.na(branch_info$upstream) & branch_info$local, ]
+    local_branches_noup <- branch_info[
+      is.na(branch_info$upstream) & branch_info$local,
+    ]
 
     if (nrow(local_branches_noup) > 0) {
       no_upstream_ab <- vapply(
@@ -144,13 +137,7 @@ clean_git <- function(repo = ".", verbose = TRUE) {
         upstream = origin_main_branch,
         repo = repo,
         FUN = function(i, upstream, repo) {
-          list(
-            git_ahead_behind(
-              upstream = upstream,
-              ref = i,
-              repo = repo
-            )
-          )
+          list(git_ahead_behind(upstream = upstream, ref = i, repo = repo))
         }
       )
       names(no_upstream_ab) <- local_branches_noup$name
