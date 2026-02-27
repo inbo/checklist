@@ -1,18 +1,28 @@
 
+!source/**/_extensions/**
 # OAuth tokens
 # Rstudio
 # pkgdown
+*.[rR][dD]ata
+*.[rR]ds
 *.dbf
 *.doc*
+*.eps
 *.gddoc
 *.gdsheet
 *.gpkg
 *.html
 *.mdb
+*.pdf
 *.shp*
 *.shx
+*.sty
+*.tex
 *.xls*
+*_cache
 *_files
+*_freeze
+*_libs
 .DS_Store
 .RData
 .Renviron
@@ -20,6 +30,7 @@
 .Rproj.user
 .Ruserdata
 .httr-oauth
+.quarto
 docs
 docs/*
 inst/doc
