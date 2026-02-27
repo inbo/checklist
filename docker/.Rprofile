@@ -9,6 +9,7 @@ options(
   yaml.eval.expr = TRUE,
   repos = c(
     CRAN = "https://cloud.r-project.org/",
+    CRANhaven = "https://cranhaven.r-universe.dev",
     INLA = "https://inla.r-inla-download.org/R/stable",
     INBO = "https://inbo.r-universe.dev"
   ),
