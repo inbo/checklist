@@ -254,12 +254,12 @@ org_list <- R6Class(
       }
       path(x, "organisation.yml") |>
         read_yaml() -> yaml
-      stopifnot(
-        "old style `organisation.yml` detected" = has_name(
-          yaml,
-          "checklist version"
-        )
-      )
+      has_name(yaml, "checklist version") |>
+        setNames(paste(
+          "Old style `organisation.yml` detected.",
+          "Please remove this file first."
+        )) |>
+        stopifnot()
       yaml[!names(yaml) %in% c("checklist version", "git")] |>
         lapply(function(z) {
           z$license <- lapply(z$license, function(y) {

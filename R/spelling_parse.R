@@ -484,7 +484,7 @@ remove_hyphenated_words <- function(text) {
     gsub(pattern = "(\\w+)[-/]+(\\w+)", replacement = "\\1 \\2") |>
     gsub(pattern = "(\\w+)[-/]+(\\w+)", replacement = "\\1 \\2") |>
     # remove trailing slashes
-    gsub(pattern = "(\\w+)/\\s", replacement = "\\1 ") |>
+    gsub(pattern = "(\\w+)/[\\s\\.]+", replacement = "\\1 ") |>
     gsub(pattern = "(\\w+)/$", replacement = "\\1") |>
     # remove leading hyphens
     gsub(pattern = "\\s-(\\w+)", replacement = " \\1") |>

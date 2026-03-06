@@ -1,3 +1,11 @@
+# checklist 0.5.4
+
+* `check_cran()` now displays the full output of all failing tests.
+* Add the [`CRANhaven`](https://www.cranhaven.org/) repository to reduce the
+  impact of recently archives CRAN packages.
+* `clean_git()` handles duplicate entries in `git config`.
+* Reduce the number of layers in the Docker image.
+
 # checklist 0.5.3
 
 * Add publisher to `.zenodo.json` (#180).

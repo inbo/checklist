@@ -118,20 +118,24 @@ check_filename <- function(x = ".") {
   files <- files[!grepl("\\.(otf|ttf)$", basename(files))] # ignore fonts files
   files <- files[!grepl("man\\/.*\\.Rd", files)] # ignore Rd files
   files <- files[!grepl("R\\/sysdata.rda", files)] # ignore sysdata.rda
-  base <- gsub("(.*)\\.(.*)?", "\\1", basename(files))
+  base <- gsub("(.*)\\..*?$", "\\1", basename(files), perl = TRUE)
+
   problems <- c(
     problems,
     sprintf(
       "Basename must contain only lower case, numbers, `_` or `-`.
 Fails: `%s`",
-      files[!grepl("^[a-z0-9_-]*$", base)]
+      files[
+        !grepl("^[a-z0-9_-]*$", base) &
+          !grepl("\\.agent\\.md$", basename(files))
+      ]
     )
   )
 
   # ignore .rda files in the data directory
   to_ignore <- !grepl("^data/[a-z0-9_]*\\.rda$", files)
 
-  extension <- gsub("(.*)\\.(.*)?", "\\2", basename(files))
+  extension <- gsub(".*\\.(.*?)$", "\\1", basename(files), perl = TRUE)
   # extension exceptions
   exception <- grepl("^R(d|da|nw|md|proj)?$", extension) |
     grepl("^([a-z0-9])*?$", extension)

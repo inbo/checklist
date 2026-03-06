@@ -306,7 +306,8 @@ test_that("check_spelling() on a project", {
     "1-out-all-out",
     "-berekeningen",
     "aan-/afwezigheid",
-    "soortnaam/variëteit/"
+    "soortnaam/variëteit/",
+    "hij/zij/..."
   ) |>
     writeLines(path(path, "spelling", "source", "nederlands.md"))
   path(path, "spelling", "checklist.yml") |>
