@@ -31,3 +31,4 @@ libs
 output
 renv/library
 !source/**/_extensions/**
+tests/testthat/_problems

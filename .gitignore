@@ -1,8 +1,5 @@
 
 !source/**/_extensions/**
-# OAuth tokens
-# Rstudio
-# pkgdown
 *.[rR][dD]ata
 *.[rR]ds
 *.dbf
@@ -32,8 +29,8 @@
 .httr-oauth
 .quarto
 docs
-docs/*
 inst/doc
 libs
 output
 renv/library
+tests/testthat/_problems
