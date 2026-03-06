@@ -39,7 +39,7 @@ check_cran <- function(x = ".", quiet = FALSE) {
     dirname(pandoc_exec()),
     rcmdcheck(
       path = x$get_path,
-      args = c("--timings", "--as-cran", "--no-manual"),
+      args = c("--timings", "--as-cran", "--no-manual", "--no-tests"),
       error_on = "never",
       quiet = quiet,
       timeout = Inf
@@ -75,6 +75,7 @@ Days since last update: [0-9]+",
     }
   }
   # nocov end
+
   check_output$notes <- clean_incoming(check_output$notes)
   check_output$warnings <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$warnings)
   check_output$notes <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$notes)
@@ -82,7 +83,7 @@ Days since last update: [0-9]+",
   check_output$warnings <- gsub(" \\[\\d+s\\]", "", check_output$warnings)
   check_output$notes <- gsub(" \\[\\d+s\\]", "", check_output$notes)
   x$add_rcmdcheck(
-    errors = check_output$errors,
+    errors = c(check_output$errors, check_test(x$get_path)),
     warnings = check_output$warnings,
     notes = check_output$notes
   )
@@ -112,4 +113,44 @@ clean_incoming <- function(issues) {
     } # nocov end
   }
   return(issues)
+}
+
+display_message <- function(x, verbose, type = c("cat", "message", "warning")) {
+  if (isFALSE(verbose)) {
+    return(invisible(NULL))
+  }
+  type <- match.arg(type)
+  stopifnot(is.character(x))
+  switch(
+    type,
+    cat = cat(x, "\n"),
+    message = message(x),
+    warning = warning(x, call. = FALSE, immediate. = TRUE)
+  )
+  return(invisible(NULL))
+}
+
+check_test <- function(package_path, quiet = FALSE) {
+  test_folder <- file.path(package_path, "tests")
+  if (!dir.exists(test_folder)) {
+    display_message("No tests found", verbose = !quiet)
+    return(character(0))
+  }
+  test_files <- list.files(test_folder, pattern = "\\.R$", ignore.case = TRUE)
+  if (length(test_files) == 0) {
+    display_message("No tests found", verbose = !quiet)
+    return(character(0))
+  }
+  file.path(test_folder, test_files) |>
+    sprintf(fmt = "Rscript --vanilla %s") |>
+    paste(collapse = "\n") |>
+    sprintf(fmt = "cd %2$s\n%1$s", test_folder) |>
+    system(intern = TRUE) |>
+    paste(collapse = "\n") -> test_output
+
+  if (!grepl("Failed tests", test_output)) {
+    test_output <- character(0)
+  }
+  display_message(test_output, verbose = !quiet)
+  return(test_output)
 }
