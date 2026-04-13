@@ -6,16 +6,22 @@
 #' Notice that `check_package()` runs several additional tests.
 #' @inheritParams read_checklist
 #' @inheritParams rcmdcheck::rcmdcheck
+#' @param time_out The time in seconds to wait for a response from the world
+#' clock API.
+#' Default is 15 seconds, but you can increase this if you have a slow internet
+#' connection.
+#' If the world clock API is not available, the system clock will be used
+#' without a warning, but the check will be less reliable.
 #' @return A `checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom gert git_ahead_behind git_branch_exists git_info
-#' @importFrom httr HEAD
+#' @importFrom httr HEAD timeout
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
 #' @importFrom withr defer with_path
 #' @export
 #' @family package
-check_cran <- function(x = ".", quiet = FALSE) {
+check_cran <- function(x = ".", quiet = FALSE, time_out = 15) {
   x <- read_checklist(x = x)
   assert_that(
     x$package,
@@ -26,12 +32,15 @@ check_cran <- function(x = ".", quiet = FALSE) {
   # don't use fancy Quotes when checking
   old_options <- options()
   defer(options(old_options))
-  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = 360)
-  options(useFancyQuotes = FALSE, timeout = max(360, getOption("timeout")))
+  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = time_out)
+  options(useFancyQuotes = FALSE, timeout = max(time_out, getOption("timeout")))
 
   # test if the worlds clock is available
-  clock_status <- HEAD("http://worldclockapi.com/api/json/utc/now")$status_code
-  if (clock_status != 200) {
+  clock_status <- try(
+    HEAD("http://worldclockapi.com/api/json/utc/now", timeout(time_out)),
+    silent = TRUE
+  )
+  if (inherits(clock_status, "try-error") || clock_status$status_code != 200) {
     Sys.setenv("_R_CHECK_SYSTEM_CLOCK_" = 0)
   }
 
