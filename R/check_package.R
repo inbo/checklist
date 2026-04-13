@@ -27,6 +27,7 @@
 #' session.
 #' @param quiet Whether to print check output during checking.
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom citeme org_list
 #' @importFrom fs file_delete
 #' @importFrom pkgdown build_site
 #' @importFrom withr defer
@@ -47,8 +48,7 @@ check_package <- function(
 
   quiet_cat("Checking organisation settings\n", quiet = quiet)
   org <- org_list$new()$read(x$get_path)
-  org$check(x = x$get_path) |>
-    x$add_error(item = "organisation") -> x
+  org$check(x = x$get_path) |> x$add_error(item = "organisation") -> x
 
   quiet_cat("Checking spelling\n", quiet = quiet)
   x <- check_spelling(x = x, quiet = quiet)

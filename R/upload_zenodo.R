@@ -7,8 +7,7 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   assert_that(is_dir(path), msg = "`path` is not an existing directory")
   assert_that(is_file(path(path, ".zenodo.json")))
 
-  path(path, ".zenodo.json") |>
-    read_yaml() -> cit_meta
+  path(path, ".zenodo.json") |> read_yaml() -> cit_meta
 
   zenodo <- zen4R::ZenodoManager$new(
     sandbox = sandbox,
@@ -39,17 +38,13 @@ upload_zenodo <- function(path, token, sandbox = TRUE, logger = NULL) {
   if (has_name(cit_meta, "version")) {
     zen_rec$setVersion(cit_meta$version)
   }
-  zen_rec$setPublicationDate(
-    first_non_null(cit_meta$publication_date, Sys.Date())
-  )
+  zen_rec$setPublicationDate(first_non_null(
+    cit_meta$publication_date,
+    Sys.Date()
+  ))
   zen_rec$setPublisher(cit_meta$publisher)
 
-  zen_rec <- zen_upload(
-    zenodo,
-    zen_rec,
-    path,
-    community = cit_meta$communities
-  )
+  zen_rec <- zen_upload(zenodo, zen_rec, path, community = cit_meta$communities)
   return(invisible(zen_rec))
 }
 

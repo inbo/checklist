@@ -95,8 +95,7 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
     system.file(package = "checklist") |>
     readLines() -> add_words
   if (package) {
-    path(root, "DESCRIPTION") |>
-      description$new() -> descr
+    path(root, "DESCRIPTION") |> description$new() -> descr
     descr$get_authors() |>
       format(include = c("given", "family")) |>
       strsplit(split = " ") |>
@@ -113,13 +112,11 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
   path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
   if (file_exists(dict)) {
-    readLines(dict) |>
-      c(add_words) -> add_words
+    readLines(dict) |> c(add_words) -> add_words
   }
   dict <- path(root, "inst", tolower(lang), ext = "dic")
   if (file_exists(dict)) {
-    readLines(dict) |>
-      c(add_words) -> add_words
+    readLines(dict) |> c(add_words) -> add_words
   }
   dict <- dictionary(lang = lang, add_words = add_words)
   attr(dict, "checklist_language") <- gsub("_", "-", lang)
@@ -160,31 +157,23 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
     text = raw_text,
     problems = problems,
     FUN = function(i, text, problems) {
-      list(
-        vapply(
-          problems[[i]],
-          FUN.VALUE = vector(mode = "list", length = 1),
-          text = text,
-          i = i,
-          FUN = function(word, text, i) {
-            detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
-            if (min(detect) == -1) {
-              return(
-                list(
-                  data.frame(
-                    line = integer(0),
-                    column = integer(0),
-                    message = character(0)
-                  )
-                )
-              )
-            }
-            list(
-              data.frame(line = i, column = as.vector(detect), message = word)
-            )
+      list(vapply(
+        problems[[i]],
+        FUN.VALUE = vector(mode = "list", length = 1),
+        text = text,
+        i = i,
+        FUN = function(word, text, i) {
+          detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
+          if (min(detect) == -1) {
+            return(list(data.frame(
+              line = integer(0),
+              column = integer(0),
+              message = character(0)
+            )))
           }
-        )
-      )
+          list(data.frame(line = i, column = as.vector(detect), message = word))
+        }
+      ))
     }
   )
   result <- do.call(rbind, unlist(result, recursive = FALSE))

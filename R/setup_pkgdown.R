@@ -12,7 +12,7 @@ setup_pkgdown <- function(x = ".", org, lang) {
 
   gsub(pattern = "https://", replacement = "", org$get_git) |>
     tolower() -> config_name
-  config_folder <- R_user_dir("checklist", "config")
+  config_folder <- R_user_dir("citeme", "config")
 
   css_source <- path(config_folder, config_name, "pkgdown.css")
   if (file_test("-f", css_source)) {
@@ -30,11 +30,11 @@ setup_pkgdown <- function(x = ".", org, lang) {
   dir_create(target)
   to_do <- list.files(config_path, full.names = TRUE)
   file.copy(to_do, to = path(target, basename(to_do)), overwrite = TRUE)
-  path("man", "figures") |>
-    git_add(repo = x$get_path)
+  path("man", "figures") |> git_add(repo = x$get_path)
   return(invisible(NULL))
 }
 
+#' @importFrom citeme ssh_http
 githubpages_url <- function(path) {
   if (!is_repository(path)) {
     return(character(0))

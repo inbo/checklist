@@ -59,10 +59,7 @@ test_that("clean_git with `main` as main branch", {
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo2)
-  gert::git_branch_set_upstream(
-    upstream = "origin/branch",
-    repo = repo2
-  )
+  gert::git_branch_set_upstream(upstream = "origin/branch", repo = repo2)
   expect_invisible(clean_git(repo = repo2, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
   branch_info_repo2 <- git_branch_list(repo = repo2)

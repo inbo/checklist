@@ -10,6 +10,7 @@ spelling <- R6Class(
     #' @param language the default language.
     #' @param base_path the base path of the project
     #' @importFrom assertthat assert_that is.string noNA
+    #' @importFrom citeme validate_language
     #' @importFrom fs dir_exists file_exists path_real
     initialize = function(language, base_path = ".") {
       assert_that(is.string(base_path), noNA(base_path), dir_exists(base_path))
@@ -43,6 +44,7 @@ spelling <- R6Class(
     #' @description Define which files to ignore or to spell check in a
     #' different language.
     #' @param language The language.
+    #' @importFrom citeme validate_language
     set_default = function(language) {
       private$main <- validate_language(language)
       private$other[[private$main]] <- NULL
@@ -72,6 +74,7 @@ spelling <- R6Class(
     #' @description Manually set the other list.
     #' Only use this if you known what you are doing.
     #' @param other a list with file patterns per additional language.
+    #' @importFrom citeme validate_language
     set_other = function(other) {
       assert_that(is.list(other))
       assert_that(
@@ -130,14 +133,12 @@ spelling <- R6Class(
     },
     #' @field settings A list with current spell checking settings.
     settings = function() {
-      return(
-        list(
-          root = private$path,
-          default = private$main,
-          ignore = private$ignore,
-          other = private$other
-        )
-      )
+      return(list(
+        root = private$path,
+        default = private$main,
+        ignore = private$ignore,
+        other = private$other
+      ))
     }
   ),
   private = list(
@@ -147,16 +148,6 @@ spelling <- R6Class(
     path = character(0)
   )
 )
-
-#' @importFrom assertthat assert_that is.string noNA
-validate_language <- function(language) {
-  assert_that(is.string(language), noNA(language))
-  assert_that(
-    grepl("[a-z]{2}-[A-Z]{2}", language),
-    msg = "`language` must be in xx-YY format. e.g. 'en-GB', 'nl-BE'"
-  )
-  return(language)
-}
 
 #' @importFrom fs path_filter path_has_parent path_rel
 get_language <- function(files, private) {
@@ -209,24 +200,21 @@ list_quarto_md <- function(quarto, root) {
   } else {
     return(list(data.frame(quarto_lang = character(0), path = character(0))))
   }
-  unlist(files) |>
-    unname() |>
-    unique() -> files
-  path_dir(quarto) |>
-    path_rel(root) |>
-    path(files) -> files
+  unlist(files) |> unname() |> unique() -> files
+  path_dir(quarto) |> path_rel(root) |> path(files) -> files
   files <- files[file_test("-f", path(root, files))]
   path(root, files) |>
     vapply(
       FUN.VALUE = character(1),
       lang = settings$lang,
       FUN = function(x, lang) {
-        coalesce(yaml_front_matter(x)$lang, lang, NA_character_)
+        citeme::coalesce(yaml_front_matter(x)$lang, lang, NA_character_)
       }
     ) -> languages
   list(data.frame(quarto_lang = languages, path = files))
 }
 
+#' @importFrom citeme menu_first
 #' @importFrom fs path path_norm path_split
 #' @importFrom utils menu
 change_language_interactive <- function(
@@ -259,6 +247,7 @@ change_language_interactive <- function(
   return(invisible(list(other = result$other, ignore = result$ignore)))
 }
 
+#' @importFrom citeme menu_first validate_language
 #' @importFrom fs path path_norm path_split
 #' @importFrom stats setNames
 change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
@@ -316,9 +305,10 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
       other <- c(other, setNames(list(x$path[current]), language))
       next
     }
-    other[[other_lang[answer - 2]]] <- c_sort(
-      c(other[[other_lang[answer - 2]]], x$path[current])
-    )
+    other[[other_lang[answer - 2]]] <- c_sort(c(
+      other[[other_lang[answer - 2]]],
+      x$path[current]
+    ))
   }
   return(list(ignore = ignore, other = other, other_lang = other_lang))
 }
@@ -330,9 +320,7 @@ print.checklist_language <- function(x, ..., hide_ignore = FALSE) {
 
   cat("Default language:", attr(x, "checklist_default"), "\n\n")
   if (any(x$language == attr(x, "checklist_default"))) {
-    print(
-      c_sort(x$path[x$language == attr(x, "checklist_default")])
-    )
+    print(c_sort(x$path[x$language == attr(x, "checklist_default")]))
   }
   x <- x[!x$language %in% c(attr(x, "checklist_default"), "ignore"), ]
   while (length(unique(x$language))) {

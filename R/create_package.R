@@ -10,6 +10,8 @@
 #' @param path Where to create the package directory.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom citeme ask_language individual2badge individual2df org_list
+#' org_list_from_url select_license ssh_http
 #' @importFrom desc description
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
@@ -38,10 +40,9 @@ create_package <- function(package, path = ".") {
   title <- readline(prompt = "Enter the title: ")
   description <- readline(prompt = "Enter the description: ")
   keywords <- ask_keywords()
-  preferred_protocol() |>
-    sprintf(package) -> git
+  preferred_protocol() |> sprintf(package) -> git
   org <- org_list_from_url(git)
-  license <- ask_license(org, type = "package")
+  license <- select_license(org, type = "package")
   language <- ask_language(org, "Which is the main language of the package?")
   info <- package_maintainer(org = org, lang = language)
   authors <- info$authors
@@ -74,7 +75,7 @@ create_package <- function(package, path = ".") {
   desc$set_urls(sprintf("%s/%s", ssh_http(git), package))
   desc$set("BugReports", sprintf("%s/%s/issues", ssh_http(git), package))
   desc <- append_communities(desc = desc, org = org)
-  desc$set("Config/checklist/keywords", paste(keywords, collapse = "; "))
+  desc$set("Config/citeme/keywords", paste(keywords, collapse = "; "))
   desc$set("Encoding", "UTF-8")
   desc$set("Language", language)
   desc$set("Roxygen", "list(markdown = TRUE)")
@@ -136,8 +137,7 @@ create_package <- function(package, path = ".") {
     path = path,
     org = org,
     lang = language,
-    authors = author2df(authors) |>
-      author2badge(),
+    authors = individual2df(authors) |> individual2badge(),
     title = paste(package, title, sep = ": "),
     description = description,
     keywords = keywords,
@@ -214,11 +214,12 @@ valid_package_name <- function(x) {
   grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
 }
 
+#' @importFrom citeme individual2person
 package_maintainer <- function(org, lang) {
   message("Please select the maintainer")
-  maintainer <- author2person(role = c("aut", "cre"), lang = lang)
+  maintainer <- individual2person(role = c("aut", "cre"), lang = lang)
   while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
-    maintainer <- c(maintainer, author2person(role = "aut", lang = lang))
+    maintainer <- c(maintainer, individual2person(role = "aut", lang = lang))
   }
   info <- ask_rightsholder_funder(org = org, type = "rightsholder")
   rightsholder <- info$selection
@@ -291,10 +292,7 @@ append_communities <- function(desc, org) {
   if (length(communities) == 0) {
     return(desc)
   }
-  desc$set(
-    "Config/checklist/communities",
-    paste(communities, collapse = "; ")
-  )
+  desc$set("Config/citeme/communities", paste(communities, collapse = "; "))
 }
 
 ask_keywords <- function() {
@@ -315,37 +313,4 @@ ask_keywords <- function() {
     )
   }
   return(keywords)
-}
-
-ask_license <- function(org, type = c("package", "project", "data")) {
-  type <- match.arg(type)
-  org$get_default_rightsholder |>
-    org$get_allowed_licenses(type = type) -> allowed
-  stopifnot("no licenses found for this organisation" = length(allowed) > 0)
-  if (length(allowed) > 1) {
-    allowed <- allowed[menu_first(
-      choices = names(allowed),
-      title = "Select the license you want to use:"
-    )]
-  }
-  return(names(allowed))
-}
-
-ask_language <- function(org, prompt = "Which language?") {
-  available <- org$get_languages
-  c(available, "other") |>
-    menu_first(title = prompt) -> selected
-  if (selected <= length(available)) {
-    return(validate_language(available[selected]))
-  }
-  language <- readline(prompt = "Please enter the language code: ")
-  while (
-    inherits(
-      try(validate_language(language), silent = !interactive()),
-      "try-error"
-    )
-  ) {
-    language <- readline(prompt = "Please enter the language code: ")
-  }
-  return(language)
 }

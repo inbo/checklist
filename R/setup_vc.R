@@ -1,3 +1,4 @@
+#' @importFrom citeme ask_yes_no
 #' @importFrom fs dir_create file_copy file_exists is_file path
 #' @importFrom gert git_add git_find git_init git_remote_add
 setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
@@ -25,18 +26,14 @@ setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
   if (is_file(path(path, ".gitignore"))) {
     current <- readLines(path(path, ".gitignore"))
     new <- readLines(template)
-    writeLines(
-      c_sort(unique(c(new, current))),
-      path(path, ".gitignore")
-    )
+    writeLines(c_sort(unique(c(new, current))), path(path, ".gitignore"))
   } else {
     file_copy(template, path(path, ".gitignore"))
   }
   git_add(".gitignore", force = TRUE, repo = path)
 
   # Add GitHub actions
-  path(path, ".github", "workflows") |>
-    dir_create()
+  path(path, ".github", "workflows") |> dir_create()
   insert_file(
     repo = path,
     filename = "check_project.yml",

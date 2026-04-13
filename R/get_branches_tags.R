@@ -15,6 +15,5 @@ get_branches_tags <- function(owner, repo) {
     sprintf(owner, repo) |>
     gh() |>
     vapply(FUN = `[[`, FUN.VALUE = character(1), "name") -> tags
-  c(branches[branches != "gh-pages"], tags) |>
-    sort()
+  c(branches[branches != "gh-pages"], tags) |> sort()
 }

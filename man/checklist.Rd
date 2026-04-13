@@ -8,10 +8,6 @@ A class which contains all checklist results.
 }
 \seealso{
 Other class: 
-\code{\link{citation_meta}},
-\code{\link{org_item}},
-\code{\link{org_list}},
-\code{\link{organisation}},
 \code{\link{spelling}}
 }
 \concept{class}

@@ -8,6 +8,7 @@
 #' @family setup
 #' @export
 #' @importFrom assertthat assert_that
+#' @importFrom citeme license_local_remote org_list select_license
 #' @importFrom desc description
 #' @importFrom fs file_copy file_exists path
 set_license <- function(x = ".", license, org) {
@@ -31,7 +32,7 @@ set_license <- function(x = ".", license, org) {
     )
     license <- this_desc$get_field("License")
   } else if (missing(license)) {
-    license <- ask_license(org, type = "project")
+    license <- select_license(org, type = "project")
   }
   get_official_license_location(license = license, org = org) |>
     readLines() |>
@@ -61,6 +62,7 @@ set_license <- function(x = ".", license, org) {
   return(invisible(NULL))
 }
 
+#' @importFrom citeme ssh_http
 get_official_license_location <- function(license, org) {
   switch(
     license,
@@ -85,10 +87,9 @@ get_official_license_location <- function(license, org) {
   if (!grepl("^http", url)) {
     return(license_location$remote_file)
   }
-  R_user_dir("checklist", "config") |>
+  R_user_dir("citeme", "config") |>
     path(
-      tolower(url) |>
-        gsub(pattern = "https://", replacement = ""),
+      tolower(url) |> gsub(pattern = "https://", replacement = ""),
       license_location$local_file
     )
 }

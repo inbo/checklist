@@ -5,6 +5,8 @@
 #' @param project The name of the project.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
+#' @importFrom citeme ask_language ask_yes_no new_org_list org_list
+#' org_list_from_url select_license
 #' @importFrom fs dir_create dir_exists file_copy is_dir path
 #' @family setup
 create_project <- function(path, project) {
@@ -18,13 +20,12 @@ create_project <- function(path, project) {
   keywords <- ask_keywords()
   use_vc <- ask_yes_no("Use version control?")
   if (use_vc) {
-    preferred_protocol() |>
-      sprintf(project) -> git
+    preferred_protocol() |> sprintf(project) -> git
     org <- org_list_from_url(git)
   } else {
     org <- new_org_list()
   }
-  license <- ask_license(org, type = "project")
+  license <- select_license(org, type = "project")
   language <- ask_language(org, prompt = "What is the main project language?")
   info <- project_maintainer(org = org, lang = language)
   authors <- info$authors
@@ -40,13 +41,9 @@ create_project <- function(path, project) {
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
     "filename conventions"[isTRUE(ask_yes_no("Check file name conventions?"))],
     "lintr"[isTRUE(ask_yes_no("Check code style?"))],
-    "license"[
-      isTRUE(
-        ask_yes_no(
-          "Check the LICENSE file? The file will be created when missing."
-        )
-      )
-    ],
+    "license"[isTRUE(ask_yes_no(
+      "Check the LICENSE file? The file will be created when missing."
+    ))],
     "organisation",
     "spelling"[isTRUE(ask_yes_no("Check spelling?"))],
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
@@ -77,6 +74,7 @@ create_project <- function(path, project) {
     keywords = keywords,
     org = org,
     license = license,
+    lang = language,
     type = "project"
   )
   renv_activate(path = path, use_renv = use_renv)

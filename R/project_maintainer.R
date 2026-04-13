@@ -1,14 +1,12 @@
+#' @importFrom citeme ask_yes_no individual2badge select_individual
 project_maintainer <- function(org, lang) {
   message("Please select the corresponding author")
-  use_author(lang = lang) |>
-    author2badge(role = c("aut", "cre")) -> author
+  select_individual(lang = lang) |>
+    individual2badge(role = c("aut", "cre")) -> author
   while (isTRUE(ask_yes_no("add another author?", default = FALSE))) {
-    use_author(lang = lang) |>
-      author2badge() -> extra
-    attr(author, "footnote") |>
-      c(attr(extra, "footnote")) -> footnote
-    c(author, extra) |>
-      `attr<-`(which = "footnote", value = footnote) -> author
+    select_individual(lang = lang) |> individual2badge() -> extra
+    attr(author, "footnote") |> c(attr(extra, "footnote")) -> footnote
+    c(author, extra) |> `attr<-`(which = "footnote", value = footnote) -> author
   }
 
   info <- ask_rightsholder_funder(org = org, type = "rightsholder")
@@ -40,20 +38,17 @@ project_maintainer <- function(org, lang) {
     )
   ) |>
     do.call(what = c) |>
-    vapply(
-      FUN.VALUE = vector("list", 1),
-      FUN = function(x) {
-        data.frame(
-          given = x$given,
-          family = "",
-          orcid = "",
-          affiliation = "",
-          email = x$email
-        ) |>
-          author2badge(role = x$role) |>
-          list()
-      }
-    ) -> extra
+    vapply(FUN.VALUE = vector("list", 1), FUN = function(x) {
+      data.frame(
+        given = x$given,
+        family = "",
+        orcid = "",
+        affiliation = "",
+        email = x$email
+      ) |>
+        individual2badge(role = x$role) |>
+        list()
+    }) -> extra
   vapply(extra, FUN.VALUE = vector(mode = "list", 1), FUN = function(x) {
     list(attr(x, "footnote"))
   }) |>
@@ -79,6 +74,7 @@ project_maintainer <- function(org, lang) {
 #' @param org Organisation object
 #' @param type Character, either `"rightsholder"` or `"funder"`
 #' @return A list with the selected names and the updated organisation object
+#' @importFrom citeme get_available_organisations new_org_item menu_first
 #' @export
 #' @family utils
 ask_rightsholder_funder <- function(org, type = c("rightsholder", "funder")) {
@@ -94,12 +90,10 @@ ask_rightsholder_funder <- function(org, type = c("rightsholder", "funder")) {
     if (selected > 1) {
       if (selected > length(available) + 1) {
         current <- get_available_organisations()
-        org <- org$add_item(
-          new_org_item(
-            languages = current$languages,
-            licenses = current$licenses
-          )
-        )
+        org <- org$add_item(new_org_item(
+          languages = current$languages,
+          licenses = current$licenses
+        ))
         available <- org$get_default_name
       }
       selection <- c(selection, names(available)[selected - 1])

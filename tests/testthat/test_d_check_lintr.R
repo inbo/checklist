@@ -22,8 +22,7 @@ test_that("check_lintr() works on a project with renv", {
   expect_false(check_lintr(path)$fail)
 
   # setup renv at a subfolder of the project
-  path(path, "source", "targets", "pipeline1") |>
-    dir_create()
+  path(path, "source", "targets", "pipeline1") |> dir_create()
   path(path, "source", "targets", "pipeline1") |>
     renv::init(bare = TRUE, load = FALSE, restart = FALSE)
   # add a file within this folder that fails lintr

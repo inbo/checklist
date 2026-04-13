@@ -5,6 +5,7 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that
+#' @importFrom citeme org_list
 #' @importFrom fs is_file
 #' @family project
 check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
@@ -14,8 +15,7 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   }
 
   org <- org_list$new()$read(x$get_path)
-  org$check(x = x$get_path) |>
-    x$add_error(item = "organisation") -> x
+  org$check(x = x$get_path) |> x$add_error(item = "organisation") -> x
 
   if ("spelling" %in% x$get_required) {
     quiet_cat("Checking spelling\n", quiet = quiet)

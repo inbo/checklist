@@ -19,6 +19,33 @@ test_that("create_package() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
+  # stub the entire `package_maintainer` function to return a mocked result
+  # this avoids the need to mock `individual2person` which is called inside
+  # `package_maintainer` and requires interactive input
+  stub(
+    create_package,
+    "package_maintainer",
+    list(
+      authors = c(
+        person(
+          given = "Given",
+          family = "Test",
+          email = "given.test@vlaanderen.be",
+          comment = c(
+            ORCID = "0000-0002-1825-0097",
+            affiliation = "Flemish Government"
+          ),
+          role = c("aut", "cre")
+        ),
+        person(
+          given = "The checklist organisation",
+          email = "info@organisation.checklist",
+          role = c("cph", "fnd")
+        )
+      ),
+      org = org
+    )
+  )
   hide_output <- tempfile(fileext = ".txt")
   defer(file_delete(hide_output))
   sink(hide_output)
@@ -29,9 +56,6 @@ test_that("create_package() works", {
   sink()
 
   repo <- path(path, package)
-  stub(store_authors, "R_user_dir", mock_r_user_dir(config_dir))
-  expect_invisible(store_authors(repo))
-
   new_files <- c(
     "_pkgdown.yml",
     ".gitignore",
@@ -98,12 +122,10 @@ test_that("create_package() works", {
   stub(write_checklist, "x$confirm_motivation", NULL)
   old_checklist <- read_checklist(path(path, package))
   expect_invisible(write_checklist(x))
-  expect_false(
-    identical(
-      old_checklist$.__enclos_env__$private$allowed_notes,
-      x$.__enclos_env__$private$allowed_notes
-    )
-  )
+  expect_false(identical(
+    old_checklist$.__enclos_env__$private$allowed_notes,
+    x$.__enclos_env__$private$allowed_notes
+  ))
 
   stub(x$confirm_motivation, "yesno", FALSE, depth = 2)
   expect_s3_class(x$confirm_motivation(which = "notes"), "checklist")
@@ -117,10 +139,8 @@ test_that("create_package() works", {
   expect_length(x$.__enclos_env__$private$linter, 6)
   expect_output(print(x), "6 linters found")
 
-  path(path, package, "NEWS.md") |>
-    readLines() -> news_old
-  tail(news_old, -1) |>
-    writeLines(path(path, package, "NEWS.md"))
+  path(path, package, "NEWS.md") |> readLines() -> news_old
+  tail(news_old, -1) |> writeLines(path(path, package, "NEWS.md"))
   expect_match(check_news(x), "No reference to a package version")
 
   unlink(path(path, package, "NEWS.md"))

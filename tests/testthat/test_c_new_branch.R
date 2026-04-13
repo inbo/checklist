@@ -36,14 +36,20 @@ test_that("new_branch() creates a branch from the main branch", {
     verbose = FALSE,
     refspec = "refs/heads/branch"
   )
-  expect_invisible(
-    new_branch("new", checkout = TRUE, repo = path, verbose = FALSE)
-  )
+  expect_invisible(new_branch(
+    "new",
+    checkout = TRUE,
+    repo = path,
+    verbose = FALSE
+  ))
   expect_identical(git_branch(repo = repo), "new")
   expect_identical(git_commit_id(repo = repo), initial)
-  expect_invisible(
-    new_branch(branch = "new2", checkout = TRUE, repo = repo, verbose = FALSE)
-  )
+  expect_invisible(new_branch(
+    branch = "new2",
+    checkout = TRUE,
+    repo = repo,
+    verbose = FALSE
+  ))
   expect_identical(git_branch(repo = repo), "new2")
   expect_identical(git_commit_id(repo = repo), initial)
 })

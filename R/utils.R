@@ -255,9 +255,9 @@ checklist_summarise_spelling <- function(spelling) {
         "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s",
         i,
         paste(
-          c_sort(
-            as.character(unique(spelling$message[spelling$language == i]))
-          ),
+          c_sort(as.character(unique(spelling$message[
+            spelling$language == i
+          ]))),
           collapse = ", "
         ),
         paste(

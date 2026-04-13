@@ -16,6 +16,30 @@ test_that("update_citation() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
+  stub(
+    create_package,
+    "package_maintainer",
+    list(
+      authors = c(
+        person(
+          given = "Given",
+          family = "Test",
+          email = "given.test@vlaanderen.be",
+          comment = c(
+            ORCID = "0000-0002-1825-0097",
+            affiliation = "Vlaamse overheid"
+          ),
+          role = c("aut", "cre")
+        ),
+        person(
+          given = "The checklist organisation",
+          email = "info@organisation.checklist",
+          role = c("cph", "fnd")
+        )
+      ),
+      org = org
+    )
+  )
   hide_output <- tempfile(fileext = ".txt")
   defer(file_delete(hide_output))
   sink(hide_output)
@@ -29,10 +53,9 @@ test_that("update_citation() works", {
   sink()
   expect_is(x, "checklist")
 
-  path(path, package, "inst", "CITATION") |>
-    readLines() -> old_citation
+  path(path, package, "inst", "CITATION") |> readLines() -> old_citation
   writeLines(
-    old_citation[!grepl("^# .* checklist entry", old_citation)],
+    old_citation[!grepl("^# .* citeme entry", old_citation)],
     path(path, package, "inst", "CITATION")
   )
   expect_is(
@@ -44,11 +67,11 @@ test_that("update_citation() works", {
   expect_named(x$.__enclos_env__$private$errors, "CITATION")
   expect_match(
     paste(x$.__enclos_env__$private$errors$CITATION, collapse = " "),
-    "No `# begin checklist entry` found in `inst/CITATION`"
+    "No `# begin citeme entry` found in `inst/CITATION`"
   )
   expect_match(
     paste(x$.__enclos_env__$private$errors$CITATION, collapse = " "),
-    "No `# end checklist entry` found in `inst/CITATION`"
+    "No `# end citeme entry` found in `inst/CITATION`"
   )
   writeLines(old_citation, path(path, package, "inst", "CITATION"))
 
@@ -184,12 +207,10 @@ test_that("update_citation() works on a quarto document", {
     "<!-- description: end -->"
   ) |>
     writeLines(path(path, "index.md"))
-  org_list$new(
-    org_item$new(
-      name = c(`en-GB` = "Government of Flanders"),
-      email = "info@vlaanderen.be"
-    )
-  )$write(path)
+  org_list$new(citeme::org_item$new(
+    name = c(`en-GB` = "Government of Flanders"),
+    email = "info@vlaanderen.be"
+  ))$write(path)
   expect_false(file_exists(path(path, ".zenodo.json")))
   expect_output(z <- update_citation(path))
   expect_true(file_exists(path(path, ".zenodo.json")))

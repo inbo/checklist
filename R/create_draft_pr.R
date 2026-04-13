@@ -16,8 +16,7 @@ create_draft_pr <- function(x = ".") {
   remote <- git_remote_info(remote = git_info$remote, repo = x$get_path)
   owner <- gsub("git@github.com:(.+)/(.+).git", "\\1", remote$url)
   repo <- gsub("git@github.com:(.+)/(.+).git", "\\2", remote$url)
-  desc(x$get_path)$get_version() |>
-    as.character() -> version
+  desc(x$get_path)$get_version() |> as.character() -> version
   output <- gh(
     "POST /repos/{owner}/{repo}/pulls",
     owner = owner,

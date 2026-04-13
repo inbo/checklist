@@ -26,8 +26,7 @@ read_checklist <- function(x = ".") {
   current <- path_real(x)
   checklist_file <- path(current, "checklist.yml")
   while (!is_file(checklist_file) && length(path_split(current)[[1]]) > 1) {
-    path(current, "..") |>
-      path_real() -> current
+    path(current, "..") |> path_real() -> current
     checklist_file <- path(current, "checklist.yml")
   }
   assert_that(
@@ -88,12 +87,7 @@ read_checklist <- function(x = ".") {
   assert_that(has_name(allowed, "notes"))
   assert_that(is.list(allowed$warnings))
   assert_that(is.list(allowed$notes))
-  motivation <- vapply(
-    allowed$warnings,
-    `[[`,
-    character(1),
-    "motivation"
-  )
+  motivation <- vapply(allowed$warnings, `[[`, character(1), "motivation")
   assert_that(
     length(allowed$warnings) == length(motivation),
     msg = "Each warning in the checklist requires a motivation"
@@ -102,12 +96,7 @@ read_checklist <- function(x = ".") {
     all(nchar(motivation) > 0),
     msg = "Please add a motivation for each warning the checklist"
   )
-  motivation <- vapply(
-    allowed$notes,
-    `[[`,
-    character(1),
-    "motivation"
-  )
+  motivation <- vapply(allowed$notes, `[[`, character(1), "motivation")
   assert_that(
     length(allowed$notes) == length(motivation),
     msg = "Each note in the checklist requires a motivation"
@@ -116,22 +105,12 @@ read_checklist <- function(x = ".") {
     all(nchar(motivation) > 0),
     msg = "Please add a motivation for each note the checklist"
   )
-  value <- vapply(
-    allowed$warnings,
-    `[[`,
-    character(1),
-    "value"
-  )
+  value <- vapply(allowed$warnings, `[[`, character(1), "value")
   assert_that(
     length(allowed$warnings) == length(value),
     msg = "Each warning in the checklist requires a value"
   )
-  value <- vapply(
-    allowed$notes,
-    `[[`,
-    character(1),
-    "value"
-  )
+  value <- vapply(allowed$notes, `[[`, character(1), "value")
   assert_that(
     length(allowed$notes) == length(value),
     msg = "Each note in the checklist requires a value"

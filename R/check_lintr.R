@@ -85,11 +85,11 @@ list_missing_packages <- function(x = ".") {
   renv::dependencies(x, progress = FALSE)$Package |>
     unique() |>
     sort() -> required_packages
-  installed.packages() |>
-    rownames() -> installed_packages
+  installed.packages() |> rownames() -> installed_packages
   required_packages[!required_packages %in% installed_packages]
 }
 
+#' @importFrom citeme org_list
 select_lintr_file <- function(x) {
   if (!is_repository(x)) {
     return(local_or_default_lintr(x))
@@ -101,17 +101,12 @@ select_lintr_file <- function(x) {
   if (org$get_git == "https://github.com/inbo") {
     return(system.file("lintr", package = "checklist"))
   }
-  R_user_dir("checklist", "config") |>
+  R_user_dir("citeme", "config") |>
     path(
-      tolower(org$get_git) |>
-        gsub(pattern = "https://", replacement = ""),
+      tolower(org$get_git) |> gsub(pattern = "https://", replacement = ""),
       ".lintr"
     ) -> linter_file
-  ifelse(
-    file_exists(linter_file),
-    linter_file,
-    local_or_default_lintr(x)
-  )
+  ifelse(file_exists(linter_file), linter_file, local_or_default_lintr(x))
 }
 
 local_or_default_lintr <- function(x) {

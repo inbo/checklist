@@ -6,6 +6,7 @@
 #' @param path the project root folder
 #' @export
 #' @importFrom assertthat assert_that is.string
+#' @importFrom citeme ask_language ask_yes_no org_list org_list_from_url
 #' @importFrom fs dir_create file_copy is_dir path path_real path_rel
 #' @family setup
 setup_project <- function(path = ".") {
@@ -21,8 +22,7 @@ setup_project <- function(path = ".") {
     if (is_repository(path)) {
       git <- git_remote_list(path)$url
     } else {
-      preferred_protocol() |>
-        sprintf(basename(path)) -> git
+      preferred_protocol() |> sprintf(basename(path)) -> git
     }
     org <- org_list_from_url(git)
     language <- ask_language(org, prompt = "What is the main project language?")
@@ -45,13 +45,9 @@ setup_project <- function(path = ".") {
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
     "filename conventions"[isTRUE(ask_yes_no("Check file name conventions?"))],
     "lintr"[isTRUE(ask_yes_no("Check code style?"))],
-    "license"[
-      isTRUE(
-        ask_yes_no(
-          "Check the LICENSE file? The file will be created when missing."
-        )
-      )
-    ],
+    "license"[isTRUE(ask_yes_no(
+      "Check the LICENSE file? The file will be created when missing."
+    ))],
     "organisation",
     "spelling"[isTRUE(ask_yes_no("Check spelling?"))],
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]

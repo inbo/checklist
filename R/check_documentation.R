@@ -62,11 +62,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
 
   rd_files <- c(
     path(x$get_path, "NAMESPACE"),
-    list.files(
-      path(x$get_path, "man"),
-      pattern = "Rd$",
-      full.names = TRUE
-    )
+    list.files(path(x$get_path, "man"), pattern = "Rd$", full.names = TRUE)
   )
   start <- vapply(rd_files, readLines, character(1), n = 1)
   ok <- grepl("roxygen2", start) & grepl("do not edit by hand", start)
@@ -114,9 +110,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
         "Rendering `README.Rmd` updated `README.md`.",
         "Run `checklist::check_documentation()` locally."[!interactive()],
         "Please commit `README.md`. "
-      )[
-        !is_tracked_not_modified("README.md", repo = repo)
-      ]
+      )[!is_tracked_not_modified("README.md", repo = repo)]
     )
   }
 
@@ -143,16 +137,14 @@ check_news <- function(x) {
   news_file <- readLines(md_file)
   version_location <- grep(paste0("#.*", description$get("Package")), news_file)
   if (length(version_location) == 0) {
-    return(
-      c(
-        doc_error,
-        paste(
-          "No reference to a package version in NEWS.md.",
-          "See the details in ?pkgdown::build_news for the required format.",
-          sep = "\n"
-        )
+    return(c(
+      doc_error,
+      paste(
+        "No reference to a package version in NEWS.md.",
+        "See the details in ?pkgdown::build_news for the required format.",
+        sep = "\n"
       )
-    )
+    ))
   }
   ok <- grepl(
     paste0(
@@ -181,9 +173,10 @@ check_news <- function(x) {
         news_file[1]
       )
     ],
-    "NEWS.md should not contain level 3+ headings"[
-      any(grepl("^##(#)+", news_file))
-    ]
+    "NEWS.md should not contain level 3+ headings"[any(grepl(
+      "^##(#)+",
+      news_file
+    ))]
   )
 
   # remove URLs to avoid long line linters
@@ -212,18 +205,17 @@ check_news <- function(x) {
 
   doc_error <- c(
     doc_error,
-    "NEWS.md should only contain a single blank line before or after a heading"[
-      any(news_file == "" | grepl("^\\w+$", news_file))
-    ],
-    "NEWS.md has a line longer than 80 characters (excluding URLs)."[
-      any(nchar(news_file) > 80)
-    ],
+    paste(
+      "NEWS.md should only contain a single blank line before or after a",
+      "heading"
+    )[any(news_file == "" | grepl("^\\w+$", news_file))],
+    "NEWS.md has a line longer than 80 characters (excluding URLs)."[any(
+      nchar(news_file) > 80
+    )],
     paste(
       "Items in NEWS.md must start with `* ` or `    * `.",
       "Extra lines of items start with `  ` or `      `."
-    )[
-      !all(grepl("^(\\s{4})?(\\*|\\s)\\s\\S+", news_file, perl = TRUE))
-    ]
+    )[!all(grepl("^(\\s{4})?(\\*|\\s)\\s\\S+", news_file, perl = TRUE))]
   )
 
   return(doc_error)

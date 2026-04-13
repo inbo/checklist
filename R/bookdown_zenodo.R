@@ -24,6 +24,7 @@
 #' @family utils
 #' @export
 #' @importFrom assertthat assert_that is.string noNA
+#' @importFrom citeme citation_meta
 #' @importFrom fs dir_create dir_delete dir_ls file_delete is_dir is_file
 #' path_abs path_ext_remove path_rel
 #' @importFrom rmarkdown clean_site render_site yaml_front_matter
@@ -61,8 +62,7 @@ bookdown_zenodo <- function(
     msg = "_bookdown.yml not found in `path`"
   )
 
-  path(path, "_bookdown.yml") |>
-    file(encoding = "UTF-8") -> con
+  path(path, "_bookdown.yml") |> file(encoding = "UTF-8") -> con
   bookdown_yml <- readLines(con)
   close(con)
   bookname <- bookdown_yml[grepl("book_filename", bookdown_yml)]
@@ -98,8 +98,7 @@ bookdown_zenodo <- function(
   old_wd <- getwd()
   defer(setwd(old_wd))
 
-  path(path, output_dir) |>
-    path_abs(output_dir) -> output_dir
+  path(path, output_dir) |> path_abs(output_dir) -> output_dir
   dir_create(output_dir)
 
   setwd(path)
@@ -124,8 +123,7 @@ bookdown_zenodo <- function(
     ) |>
       zip(files = files, flags = "-r9XqT")
     # remove output except zip archive
-    dir_ls(output_dir, type = "dir") |>
-      dir_delete()
+    dir_ls(output_dir, type = "dir") |> dir_delete()
     dir_ls(output_dir, type = "file", regexp = "\\.zip", invert = TRUE) |>
       file_delete()
     setwd(path)
@@ -137,11 +135,9 @@ bookdown_zenodo <- function(
       quiet = is.null(logger)
     )
   }
-  dir_ls(output_dir, regexp = "reference-keys.txt") |>
-    file_delete()
+  dir_ls(output_dir, regexp = "reference-keys.txt") |> file_delete()
 
-  path(path, ".zenodo.json") |>
-    file_copy(output_dir, overwrite = TRUE)
+  path(path, ".zenodo.json") |> file_copy(output_dir, overwrite = TRUE)
 
   upload_zenodo(
     path = output_dir,

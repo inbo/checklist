@@ -3,6 +3,8 @@
 
 <!-- badges: start -->
 
+![Language: en-GB](https://img.shields.io/badge/language-en--GB-c04384)
+[![AGPL-3](https://img.shields.io/badge/License-AGPL_3-brightgreen)](https://raw.githubusercontent.com/IQAndreas/markdown-licenses/refs/heads/master/gnu-agpl-v3.0.md)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -37,7 +39,8 @@ universe](https://inbo.r-universe.dev/builds) via
 # Enable the INBO universe
 options(
   repos = c(
-    inbo = "https://inbo.r-universe.dev", CRAN = "https://cloud.r-project.org"
+    inbo = "https://inbo.r-universe.dev",
+    CRAN = "https://cloud.r-project.org"
   )
 )
 # Install the packages

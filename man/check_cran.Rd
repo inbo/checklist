@@ -4,13 +4,20 @@
 \alias{check_cran}
 \title{Run all the package checks required by CRAN}
 \usage{
-check_cran(x = ".", quiet = FALSE)
+check_cran(x = ".", quiet = FALSE, time_out = 15)
 }
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
 Defaults to \code{.}.}
 
 \item{quiet}{Whether to print check output during checking.}
+
+\item{time_out}{The time in seconds to wait for a response from the world
+clock API.
+Default is 15 seconds, but you can increase this if you have a slow internet
+connection.
+If the world clock API is not available, the system clock will be used
+without a warning, but the check will be less reliable.}
 }
 \value{
 A \code{checklist} object.

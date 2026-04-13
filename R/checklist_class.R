@@ -66,12 +66,9 @@ checklist <- R6Class(
       extra <- new_motivation != ""
       new_motivation <- c(motivation, new_motivation[extra])
       new_allowed <- c(value, current[!keep][extra])
-      new_allowed <- lapply(
-        order(new_allowed),
-        function(i) {
-          list(motivation = new_motivation[i], value = new_allowed[i])
-        }
-      )
+      new_allowed <- lapply(order(new_allowed), function(i) {
+        list(motivation = new_motivation[i], value = new_allowed[i])
+      })
       assign(paste0("allowed_", which), new_allowed, envir = private)
       invisible(self)
     },

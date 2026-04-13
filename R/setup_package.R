@@ -12,6 +12,7 @@
 #' Defaults to `"."`.
 #' @export
 #' @importFrom assertthat assert_that
+#' @importFrom citeme ask_language individual2badge individual2df org_list
 #' @importFrom desc desc
 #' @importFrom fs dir_create dir_ls file_copy is_file path
 #' @importFrom gert git_add
@@ -45,8 +46,7 @@ setup_package <- function(path = ".") {
       )
       x <- checklist$new(x = path, language = language, package = TRUE)
       descript$set("Language", language)
-      path(x$get_path, "DESCRIPTION") |>
-        descript$write()
+      path(x$get_path, "DESCRIPTION") |> descript$write()
     }
     x$set_required()
     x$set_ignore(c(".github", "LICENSE.md"))
@@ -61,8 +61,7 @@ setup_package <- function(path = ".") {
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
   if (is_file(path(path, ".gitignore"))) {
-    path(path, ".gitignore") |>
-      readLines() -> current
+    path(path, ".gitignore") |> readLines() -> current
     path("generic_template", "gitignore") |>
       system.file(package = "checklist") |>
       readLines() -> new
@@ -81,8 +80,7 @@ setup_package <- function(path = ".") {
   }
 
   if (is_file(path(path, ".Rbuildignore"))) {
-    path(path, ".Rbuildignore") |>
-      readLines() -> current
+    path(path, ".Rbuildignore") |> readLines() -> current
     path("package_template", "rbuildignore") |>
       system.file(package = "checklist") |>
       readLines() -> new
@@ -132,13 +130,12 @@ setup_package <- function(path = ".") {
   create_readme(
     path = path,
     org = org,
-    authors = descript$get_authors() |>
-      author2df() |>
-      author2badge(),
+    authors = descript$get_authors() |> individual2df() |> individual2badge(),
     title = sprintf("%s: %s", package, descript$get_field("Title")),
     description = descript$get_field("Description"),
-    keywords = descript$get_field("Config/checklist/keywords"),
+    keywords = descript$get_field("Config/citeme/keywords"),
     license = license,
+    lang = x$default,
     type = "package"
   )
   git_add("README.Rmd", force = TRUE, repo = path)
@@ -148,8 +145,7 @@ setup_package <- function(path = ".") {
   git_add("LICENSE.md", force = TRUE, repo = path)
 
   # Add code of conduct
-  path(path, ".github") |>
-    dir_create()
+  path(path, ".github") |> dir_create()
   insert_file(
     repo = path,
     filename = "CODE_OF_CONDUCT.md",
@@ -166,8 +162,7 @@ setup_package <- function(path = ".") {
   )
 
   # Add GitHub actions
-  path(path, ".github", "workflows") |>
-    dir_create()
+  path(path, ".github", "workflows") |> dir_create()
   insert_file(
     repo = path,
     filename = "check_on_branch.yml",

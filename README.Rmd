@@ -5,6 +5,8 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <!-- badges: start -->
+![Language: en-GB](https://img.shields.io/badge/language-en--GB-c04384)
+[![AGPL-3](https://img.shields.io/badge/License-AGPL_3-brightgreen)](https://raw.githubusercontent.com/IQAndreas/markdown-licenses/refs/heads/master/gnu-agpl-v3.0.md)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle:maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing-1)
 ![GitHub](https://img.shields.io/github/license/inbo/checklist)
@@ -16,14 +18,17 @@ output: github_document
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/checklist.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/inbo/checklist.svg)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4028303.svg)](https://doi.org/10.5281/zenodo.4028303)
-<!-- badges: end --> 
+<!-- badges: end -->
 
 # The Checklist Package <img src="man/figures/logo.svg" align="right" alt="A hexagon with the word checklist" width="120" />
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE, comment = "#>", fig.path = "man/figures/README-",
-  out.width = "100%", eval = FALSE
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  eval = FALSE
 )
 ```
 
@@ -37,7 +42,8 @@ You can install the package from the [INBO universe](https://inbo.r-universe.dev
 # Enable the INBO universe
 options(
   repos = c(
-    inbo = "https://inbo.r-universe.dev", CRAN = "https://cloud.r-project.org"
+    inbo = "https://inbo.r-universe.dev",
+    CRAN = "https://cloud.r-project.org"
   )
 )
 # Install the packages

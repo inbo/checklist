@@ -24,6 +24,7 @@
 #'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
+#' @importFrom citeme org_list
 #' @importFrom desc description
 #' @importFrom fs path
 #' @importFrom gert git_branch_list git_commit_id git_diff git_info
@@ -117,8 +118,7 @@ check_description <- function(x = ".") {
   org <- org_list$new()$read(x$get_path)
   updated_authors <- check_authors(this_desc = this_desc, org = org)
   this_desc$set_authors(updated_authors)
-  path(x$get_path, "DESCRIPTION") |>
-    this_desc$write()
+  path(x$get_path, "DESCRIPTION") |> this_desc$write()
   version <- as.character(this_desc$get_version())
   c(
     desc_error,
@@ -171,17 +171,13 @@ tidy_desc <- function(x = ".") {
   # Normalize all fields (includes reordering)
   # Wrap in a try() so it always succeeds, even if user options are malformed
   try(desc$normalize(), silent = TRUE)
-  path(x$get_path, "DESCRIPTION") |>
-    desc$write()
+  path(x$get_path, "DESCRIPTION") |> desc$write()
   return(desc)
 }
 
 unchanged_repo <- function(repo, old_status) {
   current_status <- git_status(repo = repo)
-  ok <- identical(
-    current_status,
-    old_status
-  )
+  ok <- identical(current_status, old_status)
   new_files <- current_status$file
   old_files <- old_status$file
   changes <- c(
@@ -228,9 +224,7 @@ check_license <- function(x = ".", org) {
     org <- org_list$new()$read(x$get_path)
   }
   if (x$package) {
-    this_desc <- description$new(
-      file = path(x$get_path, "DESCRIPTION")
-    )
+    this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
 
     # check if the license is allowed
     current_license <- this_desc$get_field("License")
@@ -247,12 +241,9 @@ check_license <- function(x = ".", org) {
       fmt = fmt,
       current_license,
       paste(names(allowed_licenses), collapse = "; ")
-    )[
-      !current_license %in% names(allowed_licenses)
-    ] -> problems
+    )[!current_license %in% names(allowed_licenses)] -> problems
   } else {
-    path(x$get_path, "README.md") |>
-      readLines() -> readme
+    path(x$get_path, "README.md") |> readLines() -> readme
     regex <- paste0(
       "^\\[!\\[(.*)\\]\\(https:\\/\\/img\\.shields\\.io\\/badge\\/License-.*?",
       "-brightgreen\\)\\]\\((.*)\\)"
@@ -263,11 +254,7 @@ check_license <- function(x = ".", org) {
       "Multiple license badges found in README.md"[length(which_badge) > 1]
     ) -> problems
     if (length(problems)) {
-      x$add_error(
-        errors = problems,
-        item = "license",
-        keep = FALSE
-      )
+      x$add_error(errors = problems, item = "license", keep = FALSE)
       return(x)
     }
     gsub(regex, "\\2", readme[which_badge]) |>
@@ -305,8 +292,7 @@ check_license <- function(x = ".", org) {
   }
 
   # check if LICENSE.md matches the official version
-  path(x$get_path, "LICENSE.md") |>
-    readLines() -> current
+  path(x$get_path, "LICENSE.md") |> readLines() -> current
   get_official_license_location(license = current_license, org = org) |>
     readLines() -> official
   if (current_license == "MIT + file LICENSE") {
@@ -344,11 +330,7 @@ check_license <- function(x = ".", org) {
     )
     set_license(x, license = current_license, org = org)
   }
-  x$add_error(
-    errors = problems,
-    item = "license",
-    keep = FALSE
-  )
+  x$add_error(errors = problems, item = "license", keep = FALSE)
   return(x)
 }
 

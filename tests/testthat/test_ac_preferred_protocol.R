@@ -2,11 +2,7 @@ library(mockery)
 test_that("preferred_protocol() works", {
   expect_false(file_exists(file.path(config_dir, "config", "config.yml")))
   stub(preferred_protocol, "R_user_dir", mock_r_user_dir(config_dir))
-  stub(
-    preferred_protocol,
-    "ask_url",
-    mock("https://gitlab.com/ThierryO")
-  )
+  stub(preferred_protocol, "ask_url", mock("https://gitlab.com/ThierryO"))
   expect_identical(preferred_protocol(), "https://gitlab.com/ThierryO/%s.git")
   expect_identical(
     list.files(config_dir, recursive = TRUE),
@@ -18,7 +14,8 @@ test_that("preferred_protocol() works", {
       "config/gitlab.com/thierryo/mit.md",
       "config/gitlab.com/thierryo/organisation.yml",
       "config/gitlab.com/thierryo/pkgdown.css",
-      "config/gitlab.com/thierryo/pkgdown/background-pattern.png"
+      "config/gitlab.com/thierryo/pkgdown/background-pattern.png",
+      "config/gitlab.com/thierryo/set_organisation.R"
     )
   )
   stub(preferred_protocol, "R_user_dir", mock_r_user_dir(config_dir))

@@ -156,13 +156,11 @@ Fails: `%s`",
   )
 
   graphics_file <- extension %in% c("csl", graphics_ext)
-  warnings <- c(
-    sprintf(
-      "Use `-` as separator in the basename of graphics files.
+  warnings <- c(sprintf(
+    "Use `-` as separator in the basename of graphics files.
   File: `%s`",
-      files[grepl("_+", base) & graphics_file]
-    )
-  )
+    files[grepl("_+", base) & graphics_file]
+  ))
 
   x$add_error(problems, item = "filename conventions", keep = FALSE)
   x$add_warnings(warnings, item = "filename conventions")
@@ -178,18 +176,15 @@ split_path <- function(path) {
 }
 
 is_symlink <- function(paths) {
-  Sys.readlink(paths) |>
-    nzchar(keepNA = TRUE) |>
-    isTRUE()
+  Sys.readlink(paths) |> nzchar(keepNA = TRUE) |> isTRUE()
 }
 
 # Function to extract all intermediate dirs from a single path
 extract_dirs <- function(path) {
   parts <- strsplit(dirname(path), "/")[[1]]
-  dirs <- sapply(
-    seq_along(parts),
-    function(i) paste(parts[1:i], collapse = "/")
-  )
+  dirs <- sapply(seq_along(parts), function(i) {
+    paste(parts[1:i], collapse = "/")
+  })
   return(dirs)
 }
 

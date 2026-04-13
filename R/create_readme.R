@@ -1,3 +1,4 @@
+#' @importFrom citeme add_badges license_local_remote select_license ssh_http
 #' @importFrom fs file_exists path
 create_readme <- function(
   path,
@@ -36,7 +37,7 @@ create_readme <- function(
     keywords <- ask_keywords()
   }
   if (missing(license)) {
-    license <- ask_license(org = org, type = type)
+    license <- select_license(org = org, type = type)
   }
   paste0(
     "[![Project Status: Concept - Minimal or no implementation has been done ",
@@ -45,19 +46,11 @@ create_readme <- function(
     "(https://www.repostatus.org/badges/latest/concept.svg)]",
     "(https://www.repostatus.org/#concept)"
   ) |>
-    c(
-      paste0(
-        "[![Lifecycle: experimental](https://img.shields.io/badge/",
-        "lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/",
-        "articles/stages.html#experimental)"
-      ),
-      sprintf(
-        "[![%s](https://img.shields.io/badge/License-%s-brightgreen)](%s)",
-        license,
-        gsub(" ", "_", license),
-        license_local_remote(org$get_listed_licenses[license])$remote_file
-      )
-    ) -> badges
+    c(paste0(
+      "[![Lifecycle: experimental](https://img.shields.io/badge/",
+      "lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/",
+      "articles/stages.html#experimental)"
+    )) -> badges
   if (is_repository(path)) {
     remotes <- git_remote_list(repo = path)
     repo_url <- remotes$url[remotes$name == "origin"]
@@ -113,6 +106,12 @@ create_readme <- function(
   ) -> content
   if (type != "package") {
     writeLines(content, path(path, "README.md"))
+    add_badges(
+      readme_path = path,
+      language = lang,
+      license = license,
+      version = "0.0.0"
+    )
     return(invisible(NULL))
   }
   c(
@@ -153,5 +152,11 @@ create_readme <- function(
     "```"
   ) |>
     writeLines(path(path, "README.Rmd"))
+  add_badges(
+    readme_path = path,
+    language = lang,
+    license = license,
+    version = "0.0.0"
+  )
   return(invisible(NULL))
 }

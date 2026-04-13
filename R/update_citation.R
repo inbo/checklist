@@ -27,6 +27,7 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that
+#' @importFrom citeme citation_meta
 #' @importFrom desc description
 #' @importFrom gert git_status
 #' @importFrom utils file_test

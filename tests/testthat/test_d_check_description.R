@@ -17,6 +17,30 @@ test_that("check_description() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
+  stub(
+    create_package,
+    "package_maintainer",
+    list(
+      authors = c(
+        person(
+          given = "Given",
+          family = "Test",
+          email = "given.test@vlaanderen.be",
+          comment = c(
+            ORCID = "0000-0002-1825-0097",
+            affiliation = "Vlaamse overheid"
+          ),
+          role = c("aut", "cre")
+        ),
+        person(
+          given = "The checklist organisation",
+          email = "info@organisation.checklist",
+          role = c("cph", "fnd")
+        )
+      ),
+      org = org
+    )
+  )
   hide_output <- tempfile(fileext = ".txt")
   defer(file_delete(hide_output))
   sink(hide_output)
@@ -27,8 +51,7 @@ test_that("check_description() works", {
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  path(path, package, "DESCRIPTION") |>
-    desc::description$new() -> this_desc
+  path(path, package, "DESCRIPTION") |> desc::description$new() -> this_desc
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
@@ -57,14 +80,9 @@ test_that("check_description() works", {
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "bump patch version", repo = repo)
   expect_is(x <- check_description(repo), "checklist")
-  expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION,
-    character(0)
-  )
+  expect_identical(x$.__enclos_env__$private$errors$DESCRIPTION, character(0))
 
-  this_desc <- desc::description$new(
-    file = path(path, package, "DESCRIPTION")
-  )
+  this_desc <- desc::description$new(file = path(path, package, "DESCRIPTION"))
   this_desc$del_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
@@ -82,11 +100,7 @@ test_that("check_description() works", {
     verbose = FALSE
   )
   gert::git_remote_remove(remote = "origin", repo = repo)
-  gert::git_remote_add(
-    url = path(path, "origin"),
-    name = "origin",
-    repo = repo
-  )
+  gert::git_remote_add(url = path(path, "origin"), name = "origin", repo = repo)
   git_fetch(remote = "origin", repo = repo, verbose = FALSE)
   git_branch_create(branch = "junk", ref = "HEAD", checkout = TRUE, repo = repo)
 
