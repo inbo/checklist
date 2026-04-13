@@ -39,7 +39,8 @@ RUN Rscript --no-save --no-restore -e 'install.packages("pak")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("renv")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")'
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("citeme")'
 
 ## install checklist
 COPY . /checklist/
