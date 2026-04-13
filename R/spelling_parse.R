@@ -107,8 +107,7 @@ strip_eqn <- function(text) {
     sprintf("(\\\\(%s).*?)(\\{[^\\{]*?\\})", tags) |>
       gsub("\\1", eqn, perl = TRUE) -> eqn
   }
-  sprintf("\\\\(%s)(\\s*|$)", tags) |>
-    gsub("", eqn) -> eqn
+  sprintf("\\\\(%s)(\\s*|$)", tags) |> gsub("", eqn) -> eqn
   ok <- !grepl(sprintf("\\\\(%s)\\s*\\{", tags), eqn)
   text[which_eqn[ok]] <- eqn[ok]
   return(text)
@@ -130,11 +129,7 @@ spelling_parse_rd <- function(rd_file, macros, wordlist) {
   text <- gsub("^[/\\\\]\\s", " ", text)
   # remove equations
   text <- strip_eqn(text)
-  list(spelling_check(
-    text = text,
-    filename = rd_file,
-    wordlist = wordlist
-  ))
+  list(spelling_check(text = text, filename = rd_file, wordlist = wordlist))
 }
 
 #' @importFrom assertthat assert_that
@@ -258,13 +253,13 @@ spelling_parse_md <- function(md_file, wordlist, x) {
   )
   # remove Markdown urls
   text <- mlgsub(
-    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)\\\\\\/-]*?)\\]\\(.+?\\)",
+    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)`\\\\\\/-]*?)\\]\\(.+?\\)",
     replacement = " \\1 ",
     x = text,
     perl = TRUE
   )
   text <- mlgsub(
-    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)\\\\\\/-]*?)\\]\\(.+?\\)",
+    pattern = "\\[([\\w\\s\\d:,;\\.\\!\\?\\(\\)`\\\\\\/-]*?)\\]\\(.+?\\)",
     replacement = " \\1 ",
     x = text,
     perl = TRUE
@@ -348,9 +343,10 @@ spelling_parse_md <- function(md_file, wordlist, x) {
 
   # extract other languages
   assert_that(
-    length(
-      grep("(\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*){2,}", text)
-    ) ==
+    length(grep(
+      "(\\[(.*?)\\]\\{lang=([a-z]{2}(-[A-Z]{2})?)\\}.*){2,}",
+      text
+    )) ==
       0,
     msg = paste("Multiple `[]{lang=}` on the same line found in", md_file)
   )
@@ -424,8 +420,10 @@ spelling_parse_md <- function(md_file, wordlist, x) {
     raw_text = raw_text,
     md_file = md_file,
     FUN = function(lang, input, empty_text, raw_text, md_file) {
-      empty_text[input[input$language == lang, "line"]] <-
-        input[input$language == lang, "text"]
+      empty_text[input[input$language == lang, "line"]] <- input[
+        input$language == lang,
+        "text"
+      ]
       remove_hyphenated_words(text = empty_text) |>
         ligatures(lang = lang) |>
         spelling_check(
