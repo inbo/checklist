@@ -8,7 +8,7 @@ bibentry(
   url = "https://inbo.github.io/checklist/",
   abstract = "An opinionated set of rules for R packages and R source code projects.",
   textVersion = "Onkelinx, Thierry (2026) checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.5.4. https://inbo.github.io/checklist/",
-  keywords = "quality control; documentation; publication",
+  keywords = "quality control; documentation; publication; inbo_version",
   doi = "10.5281/zenodo.4028303",
 )
 # end checklist entry

@@ -59,7 +59,8 @@ Suggests:
 VignetteBuilder: 
     knitr
 Config/checklist/communities: inbo
-Config/checklist/keywords: quality control; documentation; publication
+Config/checklist/keywords: quality control; documentation; publication;
+    inbo_version
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
