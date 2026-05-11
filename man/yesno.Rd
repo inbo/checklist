@@ -16,14 +16,13 @@ A logical where \code{TRUE} implies a "yes" answer from the user.
 A function that asks a yes or no question to the user
 }
 \seealso{
-Other utils: 
-\code{\link{ask_rightsholder_funder}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
-\code{\link{create_hexsticker}()},
-\code{\link{execshell}()},
-\code{\link{install_pak}()},
-\code{\link{validate_email}()}
+Other utils:
+\code{\link[=ask_rightsholder_funder]{ask_rightsholder_funder()}},
+\code{\link[=c_sort]{c_sort()}},
+\code{\link[=create_hexsticker]{create_hexsticker()}},
+\code{\link[=execshell]{execshell()}},
+\code{\link[=install_pak]{install_pak()}},
+\code{\link[=validate_email]{validate_email()}}
 }
 \author{
 Hadley Wickham \href{mailto:Hadley@Rstudio.com}{Hadley@Rstudio.com}

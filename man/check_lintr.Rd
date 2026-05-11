@@ -14,7 +14,7 @@ Defaults to \code{.}.}
 }
 \description{
 This functions does \href{https://en.wikipedia.org/wiki/Static_program_analysis}{static code analysis}.
-It relies on \code{\link[lintr:lint]{lintr::lint_package()}}.
+It relies on \code{\link[lintr:lint_package]{lintr::lint_package()}}.
 We recommend that you activate all code diagnostics in RStudio to help
 meeting the requirements.
 You can find this in the menu \emph{Tools} > \emph{Global options} > \emph{Code} >
@@ -30,14 +30,14 @@ If this file is not present, it uses the default \code{.lintr} file provided
 with the \code{checklist} package.
 }
 \seealso{
-Other both: 
-\code{\link{add_checklist_badges}()},
-\code{\link{check_filename}()},
-\code{\link{check_spelling}()},
-\code{\link{custom_dictionary}()},
-\code{\link{print.checklist_spelling}()},
-\code{\link{read_checklist}()},
-\code{\link{update_citation}()},
-\code{\link{write_checklist}()}
+Other both:
+\code{\link[=add_checklist_badges]{add_checklist_badges()}},
+\code{\link[=check_filename]{check_filename()}},
+\code{\link[=check_spelling]{check_spelling()}},
+\code{\link[=custom_dictionary]{custom_dictionary()}},
+\code{\link[=print.checklist_spelling]{print.checklist_spelling()}},
+\code{\link[=read_checklist]{read_checklist()}},
+\code{\link[=update_citation]{update_citation()}},
+\code{\link[=write_checklist]{write_checklist()}}
 }
 \concept{both}

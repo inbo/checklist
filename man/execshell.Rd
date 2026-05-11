@@ -25,13 +25,12 @@ Cross-platform function to pass a command to the shell, using either
 operating system.
 }
 \seealso{
-Other utils: 
-\code{\link{ask_rightsholder_funder}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
-\code{\link{create_hexsticker}()},
-\code{\link{install_pak}()},
-\code{\link{validate_email}()},
-\code{\link{yesno}()}
+Other utils:
+\code{\link[=ask_rightsholder_funder]{ask_rightsholder_funder()}},
+\code{\link[=c_sort]{c_sort()}},
+\code{\link[=create_hexsticker]{create_hexsticker()}},
+\code{\link[=install_pak]{install_pak()}},
+\code{\link[=validate_email]{validate_email()}},
+\code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

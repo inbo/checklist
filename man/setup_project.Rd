@@ -15,12 +15,12 @@ existing project.
 The function interactively asks questions to set-up the required checks.
 }
 \seealso{
-Other setup: 
-\code{\link{create_package}()},
-\code{\link{create_project}()},
-\code{\link{prepare_ghpages}()},
-\code{\link{set_license}()},
-\code{\link{setup_package}()},
-\code{\link{setup_source}()}
+Other setup:
+\code{\link[=create_package]{create_package()}},
+\code{\link[=create_project]{create_project()}},
+\code{\link[=prepare_ghpages]{prepare_ghpages()}},
+\code{\link[=set_license]{set_license()}},
+\code{\link[=setup_package]{setup_package()}},
+\code{\link[=setup_source]{setup_source()}}
 }
 \concept{setup}

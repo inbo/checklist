@@ -62,8 +62,8 @@ Additional_repositories: https://inbo.r-universe.dev
 Config/citeme/communities: inbo
 Config/citeme/keywords: quality control; documentation; publication;
     inbo_version
+Config/roxygen2/version: 8.0.0
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 SystemRequirements: Pandoc (>= 1.17.2)

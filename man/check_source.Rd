@@ -19,8 +19,8 @@ Defunct function.
 Please use \code{check_project()} instead.
 }
 \seealso{
-Other project: 
-\code{\link{check_folder}()},
-\code{\link{check_project}()}
+Other project:
+\code{\link[=check_folder]{check_folder()}},
+\code{\link[=check_project]{check_project()}}
 }
 \concept{project}

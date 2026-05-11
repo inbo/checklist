@@ -16,13 +16,12 @@ A logical vector.
 It only checks the format of the text, not if the email address exists.
 }
 \seealso{
-Other utils: 
-\code{\link{ask_rightsholder_funder}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
-\code{\link{create_hexsticker}()},
-\code{\link{execshell}()},
-\code{\link{install_pak}()},
-\code{\link{yesno}()}
+Other utils:
+\code{\link[=ask_rightsholder_funder]{ask_rightsholder_funder()}},
+\code{\link[=c_sort]{c_sort()}},
+\code{\link[=create_hexsticker]{create_hexsticker()}},
+\code{\link[=execshell]{execshell()}},
+\code{\link[=install_pak]{install_pak()}},
+\code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

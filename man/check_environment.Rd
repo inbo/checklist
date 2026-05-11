@@ -18,13 +18,13 @@ Some actions will fail when these environment variables are not set.
 This function does only work on GitHub.
 }
 \seealso{
-Other package: 
-\code{\link{check_codemeta}()},
-\code{\link{check_cran}()},
-\code{\link{check_description}()},
-\code{\link{check_documentation}()},
-\code{\link{check_license}()},
-\code{\link{check_package}()},
-\code{\link{tidy_desc}()}
+Other package:
+\code{\link[=check_codemeta]{check_codemeta()}},
+\code{\link[=check_cran]{check_cran()}},
+\code{\link[=check_description]{check_description()}},
+\code{\link[=check_documentation]{check_documentation()}},
+\code{\link[=check_license]{check_license()}},
+\code{\link[=check_package]{check_package()}},
+\code{\link[=tidy_desc]{tidy_desc()}}
 }
 \concept{package}

@@ -16,13 +16,12 @@ Defaults to \code{.}.}
 Install extra packages defined in \code{checklist.yml}
 }
 \seealso{
-Other utils: 
-\code{\link{ask_rightsholder_funder}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
-\code{\link{create_hexsticker}()},
-\code{\link{execshell}()},
-\code{\link{validate_email}()},
-\code{\link{yesno}()}
+Other utils:
+\code{\link[=ask_rightsholder_funder]{ask_rightsholder_funder()}},
+\code{\link[=c_sort]{c_sort()}},
+\code{\link[=create_hexsticker]{create_hexsticker()}},
+\code{\link[=execshell]{execshell()}},
+\code{\link[=validate_email]{validate_email()}},
+\code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

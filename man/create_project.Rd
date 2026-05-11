@@ -15,12 +15,12 @@ create_project(path, project)
 This function creates a new RStudio project with \code{checklist} functionality.
 }
 \seealso{
-Other setup: 
-\code{\link{create_package}()},
-\code{\link{prepare_ghpages}()},
-\code{\link{set_license}()},
-\code{\link{setup_package}()},
-\code{\link{setup_project}()},
-\code{\link{setup_source}()}
+Other setup:
+\code{\link[=create_package]{create_package()}},
+\code{\link[=prepare_ghpages]{prepare_ghpages()}},
+\code{\link[=set_license]{set_license()}},
+\code{\link[=setup_package]{setup_package()}},
+\code{\link[=setup_project]{setup_project()}},
+\code{\link[=setup_source]{setup_source()}}
 }
 \concept{setup}

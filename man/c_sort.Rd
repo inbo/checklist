@@ -18,13 +18,12 @@ c_sort(x, ...)
 Setting the locale before sorting ensures a stable sorting order
 }
 \seealso{
-Other utils: 
-\code{\link{ask_rightsholder_funder}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{create_hexsticker}()},
-\code{\link{execshell}()},
-\code{\link{install_pak}()},
-\code{\link{validate_email}()},
-\code{\link{yesno}()}
+Other utils:
+\code{\link[=ask_rightsholder_funder]{ask_rightsholder_funder()}},
+\code{\link[=create_hexsticker]{create_hexsticker()}},
+\code{\link[=execshell]{execshell()}},
+\code{\link[=install_pak]{install_pak()}},
+\code{\link[=validate_email]{validate_email()}},
+\code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

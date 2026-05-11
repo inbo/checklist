@@ -60,13 +60,13 @@ setup".
 }
 
 \seealso{
-Other package: 
-\code{\link{check_codemeta}()},
-\code{\link{check_cran}()},
-\code{\link{check_description}()},
-\code{\link{check_environment}()},
-\code{\link{check_license}()},
-\code{\link{check_package}()},
-\code{\link{tidy_desc}()}
+Other package:
+\code{\link[=check_codemeta]{check_codemeta()}},
+\code{\link[=check_cran]{check_cran()}},
+\code{\link[=check_description]{check_description()}},
+\code{\link[=check_environment]{check_environment()}},
+\code{\link[=check_license]{check_license()}},
+\code{\link[=check_package]{check_package()}},
+\code{\link[=tidy_desc]{tidy_desc()}}
 }
 \concept{package}

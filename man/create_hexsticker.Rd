@@ -44,13 +44,12 @@ create_hexsticker("checklist", filename = output)
 }
 }
 \seealso{
-Other utils: 
-\code{\link{ask_rightsholder_funder}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
-\code{\link{execshell}()},
-\code{\link{install_pak}()},
-\code{\link{validate_email}()},
-\code{\link{yesno}()}
+Other utils:
+\code{\link[=ask_rightsholder_funder]{ask_rightsholder_funder()}},
+\code{\link[=c_sort]{c_sort()}},
+\code{\link[=execshell]{execshell()}},
+\code{\link[=install_pak]{install_pak()}},
+\code{\link[=validate_email]{validate_email()}},
+\code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

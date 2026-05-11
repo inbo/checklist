@@ -14,12 +14,12 @@ This function creates a draft pull request for the current version of the
 package.
 }
 \seealso{
-Other git: 
-\code{\link{clean_git}()},
-\code{\link{get_branches_tags}()},
-\code{\link{is_repository}()},
-\code{\link{is_workdir_clean}()},
-\code{\link{new_branch}()},
-\code{\link{set_tag}()}
+Other git:
+\code{\link[=clean_git]{clean_git()}},
+\code{\link[=get_branches_tags]{get_branches_tags()}},
+\code{\link[=is_repository]{is_repository()}},
+\code{\link[=is_workdir_clean]{is_workdir_clean()}},
+\code{\link[=new_branch]{new_branch()}},
+\code{\link[=set_tag]{set_tag()}}
 }
 \concept{git}

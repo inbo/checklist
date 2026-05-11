@@ -25,14 +25,14 @@ The function returns an error when it reaches the root of the disk without
 finding a \code{checklist.yml} file.
 }
 \seealso{
-Other both: 
-\code{\link{add_checklist_badges}()},
-\code{\link{check_filename}()},
-\code{\link{check_lintr}()},
-\code{\link{check_spelling}()},
-\code{\link{custom_dictionary}()},
-\code{\link{print.checklist_spelling}()},
-\code{\link{update_citation}()},
-\code{\link{write_checklist}()}
+Other both:
+\code{\link[=add_checklist_badges]{add_checklist_badges()}},
+\code{\link[=check_filename]{check_filename()}},
+\code{\link[=check_lintr]{check_lintr()}},
+\code{\link[=check_spelling]{check_spelling()}},
+\code{\link[=custom_dictionary]{custom_dictionary()}},
+\code{\link[=print.checklist_spelling]{print.checklist_spelling()}},
+\code{\link[=update_citation]{update_citation()}},
+\code{\link[=write_checklist]{write_checklist()}}
 }
 \concept{both}
