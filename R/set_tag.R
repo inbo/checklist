@@ -13,7 +13,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom fs path
 #' @importFrom gert git_config git_config_set git_info git_tag_create
-#' git_tag_list
+#' @importFrom gert git_tag_list
 #' @importFrom withr defer
 #' @family git
 set_tag <- function(x = ".") {

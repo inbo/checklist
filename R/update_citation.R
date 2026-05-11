@@ -33,10 +33,17 @@
 #' @importFrom utils file_test
 #' @family both
 update_citation <- function(x = ".", quiet = FALSE) {
+  if (inherits(x, "checklist")) {
+    cit_meta <- citation_meta$new(x$get_path)
+  } else {
+    cit_meta <- citation_meta$new(x)
+  }
   x <- read_checklist(x = x)
-  cit_meta <- citation_meta$new(x$get_path)
   print(cit_meta, quiet = quiet)
-  x$add_warnings(cit_meta$get_warnings, "CITATION")
+  if (length(cit_meta$get_errors) > 0) {
+    warning(cit_meta$get_errors)
+  }
+  x$add_warnings(as.character(cit_meta$get_warnings), item = "CITATION")
   x$add_error(cit_meta$get_errors, item = "CITATION", keep = FALSE)
   x$add_notes(cit_meta$get_notes, item = "CITATION")
   return(invisible(x))

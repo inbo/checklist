@@ -24,11 +24,11 @@
 #'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
-#' @importFrom citeme org_list
+#' @importFrom citeme citation_meta
 #' @importFrom desc description
 #' @importFrom fs path
 #' @importFrom gert git_branch_list git_commit_id git_diff git_info
-#' git_log git_stat_files git_status
+#' @importFrom gert git_log git_stat_files git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -115,8 +115,8 @@ check_description <- function(x = ".") {
   )
 
   this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
-  org <- org_list$new()$read(x$get_path)
-  updated_authors <- check_authors(this_desc = this_desc, org = org)
+  citmeta <- citation_meta$new(x$get_path)
+  updated_authors <- citmeta$get_person
   this_desc$set_authors(updated_authors)
   path(x$get_path, "DESCRIPTION") |> this_desc$write()
   version <- as.character(this_desc$get_version())
@@ -126,12 +126,13 @@ check_description <- function(x = ".") {
       !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
     ],
     "Language field not set."[is.na(this_desc$get("Language"))],
-    attr(updated_authors, "errors")
+    citmeta$get_errors
   ) |>
     x$add_error(item = "DESCRIPTION", keep = FALSE)
-  x$add_notes(notes, item = "DESCRIPTION")
+  x$add_notes(c(notes, citmeta$get_notes), item = "DESCRIPTION")
+  x$add_warnings(c(citmeta$get_warnings), item = "DESCRIPTION")
 
-  check_license(x = x, org = org)
+  check_license(x = x)
 }
 
 #' Make your DESCRIPTION tidy
@@ -332,22 +333,4 @@ check_license <- function(x = ".", org) {
   }
   x$add_error(errors = problems, item = "license", keep = FALSE)
   return(x)
-}
-
-#' @importFrom assertthat assert_that is.string
-#' @importFrom utils person
-check_authors <- function(this_desc, org) {
-  assert_that(inherits(org, "org_list"))
-  rightsholder <- this_desc$get_author(role = "cph")
-  funder <- this_desc$get_author(role = "fnd")
-  problems <- org$validate_rules(rightsholder = rightsholder, funder = funder)
-  authors <- this_desc$get_authors()
-  lang <- ifelse(
-    is.na(this_desc$get("Language")),
-    "en-GB",
-    this_desc$get("Language")
-  )
-  updated_person <- org$validate_person(person = authors, lang = lang)
-  attr(updated_person, "errors") <- c(problems, attr(updated_person, "errors"))
-  return(updated_person)
 }

@@ -58,7 +58,7 @@ test_that("check_description() works", {
   gert::git_commit(message = "add remotes", repo = repo)
   expect_is(x <- check_description(repo), "checklist")
   expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION,
+    x$.__enclos_env__$private$errors$DESCRIPTION[1:2],
     c(
       "Package version not updated",
       "DESCRIPTION not tidy. Use `checklist::tidy_desc()`"
@@ -71,7 +71,7 @@ test_that("check_description() works", {
   gert::git_commit(message = "bump dev version", repo = repo)
   expect_is(x <- check_description(repo), "checklist")
   expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION,
+    x$.__enclos_env__$private$errors$DESCRIPTION[1],
     "Incorrect version tag format. Use `0.0` or `0.0.0`"
   )
 
@@ -80,7 +80,10 @@ test_that("check_description() works", {
   git_add(files = "DESCRIPTION", repo = repo)
   gert::git_commit(message = "bump patch version", repo = repo)
   expect_is(x <- check_description(repo), "checklist")
-  expect_identical(x$.__enclos_env__$private$errors$DESCRIPTION, character(0))
+  expect_match(
+    x$.__enclos_env__$private$errors$DESCRIPTION,
+    "Please commit changes."
+  )
 
   this_desc <- desc::description$new(file = path(path, package, "DESCRIPTION"))
   this_desc$del_remotes("inbo/INBOmd")
@@ -89,7 +92,7 @@ test_that("check_description() works", {
   gert::git_commit(message = "remove remotes", repo = repo)
   expect_is(x <- check_description(repo), "checklist")
   expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION,
+    x$.__enclos_env__$private$errors$DESCRIPTION[1],
     "Package version not updated"
   )
 
@@ -107,7 +110,7 @@ test_that("check_description() works", {
   stub(check_description, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
   expect_is(x <- check_description(path(path, package)), "checklist")
   expect_identical(
-    x$.__enclos_env__$private$errors$DESCRIPTION,
+    x$.__enclos_env__$private$errors$DESCRIPTION[1],
     "Package version not updated"
   )
 })

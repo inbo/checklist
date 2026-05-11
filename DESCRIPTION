@@ -22,7 +22,7 @@ Depends:
     R (>= 4.1.0)
 Imports:
     assertthat,
-    citeme,
+    citeme (>= 0.1.1),
     cli,
     codemetar,
     desc,

@@ -6,7 +6,7 @@
 #' @importFrom desc desc
 #' @importFrom fs file_delete path
 #' @importFrom gert git_add git_branch git_branch_checkout git_branch_exists
-#' git_commit git_rm git_status
+#' @importFrom gert git_commit git_rm git_status
 #' @family setup
 prepare_ghpages <- function(x = ".", verbose = TRUE) {
   x <- read_checklist(x)

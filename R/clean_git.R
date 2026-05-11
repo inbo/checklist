@@ -11,8 +11,8 @@
 #' @importFrom assertthat assert_that
 #' @importFrom fs file_delete
 #' @importFrom gert git_ahead_behind git_branch git_branch_checkout
-#' git_branch_create git_branch_delete git_branch_list git_fetch git_pull
-#' git_remote_list
+#' @importFrom gert git_branch_create git_branch_delete git_branch_list
+#' @importFrom gert git_fetch git_pull git_remote_list
 #' @importFrom withr defer
 #' @export
 #' @family git

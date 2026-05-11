@@ -410,7 +410,10 @@ test_that("check_spelling() on a project", {
 
   unlink(path(path, "spelling", "README.md"))
   expect_warning(z <- update_citation(path(path, "spelling"), quiet = TRUE))
-  expect_match(z$.__enclos_env__$private$errors$CITATION, "README.md not found")
+  expect_match(
+    z$.__enclos_env__$private$errors$CITATION,
+    "no supported file found in `path`"
+  )
 })
 
 test_that("check_spelling() works on a quarto project", {

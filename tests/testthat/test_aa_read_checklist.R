@@ -1,7 +1,7 @@
 test_that("read_checklist works", {
   target <- tempfile("checklist")
   dir_create(target)
-  defer(dir_delete(target))
+  defer(fs::dir_delete(target))
   checklist$new(target, language = "en-GB", package = FALSE) |>
     write_checklist()
   suppressMessages(expect_is(x <- read_checklist(target), "checklist"))

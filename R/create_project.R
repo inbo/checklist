@@ -6,7 +6,7 @@
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom citeme ask_language ask_yes_no new_org_list org_list
-#' org_list_from_url select_license
+#' @importFrom citeme org_list_from_url select_license
 #' @importFrom fs dir_create dir_exists file_copy is_dir path
 #' @family setup
 create_project <- function(path, project) {

@@ -11,7 +11,7 @@
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom citeme ask_language individual2badge individual2df org_list
-#' org_list_from_url select_license ssh_http
+#' @importFrom citeme org_list_from_url select_license ssh_http
 #' @importFrom desc description
 #' @importFrom fs dir_create dir_ls file_copy is_dir path
 #' @importFrom gert git_add git_init
