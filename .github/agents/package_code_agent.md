@@ -1,7 +1,9 @@
 ---
 name: package_code_agent
 description: Expert developer for this project.
-model: Claude Opus 4.5 (copilot)
+model:
+  - Claude Opus 4.6 (copilot)
+  - Claude Opus 4.5 (copilot)
 ---
 
 You are an expert developer for this project.
@@ -43,8 +45,17 @@ You are an expert developer for this project.
 - Update the `NAMESPACE` file: `Rscript -e "devtools::document()"` (updates the `NAMESPACE` file based on the `R/` scripts).
   Run this command after adding or removing functions in the `R/` folder to update the `NAMESPACE` file with the new functions and to remove the deleted functions.
   Also run this command after importing new functions from other packages to add the imported functions to the `NAMESPACE` file.
+- Build the package: `Rscript -e "devtools::build()"` (builds the package and checks for errors and warnings).
+  Run this command after making changes to the code in the `R/` folder to check for errors and warnings in the code and to ensure that the package can be built successfully.
 - Validate code style: `Rscript -e "checklist::check_lintr()"` (validates your code style).
-- Validate documentation in a package: `Rscript -e "checklist::check_cran()"` (validates your documentation style and completeness)
+  Run this command after making changes to the code in the `R/` folder to check for code style issues and to ensure that the code follows the defined code style.
+  Make sure build the package successfully before running this command to avoid issues with the `lintr` checks that can arise when the package cannot be built successfully.
+- Validate documentation in a package: `Rscript -e "checklist::check_cran()"` (validates your documentation style and completeness).
+  Run this command after making changes to the code in the `R/` folder to check for documentation issues and to ensure that the documentation is complete and follows the defined documentation style.
+  Make sure build the package successfully before running this command to avoid issues with the `check_cran()` checks that can arise when the package cannot be built successfully.
+- Use early returns in functions to improve readability and to reduce the amount of nested code in the functions.
+  Use the `return()` function to return a value from a function and to exit the function early when a certain condition is met (e.g. when an error occurs, when a certain argument is missing, etc.).
+  This improves the readability of the code and makes it easier to understand the flow of the function and to identify the conditions under which the function will exit early.
 
 ## Code style
 
@@ -91,6 +102,12 @@ You are an expert developer for this project.
   Use `DBI::dbQuoteIdentifier()` to safely quote identifiers (e.g. table names, column names) in SQL queries to prevent SQL injection and to ensure that the code works with different database backends that may have different rules for quoting identifiers.
   Use `DBI::dbQuoteString()` to safely quote string values in SQL queries to prevent SQL injection and to ensure that the code works with different database backends that may have different rules for quoting string values.
   Use `DBI::dbQuoteLiteral()` to safely quote literal values in SQL queries to prevent SQL injection and to ensure that the code works with different database backends that may have different rules for quoting literal values.
+- Validate function arguments as soon as possible in the function to provide clear error messages when the arguments are not valid and to prevent issues that can arise from invalid arguments later in the code.
+  Use the `stopifnot()` function to validate function arguments and provide clear error messages when the arguments are not valid.
+  Use the `assertthat` package for more complex argument validation when necessary, but prefer the use of base R functions for argument validation when possible to avoid unnecessary dependencies.
+- Prefer `vapply()` over `sapply()` and `lapply()` when the output is expected to be of a specific type and length to improve the readability of the code and to provide better error messages when the output is not of the expected type or length.
+  Use `vapply()` with the `FUN.VALUE` argument to specify the expected type and length of the output (e.g. `vapply(X, FUN, FUN.VALUE = character(1))` for a character vector of length 1).
+  Only use `sapply()` or `lapply()` when the output is not possible to expect an output of a specific type or length.
 
 ## Documentation practices
 
