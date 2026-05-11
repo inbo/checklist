@@ -54,8 +54,7 @@ Suggests:
     rstudioapi,
     showtext,
     sysfonts,
-    testthat,
-    zen4R (>= 0.10)
+    testthat
 VignetteBuilder:
     knitr
 Additional_repositories: https://inbo.r-universe.dev

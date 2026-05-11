@@ -189,7 +189,9 @@ get_language <- function(files, private) {
 }
 
 #' @importFrom assertthat has_name
+#' @importFrom citeme coalesce
 #' @importFrom fs path path_dir path_rel
+#' @importFrom rmarkdown yaml_front_matter
 #' @importFrom yaml read_yaml
 list_quarto_md <- function(quarto, root) {
   settings <- read_yaml(quarto)
@@ -208,7 +210,7 @@ list_quarto_md <- function(quarto, root) {
       FUN.VALUE = character(1),
       lang = settings$lang,
       FUN = function(x, lang) {
-        citeme::coalesce(yaml_front_matter(x)$lang, lang, NA_character_)
+        coalesce(yaml_front_matter(x)$lang, lang, NA_character_)
       }
     ) -> languages
   list(data.frame(quarto_lang = languages, path = files))
