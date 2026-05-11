@@ -26,6 +26,7 @@
 #' Defaults to `TRUE` on an interactive session and `FALSE` on a non-interactive
 #' session.
 #' @param quiet Whether to print check output during checking.
+#' @inheritParams check_cran
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom citeme org_list
 #' @importFrom fs file_delete
@@ -37,7 +38,8 @@ check_package <- function(
   x = ".",
   fail = !interactive(),
   pkgdown = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  time_out = 30
 ) {
   assert_that(is.flag(fail), noNA(fail))
   assert_that(is.flag(pkgdown), noNA(pkgdown))
@@ -53,7 +55,7 @@ check_package <- function(
   quiet_cat("Checking spelling\n", quiet = quiet)
   x <- check_spelling(x = x, quiet = quiet)
 
-  x <- check_cran(x = x, quiet = quiet)
+  x <- check_cran(x = x, quiet = quiet, time_out = time_out)
 
   quiet_cat("Checking code style\n", quiet = quiet)
   x <- check_lintr(x, quiet = quiet)

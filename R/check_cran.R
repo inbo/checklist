@@ -21,7 +21,7 @@
 #' @importFrom withr defer with_path
 #' @export
 #' @family package
-check_cran <- function(x = ".", quiet = FALSE, time_out = 15) {
+check_cran <- function(x = ".", quiet = FALSE, time_out = 30) {
   x <- read_checklist(x = x)
   assert_that(
     x$package,

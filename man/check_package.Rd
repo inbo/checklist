@@ -8,7 +8,8 @@ check_package(
   x = ".",
   fail = !interactive(),
   pkgdown = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  time_out = 30
 )
 }
 \arguments{
@@ -24,6 +25,13 @@ Defaults to \code{TRUE} on an interactive session and \code{FALSE} on a non-inte
 session.}
 
 \item{quiet}{Whether to print check output during checking.}
+
+\item{time_out}{The time in seconds to wait for a response from the world
+clock API.
+Default is 15 seconds, but you can increase this if you have a slow internet
+connection.
+If the world clock API is not available, the system clock will be used
+without a warning, but the check will be less reliable.}
 }
 \description{
 A convenience function that runs all packages related tests in sequence.

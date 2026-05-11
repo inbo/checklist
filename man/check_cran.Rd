@@ -4,7 +4,7 @@
 \alias{check_cran}
 \title{Run all the package checks required by CRAN}
 \usage{
-check_cran(x = ".", quiet = FALSE, time_out = 15)
+check_cran(x = ".", quiet = FALSE, time_out = 30)
 }
 \arguments{
 \item{x}{Either a \code{checklist} object or a path to the source code.
