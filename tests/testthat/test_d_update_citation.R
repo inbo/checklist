@@ -49,7 +49,7 @@ test_that("update_citation() works", {
   hide_output2 <- tempfile(fileext = ".txt")
   defer(file_delete(hide_output2))
   sink(hide_output2)
-  expect_output(x <- update_citation(path(path, package)))
+  expect_output(x <- suppressWarnings(update_citation(path(path, package))))
   sink()
   expect_is(x, "checklist")
 
@@ -60,7 +60,7 @@ test_that("update_citation() works", {
   )
   expect_is(
     {
-      x <- update_citation(path(path, package), quiet = TRUE)
+      x <- suppressWarnings(update_citation(path(path, package), quiet = TRUE))
     },
     "checklist"
   )

@@ -214,7 +214,11 @@ test_that("check_spelling() on a project", {
 
   expect_is(
     {
-      x <- check_project(path(path, "spelling"), fail = FALSE, quiet = TRUE)
+      x <- suppressWarnings(check_project(
+        path(path, "spelling"),
+        fail = FALSE,
+        quiet = TRUE
+      ))
     },
     "checklist"
   )
