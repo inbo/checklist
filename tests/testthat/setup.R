@@ -1,3 +1,8 @@
+withr::local_envvar(
+  R_USER_CACHE_DIR = tempfile(),
+  .local_envir = teardown_env()
+)
+
 mock_r_user_dir <- function(alt_dir) {
   function(package, which = c("data", "config", "cache")) {
     which <- match.arg(which)
