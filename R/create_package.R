@@ -195,6 +195,8 @@ create_package <- function(package, path = ".") {
     target = target
   )
 
+  add_agents(x)
+
   # prepare pkgdown
   setup_pkgdown(x = x, org = org, lang = language)
 

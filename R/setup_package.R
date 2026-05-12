@@ -188,6 +188,9 @@ setup_package <- function(path = ".") {
     target = path(".github", "workflows")
   )
 
+  # Add agents
+  add_agents(x)
+
   # Add pkgdown website
   setup_pkgdown(x = path, org = org, lang = x$default)
 

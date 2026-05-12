@@ -2,6 +2,7 @@
 
 S3method(print,checklist_language)
 S3method(print,checklist_spelling)
+export(add_agents)
 export(add_checklist_badges)
 export(ask_rightsholder_funder)
 export(c_sort)

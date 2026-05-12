@@ -44,6 +44,7 @@ add it to that file outside \verb{# begin checklist entry} and
 }
 \seealso{
 Other both:
+\code{\link[=add_agents]{add_agents()}},
 \code{\link[=add_checklist_badges]{add_checklist_badges()}},
 \code{\link[=check_filename]{check_filename()}},
 \code{\link[=check_lintr]{check_lintr()}},
