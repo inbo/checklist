@@ -46,7 +46,10 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   )
 
   if (x$package) {
-    linter <- lint_package(path = x$get_path)
+    linter <- lint_package(
+      path = x$get_path,
+      exclusions = list("tests/testthat/_problems")
+    )
   } else {
     dir_ls(
       path = x$get_path,
