@@ -94,42 +94,26 @@ spelling <- R6Class(
     #' @field get_md The markdown files within the project.
     #' @importFrom fs dir_ls path
     get_md = function() {
-      md_files <- dir_ls(
-        private$path,
-        recurse = TRUE,
-        type = "file",
-        regexp = "\\.[Rrq]?md$",
-        all = TRUE
-      )
-      get_language(files = md_files, private = private)
+      list_project_files(private$path)$files |>
+        grepv(pattern = "\\.[Rrq]?md$") |>
+        get_language(private = private)
     },
     #' @field get_r The R files within the project.
     #' @importFrom fs dir_exists dir_ls
     get_r = function() {
-      r_files <- dir_ls(
-        private$path,
-        recurse = TRUE,
-        type = "file",
-        regexp = "\\.[R|r]$",
-        all = TRUE
-      )
-      get_language(files = r_files, private = private)
+      list_project_files(private$path)$files |>
+        grepv(pattern = "\\.[Rr]$") |>
+        get_language(private = private)
     },
     #' @field get_rd The Rd files within the project.
     #' @importFrom fs dir_exists dir_ls
     get_rd = function() {
-      if (dir_exists(path(private$path, "man"))) {
-        rd_files <- dir_ls(
-          path(private$path, "man"),
-          recurse = FALSE,
-          type = "file",
-          all = TRUE,
-          regexp = "\\.[Rr]d$"
-        )
-      } else {
-        rd_files <- character(0)
+      if (!dir_exists(path(private$path, "man"))) {
+        return(get_language(files = character(0), private = private))
       }
-      get_language(files = rd_files, private = private)
+      list_project_files(file.path(private$path, "man"))$files |>
+        grepv(pattern = "\\.[Rr]d$") |>
+        get_language(private = private)
     },
     #' @field settings A list with current spell checking settings.
     settings = function() {
@@ -158,8 +142,7 @@ get_language <- function(files, private) {
     attr(files, "checklist_ignore") <- private$ignore
     return(files)
   }
-  path_rel(files, start = private$path) |>
-    path_filter(path("*renv", "library*"), invert = TRUE) -> files
+  files <- path_filter(files, path("*renv", "library*"), invert = TRUE)
   files <- data.frame(language = private$main, path = files)
   for (current in names(private$other)) {
     test_current <- outer(files$path, private$other[[current]], path_has_parent)

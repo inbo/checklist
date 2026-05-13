@@ -60,6 +60,9 @@ check_filename <- function(x = ".") {
     c(".github", "PULL_REQUEST_TEMPLATE"),
     c("inst", "package_template", "ISSUE_TEMPLATE")
   )
+  if (is_repository(x$get_path)) {
+    exceptions <- c(exceptions, git_submodule_list(repo = ".")$path)
+  }
   dirs <- dirs[!dirs %in% exceptions]
   check_dir <- vapply(
     dirs,

@@ -21,6 +21,7 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom gert git_submodule_list
 #' @importFrom lintr lint_dir lint_package
 #' @importFrom fs dir_ls
 #' @importFrom withr defer
@@ -46,10 +47,11 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   )
 
   if (x$package) {
-    linter <- lint_package(
-      path = x$get_path,
-      exclusions = list("tests/testthat/_problems")
-    )
+    exclusions <- list("tests/testthat/_problems")
+    if (is_repository(x$get_path)) {
+      exclusions <- c(exclusions, git_submodule_list(repo = ".")$path)
+    }
+    linter <- lint_package(path = x$get_path, exclusions = exclusions)
   } else {
     dir_ls(
       path = x$get_path,
@@ -59,9 +61,15 @@ check_lintr <- function(x = ".", quiet = FALSE) {
     ) |>
       as.list() |>
       unname() -> exclude_renv
+    if (is_repository(x$get_path)) {
+      exclude_renv <- c(
+        exclude_renv,
+        git_submodule_list(repo = x$get_path)$path
+      )
+    }
     linter <- lint_dir(
       x$get_path,
-      pattern = "\\.(R|q)(md|nw)?$",
+      pattern = "\\.[Rrq](md|nw)?$",
       exclusions = exclude_renv
     )
   }

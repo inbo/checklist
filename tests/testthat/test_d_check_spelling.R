@@ -45,6 +45,13 @@ test_that("check_spelling() on a package", {
     )
   )
   suppressMessages(create_package(path = path, package = package))
+  git_config_set(name = "user.name", value = "junk", repo = path(path, package))
+  git_config_set(
+    name = "user.email",
+    value = "junk@inbo.be",
+    repo = path(path, package)
+  )
+  git_commit("initial commit", repo = path(path, package))
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   expect_is(
     {
@@ -69,7 +76,9 @@ test_that("check_spelling() on a package", {
     ),
     path(path, package, "R", "dummy.R")
   )
+  git_add(path("R", "dummy.R"), repo = path(path, package))
   suppressMessages(document(path(path, package), quiet = TRUE))
+  git_add(path("man", "dummy.Rd"), repo = path(path, package))
   writeLines(
     c(
       readLines(path(path, package, "README.Rmd")),
@@ -81,10 +90,12 @@ test_that("check_spelling() on a package", {
     ),
     path(path, package, "README.Rmd")
   )
+  git_add(path("README.Rmd"), repo = path(path, package))
   writeLines(
     c("junk <- function(x) {", "  return(x)", "}"),
     path(path, package, "R", "junk.R")
   )
+  git_add(path("R", "junk.R"), repo = path(path, package))
   writeLines(
     c(
       "\\name{test}",
@@ -97,6 +108,8 @@ test_that("check_spelling() on a package", {
     ),
     path(path, package, "man", "test.Rd")
   )
+  git_add(path("man", "test.Rd"), repo = path(path, package))
+  git_commit("add files with spelling mistakes", repo = path(path, package))
   expect_is(
     {
       z <- check_spelling(path(path, package), quiet = TRUE)
