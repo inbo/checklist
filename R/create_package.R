@@ -196,6 +196,7 @@ create_package <- function(package, path = ".") {
   )
 
   add_agents(x)
+  add_issue_templates(x)
 
   # prepare pkgdown
   setup_pkgdown(x = x, org = org, lang = language)

@@ -67,6 +67,7 @@ These are fonts files which often require their own file name scheme.
 Other both:
 \code{\link[=add_agents]{add_agents()}},
 \code{\link[=add_checklist_badges]{add_checklist_badges()}},
+\code{\link[=add_issue_templates]{add_issue_templates()}},
 \code{\link[=check_lintr]{check_lintr()}},
 \code{\link[=check_spelling]{check_spelling()}},
 \code{\link[=custom_dictionary]{custom_dictionary()}},

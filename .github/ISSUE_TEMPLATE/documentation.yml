@@ -2,8 +2,6 @@ name: Documentation
 description: Suggest updates or additions to documentation.
 title: "[Docs]: "
 labels: "documentation"
-assignees:
-  - ThierryO
 body:
   - type: markdown
     attributes:

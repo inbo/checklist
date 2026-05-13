@@ -27,6 +27,7 @@ Defaults to \code{.}.}
 \seealso{
 Other both:
 \code{\link[=add_agents]{add_agents()}},
+\code{\link[=add_issue_templates]{add_issue_templates()}},
 \code{\link[=check_filename]{check_filename()}},
 \code{\link[=check_lintr]{check_lintr()}},
 \code{\link[=check_spelling]{check_spelling()}},

@@ -57,7 +57,8 @@ check_filename <- function(x = ".") {
   exceptions <- list(
     c("R"),
     c(".github", "ISSUE_TEMPLATE"),
-    c(".github", "PULL_REQUEST_TEMPLATE")
+    c(".github", "PULL_REQUEST_TEMPLATE"),
+    c("inst", "package_template", "ISSUE_TEMPLATE")
   )
   dirs <- dirs[!dirs %in% exceptions]
   check_dir <- vapply(
@@ -102,11 +103,13 @@ check_filename <- function(x = ".") {
         "Dockerfile",
         "INSTALL",
         "INSTALL\\.windows",
+        "ISSUE_TEMPLATE\\.md",
         "LICENSE(\\.md)?",
         "FUNDING\\.yml",
         "Makevars.*",
         "NAMESPACE",
         "NEWS\\.md",
+        "PULL_REQUEST_TEMPLATE\\.md",
         "README\\.R?md",
         "REVIEWING.md",
         "SECURITY\\.md",

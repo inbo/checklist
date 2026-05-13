@@ -190,6 +190,7 @@ setup_package <- function(path = ".") {
 
   # Add agents
   add_agents(x)
+  add_issue_templates(x)
 
   # Add pkgdown website
   setup_pkgdown(x = path, org = org, lang = x$default)
