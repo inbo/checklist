@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a new feature or improvement.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+assignees:
+  - ThierryO
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature description
+      description: Please describe the feature you are requesting and the problem it solves.
+      placeholder: Describe the feature you would like to see implemented.
+    validations:
+      required: true
+  - type: textarea
+    id: why-needed
+    attributes:
+      label: Why is this needed?
+      description: Please describe why this feature is needed and the problem it solves.
+      placeholder: Explain why this feature is important.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Please describe the proposed solution for this feature request.
+      placeholder: Explain your proposed solution .
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](blob/main/.github/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
