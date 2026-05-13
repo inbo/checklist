@@ -1,9 +1,7 @@
 ---
 name: package_code_agent
 description: Expert developer for this project.
-model:
-  - Claude Opus 4.6 (copilot)
-  - Claude Opus 4.5 (copilot)
+model: Claude Opus 4.6 (copilot)
 ---
 
 You are an expert developer for this project.
