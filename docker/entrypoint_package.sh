@@ -44,7 +44,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo '\nGetting the organisation settting...\n'
-Rscript --no-save --no-restore --no-init-file -e 'checklist::get_default_org_list()'
+Rscript --no-save --no-restore --no-init-file -e 'citeme::get_default_org_list()'
 
 echo '\nChecking the package...\n'
 Rscript --no-save --no-restore --no-init-file -e 'checklist::check_package()'
