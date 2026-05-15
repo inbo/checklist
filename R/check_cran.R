@@ -153,9 +153,14 @@ check_test <- function(package_path, quiet = FALSE) {
   file.path(test_folder, test_files) |>
     sprintf(fmt = "Rscript --vanilla %s") |>
     paste(collapse = "\n") |>
-    sprintf(fmt = "cd %2$s\n%1$s", test_folder) |>
-    system(intern = TRUE) |>
-    paste(collapse = "\n") -> test_output
+    sprintf(fmt = "cd %2$s\n%1$s", test_folder) -> test_command
+  test_output <- try(system(test_command, intern = TRUE))
+  if (inherits(test_output, "try-error")) {
+    display_message("Error running tests", verbose = !quiet, type = "warning")
+    display_message(test_output)
+    return(character(0))
+  }
+  test_output <- paste(test_output, collapse = "\n")
 
   if (!grepl("Failed tests", test_output)) {
     test_output <- character(0)
