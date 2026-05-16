@@ -35,13 +35,13 @@ fi
 # install the roxygen2 version mentions in the DESCRIPTION
 ROXYGEN_LINE=$(cat DESCRIPTION | grep "^RoxygenNote:")
 RO_VERSION=${ROXYGEN_LINE#*: }
-if [$RO_VERSION != ""] && [ $RO_VERSION != "NA" ]; then
+if [ -n "$RO_VERSION" ]; then
   echo '\nInstalling roxygen2 version' $RO_VERSION '...\n'
   Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
 else
   ROXYGEN_LINE=$(cat DESCRIPTION | grep "^Config/roxygen2/version:")
   RO_VERSION=${ROXYGEN_LINE#*: }
-  if [$RO_VERSION != ""] && [ $RO_VERSION != "NA" ]; then
+  if [ -n "$RO_VERSION" ]; then
     echo '\nInstalling roxygen2 version' $RO_VERSION '...\n'
     Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
   else

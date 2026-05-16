@@ -61,7 +61,7 @@ check_filename <- function(x = ".") {
     c("inst", "package_template", "ISSUE_TEMPLATE")
   )
   if (is_repository(x$get_path)) {
-    exceptions <- c(exceptions, git_submodule_list(repo = ".")$path)
+    exceptions <- c(exceptions, git_submodule_list(repo = x$get_path)$path)
   }
   dirs <- dirs[!dirs %in% exceptions]
   check_dir <- vapply(
@@ -200,16 +200,13 @@ extract_dirs <- function(path) {
 
 #' @importFrom gert git_ls
 list_project_files <- function(path) {
-  oldwd <- getwd()
-  on.exit(setwd(oldwd), add = TRUE)
-  setwd(path)
-  if (is_repository(".") && nrow(git_ls(repo = ".")) > 0) {
-    files <- git_ls(repo = ".")$path
+  if (is_repository(path) && nrow(git_ls(repo = path)) > 0) {
+    files <- git_ls(repo = path)$path
     dirs <- unique(unlist(lapply(files, extract_dirs)))
   } else {
-    dirs <- list.dirs(".", recursive = TRUE, full.names = FALSE)
-    files <- list.files(".", recursive = TRUE, all.files = TRUE)
+    dirs <- list.dirs(path, recursive = TRUE, full.names = FALSE)
+    files <- list.files(path, recursive = TRUE, all.files = TRUE)
   }
-  files <- files[!vapply(files, is_symlink, logical(1))]
+  files <- files[!vapply(file.path(path, files), is_symlink, logical(1))]
   return(list(files = files, dirs = dirs))
 }

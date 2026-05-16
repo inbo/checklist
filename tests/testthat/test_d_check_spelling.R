@@ -51,7 +51,6 @@ test_that("check_spelling() on a package", {
     value = "junk@inbo.be",
     repo = path(path, package)
   )
-  git_commit("initial commit", repo = path(path, package))
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   expect_is(
     {
@@ -109,7 +108,6 @@ test_that("check_spelling() on a package", {
     path(path, package, "man", "test.Rd")
   )
   git_add(path("man", "test.Rd"), repo = path(path, package))
-  git_commit("add files with spelling mistakes", repo = path(path, package))
   expect_is(
     {
       z <- check_spelling(path(path, package), quiet = TRUE)

@@ -49,7 +49,7 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   if (x$package) {
     exclusions <- list("tests/testthat/_problems")
     if (is_repository(x$get_path)) {
-      exclusions <- c(exclusions, git_submodule_list(repo = ".")$path)
+      exclusions <- c(exclusions, git_submodule_list(repo = x$get_path)$path)
     }
     linter <- lint_package(path = x$get_path, exclusions = exclusions)
   } else {
