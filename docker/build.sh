@@ -16,6 +16,11 @@ docker run -it --rm -e GITHUB_TOKEN=$GITHUB_PAT \
   -e GITHUB_SHA=$(git rev-parse HEAD) -e GITHUB_REPOSITORY=inbo/checklist \
   -e ZENODO_SANDBOX=$ZENODO_SANDBOX --entrypoint=/bin/bash \
   inbobmk/checklist:devel
+docker run --rm -e GITHUB_TOKEN=$GITHUB_PAT \
+  -e GITHUB_SHA=$(git rev-parse HEAD) -e GITHUB_REPOSITORY=inbo/checklist \
+  -e ZENODO_SANDBOX=$ZENODO_SANDBOX \
+   --entrypoint=entrypoint_package.sh \
+  inbobmk/checklist:devel
 
 git checkout main
 git pull
