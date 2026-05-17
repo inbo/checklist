@@ -96,7 +96,7 @@ check_filename <- function(x = ".") {
         "\\.[a-zA-Z]+ignore",
         "\\.Rprofile",
         "\\.[a-zA-Z]+\\.(json|yml)",
-        "Cargo\\.*",
+        "Cargo\\..*",
         "CITATION",
         "CITATION\\.cff",
         "CODEOWNERS",
