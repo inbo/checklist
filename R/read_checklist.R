@@ -79,6 +79,9 @@ read_checklist <- function(x = ".") {
   if (has_name(allowed, "pak") && length(allowed$pak) > 0) {
     x$set_pak(allowed$pak)
   }
+  if (has_name(allowed, "gha_install") && length(allowed$gha_install) > 0) {
+    x$set_gha_install(allowed$gha_install)
+  }
 
   assert_that(has_name(allowed, "description"))
   assert_that(has_name(allowed, "allowed"))

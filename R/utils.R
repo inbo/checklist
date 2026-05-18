@@ -276,7 +276,8 @@ checklist_template <- function(
   notes,
   spelling,
   required,
-  pak
+  pak,
+  gha_install
 ) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
@@ -293,6 +294,7 @@ checklist_template <- function(
   }
   template$spelling <- spelling
   template$pak <- pak
+  template$gha_install <- gha_install
   return(template)
 }
 

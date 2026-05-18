@@ -226,6 +226,14 @@ checklist <- R6Class(
       return(invisible(self))
     },
 
+    #' @description Set optional install commands for GitHub Actions
+    #' @param commands A vector with commands.
+    set_gha_install = function(commands) {
+      assert_that(is.character(commands), noNA(commands))
+      private$gha_install <- commands
+      invisible(self)
+    },
+
     #' @description set required checks
     #' @param checks a vector of required checks
     set_required = function(checks = character(0)) {
@@ -250,6 +258,11 @@ checklist <- R6Class(
     #' @field get_checked A vector with checked topics.
     get_checked = function() {
       return(names(private$checked))
+    },
+
+    #' @field get_gha_install A vector with bash commands for GitHub Actions.
+    get_gha_install = function() {
+      return(private$gha_install)
     },
 
     #' @field get_path The path to the package.
@@ -298,7 +311,8 @@ Please contact the maintainer of the `checklist` package."
         notes = private$allowed_notes,
         spelling = super$settings,
         required = c_sort(unique(private$required)),
-        pak = private$pak
+        pak = private$pak,
+        gha_install = private$gha_install
       )
     }
   ),
@@ -346,7 +360,8 @@ Please contact the maintainer of the `checklist` package."
       checklist_path = "."
     ),
     warnings = character(0),
-    pak = character(0)
+    pak = character(0),
+    gha_install = character(0)
   )
 )
 

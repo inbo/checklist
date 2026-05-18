@@ -42,3 +42,4 @@ spelling:
   - inst/generic_template/gplv3.md
   - inst/generic_template/mit.md
 pak: []
+gha_install: []

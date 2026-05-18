@@ -28,8 +28,6 @@ COPY docker/upgrade_texlive.sh /rocker_scripts/upgrade_texlive.sh
 
 RUN /rocker_scripts/upgrade_texlive.sh
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
-
 RUN  Rscript --no-save --no-restore -e 'install.packages("pak")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes", dependencies = TRUE)' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("fmesher")' \
@@ -41,7 +39,6 @@ RUN  Rscript --no-save --no-restore -e 'install.packages("pak")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("renv")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("citeme")'
 
 ## install checklist

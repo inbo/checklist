@@ -27,6 +27,8 @@ package.}
   \describe{
     \item{\code{get_checked}}{A vector with checked topics.}
 
+    \item{\code{get_gha_install}}{A vector with bash commands for GitHub Actions.}
+
     \item{\code{get_path}}{The path to the package.}
 
     \item{\code{get_pak}}{Packages to install with \code{pak::pkg_install()}.}
@@ -56,6 +58,7 @@ package.}
     \item \href{#method-checklist-initialize}{\code{checklist$new()}}
     \item \href{#method-checklist-print}{\code{checklist$print()}}
     \item \href{#method-checklist-set_pak}{\code{checklist$set_pak()}}
+    \item \href{#method-checklist-set_gha_install}{\code{checklist$set_gha_install()}}
     \item \href{#method-checklist-set_required}{\code{checklist$set_required()}}
     \item \href{#method-checklist-clone}{\code{checklist$clone()}}
   }
@@ -310,6 +313,25 @@ Add \code{quiet = TRUE} to suppress printing.
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{pkg}}{A vector of packages to install with \code{pak::pkg_install()}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checklist-set_gha_install"></a>}}
+\if{latex}{\out{\hypertarget{method-checklist-set_gha_install}{}}}
+\subsection{\code{checklist$set_gha_install()}}{
+  Set optional install commands for GitHub Actions
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{checklist$set_gha_install(commands)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{commands}}{A vector with commands.}
     }
     \if{html}{\out{</div>}}
   }
