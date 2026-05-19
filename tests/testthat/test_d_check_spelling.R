@@ -354,12 +354,12 @@ test_that("check_spelling() on a project", {
   ) |>
     writeLines(path(path, "spelling", "source", "nederlands.md"))
   path(path, "spelling", "checklist.yml") |> readLines() -> old_checklist
-  head(old_checklist, -1) |>
+  head(old_checklist, -2) |>
     c(
       "  other:",
       "    nl-BE:",
       "    - source/nederlands.md",
-      tail(old_checklist, 1)
+      tail(old_checklist, 2)
     ) |>
     writeLines(path(path, "spelling", "checklist.yml"))
   z <- check_spelling(x = path(path, "spelling"), quiet = TRUE)

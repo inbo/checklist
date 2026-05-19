@@ -42,18 +42,12 @@ read_checklist <- function(x = ".") {
   # read existing check list file
   allowed <- read_yaml(checklist_file)
   assert_that(has_name(allowed, "package"))
-  if (!has_name(allowed, "spelling")) {
-    allowed$spelling <- list(default = "en-GB")
-  }
+  allowed$spelling <- coalesce(allowed$spelling, list(default = "en-GB"))
   if (allowed$package) {
     x <- checklist$new(
       x = current,
       package = TRUE,
-      language = ifelse(
-        has_name(allowed$spelling, "default"),
-        allowed$spelling$default,
-        "en-GB"
-      )
+      language = coalesce(allowed$spelling$default, "en-GB")
     )
   } else {
     x <- checklist$new(
@@ -65,23 +59,13 @@ read_checklist <- function(x = ".") {
         "en-GB"
       )
     )
-    if (has_name(allowed, "required")) {
-      x$set_required(allowed$required)
-    }
+    x$set_required(coalesce(allowed$required, character(0)))
   }
-  if (has_name(allowed$spelling, "ignore")) {
-    x$set_ignore(allowed$spelling$ignore)
-  }
-  if (has_name(allowed$spelling, "other")) {
-    x$set_other(allowed$spelling$other)
-  }
+  x$set_ignore(coalesce(allowed$spelling$ignore, character(0)))
+  x$set_other(coalesce(allowed$spelling$other, list()))
   x$package <- allowed$package
-  if (has_name(allowed, "pak") && length(allowed$pak) > 0) {
-    x$set_pak(allowed$pak)
-  }
-  if (has_name(allowed, "gha_install") && length(allowed$gha_install) > 0) {
-    x$set_gha_install(allowed$gha_install)
-  }
+  x$set_pak(coalesce(as.character(allowed$pak), character(0)))
+  x$set_gha_install(coalesce(as.character(allowed$gha_install), character(0)))
 
   assert_that(has_name(allowed, "description"))
   assert_that(has_name(allowed, "allowed"))
