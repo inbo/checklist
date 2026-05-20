@@ -124,21 +124,6 @@ clean_incoming <- function(issues) {
   return(issues)
 }
 
-display_message <- function(x, verbose, type = c("cat", "message", "warning")) {
-  if (isFALSE(verbose)) {
-    return(invisible(NULL))
-  }
-  type <- match.arg(type)
-  stopifnot(is.character(x))
-  switch(
-    type,
-    cat = cat(x, "\n"),
-    message = message(x),
-    warning = warning(x, call. = FALSE, immediate. = TRUE)
-  )
-  return(invisible(NULL))
-}
-
 check_test <- function(package_path, quiet = FALSE) {
   test_folder <- file.path(package_path, "tests")
   if (!dir.exists(test_folder)) {
