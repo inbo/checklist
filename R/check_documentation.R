@@ -46,6 +46,7 @@
 #' @inheritParams read_checklist
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @export
+#' @importFrom citeme is_tracked_not_modified
 #' @importFrom devtools build_readme document
 #' @importFrom fs is_file path
 #' @importFrom gert git_status
