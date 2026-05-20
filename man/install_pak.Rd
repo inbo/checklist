@@ -21,7 +21,6 @@ Other utils:
 \code{\link[=c_sort]{c_sort()}},
 \code{\link[=create_hexsticker]{create_hexsticker()}},
 \code{\link[=execshell]{execshell()}},
-\code{\link[=validate_email]{validate_email()}},
 \code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

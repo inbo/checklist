@@ -21,8 +21,7 @@ Other utils:
 \code{\link[=c_sort]{c_sort()}},
 \code{\link[=create_hexsticker]{create_hexsticker()}},
 \code{\link[=execshell]{execshell()}},
-\code{\link[=install_pak]{install_pak()}},
-\code{\link[=validate_email]{validate_email()}}
+\code{\link[=install_pak]{install_pak()}}
 }
 \author{
 Hadley Wickham \href{mailto:Hadley@Rstudio.com}{Hadley@Rstudio.com}
