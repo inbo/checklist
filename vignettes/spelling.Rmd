@@ -111,8 +111,8 @@ Building the package will generate the Rd files automatically.
 
 ## Quarto projects
 
-When `check_spelling()` finds a [Quarto book project](https://quarto.org/docs/books/), it will check if `lang` is set in `_quarto.yml`.
-Then `check_spelling()` uses that `lang` for all files listed under the `book: chapters` and `book: appendices` tabs.
+When `check_spelling()` finds a [Quarto book or website](https://quarto.org), it will check if `lang` is set in `_quarto.yml`.
+Then `check_spelling()` uses that `lang` for all files listed under the `book:` or `website:` section.
 Please use the Quarto specific markdown to specify sections with a different language.
 Here are two examples.
 

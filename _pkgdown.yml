@@ -34,7 +34,7 @@ navbar:
       - text: Coding style
         href: articles/coding_style.html
       - text: Naming conventions for folders and files
-        href: articles/filename.html
+        href: articles/file_name.html
       - text: Spell checking with checklist
         href: articles/spelling.html
       - text: Recommended folder structure
