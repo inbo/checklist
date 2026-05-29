@@ -310,7 +310,7 @@ To diagnose if the failed action is due to failing to install dependencies, you 
 
 Should you need to run Linux commands to install the missing system dependencies, you can add these commands to the `checklist.yml` file.
 You can run any Linux command.
-Be carefull when doing this, because you can break the `GHA` if you add wrong commands.
+Be careful when doing this, because you can break the `GHA` if you add wrong commands.
 
 ```{r gha, eval = FALSE}
 # read the current checklist settings

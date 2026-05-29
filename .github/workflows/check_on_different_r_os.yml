@@ -19,15 +19,16 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'release', skip_test: 'false'}
-          - {os: windows-latest, r: 'release', skip_test: 'true'}
+          - {os: windows-latest, r: 'release', skip_test: 'false'}
           - {os: ubuntu-24.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest", skip_test: 'false'}
           - {os: ubuntu-24.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest", skip_test: 'false'}
 
     env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       _R_CHECK_SYSTEM_CLOCK_: false
-      RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      RSPM: ${{ matrix.config.rspm }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      SKIP_TEST: ${{ matrix.config.skip_test }}
       ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
 
     steps:
@@ -38,9 +39,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           extra-repositories: https://inbo.r-universe.dev https://cranhaven.r-universe.dev
 
-
       - uses: r-lib/actions/setup-pandoc@v2
-
 
       - name: linux dependencies
         if: runner.os == 'linux'
@@ -69,6 +68,3 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           error-on: '"error"'
-        env:
-          ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
-          SKIP_TEST: ${{ matrix.config.skip_test }}
