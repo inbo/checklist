@@ -72,9 +72,6 @@ check_package <- function(
   quiet_cat("Updating citation\n", quiet = quiet)
   x <- update_citation(x, quiet = quiet)
 
-  quiet_cat("Checking code metadata\n", quiet = quiet)
-  x <- check_codemeta(x)
-
   x <- check_environment(x)
   x <- check_folder(x)
 

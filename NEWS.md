@@ -12,6 +12,8 @@
   `write_organisation()`, and `write_zenodo_json()`.
 * `bookdown_zenodo()` is removed.
 * `add_badges()` is renamed to `add_checklist_badges()`.
+* `check_codemeta()` is removed because is prodived not much extra information.
+  This also allows us to remove a dependency.
 
 ## New functions
 

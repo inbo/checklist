@@ -38,7 +38,6 @@ We check the license through \code{check_license()}.
 }
 \seealso{
 Other package:
-\code{\link[=check_codemeta]{check_codemeta()}},
 \code{\link[=check_cran]{check_cran()}},
 \code{\link[=check_documentation]{check_documentation()}},
 \code{\link[=check_environment]{check_environment()}},

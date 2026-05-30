@@ -17,7 +17,6 @@ version.
 }
 \seealso{
 Other package:
-\code{\link[=check_codemeta]{check_codemeta()}},
 \code{\link[=check_cran]{check_cran()}},
 \code{\link[=check_description]{check_description()}},
 \code{\link[=check_documentation]{check_documentation()}},

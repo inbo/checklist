@@ -30,7 +30,6 @@ Notice that \code{check_package()} runs several additional tests.
 }
 \seealso{
 Other package:
-\code{\link[=check_codemeta]{check_codemeta()}},
 \code{\link[=check_description]{check_description()}},
 \code{\link[=check_documentation]{check_documentation()}},
 \code{\link[=check_environment]{check_environment()}},
