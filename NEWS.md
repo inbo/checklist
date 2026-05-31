@@ -12,8 +12,11 @@
   `write_organisation()`, and `write_zenodo_json()`.
 * `bookdown_zenodo()` is removed.
 * `add_badges()` is renamed to `add_checklist_badges()`.
-* `check_codemeta()` is removed because is prodived not much extra information.
+* `check_codemeta()` is removed because it provided not much extra information.
   This also allows us to remove a dependency.
+* `create_draft_pr()` and `get_branches_tags()` are removed to remove the
+  dependency on `gh`.
+  Note that we now have a GitHub template for pull requests.
 
 ## New functions
 

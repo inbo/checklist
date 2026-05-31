@@ -28,8 +28,6 @@ the main branch.
 }
 \seealso{
 Other git:
-\code{\link[=create_draft_pr]{create_draft_pr()}},
-\code{\link[=get_branches_tags]{get_branches_tags()}},
 \code{\link[=is_repository]{is_repository()}},
 \code{\link[=is_workdir_clean]{is_workdir_clean()}},
 \code{\link[=new_branch]{new_branch()}},

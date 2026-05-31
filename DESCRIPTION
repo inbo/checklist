@@ -28,7 +28,6 @@ Imports:
     devtools (> 2.4.0),
     fs,
     gert,
-    gh,
     httr,
     hunspell,
     lintr (>= 3.3.0),
