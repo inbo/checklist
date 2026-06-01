@@ -50,7 +50,6 @@ List of checks in order:
 \item \code{check_filename()}
 \item \code{check_description()}
 \item \code{check_documentation()}
-\item \code{check_codemeta()}
 }
 }
 \seealso{

@@ -325,7 +325,6 @@ Please contact the maintainer of the `checklist` package."
       "DESCRIPTION",
       "documentation",
       "R CMD check",
-      "codemeta",
       "filename conventions",
       "folder conventions",
       "license",

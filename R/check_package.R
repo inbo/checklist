@@ -16,7 +16,6 @@
 #' 1. `check_filename()`
 #' 1. `check_description()`
 #' 1. `check_documentation()`
-#' 1. `check_codemeta()`
 #'
 #' @inheritParams read_checklist
 #' @param fail Should the function return an error in case of a problem?

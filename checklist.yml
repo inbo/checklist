@@ -19,7 +19,6 @@ required:
 - DESCRIPTION
 - R CMD check
 - checklist
-- codemeta
 - documentation
 - filename conventions
 - folder conventions
