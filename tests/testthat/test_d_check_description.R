@@ -42,16 +42,17 @@ test_that("check_description() works", {
     )
   )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
-  repo <- path(path, package)
+  repo <- file.path(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  path(path, package, "DESCRIPTION") |> desc::description$new() -> this_desc
+  file.path(path, package, "DESCRIPTION") |>
+    desc::description$new() -> this_desc
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
@@ -85,7 +86,9 @@ test_that("check_description() works", {
     "Please commit changes."
   )
 
-  this_desc <- desc::description$new(file = path(path, package, "DESCRIPTION"))
+  this_desc <- desc::description$new(
+    file = file.path(path, package, "DESCRIPTION")
+  )
   this_desc$del_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
@@ -97,18 +100,22 @@ test_that("check_description() works", {
   )
 
   gert::git_clone(
-    url = path(path, package),
-    path = path(path, "origin"),
+    url = file.path(path, package),
+    path = file.path(path, "origin"),
     bare = TRUE,
     verbose = FALSE
   )
   gert::git_remote_remove(remote = "origin", repo = repo)
-  gert::git_remote_add(url = path(path, "origin"), name = "origin", repo = repo)
+  gert::git_remote_add(
+    url = file.path(path, "origin"),
+    name = "origin",
+    repo = repo
+  )
   git_fetch(remote = "origin", repo = repo, verbose = FALSE)
   git_branch_create(branch = "junk", ref = "HEAD", checkout = TRUE, repo = repo)
 
   stub(check_description, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
-  expect_is(x <- check_description(path(path, package)), "checklist")
+  expect_is(x <- check_description(file.path(path, package)), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION[1],
     "Package version not updated"

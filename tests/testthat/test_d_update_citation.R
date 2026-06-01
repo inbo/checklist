@@ -41,26 +41,31 @@ test_that("update_citation() works", {
     )
   )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
 
   hide_output2 <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output2))
+  defer(unlink(hide_output2))
   sink(hide_output2)
-  expect_output(x <- suppressWarnings(update_citation(path(path, package))))
+  expect_output(
+    x <- suppressWarnings(update_citation(file.path(path, package)))
+  )
   sink()
   expect_is(x, "checklist")
 
-  path(path, package, "inst", "CITATION") |> readLines() -> old_citation
+  file.path(path, package, "inst", "CITATION") |> readLines() -> old_citation
   writeLines(
     old_citation[!grepl("^# .* citeme entry", old_citation)],
-    path(path, package, "inst", "CITATION")
+    file.path(path, package, "inst", "CITATION")
   )
   expect_is(
     {
-      x <- suppressWarnings(update_citation(path(path, package), quiet = TRUE))
+      x <- suppressWarnings(update_citation(
+        file.path(path, package),
+        quiet = TRUE
+      ))
     },
     "checklist"
   )
@@ -73,18 +78,18 @@ test_that("update_citation() works", {
     paste(x$.__enclos_env__$private$errors$CITATION, collapse = " "),
     "No `# end citeme entry` found in `inst/CITATION`"
   )
-  writeLines(old_citation, path(path, package, "inst", "CITATION"))
+  writeLines(old_citation, file.path(path, package, "inst", "CITATION"))
 
-  org <- org_list$new()$read(path(path, package))
+  org <- org_list$new()$read(file.path(path, package))
 
-  this_description <- desc(path(path, package))
+  this_description <- desc(file.path(path, package))
   this_description$add_urls("https://doi.org/10.5281/zenodo.4028303")
   rightsholder <- this_description$get_author(role = "cph")
   this_description$del_author(email = rightsholder$email)
   expect_equal(length(this_description$get_authors()), 1)
-  this_description$write(path(path, package))
+  this_description$write(file.path(path, package))
   expect_warning(
-    z <- update_citation(path(path, package), quiet = TRUE),
+    z <- update_citation(file.path(path, package), quiet = TRUE),
     "Citation files not updated"
   )
   expect_equal(
@@ -93,10 +98,10 @@ test_that("update_citation() works", {
   )
   this_description$add_author(given = "unit", family = "test", role = "ctb")
   this_description$add_author(given = "test", family = "unit", role = "cph")
-  this_description$write(path(path, package))
-  file_delete(path(path, package, ".Rbuildignore"))
+  this_description$write(file.path(path, package))
+  unlink(file.path(path, package, ".Rbuildignore"))
   expect_warning(
-    z <- update_citation(path(path, package), quiet = TRUE),
+    z <- update_citation(file.path(path, package), quiet = TRUE),
     "Citation files not updated"
   )
   expect_equal(
@@ -110,9 +115,9 @@ test_that("update_citation() works", {
     email = "info@test.be",
     role = "cph"
   )
-  this_description$write(path(path, package))
+  this_description$write(file.path(path, package))
   expect_warning(
-    z <- update_citation(path(path, package), quiet = TRUE),
+    z <- update_citation(file.path(path, package), quiet = TRUE),
     "Citation files not updated"
   )
   expect_equal(

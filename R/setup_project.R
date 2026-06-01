@@ -7,14 +7,13 @@
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom citeme ask_language ask_yes_no org_list org_list_from_url
-#' @importFrom fs dir_create file_copy is_dir path path_real path_rel
 #' @family setup
 setup_project <- function(path = ".") {
-  assert_that(is.string(path), is_dir(path))
-  path <- path_real(path)
-  checklist_file <- path(path, "checklist.yml")
+  assert_that(is.string(path), file_test("-d", path))
+  path <- normalizePath(path)
+  checklist_file <- file.path(path, "checklist.yml")
 
-  if (is_file(checklist_file)) {
+  if (file_test("-f", checklist_file)) {
     x <- read_checklist(path)
     language <- x$default
     org <- org_list$new()$read(path)
@@ -31,12 +30,18 @@ setup_project <- function(path = ".") {
     x$set_ignore(c(".github", "LICENSE.md"))
   }
 
-  dir_create(path, c("data", "media", "output", "source"))
+  vapply(
+    file.path(path, c("data", "media", "output", "source")),
+    dir.create,
+    logical(1),
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
 
-  if (!file_exists(path(path, "source", "checklist.R"))) {
-    path("project_template", "checklist.R") |>
+  if (!file_test("-f", file.path(path, "source", "checklist.R"))) {
+    file.path("project_template", "checklist.R") |>
       system.file(package = "checklist") |>
-      file_copy(path(path, "source", "checklist.R"))
+      file.copy(file.path(path, "source", "checklist.R"))
   }
   renv_activate(path = path)
   create_readme(path = path, org = org, lang = language, type = "project")
@@ -53,7 +58,9 @@ setup_project <- function(path = ".") {
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )
 
-  if ("license" %in% checks && !file_exists(path(path, "LICENSE.md"))) {
+  if (
+    "license" %in% checks && !file_test("-f", file.path(path, "LICENSE.md"))
+  ) {
     set_license(x, org = org)
   }
 

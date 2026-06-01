@@ -38,5 +38,5 @@ test_that("create readme", {
     type = "project",
     lang = "en-GB"
   ))
-  expect_true(file_exists(path(path, "README.md")))
+  expect_true(file_test("-f", file.path(path, "README.md")))
 })

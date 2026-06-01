@@ -1,12 +1,12 @@
 test_that("read_checklist works", {
   target <- tempfile("checklist")
-  dir_create(target)
-  defer(fs::dir_delete(target))
+  dir.create(target, recursive = TRUE, showWarnings = FALSE)
+  defer(unlink(target, recursive = TRUE))
   checklist$new(target, language = "en-GB", package = FALSE) |>
     write_checklist()
   suppressMessages(expect_is(x <- read_checklist(target), "checklist"))
   expect_identical(read_checklist(x), x)
-  expect_identical(x$get_path, path_real(target))
+  expect_identical(x$get_path, normalizePath(target, winslash = "/"))
   expect_identical(x$get_checked, "checklist")
   expect_is(x$.__enclos_env__$private$allowed_notes, "list")
   expect_is(x$.__enclos_env__$private$allowed_warnings, "list")

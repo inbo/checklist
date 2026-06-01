@@ -4,7 +4,6 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom desc desc
-#' @importFrom fs file_delete path
 #' @importFrom gert git_add git_branch git_branch_checkout git_branch_exists
 #' @importFrom gert git_commit git_rm git_status
 #' @family setup
@@ -23,12 +22,12 @@ prepare_ghpages <- function(x = ".", verbose = TRUE) {
   git_branch_checkout(branch = "gh-pages", repo = x$get_path, orphan = TRUE)
   existing <- git_status(repo = x$get_path)
   git_rm(existing$file, repo = x$get_path)
-  path(x$get_path, existing$file) |> file_delete()
+  file.path(x$get_path, existing$file) |> unlink()
   sprintf(
     "<html><body><h1>Place holder for the %s package</h1></body></html>",
     package_name
   ) |>
-    writeLines(path(x$get_path, "index.html"))
+    writeLines(file.path(x$get_path, "index.html"))
   git_add("index.html", repo = x$get_path, force = TRUE)
   git_commit("placeholder", repo = x$get_path)
   git_push(remote = "origin", repo = x$get_path, verbose = verbose)

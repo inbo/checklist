@@ -1,21 +1,20 @@
 #' @importFrom assertthat assert_that
 #' @importFrom citeme ask_url cache_org menu_first ssh_http
-#' @importFrom fs dir_create path
 #' @importFrom tools R_user_dir
 #' @importFrom utils menu
 #' @importFrom yaml read_yaml write_yaml
 preferred_protocol <- function() {
   config <- list()
   config_folder <- R_user_dir("citeme", which = "config")
-  config_file <- path(config_folder, "config.yml")
-  if (file_exists(config_file)) {
+  config_file <- file.path(config_folder, "config.yml")
+  if (file_test("-f", config_file)) {
     config <- read_yaml(config_file)
   }
   if (!has_name(config, "git") || !has_name(config$git, "protocol")) {
     c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
-    dirname(config_file) |> dir_create()
+    dirname(config_file) |> dir.create(recursive = TRUE, showWarnings = FALSE)
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
   c(config[["git"]][["organisation"]], "new git organisation") |>
@@ -46,9 +45,8 @@ preferred_protocol <- function() {
 }
 
 #' @importFrom citeme ask_yes_no
-#' @importFrom fs file_exists path
 renv_activate <- function(path, use_renv) {
-  if (file_exists(path(path, "renv.lock"))) {
+  if (file_test("-f", file.path(path, "renv.lock"))) {
     return(invisible(NULL))
   }
   if (missing(use_renv)) {
@@ -61,5 +59,5 @@ renv_activate <- function(path, use_renv) {
     return(invisible(NULL))
   }
   c("if (!utils::file_test(\"-f\", \"renv.lock\")) {", "  renv::init()", "}") |>
-    writeLines(path(path, ".Rprofile"))
+    writeLines(file.path(path, ".Rprofile"))
 }

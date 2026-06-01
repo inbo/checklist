@@ -174,11 +174,10 @@ checklist <- R6Class(
     #' @param language The default language for spell checking.
     #' @param package Is this a package or a project?
     #' @importFrom assertthat assert_that is.flag is.string noNA
-    #' @importFrom fs is_dir path_real
     initialize = function(x = ".", language, package = TRUE) {
       assert_that(is.string(x), noNA(x), is.flag(package), noNA(package))
-      x <- path_real(x)
-      assert_that(is_dir(x))
+      x <- normalizePath(x)
+      assert_that(file_test("-d", x))
       private$path <- x
       super$initialize(language = language, base_path = private$path)
       self$package <- package

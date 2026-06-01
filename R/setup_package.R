@@ -14,14 +14,13 @@
 #' @importFrom assertthat assert_that
 #' @importFrom citeme ask_language individual2badge individual2df org_list
 #' @importFrom desc desc
-#' @importFrom fs dir_create dir_ls file_copy is_file path
 #' @importFrom gert git_add
 #' @importFrom utils file_test
 #' @family setup
 setup_package <- function(path = ".") {
   path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   assert_that(
-    is_file(path(path, "DESCRIPTION")),
+    file_test("-f", file.path(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
   )
   descript <- desc(path)
@@ -32,7 +31,7 @@ setup_package <- function(path = ".") {
   assert_that(is_workdir_clean(repo = path))
 
   # add checklist.yml
-  if (!file_exists(path(path, "checklist.yml"))) {
+  if (!file_test("-f", file.path(path, "checklist.yml"))) {
     if (descript$has_fields("Language")) {
       x <- checklist$new(
         x = path,
@@ -46,7 +45,7 @@ setup_package <- function(path = ".") {
       )
       x <- checklist$new(x = path, language = language, package = TRUE)
       descript$set("Language", language)
-      path(x$get_path, "DESCRIPTION") |> descript$write()
+      file.path(x$get_path, "DESCRIPTION") |> descript$write()
     }
     x$set_required()
     x$set_ignore(c(".github", "LICENSE.md"))
@@ -60,15 +59,15 @@ setup_package <- function(path = ".") {
   suppressMessages(tidy_desc(path))
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
-  if (is_file(path(path, ".gitignore"))) {
-    path(path, ".gitignore") |> readLines() -> current
-    path("generic_template", "gitignore") |>
+  if (file_test("-f", file.path(path, ".gitignore"))) {
+    file.path(path, ".gitignore") |> readLines() -> current
+    file.path("generic_template", "gitignore") |>
       system.file(package = "checklist") |>
       readLines() -> new
     c(new, current) |>
       unique() |>
       c_sort() |>
-      writeLines(path(path, ".gitignore"))
+      writeLines(file.path(path, ".gitignore"))
     git_add(".gitignore", force = TRUE, repo = path)
   } else {
     insert_file(
@@ -79,15 +78,15 @@ setup_package <- function(path = ".") {
     )
   }
 
-  if (is_file(path(path, ".Rbuildignore"))) {
-    path(path, ".Rbuildignore") |> readLines() -> current
-    path("package_template", "rbuildignore") |>
+  if (file_test("-f", file.path(path, ".Rbuildignore"))) {
+    file.path(path, ".Rbuildignore") |> readLines() -> current
+    file.path("package_template", "rbuildignore") |>
       system.file(package = "checklist") |>
       readLines() -> new
     c(new, current) |>
       unique() |>
       c_sort() |>
-      writeLines(path(path, ".Rbuildignore"))
+      writeLines(file.path(path, ".Rbuildignore"))
     git_add(".Rbuildignore", force = TRUE, repo = path)
   } else {
     insert_file(
@@ -106,7 +105,7 @@ setup_package <- function(path = ".") {
   )
 
   # add NEWS.md
-  if (!is_file(path(path, "NEWS.md"))) {
+  if (!file_test("-f", file.path(path, "NEWS.md"))) {
     sprintf(
       paste(
         "# %s %s",
@@ -121,7 +120,7 @@ setup_package <- function(path = ".") {
       package,
       as.character(version)
     ) |>
-      writeLines(path(path, "NEWS.md"))
+      writeLines(file.path(path, "NEWS.md"))
     git_add("NEWS.md", force = TRUE, repo = path)
   }
 
@@ -145,7 +144,8 @@ setup_package <- function(path = ".") {
   git_add("LICENSE.md", force = TRUE, repo = path)
 
   # Add code of conduct
-  path(path, ".github") |> dir_create()
+  file.path(path, ".github") |>
+    dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
     filename = "CODE_OF_CONDUCT.md",
@@ -162,30 +162,31 @@ setup_package <- function(path = ".") {
   )
 
   # Add GitHub actions
-  path(path, ".github", "workflows") |> dir_create()
+  file.path(path, ".github", "workflows") |>
+    dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
     filename = "check_on_branch.yml",
     template = "package_template",
-    target = path(".github", "workflows")
+    target = file.path(".github", "workflows")
   )
   insert_file(
     repo = path,
     filename = "check_on_main.yml",
     template = "package_template",
-    target = path(".github", "workflows")
+    target = file.path(".github", "workflows")
   )
   insert_file(
     repo = path,
     filename = "check_on_different_r_os.yml",
     template = "package_template",
-    target = path(".github", "workflows")
+    target = file.path(".github", "workflows")
   )
   insert_file(
     repo = path,
     filename = "release.yml",
     template = "package_template",
-    target = path(".github", "workflows")
+    target = file.path(".github", "workflows")
   )
 
   # Add agents

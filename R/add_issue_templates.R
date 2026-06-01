@@ -15,26 +15,26 @@ add_issue_templates <- function(x) {
   insert_file(
     repo = path,
     filename = "config.yml",
-    template = path("package_template", "ISSUE_TEMPLATE"),
-    target = path(".github", "ISSUE_TEMPLATE")
+    template = file.path("package_template", "ISSUE_TEMPLATE"),
+    target = file.path(".github", "ISSUE_TEMPLATE")
   )
   insert_file(
     repo = path,
     filename = "bug_report.yml",
-    template = path("package_template", "ISSUE_TEMPLATE"),
-    target = path(".github", "ISSUE_TEMPLATE")
+    template = file.path("package_template", "ISSUE_TEMPLATE"),
+    target = file.path(".github", "ISSUE_TEMPLATE")
   )
   insert_file(
     repo = path,
     filename = "feature_request.yml",
-    template = path("package_template", "ISSUE_TEMPLATE"),
-    target = path(".github", "ISSUE_TEMPLATE")
+    template = file.path("package_template", "ISSUE_TEMPLATE"),
+    target = file.path(".github", "ISSUE_TEMPLATE")
   )
   insert_file(
     repo = path,
     filename = "documentation.yml",
-    template = path("package_template", "ISSUE_TEMPLATE"),
-    target = path(".github", "ISSUE_TEMPLATE")
+    template = file.path("package_template", "ISSUE_TEMPLATE"),
+    target = file.path(".github", "ISSUE_TEMPLATE")
   )
   return(invisible(NULL))
 }

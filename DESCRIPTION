@@ -26,7 +26,6 @@ Imports:
     cli,
     desc,
     devtools (> 2.4.0),
-    fs,
     gert,
     httr,
     hunspell,

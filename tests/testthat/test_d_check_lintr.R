@@ -4,7 +4,7 @@ test_that("check_lintr() works on a project with renv", {
   defer(options("checklist.rstudio_source_markers" = old_option))
 
   path <- tempfile("check_lintr")
-  dir_create(path)
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
   defer(unlink(path, recursive = TRUE))
 
   # create a minimal empty project
@@ -16,18 +16,19 @@ test_that("check_lintr() works on a project with renv", {
   # setup renv at the root of the project
   renv::init(path, bare = TRUE, load = FALSE, restart = FALSE)
   # add a file within the renv folder that fails lintr
-  path(path, "renv", "WRONG-name style.r") |>
+  file.path(path, "renv", "WRONG-name style.r") |>
     writeLines(text = "lowerCamelCase<-function(base_name.style){return(T)}")
   # test that lintr ignores files within the renv folder
   expect_false(check_lintr(path)$fail)
 
   # setup renv at a subfolder of the project
-  path(path, "source", "targets", "pipeline1") |> dir_create()
-  path(path, "source", "targets", "pipeline1") |>
+  file.path(path, "source", "targets", "pipeline1") |>
+    dir.create(recursive = TRUE, showWarnings = FALSE)
+  file.path(path, "source", "targets", "pipeline1") |>
     renv::init(bare = TRUE, load = FALSE, restart = FALSE)
   # add a file within this folder that fails lintr
   path |>
-    path("source", "targets", "pipeline1", "renv", "WRONG-name style.r") |>
+    file.path("source", "targets", "pipeline1", "renv", "WRONG-name style.r") |>
     writeLines(text = "lowerCamelCase<-function(base_name.style){return(T)}")
   # test that lintr ignores files within the renv folder
   expect_false(check_lintr(path)$fail)

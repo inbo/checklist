@@ -16,25 +16,25 @@ add_agents <- function(x) {
     repo = path,
     filename = "checklist_agent.md",
     template = "agents",
-    target = path(".github", "agents")
+    target = file.path(".github", "agents")
   )
   insert_file(
     repo = path,
     filename = "docs_agent.md",
     template = "agents",
-    target = path(".github", "agents")
+    target = file.path(".github", "agents")
   )
   insert_file(
     repo = path,
     filename = "package_code_agent.md",
     template = "agents",
-    target = path(".github", "agents")
+    target = file.path(".github", "agents")
   )
   insert_file(
     repo = path,
     filename = "test_agent.md",
     template = "agents",
-    target = path(".github", "agents")
+    target = file.path(".github", "agents")
   )
   return(invisible(NULL))
 }

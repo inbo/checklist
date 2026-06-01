@@ -9,7 +9,6 @@
 #' - remove local copies of origin branches deleted at the origin.
 #' @inheritParams gert::git_fetch
 #' @importFrom assertthat assert_that
-#' @importFrom fs file_delete
 #' @importFrom gert git_ahead_behind git_branch git_branch_checkout
 #' @importFrom gert git_branch_create git_branch_delete git_branch_list
 #' @importFrom gert git_fetch git_pull git_remote_list
@@ -114,7 +113,7 @@ clean_git <- function(repo = ".", verbose = TRUE) {
             git_pull(repo = repo, verbose = TRUE)
           } else {
             hide_output <- tempfile(fileext = ".txt")
-            defer(file_delete(hide_output))
+            defer(unlink(hide_output))
             sink(hide_output)
             git_pull(repo = repo, verbose = FALSE)
             sink()

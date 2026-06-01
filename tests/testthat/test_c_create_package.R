@@ -47,7 +47,7 @@ test_that("create_package() works", {
     )
   )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   expect_message(
     create_package(path = path, package = package),
@@ -55,7 +55,7 @@ test_that("create_package() works", {
   )
   sink()
 
-  repo <- path(path, package)
+  repo <- file.path(path, package)
   new_files <- c(
     "_pkgdown.yml",
     ".gitignore",
@@ -67,8 +67,8 @@ test_that("create_package() works", {
     "NEWS.md",
     "README.Rmd",
     paste0(package, ".Rproj"),
-    path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
-    path(
+    file.path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
+    file.path(
       ".github",
       "workflows",
       c(
@@ -78,25 +78,25 @@ test_that("create_package() works", {
         "release.yml"
       )
     ),
-    path("pkgdown", "extra.css"),
-    path("man", "figures", "background-pattern.png")
+    file.path("pkgdown", "extra.css"),
+    file.path("man", "figures", "background-pattern.png")
   )
-  expect_true(all(is_file(path(path, package, new_files))))
+  expect_true(all(file_test("-f", file.path(path, package, new_files))))
 
   expect_is(
     {
       suppressWarnings({
-        x <- check_package(path(path, package), fail = FALSE, quiet = TRUE)
+        x <- check_package(file.path(path, package), fail = FALSE, quiet = TRUE)
       })
     },
     "checklist"
   )
-  expect_true(is_file(path(path, package, ".zenodo.json")))
-  expect_true(is_file(path(path, package, "CITATION.cff")))
+  expect_true(file_test("-f", file.path(path, package, ".zenodo.json")))
+  expect_true(file_test("-f", file.path(path, package, "CITATION.cff")))
 
   expect_error({
     check_package(
-      path(path, package),
+      file.path(path, package),
       fail = TRUE,
       quiet = TRUE,
       pkgdown = TRUE
@@ -120,7 +120,7 @@ test_that("create_package() works", {
 
   stub(write_checklist, "x$add_motivation", NULL)
   stub(write_checklist, "x$confirm_motivation", NULL)
-  old_checklist <- read_checklist(path(path, package))
+  old_checklist <- read_checklist(file.path(path, package))
   expect_invisible(write_checklist(x))
   expect_false(identical(
     old_checklist$.__enclos_env__$private$allowed_notes,
@@ -131,18 +131,18 @@ test_that("create_package() works", {
   expect_s3_class(x$confirm_motivation(which = "notes"), "checklist")
   expect_length(x$.__enclos_env__$private$allowed_notes, 0)
 
-  writeLines("dummy<-function(){F}", path(path, package, "R", "dummy.R"))
+  writeLines("dummy<-function(){F}", file.path(path, package, "R", "dummy.R"))
   expect_s3_class(
-    x <- check_lintr(path(path, package), quiet = TRUE),
+    x <- check_lintr(file.path(path, package), quiet = TRUE),
     "checklist"
   )
   expect_length(x$.__enclos_env__$private$linter, 6)
   expect_output(print(x), "6 linters found")
 
-  path(path, package, "NEWS.md") |> readLines() -> news_old
-  tail(news_old, -1) |> writeLines(path(path, package, "NEWS.md"))
+  file.path(path, package, "NEWS.md") |> readLines() -> news_old
+  tail(news_old, -1) |> writeLines(file.path(path, package, "NEWS.md"))
   expect_match(check_news(x), "No reference to a package version")
 
-  unlink(path(path, package, "NEWS.md"))
+  unlink(file.path(path, package, "NEWS.md"))
   expect_equal(check_news(x), "Missing NEWS.md")
 })

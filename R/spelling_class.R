@@ -11,11 +11,15 @@ spelling <- R6Class(
     #' @param base_path the base path of the project
     #' @importFrom assertthat assert_that is.string noNA
     #' @importFrom citeme validate_language
-    #' @importFrom fs dir_exists file_exists path_real
+    #'
     initialize = function(language, base_path = ".") {
-      assert_that(is.string(base_path), noNA(base_path), dir_exists(base_path))
-      private$path <- path_real(base_path)
-      if (file_exists(path(base_path, "DESCRIPTION"))) {
+      assert_that(
+        is.string(base_path),
+        noNA(base_path),
+        file_test("-d", base_path)
+      )
+      private$path <- normalizePath(base_path)
+      if (file_test("-f", file.path(base_path, "DESCRIPTION"))) {
         desc_lang <- desc(base_path)$get_field("Language", default = NA)
         assert_that(
           !is.na(desc_lang),
@@ -92,23 +96,23 @@ spelling <- R6Class(
       return(private$main)
     },
     #' @field get_md The markdown files within the project.
-    #' @importFrom fs dir_ls path
+    #'
     get_md = function() {
       list_project_files(private$path)$files |>
         grepv(pattern = "\\.[Rrq]?md$") |>
         get_language(private = private)
     },
     #' @field get_r The R files within the project.
-    #' @importFrom fs dir_exists dir_ls
+    #'
     get_r = function() {
       list_project_files(private$path)$files |>
         grepv(pattern = "\\.[Rr]$") |>
         get_language(private = private)
     },
     #' @field get_rd The Rd files within the project.
-    #' @importFrom fs dir_exists dir_ls
+    #'
     get_rd = function() {
-      if (!dir_exists(path(private$path, "man"))) {
+      if (!file_test("-d", file.path(private$path, "man"))) {
         return(get_language(files = character(0), private = private))
       }
       list_project_files(file.path(private$path, "man"))$files |>
@@ -133,7 +137,6 @@ spelling <- R6Class(
   )
 )
 
-#' @importFrom fs path_filter path_has_parent path_rel
 get_language <- function(files, private) {
   if (length(files) == 0) {
     files <- data.frame(language = character(0), path = character(0))
@@ -142,15 +145,24 @@ get_language <- function(files, private) {
     attr(files, "checklist_ignore") <- private$ignore
     return(files)
   }
-  files <- path_filter(files, path("*renv", "library*"), invert = TRUE)
+  files <- path_filter_(files, file.path("*renv", "library*"), invert = TRUE)
   files <- data.frame(language = private$main, path = files)
   for (current in names(private$other)) {
-    test_current <- outer(files$path, private$other[[current]], path_has_parent)
+    test_current <- outer(
+      files$path,
+      private$other[[current]],
+      path_has_parent_
+    )
     files$language[apply(test_current, 1, any)] <- current
   }
-  test_ignore <- outer(files$path, private$ignore, path_has_parent)
+  test_ignore <- outer(files$path, private$ignore, path_has_parent_)
   files$language[apply(test_ignore, 1, any)] <- "ignore"
-  dir_ls(private$path, regexp = "_quarto\\.yml", recurse = TRUE) |>
+  list.files(
+    private$path,
+    pattern = "_quarto\\.yml",
+    recursive = TRUE,
+    full.names = TRUE
+  ) |>
     vapply(
       FUN = list_quarto_md,
       FUN.VALUE = vector(mode = "list", length = 1L),
@@ -173,7 +185,6 @@ get_language <- function(files, private) {
 
 #' @importFrom assertthat has_name
 #' @importFrom citeme coalesce
-#' @importFrom fs path path_dir path_rel
 #' @importFrom rmarkdown yaml_front_matter
 #' @importFrom yaml read_yaml
 list_quarto_md <- function(quarto, root) {
@@ -186,9 +197,9 @@ list_quarto_md <- function(quarto, root) {
     return(list(data.frame(quarto_lang = character(0), path = character(0))))
   }
   unlist(files) |> unname() |> unique() -> files
-  path_dir(quarto) |> path_rel(root) |> path(files) -> files
-  files <- files[file_test("-f", path(root, files))]
-  path(root, files) |>
+  dirname(quarto) |> path_rel_(root) |> file.path(files) -> files
+  files <- files[file_test("-f", file.path(root, files))]
+  file.path(root, files) |>
     vapply(
       FUN.VALUE = character(1),
       lang = settings$lang,
@@ -200,7 +211,6 @@ list_quarto_md <- function(quarto, root) {
 }
 
 #' @importFrom citeme menu_first
-#' @importFrom fs path path_norm path_split
 #' @importFrom utils menu
 change_language_interactive <- function(
   x,
@@ -233,16 +243,15 @@ change_language_interactive <- function(
 }
 
 #' @importFrom citeme menu_first validate_language
-#' @importFrom fs path path_norm path_split
 #' @importFrom stats setNames
 change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
   first_path <- vapply(
-    path_split(x$path),
+    strsplit(x$path, "/"),
     FUN = `[`,
     FUN.VALUE = character(1),
     x = 1
   )
-  x$path <- path_norm(path(base_path, x$path))
+  x$path <- normalizePath(file.path(base_path, x$path))
   other <- list()
   ignore <- character(0)
   for (i in unique(first_path)) {
@@ -262,7 +271,7 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
       title = "\nHow should `checklist` spell check the files above?"
     )
     if (answer == 1) {
-      ignore <- c_sort(c(ignore, path_norm(path(base_path, i))))
+      ignore <- c_sort(c(ignore, normalizePath(file.path(base_path, i))))
       next
     }
     if (answer == 2) {
@@ -270,12 +279,12 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
     }
     if (length(current) > 1 && answer == length(other_lang) + 3) {
       x2 <- x[current, ]
-      x2$path <- path_rel(x2$path, start = path(base_path, i))
+      x2$path <- path_rel_(x2$path, start = file.path(base_path, i))
       x2 <- change_language_interactive2(
         x = x2,
         main = main,
         other_lang = other_lang,
-        base_path = path(base_path, i)
+        base_path = file.path(base_path, i)
       )
       other_lang <- unique(c(other_lang, x2$other_lang))
       ignore <- c_sort(c(ignore, x2$ignore))

@@ -14,7 +14,6 @@
 #' @return A `checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
-#' @importFrom fs is_dir is_file path path_real path_split
 #' @importFrom yaml read_yaml
 #' @family both
 read_checklist <- function(x = ".") {
@@ -22,21 +21,23 @@ read_checklist <- function(x = ".") {
     return(x)
   }
 
-  assert_that(is.string(x), is_dir(x))
-  current <- path_real(x)
-  checklist_file <- path(current, "checklist.yml")
-  while (!is_file(checklist_file) && length(path_split(current)[[1]]) > 1) {
-    path(current, "..") |> path_real() -> current
-    checklist_file <- path(current, "checklist.yml")
+  assert_that(is.string(x), file_test("-d", x))
+  current <- normalizePath(x)
+  checklist_file <- file.path(current, "checklist.yml")
+  while (
+    !file_test("-f", checklist_file) && length(strsplit(current, "/")[[1]]) > 1
+  ) {
+    file.path(current, "..") |> normalizePath() -> current
+    checklist_file <- file.path(current, "checklist.yml")
   }
   assert_that(
-    is_file(checklist_file),
+    file_test("-f", checklist_file),
     msg = paste(
       "No checklist.yml found at `%1$s` or its parents.",
       "\nRun `checklist::setup_package(\"%1$s\")` or",
       "`checklist::setup_project(\"%1$s\")`."
     ) |>
-      sprintf(path_real(x))
+      sprintf(normalizePath(x))
   )
 
   # read existing check list file

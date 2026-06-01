@@ -48,7 +48,6 @@
 #' @export
 #' @importFrom citeme is_tracked_not_modified
 #' @importFrom devtools build_readme document
-#' @importFrom fs is_file path
 #' @importFrom gert git_status
 #' @importFrom utils data
 #' @family package
@@ -62,8 +61,8 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   )
 
   rd_files <- c(
-    path(x$get_path, "NAMESPACE"),
-    list.files(path(x$get_path, "man"), pattern = "Rd$", full.names = TRUE)
+    file.path(x$get_path, "NAMESPACE"),
+    list.files(file.path(x$get_path, "man"), pattern = "Rd$", full.names = TRUE)
   )
   start <- vapply(rd_files, readLines, character(1), n = 1)
   ok <- grepl("roxygen2", start) & grepl("do not edit by hand", start)
@@ -103,7 +102,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
     sprintf(fmt = "documented but unexported functions: %s") -> doc_warnings
   doc_warnings <- doc_warnings[length(unexported) > 0]
 
-  if (is_file(path(x$get_path, "README.Rmd"))) {
+  if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
     build_readme(x$get_path, encoding = "UTF-8")
     doc_error <- c(
       doc_error,
@@ -115,8 +114,8 @@ check_documentation <- function(x = ".", quiet = FALSE) {
     )
   }
 
-  md_files <- path(x$get_path, "README.md")
-  ok <- is_file(md_files)
+  md_files <- file.path(x$get_path, "README.md")
+  ok <- file_test("-f", md_files)
   doc_error <- c(doc_error, sprintf("Missing %s", basename(md_files[!ok])))
 
   doc_error <- c(doc_error, check_news(x))
@@ -126,15 +125,19 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   return(x)
 }
 
-#' @importFrom fs is_file path
 check_news <- function(x) {
-  doc_error <- "Don't use NEWS.Rmd"[is_file(path(x$get_path, "NEWS.Rmd"))]
-  md_file <- path(x$get_path, "NEWS.md")
-  if (!is_file(md_file)) {
+  doc_error <- "Don't use NEWS.Rmd"[file_test(
+    "-f",
+    file.path(x$get_path, "NEWS.Rmd")
+  )]
+  md_file <- file.path(x$get_path, "NEWS.md")
+  if (!file_test("-f", md_file)) {
     return(c(doc_error, "Missing NEWS.md"))
   }
 
-  description <- desc::description$new(file = path(x$get_path, "DESCRIPTION"))
+  description <- desc::description$new(
+    file = file.path(x$get_path, "DESCRIPTION")
+  )
   news_file <- readLines(md_file)
   version_location <- grep(paste0("#.*", description$get("Package")), news_file)
   if (length(version_location) == 0) {

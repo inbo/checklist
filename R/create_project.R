@@ -7,12 +7,14 @@
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom citeme ask_language ask_yes_no new_org_list org_list
 #' @importFrom citeme org_list_from_url select_license
-#' @importFrom fs dir_create dir_exists file_copy is_dir path
 #' @family setup
 create_project <- function(path, project) {
-  assert_that(is.string(path), noNA(path), is_dir(path))
+  assert_that(is.string(path), noNA(path), file_test("-d", path))
   assert_that(is.string(project), noNA(project))
-  assert_that(!dir_exists(path(path, project)), msg = "Existing project folder")
+  assert_that(
+    !file_test("-d", file.path(path, project)),
+    msg = "Existing project folder"
+  )
 
   # ask interactive information
   title <- readline(prompt = "Enter the title: ")
@@ -49,23 +51,29 @@ create_project <- function(path, project) {
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )
 
-  path <- path(path, project)
-  dir_create(path)
+  path <- file.path(path, project)
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
   # create default folders
-  dir_create(path, c("data", "media", "output", "source"))
+  vapply(
+    file.path(path, c("data", "media", "output", "source")),
+    dir.create,
+    logical(1),
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
   org$write(x = path)
   # create RStudio project
-  file_copy(
+  file.copy(
     system.file(
-      path("project_template", "rproj.template"),
+      file.path("project_template", "rproj.template"),
       package = "checklist"
     ),
-    path(path, project, ext = "Rproj")
+    paste0(file.path(path, project), ".Rproj")
   )
-  path("project_template", "checklist.R") |>
+  file.path("project_template", "checklist.R") |>
     system.file(package = "checklist") |>
-    file_copy(path(path, "source", "checklist.R"))
+    file.copy(file.path(path, "source", "checklist.R"))
   create_readme(
     path = path,
     authors = authors,

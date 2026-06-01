@@ -42,11 +42,11 @@ test_that("setup_package() works", {
     )
   )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
-  repo <- path(path, package)
+  repo <- file.path(path, package)
   new_files <- c(
     "_pkgdown.yml",
     ".gitignore",
@@ -56,8 +56,8 @@ test_that("setup_package() works", {
     "LICENSE.md",
     "NEWS.md",
     "README.Rmd",
-    path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
-    path(
+    file.path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
+    file.path(
       ".github",
       "workflows",
       c(
@@ -67,32 +67,35 @@ test_that("setup_package() works", {
         "release.yml"
       )
     ),
-    path("pkgdown", "extra.css"),
-    path("man", "figures", "background-pattern.png")
+    file.path("pkgdown", "extra.css"),
+    file.path("man", "figures", "background-pattern.png")
   )
-  file_delete(path(path, package, new_files))
+  unlink(file.path(path, package, new_files))
   git_add(files = new_files, repo = repo)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
   expect_message(
-    setup_package(path(path, package)),
+    setup_package(file.path(path, package)),
     "package prepared for checklist::check_package()"
   )
-  expect_true(all(file.exists(path(path, package, new_files))))
+  expect_true(all(file.exists(file.path(path, package, new_files))))
 
   gert::git_commit_all("setup package", repo = repo)
 
   expect_message(
-    setup_package(path(path, package)),
+    setup_package(file.path(path, package)),
     "package prepared for checklist::check_package()"
   )
 
-  path(path, package, "README.Rmd") |> readLines() -> old_readme
+  file.path(path, package, "README.Rmd") |> readLines() -> old_readme
   expect_equal(length(grep("10.5281/zenodo.8063503", old_readme)), 0)
-  expect_null(add_badges(path(path, package), doi = "10.5281/zenodo.8063503"))
-  path(path, package, "README.Rmd") |> readLines() -> new_readme
+  expect_null(add_badges(
+    file.path(path, package),
+    doi = "10.5281/zenodo.8063503"
+  ))
+  file.path(path, package, "README.Rmd") |> readLines() -> new_readme
   expect_equal(length(grep("10.5281/zenodo.8063503", new_readme)), 1)
   expect_equal(length(old_readme) + 1, length(new_readme))
 })

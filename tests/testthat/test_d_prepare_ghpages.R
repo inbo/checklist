@@ -44,12 +44,12 @@ test_that("create_package() works", {
     )
   )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   create_package(path = path, package = package)
   sink()
 
-  repo <- path(path, package)
+  repo <- file.path(path, package)
 
   git_config_set("user.name", "unit test", repo = repo)
   git_config_set("user.email", "unit@test.com", repo = repo)

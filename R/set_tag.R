@@ -11,7 +11,6 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom fs path
 #' @importFrom gert git_config git_config_set git_info git_tag_create
 #' @importFrom gert git_tag_list
 #' @importFrom withr defer
@@ -37,9 +36,9 @@ set_tag <- function(x = ".") {
     git_info(repo = repo)$shorthand != "HEAD",
     msg = "`set_tag()` doesn't work on a repository with detached HEAD."
   )
-  description <- description$new(file = path(x$get_path, "DESCRIPTION"))
+  description <- description$new(file = file.path(x$get_path, "DESCRIPTION"))
   version <- as.character(description$get_version())
-  path(x$get_path, "NEWS.md") |> readLines() -> news
+  file.path(x$get_path, "NEWS.md") |> readLines() -> news
   regex <- sprintf(
     "^# `?%s`? [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$",
     description$get("Package")

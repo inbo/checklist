@@ -29,7 +29,6 @@
 #' @inheritParams check_cran
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom citeme org_list
-#' @importFrom fs file_delete
 #' @importFrom pkgdown build_site
 #' @importFrom withr defer
 #' @export
@@ -86,7 +85,7 @@ check_package <- function(
     Sys.setenv(CI = TRUE)
     if (quiet) {
       junk <- tempfile(fileext = ".txt")
-      defer(file_delete(junk))
+      defer(unlink(junk))
       sink(junk)
       build_site(x$get_path, preview = FALSE)
       sink()

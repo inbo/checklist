@@ -6,7 +6,6 @@
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom citeme org_list
-#' @importFrom fs is_file
 #' @family project
 check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   x <- read_checklist(x = x)

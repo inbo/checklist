@@ -43,22 +43,26 @@ test_that("set_tag() works", {
     )
   )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
 
-  repo <- git_init(path(path, package))
+  repo <- git_init(file.path(path, package))
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_clone(
-    url = path(path, package),
-    path = path(path, "origin"),
+    url = file.path(path, package),
+    path = file.path(path, "origin"),
     bare = TRUE,
     verbose = FALSE
   )
   gert::git_remote_remove("origin", repo = repo)
-  gert::git_remote_add(name = "origin", url = path(path, "origin"), repo = repo)
+  gert::git_remote_add(
+    name = "origin",
+    url = file.path(path, "origin"),
+    repo = repo
+  )
   gert::git_commit(message = "Initital commit", repo = repo)
   branch_info <- git_branch_list(repo = repo)
   refspec <- branch_info$ref[branch_info$name == git_branch(repo = repo)]
@@ -80,43 +84,43 @@ test_that("set_tag() works", {
   defer(Sys.setenv(GITHUB_EVENT_NAME = current_event))
   Sys.setenv(GITHUB_EVENT_NAME = "")
   expect_message(
-    set_tag(path(path, package)),
+    set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
 
   Sys.setenv(GITHUB_REF = "refs/heads/junk")
   expect_message(
-    set_tag(path(path, package)),
+    set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
 
   # on master, not GitHub
   Sys.setenv(GITHUB_REF = "refs/heads/master")
   expect_message(
-    set_tag(path(path, package)),
+    set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
   Sys.setenv(GITHUB_REF = "refs/heads/main")
   expect_message(
-    set_tag(path(path, package)),
+    set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
 
   # on master, GitHub, not push
   Sys.setenv(GITHUB_ACTIONS = "true")
   expect_message(
-    set_tag(path(path, package)),
+    set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
   Sys.setenv(GITHUB_REF = "refs/heads/master")
   expect_message(
-    set_tag(path(path, package)),
+    set_tag(file.path(path, package)),
     "Not on GitHub, not a push or not on main or master."
   )
 
   # on master, GitHub, push
   Sys.setenv(GITHUB_EVENT_NAME = "push")
-  expect_invisible(set_tag(path(path, package)))
+  expect_invisible(set_tag(file.path(path, package)))
   Sys.setenv(GITHUB_REF = "refs/heads/main")
-  expect_message(set_tag(path(path, package)), "tag.*already exists")
+  expect_message(set_tag(file.path(path, package)), "tag.*already exists")
 })

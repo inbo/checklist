@@ -1,5 +1,4 @@
 #' @importFrom citeme ask_yes_no
-#' @importFrom fs dir_create file_copy file_exists is_file path
 #' @importFrom gert git_add git_find git_init git_remote_add
 setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
   if (!is_repository(path)) {
@@ -20,25 +19,26 @@ setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
 
   # add .gitignore
   template <- system.file(
-    path("generic_template", "gitignore"),
+    file.path("generic_template", "gitignore"),
     package = "checklist"
   )
-  if (is_file(path(path, ".gitignore"))) {
-    current <- readLines(path(path, ".gitignore"))
+  if (file_test("-f", file.path(path, ".gitignore"))) {
+    current <- readLines(file.path(path, ".gitignore"))
     new <- readLines(template)
-    writeLines(c_sort(unique(c(new, current))), path(path, ".gitignore"))
+    writeLines(c_sort(unique(c(new, current))), file.path(path, ".gitignore"))
   } else {
-    file_copy(template, path(path, ".gitignore"))
+    file.copy(template, file.path(path, ".gitignore"))
   }
   git_add(".gitignore", force = TRUE, repo = path)
 
   # Add GitHub actions
-  path(path, ".github", "workflows") |> dir_create()
+  file.path(path, ".github", "workflows") |>
+    dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
     filename = "check_project.yml",
     template = "project_template",
-    target = path(".github", "workflows")
+    target = file.path(".github", "workflows")
   )
 
   add_code_conduct(path, use_cc = use_cc)
