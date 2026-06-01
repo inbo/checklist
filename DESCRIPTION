@@ -27,7 +27,6 @@ Imports:
     desc,
     devtools (> 2.4.0),
     gert,
-    httr,
     hunspell,
     lintr (>= 3.3.0),
     pkgdown (>= 2.0.7),

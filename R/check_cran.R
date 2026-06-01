@@ -15,7 +15,6 @@
 #' @return A `checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom gert git_ahead_behind git_branch_exists git_info
-#' @importFrom httr HEAD timeout
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
 #' @importFrom withr defer with_path
@@ -32,18 +31,37 @@ check_cran <- function(x = ".", quiet = FALSE, time_out = 30) {
   # don't use fancy Quotes when checking
   old_options <- options()
   defer(options(old_options))
-  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = time_out)
-  options(useFancyQuotes = FALSE, timeout = max(time_out, getOption("timeout")))
+  options(useFancyQuotes = FALSE)
 
-  # test if the worlds clock is available
-  clock_status <- try(
-    HEAD("http://worldclockapi.com/api/json/utc/now", timeout(time_out)),
-    silent = TRUE
+  # Save the original timeout option and set the new one
+  old_timeout <- getOption("timeout")
+  options(timeout = max(time_out, getOption("timeout")))
+  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = time_out)
+
+  # Attempt to read from the URL
+  clock_is_available <- tryCatch(
+    {
+      suppressWarnings({
+        # Open connection
+        con <- url("http://worldclockapi.com/api/json/utc/now", "r")
+        # Read one line to verify the connection is active and valid
+        readLines(con, n = 1, warn = FALSE)
+        close(con)
+      })
+      TRUE # Return TRUE if the above succeeds
+    },
+    error = function(e) {
+      FALSE # Return FALSE if any error occurs (timeout, 404, unreachable)
+    }
   )
-  if (inherits(clock_status, "try-error") || clock_status$status_code != 200) {
+
+  # Restore the original timeout
+  options(timeout = old_timeout)
+
+  # Set the environment variable if the clock is not available
+  if (!clock_is_available) {
     Sys.setenv("_R_CHECK_SYSTEM_CLOCK_" = 0)
   }
-
   check_output <- with_path(
     dirname(pandoc_exec()),
     rcmdcheck(
