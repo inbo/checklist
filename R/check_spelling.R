@@ -19,7 +19,7 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   md_files <- x$get_md
   if (x$package) {
     rd_files <- x$get_rd
-    macros <- file.path(R.home("share"), "Rd", "macros", "system.Rd") |>
+    macros <- path_(R.home("share"), "Rd", "macros", "system.Rd") |>
       loadRdMacros(loadPkgRdMacros(x$get_path, macros = NULL))
   } else {
     rd_files <- data.frame(language = character(0), path = character(0))
@@ -44,20 +44,20 @@ check_spelling <- function(x = ".", quiet = FALSE) {
         package = x$package
       )
       r_issues <- vapply(
-        file.path(root, r_files$path[r_files$language == lang]),
+        path_(root, r_files$path[r_files$language == lang]),
         FUN = spelling_parse_r,
         FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist
       )
       md_issues <- vapply(
-        file.path(root, md_files$path[md_files$language == lang]),
+        path_(root, md_files$path[md_files$language == lang]),
         FUN = spelling_parse_md,
         FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist,
         x = x
       )
       rd_issues <- vapply(
-        file.path(root, rd_files$path[rd_files$language == lang]),
+        path_(root, rd_files$path[rd_files$language == lang]),
         FUN = spelling_parse_rd,
         FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist,
@@ -89,11 +89,11 @@ check_spelling <- function(x = ".", quiet = FALSE) {
 
 #' @importFrom hunspell dictionary
 spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
-  file.path("spelling", "inbo.dic") |>
+  path_("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
     readLines() -> add_words
   if (package) {
-    file.path(root, "DESCRIPTION") |> description$new() -> descr
+    path_(root, "DESCRIPTION") |> description$new() -> descr
     descr$get_authors() |>
       format(include = c("given", "family")) |>
       strsplit(split = " ") |>
@@ -107,12 +107,12 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
     }
   }
 
-  file.path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
+  path_("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
   if (file_test("-f", dict)) {
     readLines(dict) |> c(add_words) -> add_words
   }
-  dict <- paste0(file.path(root, "inst", tolower(lang)), ".dic")
+  dict <- paste0(path_(root, "inst", tolower(lang)), ".dic")
   if (file_test("-f", dict)) {
     readLines(dict) |> c(add_words) -> add_words
   }
@@ -311,20 +311,20 @@ install_dutch <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.dic",
-    file.path(target, "nl_NL.dic")
+    path_(target, "nl_NL.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
-    file.path(target, "nl_NL.aff")
+    path_(target, "nl_NL.aff")
   )
   file.copy(
-    file.path(target, "nl_NL.dic"),
-    file.path(target, "nl_BE.dic"),
+    path_(target, "nl_NL.dic"),
+    path_(target, "nl_BE.dic"),
     overwrite = TRUE
   )
   file.copy(
-    file.path(target, "nl_NL.aff"),
-    file.path(target, "nl_BE.aff"),
+    path_(target, "nl_NL.aff"),
+    path_(target, "nl_BE.aff"),
     overwrite = TRUE
   )
   return(TRUE)
@@ -342,20 +342,20 @@ install_french <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.dic",
-    file.path(target, "fr_FR.dic")
+    path_(target, "fr_FR.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.aff",
-    file.path(target, "fr_FR.aff")
+    path_(target, "fr_FR.aff")
   )
   file.copy(
-    file.path(target, "fr_FR.dic"),
-    file.path(target, "fr_BE.dic"),
+    path_(target, "fr_FR.dic"),
+    path_(target, "fr_BE.dic"),
     overwrite = TRUE
   )
   file.copy(
-    file.path(target, "fr_FR.aff"),
-    file.path(target, "fr_BE.aff"),
+    path_(target, "fr_FR.aff"),
+    path_(target, "fr_BE.aff"),
     overwrite = TRUE
   )
   return(TRUE)
@@ -373,11 +373,11 @@ install_german <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/de_DE.dic",
-    file.path(target, "de_DE.dic")
+    path_(target, "de_DE.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/de_DE.aff",
-    file.path(target, "de_DE.aff")
+    path_(target, "de_DE.aff")
   )
   return(TRUE)
 }

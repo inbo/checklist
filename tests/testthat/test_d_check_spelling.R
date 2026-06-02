@@ -48,17 +48,17 @@ test_that("check_spelling() on a package", {
   git_config_set(
     name = "user.name",
     value = "junk",
-    repo = file.path(path, package)
+    repo = path_(path, package)
   )
   git_config_set(
     name = "user.email",
     value = "junk@inbo.be",
-    repo = file.path(path, package)
+    repo = path_(path, package)
   )
   skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
   expect_is(
     {
-      z <- check_spelling(file.path(path, package))
+      z <- check_spelling(path_(path, package))
     },
     "checklist"
   )
@@ -77,28 +77,28 @@ test_that("check_spelling() on a package", {
       "  return(x)",
       "}"
     ),
-    file.path(path, package, "R", "dummy.R")
+    path_(path, package, "R", "dummy.R")
   )
-  git_add(file.path("R", "dummy.R"), repo = file.path(path, package))
-  suppressMessages(document(file.path(path, package), quiet = TRUE))
-  git_add(file.path("man", "dummy.Rd"), repo = file.path(path, package))
+  git_add(path_("R", "dummy.R"), repo = path_(path, package))
+  suppressMessages(document(path_(path, package), quiet = TRUE))
+  git_add(path_("man", "dummy.Rd"), repo = path_(path, package))
   writeLines(
     c(
-      readLines(file.path(path, package, "README.Rmd")),
+      readLines(path_(path, package, "README.Rmd")),
       "<!-- spell-check: ignore:start -->",
       "<!-- spell-check: ignore:end -->",
       "<script>",
       "</script>",
       "\\"
     ),
-    file.path(path, package, "README.Rmd")
+    path_(path, package, "README.Rmd")
   )
-  git_add(file.path("README.Rmd"), repo = file.path(path, package))
+  git_add(path_("README.Rmd"), repo = path_(path, package))
   writeLines(
     c("junk <- function(x) {", "  return(x)", "}"),
-    file.path(path, package, "R", "junk.R")
+    path_(path, package, "R", "junk.R")
   )
-  git_add(file.path("R", "junk.R"), repo = file.path(path, package))
+  git_add(path_("R", "junk.R"), repo = path_(path, package))
   writeLines(
     c(
       "\\name{test}",
@@ -109,12 +109,12 @@ test_that("check_spelling() on a package", {
       "\\value{TRUE}",
       "\\description{Some words}"
     ),
-    file.path(path, package, "man", "test.Rd")
+    path_(path, package, "man", "test.Rd")
   )
-  git_add(file.path("man", "test.Rd"), repo = file.path(path, package))
+  git_add(path_("man", "test.Rd"), repo = path_(path, package))
   expect_is(
     {
-      z <- check_spelling(file.path(path, package), quiet = TRUE)
+      z <- check_spelling(path_(path, package), quiet = TRUE)
     },
     "checklist"
   )
@@ -124,14 +124,14 @@ test_that("check_spelling() on a package", {
   expect_invisible(custom_dictionary(z))
   expect_is(
     {
-      z <- check_spelling(file.path(path, package))
+      z <- check_spelling(path_(path, package))
     },
     "checklist"
   )
   expect_identical(nrow(z$get_spelling), 0L)
   expect_invisible(print(z$get_spelling))
 
-  x <- read_checklist(file.path(path, package))
+  x <- read_checklist(path_(path, package))
   expect_is(x$set_default("en-GB"), "checklist")
   expect_is(
     {
@@ -222,21 +222,16 @@ test_that("check_spelling() on a project", {
     sink()
   })
 
-  file.path(path, "spelling", "source", "bookdown") |>
+  path_(path, "spelling", "source", "bookdown") |>
     dir.create(recursive = TRUE, showWarnings = FALSE)
   path |>
-    file.path(
-      "spelling",
-      "source",
-      "bookdown",
-      c("_bookdown.yml", "test.Rproj")
-    ) |>
+    path_("spelling", "source", "bookdown", c("_bookdown.yml", "test.Rproj")) |>
     file.create()
 
   expect_is(
     {
       x <- suppressWarnings(check_project(
-        file.path(path, "spelling"),
+        path_(path, "spelling"),
         fail = FALSE,
         quiet = TRUE
       ))
@@ -246,16 +241,16 @@ test_that("check_spelling() on a project", {
   git_config_set(
     name = "user.name",
     value = "junk",
-    repo = file.path(path, "spelling")
+    repo = path_(path, "spelling")
   )
   git_config_set(
     name = "user.email",
     value = "junk@inbo.be",
-    repo = file.path(path, "spelling")
+    repo = path_(path, "spelling")
   )
-  git_status(repo = file.path(path, "spelling"))$file |>
-    git_add(repo = file.path(path, "spelling"))
-  git_commit("initial commit", repo = file.path(path, "spelling"))
+  git_status(repo = path_(path, "spelling"))$file |>
+    git_add(repo = path_(path, "spelling"))
+  git_commit("initial commit", repo = path_(path, "spelling"))
   stub(
     write_checklist,
     "x$add_motivation",
@@ -278,10 +273,10 @@ test_that("check_spelling() on a project", {
   write_checklist(x = x)
 
   expect_is(
-    check_project(file.path(path, "spelling"), fail = FALSE, quiet = TRUE),
+    check_project(path_(path, "spelling"), fail = FALSE, quiet = TRUE),
     "checklist"
   )
-  file.path(path, "spelling") |> read_checklist() -> x
+  path_(path, "spelling") |> read_checklist() -> x
   stub(change_language_interactive, "menu_first", mock(3, 1))
   expect_is(
     {
@@ -322,10 +317,7 @@ test_that("check_spelling() on a project", {
       defer(unlink(hide_output3))
       sink(hide_output3)
       z <- change_language_interactive2(
-        data.frame(
-          language = "en-GB",
-          path = file.path("a", c("a.Rmd", "b.Rmd"))
-        ),
+        data.frame(language = "en-GB", path = path_("a", c("a.Rmd", "b.Rmd"))),
         main = "en-GB",
         other_lang = character(0)
       )
@@ -337,19 +329,19 @@ test_that("check_spelling() on a project", {
 
   gert::git_commit_all(
     message = "Initial commit",
-    repo = file.path(path, "spelling")
+    repo = path_(path, "spelling")
   )
   stub(
     setup_project,
     "write_checklist",
     function(x = ".") {
       x <- suppressMessages(read_checklist(x = x))
-      file.path(x$get_path, "checklist.yml") |> write_yaml(x = x$template)
+      path_(x$get_path, "checklist.yml") |> write_yaml(x = x$template)
       return(invisible(NULL))
     },
     depth = 2
   )
-  expect_invisible(suppressWarnings(setup_project(file.path(path, "spelling"))))
+  expect_invisible(suppressWarnings(setup_project(path_(path, "spelling"))))
 
   # add problematic Dutch words
   c(
@@ -365,8 +357,8 @@ test_that("check_spelling() on a project", {
     "soortnaam/variëteit/",
     "hij/zij/..."
   ) |>
-    writeLines(file.path(path, "spelling", "source", "nederlands.md"))
-  file.path(path, "spelling", "checklist.yml") |> readLines() -> old_checklist
+    writeLines(path_(path, "spelling", "source", "nederlands.md"))
+  path_(path, "spelling", "checklist.yml") |> readLines() -> old_checklist
   head(old_checklist, -2) |>
     c(
       "  other:",
@@ -374,21 +366,19 @@ test_that("check_spelling() on a project", {
       "    - source/nederlands.md",
       tail(old_checklist, 2)
     ) |>
-    writeLines(file.path(path, "spelling", "checklist.yml"))
-  z <- check_spelling(x = file.path(path, "spelling"), quiet = TRUE)
+    writeLines(path_(path, "spelling", "checklist.yml"))
+  z <- check_spelling(x = path_(path, "spelling"), quiet = TRUE)
   expect_equal(nrow(z$get_spelling), 0)
 
   # fix README
-  file.path(path, "spelling", "README.md") |> readLines() -> readme_old
+  path_(path, "spelling", "README.md") |> readLines() -> readme_old
   writeLines(
     readme_old[!grepl("badges: start", readme_old)],
-    file.path(path, "spelling", "README.md")
+    path_(path, "spelling", "README.md")
   )
-  z <- check_spelling(x = file.path(path, "spelling"), quiet = TRUE)
+  z <- check_spelling(x = path_(path, "spelling"), quiet = TRUE)
 
-  expect_warning(
-    z <- update_citation(file.path(path, "spelling"), quiet = TRUE)
-  )
+  expect_warning(z <- update_citation(path_(path, "spelling"), quiet = TRUE))
   expect_true(any(grepl(
     "Mismatch between",
     z$.__enclos_env__$private$errors$CITATION
@@ -410,11 +400,9 @@ test_that("check_spelling() on a project", {
       readme_old[badge_end],
       tail(readme_old, -badge_end)
     ),
-    file.path(path, "spelling", "README.md")
+    path_(path, "spelling", "README.md")
   )
-  expect_warning(
-    z <- update_citation(file.path(path, "spelling"), quiet = TRUE)
-  )
+  expect_warning(z <- update_citation(path_(path, "spelling"), quiet = TRUE))
   expect_true(any(grepl(
     "different DOI",
     z$.__enclos_env__$private$errors$CITATION
@@ -422,11 +410,9 @@ test_that("check_spelling() on a project", {
 
   writeLines(
     readme_old[!grepl("description: start", readme_old)],
-    file.path(path, "spelling", "README.md")
+    path_(path, "spelling", "README.md")
   )
-  expect_warning(
-    z <- update_citation(file.path(path, "spelling"), quiet = TRUE)
-  )
+  expect_warning(z <- update_citation(path_(path, "spelling"), quiet = TRUE))
   expect_true(any(grepl(
     "Mismatch between",
     z$.__enclos_env__$private$errors$CITATION
@@ -434,20 +420,16 @@ test_that("check_spelling() on a project", {
 
   writeLines(
     readme_old[!grepl("\\*\\*keywords\\*\\*:", readme_old)],
-    file.path(path, "spelling", "README.md")
+    path_(path, "spelling", "README.md")
   )
-  expect_warning(
-    z <- update_citation(file.path(path, "spelling"), quiet = TRUE)
-  )
+  expect_warning(z <- update_citation(path_(path, "spelling"), quiet = TRUE))
   expect_true(any(grepl(
     "No keywords found",
     z$.__enclos_env__$private$errors$CITATION
   )))
 
-  unlink(file.path(path, "spelling", "README.md"))
-  expect_warning(
-    z <- update_citation(file.path(path, "spelling"), quiet = TRUE)
-  )
+  unlink(path_(path, "spelling", "README.md"))
+  expect_warning(z <- update_citation(path_(path, "spelling"), quiet = TRUE))
   expect_match(
     z$.__enclos_env__$private$errors$CITATION,
     "no supported file found in `path`"
@@ -460,18 +442,18 @@ test_that("check_spelling() works on a quarto project", {
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   defer(unlink(path, recursive = TRUE))
   checklist$new(path, language = "en-GB", package = FALSE) |> write_checklist()
-  dir.create(file.path(path, "source"), recursive = TRUE, showWarnings = FALSE)
+  dir.create(path_(path, "source"), recursive = TRUE, showWarnings = FALSE)
   writeLines(
     c("project:", "  type: book"),
-    file.path(path, "source", "_quarto.yml")
+    path_(path, "source", "_quarto.yml")
   )
   expect_identical(
-    list_quarto_md(file.path(path, "source", "_quarto.yml"), root = path),
+    list_quarto_md(path_(path, "source", "_quarto.yml"), root = path),
     list(data.frame(quarto_lang = character(0), path = character(0)))
   )
-  writeLines("lang: en-GB", file.path(path, "source", "_quarto.yml"))
+  writeLines("lang: en-GB", path_(path, "source", "_quarto.yml"))
   expect_identical(
-    list_quarto_md(file.path(path, "source", "_quarto.yml"), root = path),
+    list_quarto_md(path_(path, "source", "_quarto.yml"), root = path),
     list(data.frame(quarto_lang = character(0), path = character(0)))
   )
   writeLines(
@@ -483,7 +465,7 @@ test_that("check_spelling() works on a quarto project", {
       "  chapters:",
       "    - language.qmd"
     ),
-    file.path(path, "source", "_quarto.yml")
+    path_(path, "source", "_quarto.yml")
   )
   writeLines(
     c(
@@ -496,7 +478,7 @@ test_that("check_spelling() works on a quarto project", {
       "Other section",
       ":::"
     ),
-    file.path(path, "source", "language.qmd")
+    path_(path, "source", "language.qmd")
   )
   expect_is(
     {

@@ -11,7 +11,7 @@
 setup_project <- function(path = ".") {
   assert_that(is.string(path), file_test("-d", path))
   path <- normalizePath(path)
-  checklist_file <- file.path(path, "checklist.yml")
+  checklist_file <- path_(path, "checklist.yml")
 
   if (file_test("-f", checklist_file)) {
     x <- read_checklist(path)
@@ -31,17 +31,17 @@ setup_project <- function(path = ".") {
   }
 
   vapply(
-    file.path(path, c("data", "media", "output", "source")),
+    path_(path, c("data", "media", "output", "source")),
     dir.create,
     logical(1),
     recursive = TRUE,
     showWarnings = FALSE
   )
 
-  if (!file_test("-f", file.path(path, "source", "checklist.R"))) {
-    file.path("project_template", "checklist.R") |>
+  if (!file_test("-f", path_(path, "source", "checklist.R"))) {
+    path_("project_template", "checklist.R") |>
       system.file(package = "checklist") |>
-      file.copy(file.path(path, "source", "checklist.R"))
+      file.copy(path_(path, "source", "checklist.R"))
   }
   renv_activate(path = path)
   create_readme(path = path, org = org, lang = language, type = "project")
@@ -59,7 +59,7 @@ setup_project <- function(path = ".") {
   )
 
   if (
-    "license" %in% checks && !file_test("-f", file.path(path, "LICENSE.md"))
+    "license" %in% checks && !file_test("-f", path_(path, "LICENSE.md"))
   ) {
     set_license(x, org = org)
   }

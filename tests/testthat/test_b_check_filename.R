@@ -6,46 +6,38 @@ test_that("check_filename() works", {
   checklist$new(path, language = "en-GB", package = FALSE) |> write_checklist()
 
   # fail on white space in folder names
-  dir.create(
-    file.path(path, "with space"),
-    recursive = TRUE,
-    showWarnings = FALSE
-  )
+  dir.create(path_(path, "with space"), recursive = TRUE, showWarnings = FALSE)
   expect_is(suppressMessages(x <- check_filename(path)), "checklist")
   expect_false(x$fail)
   x$set_required("filename conventions")
   write_checklist(x)
   x <- check_filename(x)
   expect_true(x$fail)
-  unlink(file.path(path, "with space"))
+  unlink(path_(path, "with space"))
 
   # fail on upper case in folder names
-  dir.create(
-    file.path(path, "UPPERCASE"),
-    recursive = TRUE,
-    showWarnings = FALSE
-  )
+  dir.create(path_(path, "UPPERCASE"), recursive = TRUE, showWarnings = FALSE)
   expect_true(check_filename(path)$fail)
-  unlink(file.path(path, "UPPERCASE"))
+  unlink(path_(path, "UPPERCASE"))
 
   # fail on dash in folder names
   dir.create(
-    file.path(path, "dash-separated"),
+    path_(path, "dash-separated"),
     recursive = TRUE,
     showWarnings = FALSE
   )
   expect_true(check_filename(path)$fail)
-  unlink(file.path(path, "dash-separated"))
+  unlink(path_(path, "dash-separated"))
 
   # fail on dash in file names
-  dir.create(file.path(path, "source"), recursive = TRUE, showWarnings = FALSE)
-  writeLines("sessionInfo()", file.path(path, "source", "correct.R"))
+  dir.create(path_(path, "source"), recursive = TRUE, showWarnings = FALSE)
+  writeLines("sessionInfo()", path_(path, "source", "correct.R"))
   git_init(path = path)
   git_config_set(name = "user.name", value = "junk", repo = path)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = path)
-  git_add(file.path("source", "correct.R"), repo = path)
+  git_add(path_("source", "correct.R"), repo = path)
   gert::git_commit("initial commit", repo = path)
-  wrong_file <- file.path(path, "source", "this Is wrong.R")
+  wrong_file <- path_(path, "source", "this Is wrong.R")
   writeLines("sessionInfo()", wrong_file)
   expect_false(check_filename(path)$fail)
   git_add(path_rel_(wrong_file, path), repo = path)
@@ -97,10 +89,10 @@ test_that("list_project_files works outside of a git repository", {
   # Simulate project structure
   tmp <- tempfile("norepo_")
   dir.create(tmp)
-  dir.create(file.path(tmp, "data"))
-  dir.create(file.path(tmp, "source/a"), recursive = TRUE)
-  writeLines("test", file.path(tmp, "source/a/script.R"))
-  writeLines("test", file.path(tmp, "data/test.txt"))
+  dir.create(path_(tmp, "data"))
+  dir.create(path_(tmp, "source/a"), recursive = TRUE)
+  writeLines("test", path_(tmp, "source/a/script.R"))
+  writeLines("test", path_(tmp, "data/test.txt"))
 
   # Run the function
   res <- list_project_files(tmp)

@@ -16,19 +16,19 @@ test_that("check_lintr() works on a project with renv", {
   # setup renv at the root of the project
   renv::init(path, bare = TRUE, load = FALSE, restart = FALSE)
   # add a file within the renv folder that fails lintr
-  file.path(path, "renv", "WRONG-name style.r") |>
+  path_(path, "renv", "WRONG-name style.r") |>
     writeLines(text = "lowerCamelCase<-function(base_name.style){return(T)}")
   # test that lintr ignores files within the renv folder
   expect_false(check_lintr(path)$fail)
 
   # setup renv at a subfolder of the project
-  file.path(path, "source", "targets", "pipeline1") |>
+  path_(path, "source", "targets", "pipeline1") |>
     dir.create(recursive = TRUE, showWarnings = FALSE)
-  file.path(path, "source", "targets", "pipeline1") |>
+  path_(path, "source", "targets", "pipeline1") |>
     renv::init(bare = TRUE, load = FALSE, restart = FALSE)
   # add a file within this folder that fails lintr
   path |>
-    file.path("source", "targets", "pipeline1", "renv", "WRONG-name style.r") |>
+    path_("source", "targets", "pipeline1", "renv", "WRONG-name style.r") |>
     writeLines(text = "lowerCamelCase<-function(base_name.style){return(T)}")
   # test that lintr ignores files within the renv folder
   expect_false(check_lintr(path)$fail)

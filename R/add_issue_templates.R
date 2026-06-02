@@ -10,31 +10,31 @@ add_issue_templates <- function(x) {
   }
   path <- x$get_path
 
-  file.path(path, ".github", "ISSUE_TEMPLATE", fsep = "/") |>
+  path_(path, ".github", "ISSUE_TEMPLATE") |>
     dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
     filename = "config.yml",
-    template = file.path("package_template", "ISSUE_TEMPLATE"),
-    target = file.path(".github", "ISSUE_TEMPLATE")
+    template = path_("package_template", "ISSUE_TEMPLATE"),
+    target = path_(".github", "ISSUE_TEMPLATE")
   )
   insert_file(
     repo = path,
     filename = "bug_report.yml",
-    template = file.path("package_template", "ISSUE_TEMPLATE"),
-    target = file.path(".github", "ISSUE_TEMPLATE")
+    template = path_("package_template", "ISSUE_TEMPLATE"),
+    target = path_(".github", "ISSUE_TEMPLATE")
   )
   insert_file(
     repo = path,
     filename = "feature_request.yml",
-    template = file.path("package_template", "ISSUE_TEMPLATE"),
-    target = file.path(".github", "ISSUE_TEMPLATE")
+    template = path_("package_template", "ISSUE_TEMPLATE"),
+    target = path_(".github", "ISSUE_TEMPLATE")
   )
   insert_file(
     repo = path,
     filename = "documentation.yml",
-    template = file.path("package_template", "ISSUE_TEMPLATE"),
-    target = file.path(".github", "ISSUE_TEMPLATE")
+    template = path_("package_template", "ISSUE_TEMPLATE"),
+    target = path_(".github", "ISSUE_TEMPLATE")
   )
   return(invisible(NULL))
 }

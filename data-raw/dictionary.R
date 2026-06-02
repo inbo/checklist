@@ -1,12 +1,12 @@
 checklist:::add_words(
   words = c(),
-  dictionary = file.path("inst", "spelling", "inbo")
+  dictionary = checklist:::path_("inst", "spelling", "inbo")
 )
 checklist:::add_words(
   words = c("variantie"),
-  dictionary = file.path("inst", "spelling", "stats_nl")
+  dictionary = checklist:::path_("inst", "spelling", "stats_nl")
 )
 checklist:::add_words(
   words = c(),
-  dictionary = file.path("inst", "spelling", "stats_en")
+  dictionary = checklist:::path_("inst", "spelling", "stats_en")
 )

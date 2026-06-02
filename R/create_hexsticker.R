@@ -99,7 +99,7 @@ string2svg <- function(string) {
   assert_that(requireNamespace("showtext"), msg = "Please install showtext")
   sysfonts::font_add(
     family = "Flanders Art Sans",
-    regular = file.path("fonts", "flanders_art_sans_medium.ttf") |>
+    regular = path_("fonts", "flanders_art_sans_medium.ttf") |>
       system.file(package = "checklist")
   )
   showtext::showtext_auto()

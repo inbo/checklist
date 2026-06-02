@@ -10,31 +10,31 @@ add_agents <- function(x) {
   }
   path <- x$get_path
 
-  file.path(path, ".github", "agents", fsep = "/") |>
+  path_(path, ".github", "agents") |>
     dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
     filename = "checklist_agent.md",
     template = "agents",
-    target = file.path(".github", "agents")
+    target = path_(".github", "agents")
   )
   insert_file(
     repo = path,
     filename = "docs_agent.md",
     template = "agents",
-    target = file.path(".github", "agents")
+    target = path_(".github", "agents")
   )
   insert_file(
     repo = path,
     filename = "package_code_agent.md",
     template = "agents",
-    target = file.path(".github", "agents")
+    target = path_(".github", "agents")
   )
   insert_file(
     repo = path,
     filename = "test_agent.md",
     template = "agents",
-    target = file.path(".github", "agents")
+    target = path_(".github", "agents")
   )
   return(invisible(NULL))
 }

@@ -19,26 +19,26 @@ setup_vc <- function(path, url, use_vc, use_cc, use_cg) {
 
   # add .gitignore
   template <- system.file(
-    file.path("generic_template", "gitignore"),
+    path_("generic_template", "gitignore"),
     package = "checklist"
   )
-  if (file_test("-f", file.path(path, ".gitignore"))) {
-    current <- readLines(file.path(path, ".gitignore"))
+  if (file_test("-f", path_(path, ".gitignore"))) {
+    current <- readLines(path_(path, ".gitignore"))
     new <- readLines(template)
-    writeLines(c_sort(unique(c(new, current))), file.path(path, ".gitignore"))
+    writeLines(c_sort(unique(c(new, current))), path_(path, ".gitignore"))
   } else {
-    file.copy(template, file.path(path, ".gitignore"))
+    file.copy(template, path_(path, ".gitignore"))
   }
   git_add(".gitignore", force = TRUE, repo = path)
 
   # Add GitHub actions
-  file.path(path, ".github", "workflows") |>
+  path_(path, ".github", "workflows") |>
     dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
     filename = "check_project.yml",
     template = "project_template",
-    target = file.path(".github", "workflows")
+    target = path_(".github", "workflows")
   )
 
   add_code_conduct(path, use_cc = use_cc)

@@ -10,7 +10,7 @@ create_readme <- function(
   license,
   type = c("package", "project", "data")
 ) {
-  if (file_test("-f", file.path(path, "README.md"))) {
+  if (file_test("-f", path_(path, "README.md"))) {
     warning(
       "README.md already exists in ",
       path,
@@ -104,7 +104,7 @@ create_readme <- function(
     "<!-- description: end -->"
   ) -> content
   if (type != "package") {
-    writeLines(content, file.path(path, "README.md"))
+    writeLines(content, path_(path, "README.md"))
     add_badges(
       readme_path = path,
       language = lang,
@@ -150,7 +150,7 @@ create_readme <- function(
     "## basic example code",
     "```"
   ) |>
-    writeLines(file.path(path, "README.Rmd"))
+    writeLines(path_(path, "README.Rmd"))
   add_badges(
     readme_path = path,
     language = lang,

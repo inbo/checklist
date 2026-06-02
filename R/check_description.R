@@ -113,11 +113,11 @@ check_description <- function(x = ".") {
     ]
   )
 
-  this_desc <- description$new(file = file.path(x$get_path, "DESCRIPTION"))
+  this_desc <- description$new(file = path_(x$get_path, "DESCRIPTION"))
   citmeta <- citation_meta$new(x$get_path)
   updated_authors <- citmeta$get_person
   this_desc$set_authors(updated_authors)
-  file.path(x$get_path, "DESCRIPTION") |> this_desc$write()
+  path_(x$get_path, "DESCRIPTION") |> this_desc$write()
   version <- as.character(this_desc$get_version())
   c(
     desc_error,
@@ -152,7 +152,7 @@ tidy_desc <- function(x = ".") {
   defer(options("crayon.enabled" = old_crayon))
   options("crayon.enabled" = FALSE)
 
-  desc <- description$new(file.path(x$get_path, "DESCRIPTION"))
+  desc <- description$new(path_(x$get_path, "DESCRIPTION"))
 
   # Alphabetise dependencies
   deps <- desc$get_deps()
@@ -171,7 +171,7 @@ tidy_desc <- function(x = ".") {
   # Normalize all fields (includes reordering)
   # Wrap in a try() so it always succeeds, even if user options are malformed
   try(desc$normalize(), silent = TRUE)
-  file.path(x$get_path, "DESCRIPTION") |> desc$write()
+  path_(x$get_path, "DESCRIPTION") |> desc$write()
   return(desc)
 }
 
@@ -223,7 +223,7 @@ check_license <- function(x = ".", org) {
     org <- org_list$new()$read(x$get_path)
   }
   if (x$package) {
-    this_desc <- description$new(file = file.path(x$get_path, "DESCRIPTION"))
+    this_desc <- description$new(file = path_(x$get_path, "DESCRIPTION"))
 
     # check if the license is allowed
     current_license <- this_desc$get_field("License")
@@ -242,7 +242,7 @@ check_license <- function(x = ".", org) {
       paste(names(allowed_licenses), collapse = "; ")
     )[!current_license %in% names(allowed_licenses)] -> problems
   } else {
-    file.path(x$get_path, "README.md") |> readLines() -> readme
+    path_(x$get_path, "README.md") |> readLines() -> readme
     regex <- paste0(
       "^\\[!\\[(.*)\\]\\(https:\\/\\/img\\.shields\\.io\\/badge\\/License-.*?",
       "-brightgreen\\)\\]\\((.*)\\)"
@@ -280,7 +280,7 @@ check_license <- function(x = ".", org) {
   }
 
   # check if LICENSE.md exists
-  if (!file_test("-f", file.path(x$get_path, "LICENSE.md"))) {
+  if (!file_test("-f", path_(x$get_path, "LICENSE.md"))) {
     x$add_error(
       errors = c(problems, "No LICENSE.md file"),
       item = "license",
@@ -291,7 +291,7 @@ check_license <- function(x = ".", org) {
   }
 
   # check if LICENSE.md matches the official version
-  file.path(x$get_path, "LICENSE.md") |> readLines() -> current
+  path_(x$get_path, "LICENSE.md") |> readLines() -> current
   get_official_license_location(license = current_license, org = org) |>
     readLines() -> official
   if (current_license == "MIT + file LICENSE") {

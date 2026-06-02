@@ -19,7 +19,7 @@ spelling <- R6Class(
         file_test("-d", base_path)
       )
       private$path <- normalizePath(base_path)
-      if (file_test("-f", file.path(base_path, "DESCRIPTION"))) {
+      if (file_test("-f", path_(base_path, "DESCRIPTION"))) {
         desc_lang <- desc(base_path)$get_field("Language", default = NA)
         assert_that(
           !is.na(desc_lang),
@@ -112,10 +112,10 @@ spelling <- R6Class(
     #' @field get_rd The Rd files within the project.
     #'
     get_rd = function() {
-      if (!file_test("-d", file.path(private$path, "man"))) {
+      if (!file_test("-d", path_(private$path, "man"))) {
         return(get_language(files = character(0), private = private))
       }
-      list_project_files(file.path(private$path, "man"))$files |>
+      list_project_files(path_(private$path, "man"))$files |>
         grepv(pattern = "\\.[Rr]d$") |>
         get_language(private = private)
     },
@@ -145,7 +145,7 @@ get_language <- function(files, private) {
     attr(files, "checklist_ignore") <- private$ignore
     return(files)
   }
-  files <- path_filter_(files, file.path("*renv", "library*"), invert = TRUE)
+  files <- path_filter_(files, path_("*renv", "library*"), invert = TRUE)
   files <- data.frame(language = private$main, path = files)
   for (current in names(private$other)) {
     test_current <- outer(
@@ -197,9 +197,9 @@ list_quarto_md <- function(quarto, root) {
     return(list(data.frame(quarto_lang = character(0), path = character(0))))
   }
   unlist(files) |> unname() |> unique() -> files
-  dirname(quarto) |> path_rel_(root) |> file.path(files) -> files
-  files <- files[file_test("-f", file.path(root, files))]
-  file.path(root, files) |>
+  dirname(quarto) |> path_rel_(root) |> path_(files) -> files
+  files <- files[file_test("-f", path_(root, files))]
+  path_(root, files) |>
     vapply(
       FUN.VALUE = character(1),
       lang = settings$lang,
@@ -251,7 +251,7 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
     FUN.VALUE = character(1),
     x = 1
   )
-  x$path <- normalizePath(file.path(base_path, x$path))
+  x$path <- normalizePath(path_(base_path, x$path))
   other <- list()
   ignore <- character(0)
   for (i in unique(first_path)) {
@@ -271,7 +271,7 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
       title = "\nHow should `checklist` spell check the files above?"
     )
     if (answer == 1) {
-      ignore <- c_sort(c(ignore, normalizePath(file.path(base_path, i))))
+      ignore <- c_sort(c(ignore, normalizePath(path_(base_path, i))))
       next
     }
     if (answer == 2) {
@@ -279,12 +279,12 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
     }
     if (length(current) > 1 && answer == length(other_lang) + 3) {
       x2 <- x[current, ]
-      x2$path <- path_rel_(x2$path, start = file.path(base_path, i))
+      x2$path <- path_rel_(x2$path, start = path_(base_path, i))
       x2 <- change_language_interactive2(
         x = x2,
         main = main,
         other_lang = other_lang,
-        base_path = file.path(base_path, i)
+        base_path = path_(base_path, i)
       )
       other_lang <- unique(c(other_lang, x2$other_lang))
       ignore <- c_sort(c(ignore, x2$ignore))

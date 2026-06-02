@@ -61,8 +61,8 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   )
 
   rd_files <- c(
-    file.path(x$get_path, "NAMESPACE"),
-    list.files(file.path(x$get_path, "man"), pattern = "Rd$", full.names = TRUE)
+    path_(x$get_path, "NAMESPACE"),
+    list.files(path_(x$get_path, "man"), pattern = "Rd$", full.names = TRUE)
   )
   start <- vapply(rd_files, readLines, character(1), n = 1)
   ok <- grepl("roxygen2", start) & grepl("do not edit by hand", start)
@@ -102,7 +102,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
     sprintf(fmt = "documented but unexported functions: %s") -> doc_warnings
   doc_warnings <- doc_warnings[length(unexported) > 0]
 
-  if (file_test("-f", file.path(x$get_path, "README.Rmd"))) {
+  if (file_test("-f", path_(x$get_path, "README.Rmd"))) {
     build_readme(x$get_path, encoding = "UTF-8")
     doc_error <- c(
       doc_error,
@@ -114,7 +114,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
     )
   }
 
-  md_files <- file.path(x$get_path, "README.md")
+  md_files <- path_(x$get_path, "README.md")
   ok <- file_test("-f", md_files)
   doc_error <- c(doc_error, sprintf("Missing %s", basename(md_files[!ok])))
 
@@ -128,15 +128,15 @@ check_documentation <- function(x = ".", quiet = FALSE) {
 check_news <- function(x) {
   doc_error <- "Don't use NEWS.Rmd"[file_test(
     "-f",
-    file.path(x$get_path, "NEWS.Rmd")
+    path_(x$get_path, "NEWS.Rmd")
   )]
-  md_file <- file.path(x$get_path, "NEWS.md")
+  md_file <- path_(x$get_path, "NEWS.md")
   if (!file_test("-f", md_file)) {
     return(c(doc_error, "Missing NEWS.md"))
   }
 
   description <- desc::description$new(
-    file = file.path(x$get_path, "DESCRIPTION")
+    file = path_(x$get_path, "DESCRIPTION")
   )
   news_file <- readLines(md_file)
   version_location <- grep(paste0("#.*", description$get("Package")), news_file)

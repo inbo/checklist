@@ -46,13 +46,12 @@ test_that("check_description() works", {
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
-  repo <- file.path(path, package)
+  repo <- path_(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  file.path(path, package, "DESCRIPTION") |>
-    desc::description$new() -> this_desc
+  path_(path, package, "DESCRIPTION") |> desc::description$new() -> this_desc
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
@@ -86,9 +85,7 @@ test_that("check_description() works", {
     "Please commit changes."
   )
 
-  this_desc <- desc::description$new(
-    file = file.path(path, package, "DESCRIPTION")
-  )
+  this_desc <- desc::description$new(file = path_(path, package, "DESCRIPTION"))
   this_desc$del_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)
@@ -100,14 +97,14 @@ test_that("check_description() works", {
   )
 
   gert::git_clone(
-    url = file.path(path, package),
-    path = file.path(path, "origin"),
+    url = path_(path, package),
+    path = path_(path, "origin"),
     bare = TRUE,
     verbose = FALSE
   )
   gert::git_remote_remove(remote = "origin", repo = repo)
   gert::git_remote_add(
-    url = file.path(path, "origin"),
+    url = path_(path, "origin"),
     name = "origin",
     repo = repo
   )
@@ -115,7 +112,7 @@ test_that("check_description() works", {
   git_branch_create(branch = "junk", ref = "HEAD", checkout = TRUE, repo = repo)
 
   stub(check_description, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
-  expect_is(x <- check_description(file.path(path, package)), "checklist")
+  expect_is(x <- check_description(path_(path, package)), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$DESCRIPTION[1],
     "Package version not updated"

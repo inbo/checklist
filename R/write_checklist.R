@@ -52,6 +52,6 @@ write_checklist <- function(x = ".") {
   x$add_motivation("warnings")
   x$add_motivation("notes")
 
-  file.path(x$get_path, "checklist.yml") |> write_yaml(x = x$template)
+  path_(x$get_path, "checklist.yml") |> write_yaml(x = x$template)
   return(invisible(NULL))
 }

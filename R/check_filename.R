@@ -206,6 +206,6 @@ list_project_files <- function(path) {
     dirs <- list.dirs(path, recursive = TRUE, full.names = FALSE)
     files <- list.files(path, recursive = TRUE, all.files = TRUE)
   }
-  files <- files[!vapply(file.path(path, files), is_symlink, logical(1))]
+  files <- files[!vapply(path_(path, files), is_symlink, logical(1))]
   return(list(files = files, dirs = dirs))
 }

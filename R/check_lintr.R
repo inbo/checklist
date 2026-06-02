@@ -107,7 +107,7 @@ select_lintr_file <- function(x) {
     return(system.file("lintr", package = "checklist"))
   }
   R_user_dir("citeme", "config") |>
-    file.path(
+    path_(
       tolower(org$get_git) |> gsub(pattern = "https://", replacement = ""),
       ".lintr"
     ) -> linter_file
@@ -115,8 +115,8 @@ select_lintr_file <- function(x) {
 }
 
 local_or_default_lintr <- function(x) {
-  if (file_test("-f", file.path(x, ".lintr"))) {
-    return(file.path(x, ".lintr"))
+  if (file_test("-f", path_(x, ".lintr"))) {
+    return(path_(x, ".lintr"))
   }
   system.file("lintr", package = "checklist")
 }

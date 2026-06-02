@@ -377,3 +377,17 @@ checklist_diff <- function(root) {
   )
   return(invisible(NULL))
 }
+
+#' Construct file paths with forward slashes
+#'
+#' A wrapper around `file.path()`` that always uses forward slashes as the
+#' path separator.
+#' @param ... character vectors passed to `file.path()`.
+#' @return A character vector of file paths.
+#' @noRd
+#' @keywords internal
+path_ <- function(...) {
+  dots <- list(...)
+  dots$fsep <- "/"
+  do.call(what = "file.path", args = dots)
+}

@@ -143,7 +143,7 @@ clean_incoming <- function(issues) {
 }
 
 check_test <- function(package_path, quiet = FALSE) {
-  test_folder <- file.path(package_path, "tests")
+  test_folder <- path_(package_path, "tests")
   if (!dir.exists(test_folder)) {
     display_message("No tests found", verbose = !quiet)
     return(character(0))
@@ -153,7 +153,7 @@ check_test <- function(package_path, quiet = FALSE) {
     display_message("No tests found", verbose = !quiet)
     return(character(0))
   }
-  file.path(test_folder, test_files) |>
+  path_(test_folder, test_files) |>
     sprintf(fmt = "Rscript --vanilla %s") |>
     paste(collapse = "\n") |>
     sprintf(fmt = "cd %2$s\n%1$s", test_folder) -> test_command

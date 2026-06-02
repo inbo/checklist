@@ -3,34 +3,34 @@ setup_pkgdown <- function(x = ".", org, lang) {
   stopifnot("setup_pkgdown() is only relevant for packages" = x$package)
 
   authors <- org$get_pkgdown(lang = lang)
-  file.path("package_template", "_pkgdown.yml") |>
+  path_("package_template", "_pkgdown.yml") |>
     system.file(package = "checklist") |>
     readLines() |>
     c("authors:"[nchar(authors) > 0], authors, githubpages_url(x$get_path)) |>
-    writeLines(file.path(x$get_path, "_pkgdown.yml"))
+    writeLines(path_(x$get_path, "_pkgdown.yml"))
   git_add("_pkgdown.yml", repo = x$get_path)
 
   gsub(pattern = "https://", replacement = "", org$get_git) |>
     tolower() -> config_name
   config_folder <- R_user_dir("citeme", "config")
 
-  css_source <- file.path(config_folder, config_name, "pkgdown.css")
+  css_source <- path_(config_folder, config_name, "pkgdown.css")
   if (file_test("-f", css_source)) {
-    target <- file.path(x$get_path, "pkgdown")
+    target <- path_(x$get_path, "pkgdown")
     dir.create(target, recursive = TRUE, showWarnings = FALSE)
-    file.copy(css_source, to = file.path(target, "extra.css"), overwrite = TRUE)
+    file.copy(css_source, to = path_(target, "extra.css"), overwrite = TRUE)
     git_add("pkgdown/extra.css", repo = x$get_path)
   }
-  file.path(config_folder, config_name, "pkgdown") -> config_path
+  path_(config_folder, config_name, "pkgdown") -> config_path
   if (!file_test("-d", config_path)) {
     return(invisible(NULL))
   }
 
-  target <- file.path(x$get_path, "man", "figures")
+  target <- path_(x$get_path, "man", "figures")
   dir.create(target, recursive = TRUE, showWarnings = FALSE)
   to_do <- list.files(config_path, full.names = TRUE)
-  file.copy(to_do, to = file.path(target, basename(to_do)), overwrite = TRUE)
-  file.path("man", "figures") |> git_add(repo = x$get_path)
+  file.copy(to_do, to = path_(target, basename(to_do)), overwrite = TRUE)
+  path_("man", "figures") |> git_add(repo = x$get_path)
   return(invisible(NULL))
 }
 

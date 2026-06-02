@@ -49,7 +49,7 @@ test_that("create_package() works", {
   create_package(path = path, package = package)
   sink()
 
-  repo <- file.path(path, package)
+  repo <- path_(path, package)
 
   git_config_set("user.name", "unit test", repo = repo)
   git_config_set("user.email", "unit@test.com", repo = repo)

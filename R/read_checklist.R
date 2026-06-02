@@ -23,12 +23,12 @@ read_checklist <- function(x = ".") {
 
   assert_that(is.string(x), file_test("-d", x))
   current <- normalizePath(x)
-  checklist_file <- file.path(current, "checklist.yml")
+  checklist_file <- path_(current, "checklist.yml")
   while (
     !file_test("-f", checklist_file) && length(strsplit(current, "/")[[1]]) > 1
   ) {
-    file.path(current, "..") |> normalizePath() -> current
-    checklist_file <- file.path(current, "checklist.yml")
+    path_(current, "..") |> normalizePath() -> current
+    checklist_file <- path_(current, "checklist.yml")
   }
   assert_that(
     file_test("-f", checklist_file),

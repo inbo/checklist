@@ -6,7 +6,7 @@
 preferred_protocol <- function() {
   config <- list()
   config_folder <- R_user_dir("citeme", which = "config")
-  config_file <- file.path(config_folder, "config.yml")
+  config_file <- path_(config_folder, "config.yml")
   if (file_test("-f", config_file)) {
     config <- read_yaml(config_file)
   }
@@ -46,7 +46,7 @@ preferred_protocol <- function() {
 
 #' @importFrom citeme ask_yes_no
 renv_activate <- function(path, use_renv) {
-  if (file_test("-f", file.path(path, "renv.lock"))) {
+  if (file_test("-f", path_(path, "renv.lock"))) {
     return(invisible(NULL))
   }
   if (missing(use_renv)) {
@@ -59,5 +59,5 @@ renv_activate <- function(path, use_renv) {
     return(invisible(NULL))
   }
   c("if (!utils::file_test(\"-f\", \"renv.lock\")) {", "  renv::init()", "}") |>
-    writeLines(file.path(path, ".Rprofile"))
+    writeLines(path_(path, ".Rprofile"))
 }

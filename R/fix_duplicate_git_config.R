@@ -8,7 +8,7 @@ fix_duplicate_git_config <- function(repo = ".") {
   grepl("^branch", problem) |>
     setNames(sprintf("unhandled duplicate in git config: `%s`", problem)) |>
     stopifnot()
-  file.path(repo, ".git", "config") |> readLines() -> local_config
+  path_(repo, ".git", "config") |> readLines() -> local_config
   branch_position <- grep("\\[branch \"(.*)\"\\]", local_config)
   branch_name <- gsub(
     "\\[branch \"(.*)\"\\]",
@@ -29,6 +29,6 @@ fix_duplicate_git_config <- function(repo = ".") {
       tail(-branch_position[1]) -> to_alter
   }
   c(keep_start, unique(to_alter), keep_end) |>
-    writeLines(file.path(repo, ".git", "config"))
+    writeLines(path_(repo, ".git", "config"))
   return(invisible(NULL))
 }

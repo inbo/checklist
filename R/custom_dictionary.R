@@ -12,7 +12,7 @@ custom_dictionary <- function(issues) {
 
   vapply(unique(issues$language), FUN.VALUE = logical(1), FUN = function(lang) {
     dict_file <- tolower(gsub("-", "_", lang))
-    dict_file <- file.path(attr(issues, "checklist_path"), "inst", dict_file)
+    dict_file <- path_(attr(issues, "checklist_path"), "inst", dict_file)
     unique(issues$message[issues$language == lang]) |>
       add_words(dictionary = dict_file)
     return(TRUE)

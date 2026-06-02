@@ -1,6 +1,6 @@
 library(mockery)
 test_that("preferred_protocol() works", {
-  expect_false(file_test("-f", file.path(config_dir, "config", "config.yml")))
+  expect_false(file_test("-f", path_(config_dir, "config", "config.yml")))
   stub(preferred_protocol, "R_user_dir", mock_r_user_dir(config_dir))
   stub(preferred_protocol, "ask_url", mock("https://gitlab.com/ThierryO"))
   expect_identical(preferred_protocol(), "https://gitlab.com/ThierryO/%s.git")

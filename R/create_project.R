@@ -12,7 +12,7 @@ create_project <- function(path, project) {
   assert_that(is.string(path), noNA(path), file_test("-d", path))
   assert_that(is.string(project), noNA(project))
   assert_that(
-    !file_test("-d", file.path(path, project)),
+    !file_test("-d", path_(path, project)),
     msg = "Existing project folder"
   )
 
@@ -51,12 +51,12 @@ create_project <- function(path, project) {
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )
 
-  path <- file.path(path, project)
+  path <- path_(path, project)
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
   # create default folders
   vapply(
-    file.path(path, c("data", "media", "output", "source")),
+    path_(path, c("data", "media", "output", "source")),
     dir.create,
     logical(1),
     recursive = TRUE,
@@ -66,14 +66,14 @@ create_project <- function(path, project) {
   # create RStudio project
   file.copy(
     system.file(
-      file.path("project_template", "rproj.template"),
+      path_("project_template", "rproj.template"),
       package = "checklist"
     ),
-    paste0(file.path(path, project), ".Rproj")
+    paste0(path_(path, project), ".Rproj")
   )
-  file.path("project_template", "checklist.R") |>
+  path_("project_template", "checklist.R") |>
     system.file(package = "checklist") |>
-    file.copy(file.path(path, "source", "checklist.R"))
+    file.copy(path_(path, "source", "checklist.R"))
   create_readme(
     path = path,
     authors = authors,

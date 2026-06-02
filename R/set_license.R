@@ -12,7 +12,7 @@
 #' @importFrom desc description
 set_license <- function(x = ".", license, org) {
   x <- read_checklist(x = x)
-  license_file <- file.path(x$get_path, "LICENSE.md")
+  license_file <- path_(x$get_path, "LICENSE.md")
   if (file_test("-f", license_file)) {
     return(invisible(NULL))
   }
@@ -21,10 +21,10 @@ set_license <- function(x = ".", license, org) {
   }
   if (x$package) {
     assert_that(
-      file_test("-f", file.path(x$get_path, "DESCRIPTION")),
+      file_test("-f", path_(x$get_path, "DESCRIPTION")),
       msg = sprintf("No `DESCRIPTION` file found at %s", x$get_path)
     )
-    this_desc <- description$new(file = file.path(x$get_path, "DESCRIPTION"))
+    this_desc <- description$new(file = path_(x$get_path, "DESCRIPTION"))
     assert_that(
       this_desc$has_fields("License"),
       msg = "`DESCRIPTION` has no `License`field."
@@ -53,7 +53,7 @@ set_license <- function(x = ".", license, org) {
     paste(collapse = ", ") -> cph
   paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
     c(sprintf("COPYRIGHT HOLDER: %s", cph)) |>
-    writeLines(file.path(x$get_path, "LICENSE"))
+    writeLines(path_(x$get_path, "LICENSE"))
   mit <- readLines(license_file)
   mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
   mit[3] <- gsub("<COPYRIGHT HOLDER>", cph, mit[3])
@@ -65,12 +65,12 @@ set_license <- function(x = ".", license, org) {
 get_official_license_location <- function(license, org) {
   switch(
     license,
-    "CC BY 4.0" = file.path("generic_template", "cc_by_4_0.md"),
-    "CC BY-SA 4.0" = file.path("generic_template", "cc_by_sa_4_0.md"),
-    "CC0" = file.path("generic_template", "cc0.md"),
-    "GPL-3" = file.path("generic_template", "gplv3.md"),
-    "MIT" = file.path("generic_template", "mit.md"),
-    "MIT + file LICENSE" = file.path("generic_template", "mit.md"),
+    "CC BY 4.0" = path_("generic_template", "cc_by_4_0.md"),
+    "CC BY-SA 4.0" = path_("generic_template", "cc_by_sa_4_0.md"),
+    "CC0" = path_("generic_template", "cc0.md"),
+    "GPL-3" = path_("generic_template", "gplv3.md"),
+    "MIT" = path_("generic_template", "mit.md"),
+    "MIT + file LICENSE" = path_("generic_template", "mit.md"),
     NA
   ) |>
     system.file(package = "checklist") -> license_location
@@ -87,7 +87,7 @@ get_official_license_location <- function(license, org) {
     return(license_location$remote_file)
   }
   R_user_dir("citeme", "config") |>
-    file.path(
+    path_(
       tolower(url) |> gsub(pattern = "https://", replacement = ""),
       license_location$local_file
     )
