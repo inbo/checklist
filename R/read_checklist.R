@@ -22,12 +22,13 @@ read_checklist <- function(x = ".") {
   }
 
   assert_that(is.string(x), file_test("-d", x))
-  current <- normalizePath(x)
+  current <- normalizePath(x, winslash = "/", mustWork = TRUE)
   checklist_file <- path_(current, "checklist.yml")
   while (
     !file_test("-f", checklist_file) && length(strsplit(current, "/")[[1]]) > 1
   ) {
-    path_(current, "..") |> normalizePath() -> current
+    path_(current, "..") |>
+      normalizePath(winslash = "/", mustWork = TRUE) -> current
     checklist_file <- path_(current, "checklist.yml")
   }
   assert_that(
@@ -37,7 +38,7 @@ read_checklist <- function(x = ".") {
       "\nRun `checklist::setup_package(\"%1$s\")` or",
       "`checklist::setup_project(\"%1$s\")`."
     ) |>
-      sprintf(normalizePath(x))
+      sprintf(normalizePath(x, winslash = "/", mustWork = TRUE))
   )
 
   # read existing check list file

@@ -176,7 +176,7 @@ checklist <- R6Class(
     #' @importFrom assertthat assert_that is.flag is.string noNA
     initialize = function(x = ".", language, package = TRUE) {
       assert_that(is.string(x), noNA(x), is.flag(package), noNA(package))
-      x <- normalizePath(x)
+      x <- normalizePath(x, winslash = "/", mustWork = TRUE)
       assert_that(file_test("-d", x))
       private$path <- x
       super$initialize(language = language, base_path = private$path)

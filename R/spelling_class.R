@@ -18,7 +18,7 @@ spelling <- R6Class(
         noNA(base_path),
         file_test("-d", base_path)
       )
-      private$path <- normalizePath(base_path)
+      private$path <- normalizePath(base_path, winslash = "/", mustWork = TRUE)
       if (file_test("-f", path_(base_path, "DESCRIPTION"))) {
         desc_lang <- desc(base_path)$get_field("Language", default = NA)
         assert_that(
@@ -251,7 +251,11 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
     FUN.VALUE = character(1),
     x = 1
   )
-  x$path <- normalizePath(path_(base_path, x$path))
+  x$path <- normalizePath(
+    path_(base_path, x$path),
+    winslash = "/",
+    mustWork = FALSE
+  )
   other <- list()
   ignore <- character(0)
   for (i in unique(first_path)) {
@@ -271,7 +275,11 @@ change_language_interactive2 <- function(x, main, other_lang, base_path = ".") {
       title = "\nHow should `checklist` spell check the files above?"
     )
     if (answer == 1) {
-      ignore <- c_sort(c(ignore, normalizePath(path_(base_path, i))))
+      ignore <- c(
+        ignore,
+        normalizePath(path_(base_path, i), winslash = "/", mustWork = FALSE)
+      ) |>
+        c_sort()
       next
     }
     if (answer == 2) {

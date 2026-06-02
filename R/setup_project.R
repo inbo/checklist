@@ -10,7 +10,7 @@
 #' @family setup
 setup_project <- function(path = ".") {
   assert_that(is.string(path), file_test("-d", path))
-  path <- normalizePath(path)
+  path <- normalizePath(path, winslash = "/", mustWork = TRUE)
   checklist_file <- path_(path, "checklist.yml")
 
   if (file_test("-f", checklist_file)) {
@@ -58,9 +58,7 @@ setup_project <- function(path = ".") {
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )
 
-  if (
-    "license" %in% checks && !file_test("-f", path_(path, "LICENSE.md"))
-  ) {
+  if ("license" %in% checks && !file_test("-f", path_(path, "LICENSE.md"))) {
     set_license(x, org = org)
   }
 

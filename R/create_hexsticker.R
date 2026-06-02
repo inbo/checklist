@@ -137,7 +137,7 @@ string2svg <- function(string) {
 
 prepare_icon <- function(icon) {
   assert_that(is.string(icon))
-  icon <- normalizePath(icon)
+  icon <- normalizePath(icon, winslash = "/", mustWork = TRUE)
   base <- readLines(icon)
   base <- paste(base, collapse = "")
   if (grepl("viewBox", base)) {
