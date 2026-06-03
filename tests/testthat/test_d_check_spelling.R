@@ -55,14 +55,14 @@ test_that("check_spelling() on a package", {
     value = "junk@inbo.be",
     repo = path_(path, package)
   )
-  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_SPELLING"), "true"))
   expect_is(
     {
       z <- check_spelling(path_(path, package))
     },
     "checklist"
   )
-  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_SPELLING"), "true"))
   expect_identical(nrow(z$get_spelling), 0L)
   expect_invisible(print(z$get_spelling))
 
@@ -178,7 +178,7 @@ test_that("check_spelling() on a package", {
 })
 
 test_that("check_spelling() on a project", {
-  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_SPELLING"), "true"))
 
   stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
   org <- org_list_from_url("https://gitlab.com/thierryo/citeme.git")
@@ -437,7 +437,7 @@ test_that("check_spelling() on a project", {
 })
 
 test_that("check_spelling() works on a quarto project", {
-  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_SPELLING"), "true"))
   path <- tempfile("quarto")
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   defer(unlink(path, recursive = TRUE))

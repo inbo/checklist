@@ -1,6 +1,6 @@
 library(mockery)
 test_that("create_package() works", {
-  skip_if(identical(Sys.getenv("SKIP_TEST"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_CREATE"), "true"))
 
   stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
   org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
@@ -9,7 +9,7 @@ test_that("create_package() works", {
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
 
-  package <- "create"
+  tempfile("create") |> basename() -> package
   stub(create_package, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
   stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
@@ -82,6 +82,63 @@ test_that("create_package() works", {
     path_("man", "figures", "background-pattern.png")
   )
   expect_true(all(file_test("-f", path_(path, package, new_files))))
+  expect_false(file_test("-f", path_(path, package, "man", "dummy.Rd")))
+  expect_false(file_test("-f", path_(path, package, "README.md")))
+
+  old_checklist <- read_checklist(path_(path, package))
+
+  writeLines(
+    c(
+      "#' Some Dummy Function",
+      "#' @export",
+      "dummy <- function() {",
+      "  TRUE",
+      "}"
+    ),
+    path_(path, package, "R", "dummy.R")
+  )
+  expect_error({
+    suppressWarnings({
+      check_package(
+        path_(path, package),
+        fail = TRUE,
+        quiet = TRUE,
+        pkgdown = TRUE
+      )
+    })
+  })
+  expect_true(file_test("-f", path_(path, package, ".zenodo.json")))
+  expect_true(file_test("-f", path_(path, package, "CITATION.cff")))
+  expect_true(file_test("-f", path_(path, package, "man", "dummy.Rd")))
+  expect_true(file_test("-f", path_(path, package, "README.md")))
+
+  devtools::install(
+    pkg = path_(path, package),
+    quick = TRUE,
+    build_vignettes = FALSE,
+    quiet = TRUE
+  )
+  defer(remove.packages(package))
+
+  current_gha <- Sys.getenv("GITHUB_ACTIONS")
+  if (current_gha != "") {
+    Sys.setenv(GITHUB_ACTIONS = "FALSE")
+    defer(Sys.setenv(GITHUB_ACTIONS = current_gha))
+  }
+  git_config_set(
+    name = "user.name",
+    value = "junk",
+    repo = path_(path, package)
+  )
+  git_config_set(
+    name = "user.email",
+    value = "junk@inbo.be",
+    repo = path_(path, package)
+  )
+  list.files(path_(path, package), recursive = TRUE) |>
+    c(".zenodo.json") |>
+    git_add(repo = path_(path, package))
+  git_commit(message = "initial commit", repo = path_(path, package))
 
   expect_is(
     {
@@ -91,17 +148,20 @@ test_that("create_package() works", {
     },
     "checklist"
   )
-  expect_true(file_test("-f", path_(path, package, ".zenodo.json")))
-  expect_true(file_test("-f", path_(path, package, "CITATION.cff")))
-
-  expect_error({
-    check_package(
-      path_(path, package),
-      fail = TRUE,
-      quiet = TRUE,
-      pkgdown = TRUE
-    )
-  })
+  cat(
+    "after build",
+    "warnings:",
+    unlist(x$.__enclos_env__$private$warnings),
+    "allowed warnings:",
+    unlist(x$.__enclos_env__$private$allowed_warnings),
+    "notes:",
+    unlist(x$.__enclos_env__$private$notes),
+    "allowed notes:",
+    unlist(x$.__enclos_env__$private$allowed_notes),
+    "errors:",
+    unlist(x$.__enclos_env__$private$errors),
+    sep = "\n"
+  )
 
   stub(x$add_motivation, "yesno", TRUE, depth = 2)
   stub(x$add_motivation, "readline", "junk", depth = 2)
@@ -110,6 +170,31 @@ test_that("create_package() works", {
     x$.__enclos_env__$private$allowed_notes,
     length(x$.__enclos_env__$private$notes)
   )
+  stub(x$add_motivation, "yesno", TRUE, depth = 2)
+  stub(x$add_motivation, "readline", "junk", depth = 2)
+  expect_s3_class(x$add_motivation(which = "warnings"), "checklist")
+  expect_length(
+    x$.__enclos_env__$private$allowed_warnings,
+    length(x$.__enclos_env__$private$warnings)
+  )
+
+  cat(
+    "",
+    "-------------------------",
+    "",
+    "after add_motivation",
+    "warnings:",
+    unlist(x$.__enclos_env__$private$warnings),
+    "allowed warnings:",
+    unlist(x$.__enclos_env__$private$allowed_warnings),
+    "notes:",
+    unlist(x$.__enclos_env__$private$notes),
+    "allowed notes:",
+    unlist(x$.__enclos_env__$private$allowed_notes),
+    "errors:",
+    unlist(x$.__enclos_env__$private$errors),
+    sep = "\n"
+  )
 
   stub(x$confirm_motivation, "yesno", TRUE, depth = 2)
   expect_s3_class(x$confirm_motivation(which = "notes"), "checklist")
@@ -117,14 +202,56 @@ test_that("create_package() works", {
     x$.__enclos_env__$private$allowed_notes,
     length(x$.__enclos_env__$private$notes)
   )
+  stub(x$confirm_motivation, "yesno", TRUE, depth = 2)
+  expect_s3_class(x$confirm_motivation(which = "warnings"), "checklist")
+  expect_length(
+    x$.__enclos_env__$private$allowed_warnings,
+    length(x$.__enclos_env__$private$warnings)
+  )
+  cat(
+    "",
+    "-------------------------",
+    "",
+    "after confirm_motivation",
+    "warnings:",
+    "warnings:",
+    unlist(x$.__enclos_env__$private$warnings),
+    "allowed warnings:",
+    unlist(x$.__enclos_env__$private$allowed_warnings),
+    "notes:",
+    unlist(x$.__enclos_env__$private$notes),
+    "allowed notes:",
+    unlist(x$.__enclos_env__$private$allowed_notes),
+    "errors:",
+    unlist(x$.__enclos_env__$private$errors),
+    sep = "\n"
+  )
 
-  stub(write_checklist, "x$add_motivation", NULL)
-  stub(write_checklist, "x$confirm_motivation", NULL)
-  old_checklist <- read_checklist(path_(path, package))
-  expect_invisible(write_checklist(x))
+  cat(
+    "old_checklist:",
+    class(old_checklist$.__enclos_env__$private$allowed_notes),
+    length(old_checklist$.__enclos_env__$private$allowed_notes),
+    "names:",
+    names(unlist(old_checklist$.__enclos_env__$private$allowed_notes)),
+    "values:",
+    unlist(old_checklist$.__enclos_env__$private$allowed_notes),
+    "---",
+    "new_checklist:",
+    class(x$.__enclos_env__$private$allowed_notes),
+    length(x$.__enclos_env__$private$allowed_notes),
+    "names:",
+    names(unlist(x$.__enclos_env__$private$allowed_notes)),
+    "values:",
+    unlist(x$.__enclos_env__$private$allowed_notes),
+    sep = "\n"
+  )
   expect_false(identical(
     old_checklist$.__enclos_env__$private$allowed_notes,
     x$.__enclos_env__$private$allowed_notes
+  ))
+  expect_false(identical(
+    old_checklist$.__enclos_env__$private$allowed_warnings,
+    x$.__enclos_env__$private$allowed_warnings
   ))
 
   stub(x$confirm_motivation, "yesno", FALSE, depth = 2)
@@ -145,4 +272,8 @@ test_that("create_package() works", {
 
   unlink(path_(path, package, "NEWS.md"))
   expect_equal(check_news(x), "Missing NEWS.md")
+
+  stub(write_checklist, "x$add_motivation", NULL)
+  stub(write_checklist, "x$confirm_motivation", NULL)
+  expect_invisible(write_checklist(x))
 })
