@@ -4,12 +4,12 @@
 \alias{ask_rightsholder_funder}
 \title{Ask for rights holder or funder}
 \usage{
-ask_rightsholder_funder(org, type = c("rightsholder", "funder"))
+ask_rightsholder_funder(org, type = c("rightsholder", "funder", "publisher"))
 }
 \arguments{
 \item{org}{Organisation object}
 
-\item{type}{Character, either \code{"rightsholder"} or \code{"funder"}}
+\item{type}{Character, either \code{"rightsholder"}, \code{"funder"} or \code{"publisher"}}
 }
 \value{
 A list with the selected names and the updated organisation object

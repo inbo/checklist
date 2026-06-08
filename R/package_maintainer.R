@@ -6,35 +6,39 @@ package_maintainer <- function(org, lang) {
     maintainer <- c(maintainer, individual2person(role = "aut", lang = lang))
   }
   info <- ask_rightsholder_funder(org = org, type = "rightsholder")
-  rightsholder <- info$selection
+  selected_org <- info$selection
+  list("cph") |>
+    rep(length(selected_org)) -> selected_role
   info <- ask_rightsholder_funder(org = info$org, type = "funder")
-  funder <- info$selection
+  matched <- selected_org == info$selection
+  for (i in which(matched)) {
+    selected_role[[i]] <- c(selected_role[[i]], "fnd")
+  }
+  extra <- info$selection[!info$selection %in% selected_org]
+  selected_org <- c(selected_org, extra)
+  selected_role <- c(selected_role, rep(list("fnd"), length(extra)))
+  info <- ask_rightsholder_funder(org = info$org, type = "publisher")
+  matched <- selected_org == info$selection
+  for (i in which(matched)) {
+    selected_role[[i]] <- c(selected_role[[i]], "pbl")
+  }
+  extra <- info$selection[!info$selection %in% selected_org]
+  selected_org <- c(selected_org, extra)
+  selected_role <- c(selected_role, rep(list("pbl"), length(extra)))
   org <- info$org
   list(
     authors = c(
       maintainer,
-      c(
-        vapply(
-          rightsholder[rightsholder %in% funder],
-          FUN = function(x) {
-            list(org$get_person(x, role = c("cph", "fnd"), lang = lang))
-          },
-          FUN.VALUE = vector("list", 1)
-        ),
-        vapply(
-          rightsholder[!rightsholder %in% funder],
-          FUN = function(x) {
-            list(org$get_person(x, role = "cph", lang = lang))
-          },
-          FUN.VALUE = vector("list", 1)
-        ),
-        vapply(
-          funder[!funder %in% rightsholder],
-          FUN = function(x) {
-            list(org$get_person(x, role = "fnd", lang = lang))
-          },
-          FUN.VALUE = vector("list", 1)
-        )
+      vapply(
+        seq_along(selected_org),
+        FUN = function(x) {
+          list(org$get_person(
+            selected_org[x],
+            role = selected_role[[x]],
+            lang = lang
+          ))
+        },
+        FUN.VALUE = vector("list", 1)
       ) |>
         do.call(what = c)
     ),
