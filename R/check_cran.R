@@ -162,7 +162,9 @@ check_test <- function(package_path, quiet = FALSE) {
     display_message("unit test Try error", verbose = !quiet)
     return("unit test try error. please contact the package maintainer.")
   } else {
-    grep("Rout.fail", test_output) |> paste(collapse = ", ") |> cat()
+    grep("Rout.fail", test_output) |>
+      paste(collapse = ", ") |>
+      cat()
   }
   test_output <- paste(test_output, collapse = "\n")
 

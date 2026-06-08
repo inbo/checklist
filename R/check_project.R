@@ -14,7 +14,8 @@ check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   }
 
   org <- org_list$new()$read(x$get_path)
-  org$check(x = x$get_path) |> x$add_error(item = "organisation") -> x
+  org$check(x = x$get_path) |>
+    x$add_error(item = "organisation") -> x
 
   if ("spelling" %in% x$get_required) {
     quiet_cat("Checking spelling\n", quiet = quiet)

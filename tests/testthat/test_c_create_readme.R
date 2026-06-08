@@ -20,12 +20,16 @@ test_that("create readme", {
     "project_maintainer",
     list(
       authors = data.frame(
-        given = c("Given", "The checklist organisation") |> rep(each = 2),
-        family = c("Test", "") |> rep(each = 2),
+        given = c("Given", "The checklist organisation") |>
+          rep(each = 2),
+        family = c("Test", "") |>
+          rep(each = 2),
         email = c("given.test@vlaanderen.be", "info@organisation.checklist") |>
           rep(each = 2),
-        orcid = c("0000-0002-1825-0097", "") |> rep(each = 2),
-        affiliation = c("Vlaamse overheid", "") |> rep(each = 2),
+        orcid = c("0000-0002-1825-0097", "") |>
+          rep(each = 2),
+        affiliation = c("Vlaamse overheid", "") |>
+          rep(each = 2),
         role = c("aut", "cre", "fnd", "cph")
       ) |>
         individual2badge(),

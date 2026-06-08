@@ -30,7 +30,8 @@ setup_pkgdown <- function(x = ".", org, lang) {
   dir.create(target, recursive = TRUE, showWarnings = FALSE)
   to_do <- list.files(config_path, full.names = TRUE)
   file.copy(to_do, to = path_(target, basename(to_do)), overwrite = TRUE)
-  path_("man", "figures") |> git_add(repo = x$get_path)
+  path_("man", "figures") |>
+    git_add(repo = x$get_path)
   return(invisible(NULL))
 }
 

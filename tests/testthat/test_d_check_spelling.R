@@ -276,7 +276,8 @@ test_that("check_spelling() on a project", {
     check_project(path_(path, "spelling"), fail = FALSE, quiet = TRUE),
     "checklist"
   )
-  path_(path, "spelling") |> read_checklist() -> x
+  path_(path, "spelling") |>
+    read_checklist() -> x
   stub(change_language_interactive, "menu_first", mock(3, 1))
   expect_is(
     {
@@ -336,7 +337,8 @@ test_that("check_spelling() on a project", {
     "write_checklist",
     function(x = ".") {
       x <- suppressMessages(read_checklist(x = x))
-      path_(x$get_path, "checklist.yml") |> write_yaml(x = x$template)
+      path_(x$get_path, "checklist.yml") |>
+        write_yaml(x = x$template)
       return(invisible(NULL))
     },
     depth = 2
@@ -358,7 +360,8 @@ test_that("check_spelling() on a project", {
     "hij/zij/..."
   ) |>
     writeLines(path_(path, "spelling", "source", "nederlands.md"))
-  path_(path, "spelling", "checklist.yml") |> readLines() -> old_checklist
+  path_(path, "spelling", "checklist.yml") |>
+    readLines() -> old_checklist
   head(old_checklist, -2) |>
     c(
       "  other:",
@@ -371,7 +374,8 @@ test_that("check_spelling() on a project", {
   expect_equal(nrow(z$get_spelling), 0)
 
   # fix README
-  path_(path, "spelling", "README.md") |> readLines() -> readme_old
+  path_(path, "spelling", "README.md") |>
+    readLines() -> readme_old
   writeLines(
     readme_old[!grepl("badges: start", readme_old)],
     path_(path, "spelling", "README.md")
@@ -441,7 +445,8 @@ test_that("check_spelling() works on a quarto project", {
   path <- tempfile("quarto")
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   defer(unlink(path, recursive = TRUE))
-  checklist$new(path, language = "en-GB", package = FALSE) |> write_checklist()
+  checklist$new(path, language = "en-GB", package = FALSE) |>
+    write_checklist()
   dir.create(path_(path, "source"), recursive = TRUE, showWarnings = FALSE)
   writeLines(
     c("project:", "  type: book"),

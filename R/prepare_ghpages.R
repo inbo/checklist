@@ -22,7 +22,8 @@ prepare_ghpages <- function(x = ".", verbose = TRUE) {
   git_branch_checkout(branch = "gh-pages", repo = x$get_path, orphan = TRUE)
   existing <- git_status(repo = x$get_path)
   git_rm(existing$file, repo = x$get_path)
-  path_(x$get_path, existing$file) |> unlink()
+  path_(x$get_path, existing$file) |>
+    unlink()
   sprintf(
     "<html><body><h1>Place holder for the %s package</h1></body></html>",
     package_name

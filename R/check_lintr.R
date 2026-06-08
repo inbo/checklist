@@ -90,7 +90,8 @@ list_missing_packages <- function(x = ".") {
   renv::dependencies(x, progress = FALSE)$Package |>
     unique() |>
     sort() -> required_packages
-  installed.packages() |> rownames() -> installed_packages
+  installed.packages() |>
+    rownames() -> installed_packages
   required_packages[!required_packages %in% installed_packages]
 }
 
@@ -108,7 +109,8 @@ select_lintr_file <- function(x) {
   }
   R_user_dir("citeme", "config") |>
     path_(
-      tolower(org$get_git) |> gsub(pattern = "https://", replacement = ""),
+      tolower(org$get_git) |>
+        gsub(pattern = "https://", replacement = ""),
       ".lintr"
     ) -> linter_file
   ifelse(file_test("-f", linter_file), linter_file, local_or_default_lintr(x))

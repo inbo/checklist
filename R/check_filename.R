@@ -185,7 +185,9 @@ split_path <- function(path) {
 }
 
 is_symlink <- function(paths) {
-  Sys.readlink(paths) |> nzchar(keepNA = TRUE) |> isTRUE()
+  Sys.readlink(paths) |>
+    nzchar(keepNA = TRUE) |>
+    isTRUE()
 }
 
 # Function to extract all intermediate dirs from a single path

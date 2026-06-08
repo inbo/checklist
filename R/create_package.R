@@ -42,7 +42,8 @@ create_package <- function(package, path = ".") {
   title <- readline(prompt = "Enter the title: ")
   description <- readline(prompt = "Enter the description: ")
   keywords <- ask_keywords()
-  preferred_protocol() |> sprintf(package) -> git
+  preferred_protocol() |>
+    sprintf(package) -> git
   org <- org_list_from_url(git)
   license <- select_license(org, type = "package")
   language <- ask_language(org, "Which is the main language of the package?")
@@ -139,7 +140,8 @@ create_package <- function(package, path = ".") {
     path = path,
     org = org,
     lang = language,
-    authors = individual2df(authors) |> individual2badge(),
+    authors = individual2df(authors) |>
+      individual2badge(),
     title = paste(package, title, sep = ": "),
     description = description,
     keywords = keywords,

@@ -88,7 +88,8 @@ get_official_license_location <- function(license, org) {
   }
   R_user_dir("citeme", "config") |>
     path_(
-      tolower(url) |> gsub(pattern = "https://", replacement = ""),
+      tolower(url) |>
+        gsub(pattern = "https://", replacement = ""),
       license_location$local_file
     )
 }

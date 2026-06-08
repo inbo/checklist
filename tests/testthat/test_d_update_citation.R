@@ -53,7 +53,8 @@ test_that("update_citation() works", {
   sink()
   expect_is(x, "checklist")
 
-  path_(path, package, "inst", "CITATION") |> readLines() -> old_citation
+  path_(path, package, "inst", "CITATION") |>
+    readLines() -> old_citation
   writeLines(
     old_citation[!grepl("^# .* citeme entry", old_citation)],
     path_(path, package, "inst", "CITATION")

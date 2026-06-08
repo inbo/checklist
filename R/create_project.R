@@ -22,7 +22,8 @@ create_project <- function(path, project) {
   keywords <- ask_keywords()
   use_vc <- ask_yes_no("Use version control?")
   if (use_vc) {
-    preferred_protocol() |> sprintf(project) -> git
+    preferred_protocol() |>
+      sprintf(project) -> git
     org <- org_list_from_url(git)
   } else {
     org <- new_org_list()

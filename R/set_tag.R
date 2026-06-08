@@ -38,7 +38,8 @@ set_tag <- function(x = ".") {
   )
   description <- description$new(file = path_(x$get_path, "DESCRIPTION"))
   version <- as.character(description$get_version())
-  path_(x$get_path, "NEWS.md") |> readLines() -> news
+  path_(x$get_path, "NEWS.md") |>
+    readLines() -> news
   regex <- sprintf(
     "^# `?%s`? [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$",
     description$get("Package")
@@ -67,7 +68,8 @@ set_tag <- function(x = ".") {
   git_config_set("user.email", "checklist@inbo.be", repo = repo)
 
   body <- news[seq(start[current], end[current])]
-  body[nchar(body) > 0] |> paste(collapse = "\n") -> tag_message
+  body[nchar(body) > 0] |>
+    paste(collapse = "\n") -> tag_message
   git_tag_create(
     name = paste0("v", version),
     message = tag_message,

@@ -196,8 +196,12 @@ list_quarto_md <- function(quarto, root) {
   } else {
     return(list(data.frame(quarto_lang = character(0), path = character(0))))
   }
-  unlist(files) |> unname() |> unique() -> files
-  dirname(quarto) |> path_rel_(root) |> path_(files) -> files
+  unlist(files) |>
+    unname() |>
+    unique() -> files
+  dirname(quarto) |>
+    path_rel_(root) |>
+    path_(files) -> files
   files <- files[file_test("-f", path_(root, files))]
   path_(root, files) |>
     vapply(

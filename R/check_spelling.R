@@ -93,7 +93,8 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
     system.file(package = "checklist") |>
     readLines() -> add_words
   if (package) {
-    path_(root, "DESCRIPTION") |> description$new() -> descr
+    path_(root, "DESCRIPTION") |>
+      description$new() -> descr
     descr$get_authors() |>
       format(include = c("given", "family")) |>
       strsplit(split = " ") |>
@@ -110,11 +111,13 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
   path_("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
   if (file_test("-f", dict)) {
-    readLines(dict) |> c(add_words) -> add_words
+    readLines(dict) |>
+      c(add_words) -> add_words
   }
   dict <- paste0(path_(root, "inst", tolower(lang)), ".dic")
   if (file_test("-f", dict)) {
-    readLines(dict) |> c(add_words) -> add_words
+    readLines(dict) |>
+      c(add_words) -> add_words
   }
   dict <- dictionary(lang = lang, add_words = add_words)
   attr(dict, "checklist_language") <- gsub("_", "-", lang)

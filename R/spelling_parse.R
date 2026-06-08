@@ -107,7 +107,8 @@ strip_eqn <- function(text) {
     sprintf("(\\\\(%s).*?)(\\{[^\\{]*?\\})", tags) |>
       gsub("\\1", eqn, perl = TRUE) -> eqn
   }
-  sprintf("\\\\(%s)(\\s*|$)", tags) |> gsub("", eqn) -> eqn
+  sprintf("\\\\(%s)(\\s*|$)", tags) |>
+    gsub("", eqn) -> eqn
   ok <- !grepl(sprintf("\\\\(%s)\\s*\\{", tags), eqn)
   text[which_eqn[ok]] <- eqn[ok]
   return(text)

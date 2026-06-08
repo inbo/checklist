@@ -51,7 +51,8 @@ test_that("check_description() works", {
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
-  path_(path, package, "DESCRIPTION") |> desc::description$new() -> this_desc
+  path_(path, package, "DESCRIPTION") |>
+    desc::description$new() -> this_desc
   this_desc$add_remotes("inbo/INBOmd")
   this_desc$write()
   git_add(files = "DESCRIPTION", repo = repo)

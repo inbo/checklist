@@ -3,7 +3,8 @@ test_that("check_filename() works", {
   path <- tempfile("check_filename")
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   defer(unlink(path, recursive = TRUE))
-  checklist$new(path, language = "en-GB", package = FALSE) |> write_checklist()
+  checklist$new(path, language = "en-GB", package = FALSE) |>
+    write_checklist()
 
   # fail on white space in folder names
   dir.create(path_(path, "with space"), recursive = TRUE, showWarnings = FALSE)

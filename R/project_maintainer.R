@@ -4,9 +4,12 @@ project_maintainer <- function(org, lang) {
   select_individual(lang = lang) |>
     individual2badge(role = c("aut", "cre")) -> author
   while (isTRUE(ask_yes_no("add another author?", default = FALSE))) {
-    select_individual(lang = lang) |> individual2badge(role = "aut") -> extra
-    attr(author, "footnote") |> c(attr(extra, "footnote")) -> footnote
-    c(author, extra) |> `attr<-`(which = "footnote", value = footnote) -> author
+    select_individual(lang = lang) |>
+      individual2badge(role = "aut") -> extra
+    attr(author, "footnote") |>
+      c(attr(extra, "footnote")) -> footnote
+    c(author, extra) |>
+      `attr<-`(which = "footnote", value = footnote) -> author
   }
 
   info <- ask_rightsholder_funder(org = org, type = "rightsholder")

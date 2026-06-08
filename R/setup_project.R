@@ -21,7 +21,8 @@ setup_project <- function(path = ".") {
     if (is_repository(path)) {
       git <- git_remote_list(path)$url
     } else {
-      preferred_protocol() |> sprintf(basename(path)) -> git
+      preferred_protocol() |>
+        sprintf(basename(path)) -> git
     }
     org <- org_list_from_url(git)
     language <- ask_language(org, prompt = "What is the main project language?")

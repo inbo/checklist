@@ -14,7 +14,8 @@ preferred_protocol <- function() {
     c("https (easy)", "ssh (more secure)") |>
       menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
-    dirname(config_file) |> dir.create(recursive = TRUE, showWarnings = FALSE)
+    dirname(config_file) |>
+      dir.create(recursive = TRUE, showWarnings = FALSE)
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
   c(config[["git"]][["organisation"]], "new git organisation") |>
@@ -29,7 +30,8 @@ preferred_protocol <- function() {
       sort() |>
       unique() -> config[["git"]][["organisation"]]
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
-    ssh_http(org_url) |> cache_org(config_folder = config_folder)
+    ssh_http(org_url) |>
+      cache_org(config_folder = config_folder)
   } else {
     org_url <- config[["git"]][["organisation"]][org_choice]
   }

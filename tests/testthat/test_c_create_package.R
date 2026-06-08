@@ -9,7 +9,8 @@ test_that("create_package() works", {
   dir.create(path)
   defer(unlink(path, recursive = TRUE))
 
-  tempfile("create") |> basename() -> package
+  tempfile("create") |>
+    basename() -> package
   stub(create_package, "R_user_dir", mock_r_user_dir(config_dir), depth = 2)
   stub(create_package, "preferred_protocol", "git@gitlab.com:thierryo/%s.git")
   stub(
@@ -266,8 +267,10 @@ test_that("create_package() works", {
   expect_length(x$.__enclos_env__$private$linter, 6)
   expect_output(print(x), "6 linters found")
 
-  path_(path, package, "NEWS.md") |> readLines() -> news_old
-  tail(news_old, -1) |> writeLines(path_(path, package, "NEWS.md"))
+  path_(path, package, "NEWS.md") |>
+    readLines() -> news_old
+  tail(news_old, -1) |>
+    writeLines(path_(path, package, "NEWS.md"))
   expect_match(check_news(x), "No reference to a package version")
 
   unlink(path_(path, package, "NEWS.md"))

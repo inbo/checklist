@@ -45,7 +45,8 @@ setup_package <- function(path = ".") {
       )
       x <- checklist$new(x = path, language = language, package = TRUE)
       descript$set("Language", language)
-      path_(x$get_path, "DESCRIPTION") |> descript$write()
+      path_(x$get_path, "DESCRIPTION") |>
+        descript$write()
     }
     x$set_required()
     x$set_ignore(c(".github", "LICENSE.md"))
@@ -60,7 +61,8 @@ setup_package <- function(path = ".") {
   git_add(files = "DESCRIPTION", force = TRUE, repo = path)
 
   if (file_test("-f", path_(path, ".gitignore"))) {
-    path_(path, ".gitignore") |> readLines() -> current
+    path_(path, ".gitignore") |>
+      readLines() -> current
     path_("generic_template", "gitignore") |>
       system.file(package = "checklist") |>
       readLines() -> new
@@ -79,7 +81,8 @@ setup_package <- function(path = ".") {
   }
 
   if (file_test("-f", path_(path, ".Rbuildignore"))) {
-    path_(path, ".Rbuildignore") |> readLines() -> current
+    path_(path, ".Rbuildignore") |>
+      readLines() -> current
     path_("package_template", "rbuildignore") |>
       system.file(package = "checklist") |>
       readLines() -> new
@@ -129,7 +132,9 @@ setup_package <- function(path = ".") {
   create_readme(
     path = path,
     org = org,
-    authors = descript$get_authors() |> individual2df() |> individual2badge(),
+    authors = descript$get_authors() |>
+      individual2df() |>
+      individual2badge(),
     title = sprintf("%s: %s", package, descript$get_field("Title")),
     description = descript$get_field("Description"),
     keywords = descript$get_field("Config/citeme/keywords"),
