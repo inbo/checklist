@@ -39,8 +39,9 @@ setup_package <- function(path = ".") {
         package = TRUE
       )
     } else {
+      org <- org_list$new()$read(path)
       language <- ask_language(
-        org = org_list$new()$read(path),
+        languages = org$get_languages,
         prompt = "Which is the main language of the package?"
       )
       x <- checklist$new(x = path, language = language, package = TRUE)

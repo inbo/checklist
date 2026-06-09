@@ -25,7 +25,10 @@ setup_project <- function(path = ".") {
         sprintf(basename(path)) -> git
     }
     org <- org_list_from_url(git)
-    language <- ask_language(org, prompt = "What is the main project language?")
+    language <- ask_language(
+      org$get_languages,
+      prompt = "What is the main project language?"
+    )
     x <- checklist$new(x = path, language = language, package = FALSE)
     x$allowed()
     x$set_ignore(c(".github", "LICENSE.md"))

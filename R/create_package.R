@@ -46,7 +46,10 @@ create_package <- function(package, path = ".") {
     sprintf(package) -> git
   org <- org_list_from_url(git)
   license <- select_license(org, type = "package")
-  language <- ask_language(org, "Which is the main language of the package?")
+  language <- ask_language(
+    org$get_languages,
+    "Which is the main language of the package?"
+  )
   info <- package_maintainer(org = org, lang = language)
   authors <- info$authors
   org <- info$org

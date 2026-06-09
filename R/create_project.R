@@ -29,7 +29,10 @@ create_project <- function(path, project) {
     org <- new_org_list()
   }
   license <- select_license(org, type = "project")
-  language <- ask_language(org, prompt = "What is the main project language?")
+  language <- ask_language(
+    org$get_languages,
+    prompt = "What is the main project language?"
+  )
   info <- project_maintainer(org = org, lang = language)
   authors <- info$authors
   org <- info$org
