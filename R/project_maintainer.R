@@ -34,7 +34,7 @@ project_maintainer <- function(org, lang) {
   selected_role <- c(selected_role, rep(list("pbl"), length(extra)))
   org <- info$org
   vapply(
-    seq_along(selected_org),
+    which(!is.na(selected_org)),
     FUN = function(x) {
       list(org$get_person(
         selected_org[x],

@@ -30,7 +30,7 @@ package_maintainer <- function(org, lang) {
     authors = c(
       maintainer,
       vapply(
-        seq_along(selected_org),
+        which(!is.na(selected_org)),
         FUN = function(x) {
           list(org$get_person(
             selected_org[x],
