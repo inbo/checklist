@@ -143,6 +143,7 @@ clean_incoming <- function(issues) {
 }
 
 check_test <- function(package_path, quiet = FALSE) {
+  quiet_cat("Checking unit tests\n", quiet = quiet)
   test_folder <- path_(package_path, "tests")
   if (!dir.exists(test_folder)) {
     display_message("No tests found", verbose = !quiet)
