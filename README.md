@@ -1,6 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
 
 ![Language: en-GB](https://img.shields.io/badge/language-en--GB-c04384)
@@ -39,8 +37,8 @@ universe](https://inbo.r-universe.dev/builds) via
 # Enable the INBO universe
 options(
   repos = c(
-    inbo = "https://inbo.r-universe.dev",
-    CRAN = "https://cloud.r-project.org"
+    CRAN = "https://cloud.r-project.org",
+    inbo = "https://inbo.r-universe.dev"
   )
 )
 # Install the packages

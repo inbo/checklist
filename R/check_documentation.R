@@ -103,7 +103,7 @@ check_documentation <- function(x = ".", quiet = FALSE) {
   doc_warnings <- doc_warnings[length(unexported) > 0]
 
   if (file_test("-f", path_(x$get_path, "README.Rmd"))) {
-    build_readme(x$get_path, encoding = "UTF-8")
+    build_readme(x$get_path)
     doc_error <- c(
       doc_error,
       paste(
