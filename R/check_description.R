@@ -48,7 +48,10 @@ check_description <- function(x = ".") {
     branch_info <- git_branch_list(repo = repo)
     head_sha <- git_commit_id(repo = repo)
     current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
-    if (length(current_branch) && current_branch %in% c("main", "master")) {
+    if (
+      length(current_branch) &&
+        grepl("^(gh-readonly-queue/)?(main|master)", current_branch)
+    ) {
       paste(
         "Branch master detected. From Oct. 1, 2020, any new repositories you",
         "create uses\nmain as the default branch, instead of master. You can",
@@ -62,7 +65,11 @@ check_description <- function(x = ".") {
       desc_error <- character(0)
     } else {
       assert_that(
-        all(grepl("origin", branch_info$name[!branch_info$local])),
+        all(grepl(
+          "origin",
+          branch_info$name[!branch_info$local],
+          fixed = TRUE
+        )),
         msg = "no remote called `origin` available"
       )
       assert_that(
@@ -91,10 +98,13 @@ check_description <- function(x = ".") {
         path = repo
       )
     }
-    old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
-    old_version <- gsub("-Version: ", "", old_version)
+    grepv("\\-Version: ", desc_diff) |>
+      gsub(
+        pattern = "^.*?\\s([0-9]+\\.[0-9]+(\\.[0-9]+)?).*?$",
+        replacement = "\\1"
+      ) -> old_version
     version_bump <- ifelse(
-      length(old_version),
+      length(old_version) == 1,
       ifelse(
         package_version(old_version) < package_version(version),
         NA,
@@ -264,7 +274,7 @@ check_license <- function(x = ".", org) {
     regex <- ".*mailto:(.*?)\\)\\[\\^cph\\].*"
     which_badge <- grep(regex, readme)
     gsub(regex, "\\1", readme[which_badge]) |>
-      gsub(pattern = "%40", replacement = "@") |>
+      gsub(pattern = "%40", replacement = "@", fixed = TRUE) |>
       org$get_allowed_licenses(type = "project") -> allowed_license
     fmt <- paste(
       "%s license is not allowed in this organisation.",
