@@ -10,6 +10,7 @@ keywords:
 - quality control
 - documentation
 - publication
+- inbo_version
 contact:
 - given-names: Thierry
   family-names: Onkelinx
@@ -25,4 +26,4 @@ identifiers:
   value: 10.5281/zenodo.4028303
 - type: url
   value: https://inbo.github.io/checklist/
-version: 0.5.3
+version: 0.6.0

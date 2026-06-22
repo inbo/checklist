@@ -66,12 +66,9 @@ checklist <- R6Class(
       extra <- new_motivation != ""
       new_motivation <- c(motivation, new_motivation[extra])
       new_allowed <- c(value, current[!keep][extra])
-      new_allowed <- lapply(
-        order(new_allowed),
-        function(i) {
-          list(motivation = new_motivation[i], value = new_allowed[i])
-        }
-      )
+      new_allowed <- lapply(order(new_allowed), function(i) {
+        list(motivation = new_motivation[i], value = new_allowed[i])
+      })
       assign(paste0("allowed_", which), new_allowed, envir = private)
       invisible(self)
     },
@@ -177,11 +174,10 @@ checklist <- R6Class(
     #' @param language The default language for spell checking.
     #' @param package Is this a package or a project?
     #' @importFrom assertthat assert_that is.flag is.string noNA
-    #' @importFrom fs is_dir path_real
     initialize = function(x = ".", language, package = TRUE) {
       assert_that(is.string(x), noNA(x), is.flag(package), noNA(package))
-      x <- path_real(x)
-      assert_that(is_dir(x))
+      x <- normalizePath(x, winslash = "/", mustWork = TRUE)
+      assert_that(file_test("-d", x))
       private$path <- x
       super$initialize(language = language, base_path = private$path)
       self$package <- package
@@ -229,6 +225,14 @@ checklist <- R6Class(
       return(invisible(self))
     },
 
+    #' @description Set optional install commands for GitHub Actions
+    #' @param commands A vector with commands.
+    set_gha_install = function(commands) {
+      assert_that(is.character(commands), noNA(commands))
+      private$gha_install <- commands
+      invisible(self)
+    },
+
     #' @description set required checks
     #' @param checks a vector of required checks
     set_required = function(checks = character(0)) {
@@ -253,6 +257,11 @@ checklist <- R6Class(
     #' @field get_checked A vector with checked topics.
     get_checked = function() {
       return(names(private$checked))
+    },
+
+    #' @field get_gha_install A vector with bash commands for GitHub Actions.
+    get_gha_install = function() {
+      return(private$gha_install)
     },
 
     #' @field get_path The path to the package.
@@ -301,7 +310,8 @@ Please contact the maintainer of the `checklist` package."
         notes = private$allowed_notes,
         spelling = super$settings,
         required = c_sort(unique(private$required)),
-        pak = private$pak
+        pak = private$pak,
+        gha_install = private$gha_install
       )
     }
   ),
@@ -315,7 +325,6 @@ Please contact the maintainer of the `checklist` package."
       "DESCRIPTION",
       "documentation",
       "R CMD check",
-      "codemeta",
       "filename conventions",
       "folder conventions",
       "license",
@@ -349,7 +358,8 @@ Please contact the maintainer of the `checklist` package."
       checklist_path = "."
     ),
     warnings = character(0),
-    pak = character(0)
+    pak = character(0),
+    gha_install = character(0)
   )
 )
 

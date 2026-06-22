@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.5.3
+Version: 0.6.0
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -22,17 +22,12 @@ Depends:
     R (>= 4.1.0)
 Imports:
     assertthat,
+    citeme (>= 0.1.2),
     cli,
-    codemetar,
     desc,
     devtools (> 2.4.0),
-    fs,
     gert,
-    gh,
-    httr,
     hunspell,
-    jsonlite,
-    knitr,
     lintr (>= 3.3.0),
     pkgdown (>= 2.0.7),
     R6,
@@ -47,6 +42,7 @@ Suggests:
     covr,
     curl,
     cyclocomp,
+    knitr,
     mockery,
     pak,
     renv,
@@ -54,14 +50,15 @@ Suggests:
     rstudioapi,
     showtext,
     sysfonts,
-    testthat,
-    zen4R (>= 0.10)
-VignetteBuilder: 
+    testthat
+VignetteBuilder:
     knitr
-Config/checklist/communities: inbo
-Config/checklist/keywords: quality control; documentation; publication
+Additional_repositories: https://inbo.r-universe.dev
+Config/citeme/communities: inbo
+Config/citeme/keywords: quality control; documentation; publication;
+    inbo_version
+Config/roxygen2/version: 8.0.0
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 SystemRequirements: Pandoc (>= 1.17.2)

@@ -22,19 +22,15 @@ Have a look at \code{vignette("spelling", package = "checklist")} for more
 details.
 }
 \seealso{
-Other both: 
-\code{\link{add_badges}()},
-\code{\link{check_filename}()},
-\code{\link{check_lintr}()},
-\code{\link{custom_dictionary}()},
-\code{\link{default_organisation}()},
-\code{\link{print.checklist_spelling}()},
-\code{\link{read_checklist}()},
-\code{\link{read_organisation}()},
-\code{\link{update_citation}()},
-\code{\link{write_checklist}()},
-\code{\link{write_citation_cff}()},
-\code{\link{write_organisation}()},
-\code{\link{write_zenodo_json}()}
+Other both:
+\code{\link[=add_agents]{add_agents()}},
+\code{\link[=add_issue_templates]{add_issue_templates()}},
+\code{\link[=check_filename]{check_filename()}},
+\code{\link[=check_lintr]{check_lintr()}},
+\code{\link[=custom_dictionary]{custom_dictionary()}},
+\code{\link[=print.checklist_spelling]{print.checklist_spelling()}},
+\code{\link[=read_checklist]{read_checklist()}},
+\code{\link[=update_citation]{update_citation()}},
+\code{\link[=write_checklist]{write_checklist()}}
 }
 \concept{both}

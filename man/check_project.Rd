@@ -20,8 +20,8 @@ session.}
 Set or update the required checks via \code{setup_project()}.
 }
 \seealso{
-Other project: 
-\code{\link{check_folder}()},
-\code{\link{check_source}()}
+Other project:
+\code{\link[=check_folder]{check_folder()}},
+\code{\link[=check_source]{check_source()}}
 }
 \concept{project}

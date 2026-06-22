@@ -11,9 +11,8 @@
 #' @inheritParams read_checklist
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom fs path
 #' @importFrom gert git_config git_config_set git_info git_tag_create
-#' git_tag_list
+#' @importFrom gert git_tag_list
 #' @importFrom withr defer
 #' @family git
 set_tag <- function(x = ".") {
@@ -37,11 +36,9 @@ set_tag <- function(x = ".") {
     git_info(repo = repo)$shorthand != "HEAD",
     msg = "`set_tag()` doesn't work on a repository with detached HEAD."
   )
-  description <- description$new(
-    file = path(x$get_path, "DESCRIPTION")
-  )
+  description <- description$new(file = path_(x$get_path, "DESCRIPTION"))
   version <- as.character(description$get_version())
-  path(x$get_path, "NEWS.md") |>
+  path_(x$get_path, "NEWS.md") |>
     readLines() -> news
   regex <- sprintf(
     "^# `?%s`? [0-9]+\\.[0-9]+(\\.[0-9]+){0,1}$",
@@ -57,20 +54,16 @@ set_tag <- function(x = ".") {
     return(invisible(NULL))
   }
   old_config <- git_config(repo = repo)
-  defer(
-    git_config_set(
-      "user.name",
-      old_config$value[old_config$name == "user.name"],
-      repo = repo
-    )
-  )
-  defer(
-    git_config_set(
-      "user.email",
-      old_config$value[old_config$name == "user.email"],
-      repo = repo
-    )
-  )
+  defer(git_config_set(
+    "user.name",
+    old_config$value[old_config$name == "user.name"],
+    repo = repo
+  ))
+  defer(git_config_set(
+    "user.email",
+    old_config$value[old_config$name == "user.email"],
+    repo = repo
+  ))
   git_config_set("user.name", "Checklist bot", repo = repo)
   git_config_set("user.email", "checklist@inbo.be", repo = repo)
 

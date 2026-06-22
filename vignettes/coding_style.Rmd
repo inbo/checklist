@@ -25,10 +25,7 @@ references:
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
 ## Coding style
@@ -103,10 +100,12 @@ This works in 99.9% of the cases and saves you a lot of time.
 ## Using a different coding style
 
 `checklist` allows you to define your own set of linters at the organisation level.
-To do so, create a `.lintr` file in the root of your organisations' `checklist` repository.
+Because `checklist` depends on the [`citeme`](https://inbo.github.io/citeme/) package, and `citeme` allows to define custom organisation settings via a git repository, we will reuse this repository.
+To do so, create a `.lintr` file in the root of your organisations' `citeme` repository.
 This allows for a different coding style that better fits your organisation, but still enforces the same style within your organisation.
 
-In case there is no `checklist` repository in your organisation, or there is no `.lintr` file in it, `checklist` looks for a local `.lintr` file in the root of your project.
-If this file is not present, it uses the default `.lintr` file provided with the `checklist` package.
+In case there is no `citeme` repository in your organisation, or there is no `.lintr` file in it, `checklist` looks for a local `.lintr` file in the root of your project.
+Note that a local `.lintr` file is ignored if a `.lintr` file is found in your organisation's `citeme` repository.
+`checklist` falls back to using the default `.lintr` file provided with the `checklist` package when no other `.lintr` file is found.
 
 ## References

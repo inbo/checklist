@@ -6,16 +6,21 @@
 #' Notice that `check_package()` runs several additional tests.
 #' @inheritParams read_checklist
 #' @inheritParams rcmdcheck::rcmdcheck
+#' @param time_out The time in seconds to wait for a response from the world
+#' clock API.
+#' Default is 15 seconds, but you can increase this if you have a slow internet
+#' connection.
+#' If the world clock API is not available, the system clock will be used
+#' without a warning, but the check will be less reliable.
 #' @return A `checklist` object.
 #' @importFrom assertthat assert_that
 #' @importFrom gert git_ahead_behind git_branch_exists git_info
-#' @importFrom httr HEAD
 #' @importFrom rmarkdown pandoc_exec
 #' @importFrom rcmdcheck rcmdcheck
 #' @importFrom withr defer with_path
 #' @export
 #' @family package
-check_cran <- function(x = ".", quiet = FALSE) {
+check_cran <- function(x = ".", quiet = FALSE, time_out = 30) {
   x <- read_checklist(x = x)
   assert_that(
     x$package,
@@ -26,20 +31,42 @@ check_cran <- function(x = ".", quiet = FALSE) {
   # don't use fancy Quotes when checking
   old_options <- options()
   defer(options(old_options))
-  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = 360)
-  options(useFancyQuotes = FALSE, timeout = max(360, getOption("timeout")))
+  options(useFancyQuotes = FALSE)
 
-  # test if the worlds clock is available
-  clock_status <- HEAD("http://worldclockapi.com/api/json/utc/now")$status_code
-  if (clock_status != 200) {
+  # Save the original timeout option and set the new one
+  old_timeout <- getOption("timeout")
+  options(timeout = max(time_out, getOption("timeout")))
+  Sys.setenv("R_DEFAULT_INTERNET_TIMEOUT" = time_out)
+
+  # Attempt to read from the URL
+  clock_is_available <- tryCatch(
+    {
+      suppressWarnings({
+        # Open connection
+        con <- url("http://worldclockapi.com/api/json/utc/now", "r")
+        # Read one line to verify the connection is active and valid
+        readLines(con, n = 1, warn = FALSE)
+        close(con)
+      })
+      TRUE # Return TRUE if the above succeeds
+    },
+    error = function(e) {
+      FALSE # Return FALSE if any error occurs (timeout, 404, unreachable)
+    }
+  )
+
+  # Restore the original timeout
+  options(timeout = old_timeout)
+
+  # Set the environment variable if the clock is not available
+  if (!clock_is_available) {
     Sys.setenv("_R_CHECK_SYSTEM_CLOCK_" = 0)
   }
-
   check_output <- with_path(
     dirname(pandoc_exec()),
     rcmdcheck(
       path = x$get_path,
-      args = c("--timings", "--as-cran", "--no-manual"),
+      args = c("--timings", "--as-cran", "--no-manual", "--no-tests"),
       error_on = "never",
       quiet = quiet,
       timeout = Inf
@@ -75,6 +102,7 @@ Days since last update: [0-9]+",
     }
   }
   # nocov end
+
   check_output$notes <- clean_incoming(check_output$notes)
   check_output$warnings <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$warnings)
   check_output$notes <- gsub(" \\[\\d+s/\\d+s\\]", "", check_output$notes)
@@ -82,7 +110,7 @@ Days since last update: [0-9]+",
   check_output$warnings <- gsub(" \\[\\d+s\\]", "", check_output$warnings)
   check_output$notes <- gsub(" \\[\\d+s\\]", "", check_output$notes)
   x$add_rcmdcheck(
-    errors = check_output$errors,
+    errors = c(check_output$errors, check_test(x$get_path)),
     warnings = check_output$warnings,
     notes = check_output$notes
   )
@@ -112,4 +140,38 @@ clean_incoming <- function(issues) {
     } # nocov end
   }
   return(issues)
+}
+
+check_test <- function(package_path, quiet = FALSE) {
+  quiet_cat("Checking unit tests\n", quiet = quiet)
+  test_folder <- path_(package_path, "tests")
+  if (!dir.exists(test_folder)) {
+    display_message("No tests found", verbose = !quiet)
+    return(character(0))
+  }
+  test_files <- list.files(test_folder, pattern = "\\.R$", ignore.case = TRUE)
+  if (length(test_files) == 0) {
+    display_message("No tests found", verbose = !quiet)
+    return(character(0))
+  }
+  path_(test_folder, test_files) |>
+    sprintf(fmt = "Rscript --vanilla %s") |>
+    paste(collapse = "\n") |>
+    sprintf(fmt = "cd %2$s\n%1$s", test_folder) -> test_command
+  test_output <- try(system(test_command, intern = TRUE))
+  if (inherits(test_output, "try-error")) {
+    display_message("unit test Try error", verbose = !quiet)
+    return("unit test try error. please contact the package maintainer.")
+  } else {
+    grep("Rout.fail", test_output) |>
+      paste(collapse = ", ") |>
+      cat()
+  }
+  test_output <- paste(test_output, collapse = "\n")
+
+  if (!grepl("Failed tests", test_output)) {
+    test_output <- character(0)
+  }
+  display_message(test_output, verbose = !quiet)
+  return(test_output)
 }

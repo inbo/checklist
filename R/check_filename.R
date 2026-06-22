@@ -33,7 +33,6 @@
 #'
 #' @inheritParams read_checklist
 #' @export
-#' @importFrom fs path path_split
 #' @family both
 check_filename <- function(x = ".") {
   x <- read_checklist(x = x)
@@ -57,8 +56,12 @@ check_filename <- function(x = ".") {
   exceptions <- list(
     c("R"),
     c(".github", "ISSUE_TEMPLATE"),
-    c(".github", "PULL_REQUEST_TEMPLATE")
+    c(".github", "PULL_REQUEST_TEMPLATE"),
+    c("inst", "package_template", "ISSUE_TEMPLATE")
   )
+  if (is_repository(x$get_path)) {
+    exceptions <- c(exceptions, git_submodule_list(repo = x$get_path)$path)
+  }
   dirs <- dirs[!dirs %in% exceptions]
   check_dir <- vapply(
     dirs,
@@ -75,7 +78,7 @@ check_filename <- function(x = ".") {
     vapply(
       dirs[!check_dir],
       function(x) {
-        do.call(path, as.list(x))
+        do.call(file.path, as.list(x))
       },
       character(1)
     )
@@ -92,23 +95,29 @@ check_filename <- function(x = ".") {
         "\\.[a-zA-Z]+ignore",
         "\\.Rprofile",
         "\\.[a-zA-Z]+\\.(json|yml)",
+        "Cargo\\..*",
         "CITATION",
-        "CODEOWNERS",
-        "DESCRIPTION",
-        "NAMESPACE",
         "CITATION\\.cff",
-        "README\\.R?md",
-        "NEWS\\.md",
+        "CODEOWNERS",
         "CODE_OF_CONDUCT\\.md",
         "CONTRIBUTING\\.md",
-        "LICENSE(\\.md)?",
-        "SUPPORT\\.md",
-        "SECURITY\\.md",
-        "FUNDING\\.yml",
+        "DESCRIPTION",
         "Dockerfile",
+        "INSTALL",
+        "INSTALL\\.windows",
+        "ISSUE_TEMPLATE\\.md",
+        "LICENSE(\\.md)?",
+        "FUNDING\\.yml",
+        "Makevars.*",
+        "NAMESPACE",
+        "NEWS\\.md",
+        "PULL_REQUEST_TEMPLATE\\.md",
+        "README\\.R?md",
+        "REVIEWING.md",
+        "SECURITY\\.md",
+        "SUPPORT\\.md",
         "WORDLIST.*",
         "docker-compose.*\\.yml",
-        "REVIEWING.md",
         "_redirects"
       ),
       collapse = "|"
@@ -118,20 +127,24 @@ check_filename <- function(x = ".") {
   files <- files[!grepl("\\.(otf|ttf)$", basename(files))] # ignore fonts files
   files <- files[!grepl("man\\/.*\\.Rd", files)] # ignore Rd files
   files <- files[!grepl("R\\/sysdata.rda", files)] # ignore sysdata.rda
-  base <- gsub("(.*)\\.(.*)?", "\\1", basename(files))
+  base <- gsub("(.*)\\..*?$", "\\1", basename(files), perl = TRUE)
+
   problems <- c(
     problems,
     sprintf(
       "Basename must contain only lower case, numbers, `_` or `-`.
 Fails: `%s`",
-      files[!grepl("^[a-z0-9_-]*$", base)]
+      files[
+        !grepl("^[a-z0-9_-]*$", base) &
+          !grepl("\\.agent\\.md$", basename(files))
+      ]
     )
   )
 
   # ignore .rda files in the data directory
   to_ignore <- !grepl("^data/[a-z0-9_]*\\.rda$", files)
 
-  extension <- gsub("(.*)\\.(.*)?", "\\2", basename(files))
+  extension <- gsub(".*\\.(.*?)$", "\\1", basename(files), perl = TRUE)
   # extension exceptions
   exception <- grepl("^R(d|da|nw|md|proj)?$", extension) |
     grepl("^([a-z0-9])*?$", extension)
@@ -152,13 +165,11 @@ Fails: `%s`",
   )
 
   graphics_file <- extension %in% c("csl", graphics_ext)
-  warnings <- c(
-    sprintf(
-      "Use `-` as separator in the basename of graphics files.
+  warnings <- c(sprintf(
+    "Use `-` as separator in the basename of graphics files.
   File: `%s`",
-      files[grepl("_+", base) & graphics_file]
-    )
-  )
+    files[grepl("_+", base) & graphics_file]
+  ))
 
   x$add_error(problems, item = "filename conventions", keep = FALSE)
   x$add_warnings(warnings, item = "filename conventions")
@@ -182,25 +193,21 @@ is_symlink <- function(paths) {
 # Function to extract all intermediate dirs from a single path
 extract_dirs <- function(path) {
   parts <- strsplit(dirname(path), "/")[[1]]
-  dirs <- sapply(
-    seq_along(parts),
-    function(i) paste(parts[1:i], collapse = "/")
-  )
+  dirs <- sapply(seq_along(parts), function(i) {
+    paste(parts[1:i], collapse = "/")
+  })
   return(dirs)
 }
 
 #' @importFrom gert git_ls
 list_project_files <- function(path) {
-  oldwd <- getwd()
-  on.exit(setwd(oldwd), add = TRUE)
-  setwd(path)
-  if (is_repository(".") && nrow(git_ls(repo = ".")) > 0) {
-    files <- git_ls(repo = ".")$path
+  if (is_repository(path) && nrow(git_ls(repo = path)) > 0) {
+    files <- git_ls(repo = path)$path
     dirs <- unique(unlist(lapply(files, extract_dirs)))
   } else {
-    dirs <- list.dirs(".", recursive = TRUE, full.names = FALSE)
-    files <- list.files(".", recursive = TRUE, all.files = TRUE)
+    dirs <- list.dirs(path, recursive = TRUE, full.names = FALSE)
+    files <- list.files(path, recursive = TRUE, all.files = TRUE)
   }
-  files <- files[!vapply(files, is_symlink, logical(1))]
+  files <- files[!vapply(path_(path, files), is_symlink, logical(1))]
   return(list(files = files, dirs = dirs))
 }

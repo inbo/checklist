@@ -19,7 +19,7 @@ test_that("clean_git with `main` as main branch", {
   git_config_set(name = "user.name", value = "junk", repo = repo2)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo2)
 
-  writeLines("foo", path(repo, "junk.txt"))
+  writeLines("foo", path_(repo, "junk.txt"))
   git_add("junk.txt", repo = repo)
   junk <- gert::git_commit(message = "Initial commit", repo = repo)
   branch_info <- git_branch_list(repo = repo)
@@ -31,7 +31,7 @@ test_that("clean_git with `main` as main branch", {
     repo = repo
   )
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo)
-  writeLines("foo", path(repo, "junk2.txt"))
+  writeLines("foo", path_(repo, "junk2.txt"))
   git_add("junk2.txt", repo = repo)
   junk2 <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(
@@ -54,15 +54,12 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # update local branches that are behind
-  writeLines("bar", path(repo, "junk2.txt"))
+  writeLines("bar", path_(repo, "junk2.txt"))
   git_add("junk2.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)
   git_branch_create(branch = "branch", checkout = TRUE, repo = repo2)
-  gert::git_branch_set_upstream(
-    upstream = "origin/branch",
-    repo = repo2
-  )
+  gert::git_branch_set_upstream(upstream = "origin/branch", repo = repo2)
   expect_invisible(clean_git(repo = repo2, verbose = FALSE))
   branch_info_repo <- git_branch_list(repo = repo)
   branch_info_repo2 <- git_branch_list(repo = repo2)
@@ -84,7 +81,7 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # don't push local changes ahead
-  writeLines("junk", path(repo2, "junk2.txt"))
+  writeLines("junk", path_(repo2, "junk2.txt"))
   git_add("junk2.txt", repo = repo2)
   junk <- gert::git_commit(message = "branch commit", repo = repo2)
 
@@ -114,7 +111,7 @@ test_that("clean_git with `main` as main branch", {
   )
 
   # issue warnings when branch is ahead and behind
-  writeLines("bar", path(repo, "junk.txt"))
+  writeLines("bar", path_(repo, "junk.txt"))
   git_add("junk.txt", repo = repo)
   junk <- gert::git_commit(message = "branch commit", repo = repo)
   git_push(repo = repo)

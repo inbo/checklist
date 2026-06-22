@@ -1,13 +1,13 @@
 #' @importFrom assertthat assert_that
-#' @importFrom fs dir_create path
+#' @importFrom citeme ask_url cache_org menu_first ssh_http
 #' @importFrom tools R_user_dir
 #' @importFrom utils menu
 #' @importFrom yaml read_yaml write_yaml
 preferred_protocol <- function() {
   config <- list()
-  config_folder <- R_user_dir("checklist", which = "config")
-  config_file <- path(config_folder, "config.yml")
-  if (file_exists(config_file)) {
+  config_folder <- R_user_dir("citeme", which = "config")
+  config_file <- path_(config_folder, "config.yml")
+  if (file_test("-f", config_file)) {
     config <- read_yaml(config_file)
   }
   if (!has_name(config, "git") || !has_name(config$git, "protocol")) {
@@ -15,7 +15,7 @@ preferred_protocol <- function() {
       menu_first(title = "Which protocol do you prefer?") -> protocol
     config[["git"]][["protocol"]] <- c("https", "ssh")[protocol]
     dirname(config_file) |>
-      dir_create()
+      dir.create(recursive = TRUE, showWarnings = FALSE)
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
   }
   c(config[["git"]][["organisation"]], "new git organisation") |>
@@ -26,10 +26,7 @@ preferred_protocol <- function() {
       "E.g. `https://github.com/inbo`: "
     ) |>
       ask_url() -> org_url
-    c(
-      config[["git"]][["organisation"]],
-      org_url
-    ) |>
+    c(config[["git"]][["organisation"]], org_url) |>
       sort() |>
       unique() -> config[["git"]][["organisation"]]
     write_yaml(x = config, file = config_file, fileEncoding = "UTF-8")
@@ -49,38 +46,9 @@ preferred_protocol <- function() {
   )
 }
 
-#' Function to ask a simple yes no question
-#' Provides a simple wrapper around `utils::askYesNo()`.
-#' This function is used to ask questions in an interactive way.
-#' It repeats the question until a valid answer is given.
-#' @inheritParams utils::askYesNo
-#' @importFrom utils askYesNo
-#' @export
-#' @family utils
-ask_yes_no <- function(
-  msg,
-  default = TRUE,
-  prompts = c("Yes", "No", "Cancel"),
-  ...
-) {
-  if (!interactive()) {
-    return(default)
-  }
-  assert_that(is.string(msg), noNA(msg))
-  answer <- try(askYesNo(msg = msg, default = default, prompts = prompts))
-  while (inherits(answer, "try-error") || is.null(answer)) {
-    sprintf("`%s`", prompts) |>
-      paste(collapse = ", ") |>
-      sprintf(fmt = "Please answer with %s.") |>
-      warning(immediate. = TRUE, call. = FALSE)
-    answer <- try(askYesNo(msg = msg, default = default, prompts = prompts))
-  }
-  return(answer)
-}
-
-#' @importFrom fs file_exists path
+#' @importFrom citeme ask_yes_no
 renv_activate <- function(path, use_renv) {
-  if (file_exists(path(path, "renv.lock"))) {
+  if (file_test("-f", path_(path, "renv.lock"))) {
     return(invisible(NULL))
   }
   if (missing(use_renv)) {
@@ -92,10 +60,6 @@ renv_activate <- function(path, use_renv) {
   if (!use_renv) {
     return(invisible(NULL))
   }
-  c(
-    "if (!utils::file_test(\"-f\", \"renv.lock\")) {",
-    "  renv::init()",
-    "}"
-  ) |>
-    writeLines(path(path, ".Rprofile"))
+  c("if (!utils::file_test(\"-f\", \"renv.lock\")) {", "  renv::init()", "}") |>
+    writeLines(path_(path, ".Rprofile"))
 }

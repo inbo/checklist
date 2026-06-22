@@ -19,13 +19,37 @@ test_that("create_package() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
+  stub(
+    create_package,
+    "package_maintainer",
+    list(
+      authors = c(
+        person(
+          given = "Given",
+          family = "Test",
+          email = "given.test@vlaanderen.be",
+          comment = c(
+            ORCID = "0000-0002-1825-0097",
+            affiliation = "Vlaamse overheid"
+          ),
+          role = c("aut", "cre")
+        ),
+        person(
+          given = "The checklist organisation",
+          email = "info@organisation.checklist",
+          role = c("cph", "fnd")
+        )
+      ),
+      org = org
+    )
+  )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   create_package(path = path, package = package)
   sink()
 
-  repo <- path(path, package)
+  repo <- path_(path, package)
 
   git_config_set("user.name", "unit test", repo = repo)
   git_config_set("user.email", "unit@test.com", repo = repo)

@@ -4,12 +4,12 @@
 \alias{ask_rightsholder_funder}
 \title{Ask for rights holder or funder}
 \usage{
-ask_rightsholder_funder(org, type = c("rightsholder", "funder"))
+ask_rightsholder_funder(org, type = c("rightsholder", "funder", "publisher"))
 }
 \arguments{
 \item{org}{Organisation object}
 
-\item{type}{Character, either \code{"rightsholder"} or \code{"funder"}}
+\item{type}{Character, either \code{"rightsholder"}, \code{"funder"} or \code{"publisher"}}
 }
 \value{
 A list with the selected names and the updated organisation object
@@ -18,21 +18,11 @@ A list with the selected names and the updated organisation object
 Ask for rights holder or funder
 }
 \seealso{
-Other utils: 
-\code{\link{ask_yes_no}()},
-\code{\link{author2df}()},
-\code{\link{bookdown_zenodo}()},
-\code{\link{c_sort}()},
-\code{\link{create_hexsticker}()},
-\code{\link{execshell}()},
-\code{\link{get_default_org_list}()},
-\code{\link{inbo_org_list}()},
-\code{\link{install_pak}()},
-\code{\link{menu_first}()},
-\code{\link{store_authors}()},
-\code{\link{use_author}()},
-\code{\link{validate_email}()},
-\code{\link{validate_orcid}()},
-\code{\link{yesno}()}
+Other utils:
+\code{\link[=c_sort]{c_sort()}},
+\code{\link[=create_hexsticker]{create_hexsticker()}},
+\code{\link[=execshell]{execshell()}},
+\code{\link[=install_pak]{install_pak()}},
+\code{\link[=yesno]{yesno()}}
 }
 \concept{utils}

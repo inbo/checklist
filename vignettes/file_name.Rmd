@@ -8,16 +8,13 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
 To make this easier to remember we choose the same name conventions for file names as for objects.
 We acknowledge that these rules sometimes clash with requirements from other sources (e.g. `DESCRIPTION` in an R package, `README.md` on GitHub, `.gitignore` for git, ...).
 In such case we allow the file names as required by R, git or GitHub.
-When `check_filename()` does unfairly not allow a certain file or folder name, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this should be allowed.
+When `check_filename()` triggers a false positive for a certain file or folder name, then please open an [issue on GitHub](https://github.com/inbo/checklist/issues) and motivate why this should be allowed.
 
 ## Rules for folder names
 

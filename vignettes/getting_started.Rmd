@@ -263,8 +263,28 @@ Select _Deploy for branch_ as source, `gh-pages` as branch and save the changes.
 
 Sometimes the check package GitHub Action (`GHA`) may fail for other reasons than failure of one or more of the checks executed by `checklist::check_package()`.
 This is likely due to a missing dependency when the action tries to install R packages.
-In that case, the `GHAs`, `check_on_branch.yml` and `check_on_main.yml` files need to be modified so the missing dependency can be installed.
-To diagnose if this is the case when an action failed, you can follow these steps:
+If your code depends on an R packages that is not on CRAN, then you need to let `checklist` know where to find it.
+
+```{r pak, eval = FALSE}
+# read the current checklist settings
+x <- checklist::read_checklist()
+# get the current pak settings
+x$get_pak
+# set the pak settings.
+# This is an example for the `inborutils` package, but you need to adapt it to
+# your needs.
+# This package is on GitHub in the `inbo` organisation, so we use the
+# `inbo/inborutils` git repository to install it.
+x$set_pak("inbo/inborutils")
+# store the settings by writing the checklist.yml file
+checklist::write_checklist(x)
+# x$set_pak accepts a character vector, so you can set multiple packages if
+# needed.
+# It will pass the vector to the `pkg` argument of `pak::pkg_install()`,
+# so you can also specify a specific branch, tag or commit.
+```
+
+To diagnose if the failed action is due to failing to install dependencies, you can follow these steps:
 
 - Go to the check package `GHA` with a red cross (indicating failure) and click on the `details` link.
   You will be directed to an overview of all steps that were taken in the action.
@@ -288,22 +308,19 @@ To diagnose if this is the case when an action failed, you can follow these step
      * brew: udunits (OSX)
     ```
 
-To fix this problem in the `check_on_branch.yml` and `check_on_main.yml` files, install it with the `aptget` command:
+Should you need to run Linux commands to install the missing system dependencies, you can add these commands to the `checklist.yml` file.
+You can run any Linux command.
+Be careful when doing this, because you can break the `GHA` if you add wrong commands.
 
-    ```
-        steps:
-          - uses: inbo/actions/check_pkg@main
-            with:
-              aptget: libudunits2-dev
-    ```
+```{r gha, eval = FALSE}
+# read the current checklist settings
+x <- checklist::read_checklist()
+# get the current GHA install settings
+x$get_gha_install
+# set the GHA install settings.
+x$set_gha_install(c("apt-get update", "apt-get install -y libudunits2-dev"))
+# store the settings by writing the checklist.yml file
+checklist::write_checklist(x)
+```
 
-In case you need multiple `aptget` dependencies, add them to a single `aptget` item separated with a space.
-
-    ```
-        steps:
-          - uses: inbo/actions/check_pkg@main
-            with:
-              aptget: libudunits2-dev libpoppler-cpp-dev
-    ```
-
-Add, commit and push these changes so they take effect in the `GHAs`.
+Add, commit and push changes in `checklist.yml` so they take effect in the `GHAs`.

@@ -25,11 +25,10 @@
 #' create_hexsticker("checklist", filename = output)
 #' }
 #' @importFrom assertthat assert_that is.number
-#' @importFrom fs path
 #' @importFrom utils browseURL
 create_hexsticker <- function(
   package_name,
-  filename = path("man", "figures", "logo.svg"),
+  filename = file.path("man", "figures", "logo.svg"),
   icon,
   x = 0,
   y = 0,
@@ -92,7 +91,6 @@ create_hexsticker <- function(
 }
 
 #' @importFrom assertthat assert_that is.string
-#' @importFrom fs path
 #' @importFrom graphics plot.new text
 #' @importFrom grDevices dev.off svg
 string2svg <- function(string) {
@@ -101,7 +99,7 @@ string2svg <- function(string) {
   assert_that(requireNamespace("showtext"), msg = "Please install showtext")
   sysfonts::font_add(
     family = "Flanders Art Sans",
-    regular = path("fonts", "flanders_art_sans_medium.ttf") |>
+    regular = path_("fonts", "flanders_art_sans_medium.ttf") |>
       system.file(package = "checklist")
   )
   showtext::showtext_auto()
@@ -139,7 +137,7 @@ string2svg <- function(string) {
 
 prepare_icon <- function(icon) {
   assert_that(is.string(icon))
-  icon <- normalizePath(icon)
+  icon <- normalizePath(icon, winslash = "/", mustWork = TRUE)
   base <- readLines(icon)
   base <- paste(base, collapse = "")
   if (grepl("viewBox", base)) {

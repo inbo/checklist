@@ -8,7 +8,8 @@ check_package(
   x = ".",
   fail = !interactive(),
   pkgdown = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  time_out = 30
 )
 }
 \arguments{
@@ -24,6 +25,13 @@ Defaults to \code{TRUE} on an interactive session and \code{FALSE} on a non-inte
 session.}
 
 \item{quiet}{Whether to print check output during checking.}
+
+\item{time_out}{The time in seconds to wait for a response from the world
+clock API.
+Default is 15 seconds, but you can increase this if you have a slow internet
+connection.
+If the world clock API is not available, the system clock will be used
+without a warning, but the check will be less reliable.}
 }
 \description{
 A convenience function that runs all packages related tests in sequence.
@@ -42,17 +50,15 @@ List of checks in order:
 \item \code{check_filename()}
 \item \code{check_description()}
 \item \code{check_documentation()}
-\item \code{check_codemeta()}
 }
 }
 \seealso{
-Other package: 
-\code{\link{check_codemeta}()},
-\code{\link{check_cran}()},
-\code{\link{check_description}()},
-\code{\link{check_documentation}()},
-\code{\link{check_environment}()},
-\code{\link{check_license}()},
-\code{\link{tidy_desc}()}
+Other package:
+\code{\link[=check_cran]{check_cran()}},
+\code{\link[=check_description]{check_description()}},
+\code{\link[=check_documentation]{check_documentation()}},
+\code{\link[=check_environment]{check_environment()}},
+\code{\link[=check_license]{check_license()}},
+\code{\link[=tidy_desc]{tidy_desc()}}
 }
 \concept{package}

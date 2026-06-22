@@ -5,7 +5,7 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom fs is_file
+#' @importFrom citeme org_list
 #' @family project
 check_project <- function(x = ".", fail = !interactive(), quiet = FALSE) {
   x <- read_checklist(x = x)

@@ -14,7 +14,6 @@
 #' @return A `checklist` object.
 #' @export
 #' @importFrom assertthat assert_that has_name is.string
-#' @importFrom fs is_dir is_file path path_real path_split
 #' @importFrom yaml read_yaml
 #' @family both
 read_checklist <- function(x = ".") {
@@ -22,39 +21,35 @@ read_checklist <- function(x = ".") {
     return(x)
   }
 
-  assert_that(is.string(x), is_dir(x))
-  current <- path_real(x)
-  checklist_file <- path(current, "checklist.yml")
-  while (!is_file(checklist_file) && length(path_split(current)[[1]]) > 1) {
-    path(current, "..") |>
-      path_real() -> current
-    checklist_file <- path(current, "checklist.yml")
+  assert_that(is.string(x), file_test("-d", x))
+  current <- normalizePath(x, winslash = "/", mustWork = TRUE)
+  checklist_file <- path_(current, "checklist.yml")
+  while (
+    !file_test("-f", checklist_file) && length(strsplit(current, "/")[[1]]) > 1
+  ) {
+    path_(current, "..") |>
+      normalizePath(winslash = "/", mustWork = TRUE) -> current
+    checklist_file <- path_(current, "checklist.yml")
   }
   assert_that(
-    is_file(checklist_file),
+    file_test("-f", checklist_file),
     msg = paste(
       "No checklist.yml found at `%1$s` or its parents.",
       "\nRun `checklist::setup_package(\"%1$s\")` or",
       "`checklist::setup_project(\"%1$s\")`."
     ) |>
-      sprintf(path_real(x))
+      sprintf(normalizePath(x, winslash = "/", mustWork = TRUE))
   )
 
   # read existing check list file
   allowed <- read_yaml(checklist_file)
   assert_that(has_name(allowed, "package"))
-  if (!has_name(allowed, "spelling")) {
-    allowed$spelling <- list(default = "en-GB")
-  }
+  allowed$spelling <- coalesce(allowed$spelling, list(default = "en-GB"))
   if (allowed$package) {
     x <- checklist$new(
       x = current,
       package = TRUE,
-      language = ifelse(
-        has_name(allowed$spelling, "default"),
-        allowed$spelling$default,
-        "en-GB"
-      )
+      language = coalesce(allowed$spelling$default, "en-GB")
     )
   } else {
     x <- checklist$new(
@@ -66,20 +61,13 @@ read_checklist <- function(x = ".") {
         "en-GB"
       )
     )
-    if (has_name(allowed, "required")) {
-      x$set_required(allowed$required)
-    }
+    x$set_required(coalesce(allowed$required, character(0)))
   }
-  if (has_name(allowed$spelling, "ignore")) {
-    x$set_ignore(allowed$spelling$ignore)
-  }
-  if (has_name(allowed$spelling, "other")) {
-    x$set_other(allowed$spelling$other)
-  }
+  x$set_ignore(coalesce(allowed$spelling$ignore, character(0)))
+  x$set_other(coalesce(allowed$spelling$other, list()))
   x$package <- allowed$package
-  if (has_name(allowed, "pak") && length(allowed$pak) > 0) {
-    x$set_pak(allowed$pak)
-  }
+  x$set_pak(coalesce(as.character(allowed$pak), character(0)))
+  x$set_gha_install(coalesce(as.character(allowed$gha_install), character(0)))
 
   assert_that(has_name(allowed, "description"))
   assert_that(has_name(allowed, "allowed"))
@@ -88,12 +76,7 @@ read_checklist <- function(x = ".") {
   assert_that(has_name(allowed, "notes"))
   assert_that(is.list(allowed$warnings))
   assert_that(is.list(allowed$notes))
-  motivation <- vapply(
-    allowed$warnings,
-    `[[`,
-    character(1),
-    "motivation"
-  )
+  motivation <- vapply(allowed$warnings, `[[`, character(1), "motivation")
   assert_that(
     length(allowed$warnings) == length(motivation),
     msg = "Each warning in the checklist requires a motivation"
@@ -102,12 +85,7 @@ read_checklist <- function(x = ".") {
     all(nchar(motivation) > 0),
     msg = "Please add a motivation for each warning the checklist"
   )
-  motivation <- vapply(
-    allowed$notes,
-    `[[`,
-    character(1),
-    "motivation"
-  )
+  motivation <- vapply(allowed$notes, `[[`, character(1), "motivation")
   assert_that(
     length(allowed$notes) == length(motivation),
     msg = "Each note in the checklist requires a motivation"
@@ -116,22 +94,12 @@ read_checklist <- function(x = ".") {
     all(nchar(motivation) > 0),
     msg = "Please add a motivation for each note the checklist"
   )
-  value <- vapply(
-    allowed$warnings,
-    `[[`,
-    character(1),
-    "value"
-  )
+  value <- vapply(allowed$warnings, `[[`, character(1), "value")
   assert_that(
     length(allowed$warnings) == length(value),
     msg = "Each warning in the checklist requires a value"
   )
-  value <- vapply(
-    allowed$notes,
-    `[[`,
-    character(1),
-    "value"
-  )
+  value <- vapply(allowed$notes, `[[`, character(1), "value")
   assert_that(
     length(allowed$notes) == length(value),
     msg = "Each note in the checklist requires a value"

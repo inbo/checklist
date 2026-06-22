@@ -1,25 +1,30 @@
 description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
-  warnings: []
-  notes:
-  - motivation: Package not intended for CRAN
+  warnings:
+  - motivation: Package not on CRAN
     value: |-
-      checking CRAN incoming feasibility ... NOTE
+      checking CRAN incoming feasibility ... WARNING
       Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
 
       New submission
+
+      Strong dependencies not in the CRAN or BioC software repositories:
+        citeme
+      Availability using Additional_repositories specification:
+        citeme   yes   https://inbo.r-universe.dev
+  notes: []
 required:
 - CITATION
 - DESCRIPTION
 - R CMD check
 - checklist
-- codemeta
 - documentation
 - filename conventions
 - folder conventions
 - license
 - lintr
+- organisation
 - repository secret
 - spelling
 spelling:
@@ -35,3 +40,5 @@ spelling:
   - inst/generic_template/cc_by_sa_4_0.md
   - inst/generic_template/gplv3.md
   - inst/generic_template/mit.md
+pak: []
+gha_install: []

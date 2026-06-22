@@ -5,12 +5,16 @@
 #' @param project The name of the project.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
-#' @importFrom fs dir_create dir_exists file_copy is_dir path
+#' @importFrom citeme ask_language ask_yes_no new_org_list org_list
+#' @importFrom citeme org_list_from_url select_license
 #' @family setup
 create_project <- function(path, project) {
-  assert_that(is.string(path), noNA(path), is_dir(path))
+  assert_that(is.string(path), noNA(path), file_test("-d", path))
   assert_that(is.string(project), noNA(project))
-  assert_that(!dir_exists(path(path, project)), msg = "Existing project folder")
+  assert_that(
+    !file_test("-d", path_(path, project)),
+    msg = "Existing project folder"
+  )
 
   # ask interactive information
   title <- readline(prompt = "Enter the title: ")
@@ -24,8 +28,11 @@ create_project <- function(path, project) {
   } else {
     org <- new_org_list()
   }
-  license <- ask_license(org, type = "project")
-  language <- ask_language(org, prompt = "What is the main project language?")
+  license <- select_license(org, type = "project")
+  language <- ask_language(
+    org$get_languages,
+    prompt = "What is the main project language?"
+  )
   info <- project_maintainer(org = org, lang = language)
   authors <- info$authors
   org <- info$org
@@ -40,35 +47,37 @@ create_project <- function(path, project) {
     "folder conventions"[isTRUE(ask_yes_no("Check folder conventions?"))],
     "filename conventions"[isTRUE(ask_yes_no("Check file name conventions?"))],
     "lintr"[isTRUE(ask_yes_no("Check code style?"))],
-    "license"[
-      isTRUE(
-        ask_yes_no(
-          "Check the LICENSE file? The file will be created when missing."
-        )
-      )
-    ],
+    "license"[isTRUE(ask_yes_no(
+      "Check the LICENSE file? The file will be created when missing."
+    ))],
     "organisation",
     "spelling"[isTRUE(ask_yes_no("Check spelling?"))],
     "CITATION"[isTRUE(ask_yes_no("Check citation?"))]
   )
 
-  path <- path(path, project)
-  dir_create(path)
+  path <- path_(path, project)
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
   # create default folders
-  dir_create(path, c("data", "media", "output", "source"))
+  vapply(
+    path_(path, c("data", "media", "output", "source")),
+    dir.create,
+    logical(1),
+    recursive = TRUE,
+    showWarnings = FALSE
+  )
   org$write(x = path)
   # create RStudio project
-  file_copy(
+  file.copy(
     system.file(
-      path("project_template", "rproj.template"),
+      path_("project_template", "rproj.template"),
       package = "checklist"
     ),
-    path(path, project, ext = "Rproj")
+    paste0(path_(path, project), ".Rproj")
   )
-  path("project_template", "checklist.R") |>
+  path_("project_template", "checklist.R") |>
     system.file(package = "checklist") |>
-    file_copy(path(path, "source", "checklist.R"))
+    file.copy(path_(path, "source", "checklist.R"))
   create_readme(
     path = path,
     authors = authors,
@@ -77,6 +86,7 @@ create_project <- function(path, project) {
     keywords = keywords,
     org = org,
     license = license,
+    lang = language,
     type = "project"
   )
   renv_activate(path = path, use_renv = use_renv)

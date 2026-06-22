@@ -1,13 +1,14 @@
 {
   "title": "checklist: A Thorough and Strict Set of Checks for R Packages and Source Code",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "license": "GPL-3.0",
   "upload_type": "software",
   "description": "<p>An opinionated set of rules for R packages and R source code projects.<\/p>",
   "keywords": [
     "quality control",
     "documentation",
-    "publication"
+    "publication",
+    "inbo_version"
   ],
   "access_right": "open",
   "language": "eng",

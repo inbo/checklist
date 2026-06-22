@@ -21,8 +21,8 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom gert git_submodule_list
 #' @importFrom lintr lint_dir lint_package
-#' @importFrom fs dir_ls
 #' @importFrom withr defer
 #' @family both
 check_lintr <- function(x = ".", quiet = FALSE) {
@@ -46,19 +46,25 @@ check_lintr <- function(x = ".", quiet = FALSE) {
   )
 
   if (x$package) {
-    linter <- lint_package(path = x$get_path)
+    exclusions <- list("tests/testthat/_problems")
+    if (is_repository(x$get_path)) {
+      exclusions <- c(exclusions, git_submodule_list(repo = x$get_path)$path)
+    }
+    linter <- lint_package(path = x$get_path, exclusions = exclusions)
   } else {
-    dir_ls(
-      path = x$get_path,
-      recurse = TRUE,
-      regexp = "/renv$",
-      type = "directory"
-    ) |>
+    list.dirs(path = x$get_path, recursive = TRUE, full.names = TRUE) |>
+      grep(pattern = "/renv$", value = TRUE) |>
       as.list() |>
       unname() -> exclude_renv
+    if (is_repository(x$get_path)) {
+      exclude_renv <- c(
+        exclude_renv,
+        git_submodule_list(repo = x$get_path)$path
+      )
+    }
     linter <- lint_dir(
       x$get_path,
-      pattern = "\\.(R|q)(md|nw)?$",
+      pattern = "\\.[Rrq](md|nw)?$",
       exclusions = exclude_renv
     )
   }
@@ -70,7 +76,6 @@ check_lintr <- function(x = ".", quiet = FALSE) {
 }
 
 #' @importFrom assertthat assert_that is.string noNA
-#' @importFrom fs is_dir
 #' @importFrom utils installed.packages
 list_missing_packages <- function(x = ".") {
   if (!requireNamespace("renv", quietly = TRUE)) {
@@ -81,7 +86,7 @@ list_missing_packages <- function(x = ".") {
     )
     return(character(0))
   }
-  assert_that(is.string(x), noNA(x), is_dir(x))
+  assert_that(is.string(x), noNA(x), file_test("-d", x))
   renv::dependencies(x, progress = FALSE)$Package |>
     unique() |>
     sort() -> required_packages
@@ -90,6 +95,7 @@ list_missing_packages <- function(x = ".") {
   required_packages[!required_packages %in% installed_packages]
 }
 
+#' @importFrom citeme org_list
 select_lintr_file <- function(x) {
   if (!is_repository(x)) {
     return(local_or_default_lintr(x))
@@ -101,22 +107,18 @@ select_lintr_file <- function(x) {
   if (org$get_git == "https://github.com/inbo") {
     return(system.file("lintr", package = "checklist"))
   }
-  R_user_dir("checklist", "config") |>
-    path(
+  R_user_dir("citeme", "config") |>
+    path_(
       tolower(org$get_git) |>
         gsub(pattern = "https://", replacement = ""),
       ".lintr"
     ) -> linter_file
-  ifelse(
-    file_exists(linter_file),
-    linter_file,
-    local_or_default_lintr(x)
-  )
+  ifelse(file_test("-f", linter_file), linter_file, local_or_default_lintr(x))
 }
 
 local_or_default_lintr <- function(x) {
-  if (file_exists(path(x, ".lintr"))) {
-    return(path(x, ".lintr"))
+  if (file_test("-f", path_(x, ".lintr"))) {
+    return(path_(x, ".lintr"))
   }
   system.file("lintr", package = "checklist")
 }

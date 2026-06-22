@@ -24,10 +24,10 @@
 #'
 #' @inheritParams read_checklist
 #' @importFrom assertthat assert_that
+#' @importFrom citeme citation_meta
 #' @importFrom desc description
-#' @importFrom fs path
 #' @importFrom gert git_branch_list git_commit_id git_diff git_info
-#' git_log git_stat_files git_status
+#' @importFrom gert git_log git_stat_files git_status
 #' @importFrom stats na.omit
 #' @importFrom utils head tail
 #' @export
@@ -48,7 +48,10 @@ check_description <- function(x = ".") {
     branch_info <- git_branch_list(repo = repo)
     head_sha <- git_commit_id(repo = repo)
     current_branch <- head(branch_info$name[branch_info$commit == head_sha], 1)
-    if (length(current_branch) && current_branch %in% c("main", "master")) {
+    if (
+      length(current_branch) &&
+        grepl("^(gh-readonly-queue/)?(main|master)", current_branch)
+    ) {
       paste(
         "Branch master detected. From Oct. 1, 2020, any new repositories you",
         "create uses\nmain as the default branch, instead of master. You can",
@@ -62,7 +65,11 @@ check_description <- function(x = ".") {
       desc_error <- character(0)
     } else {
       assert_that(
-        all(grepl("origin", branch_info$name[!branch_info$local])),
+        all(grepl(
+          "origin",
+          branch_info$name[!branch_info$local],
+          fixed = TRUE
+        )),
         msg = "no remote called `origin` available"
       )
       assert_that(
@@ -91,10 +98,13 @@ check_description <- function(x = ".") {
         path = repo
       )
     }
-    old_version <- desc_diff[grep("\\-Version: ", desc_diff)]
-    old_version <- gsub("-Version: ", "", old_version)
+    grepv("\\-Version: ", desc_diff) |>
+      gsub(
+        pattern = "^.*?\\s([0-9]+\\.[0-9]+(\\.[0-9]+)?).*?$",
+        replacement = "\\1"
+      ) -> old_version
     version_bump <- ifelse(
-      length(old_version),
+      length(old_version) == 1,
       ifelse(
         package_version(old_version) < package_version(version),
         NA,
@@ -113,11 +123,11 @@ check_description <- function(x = ".") {
     ]
   )
 
-  this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
-  org <- org_list$new()$read(x$get_path)
-  updated_authors <- check_authors(this_desc = this_desc, org = org)
+  this_desc <- description$new(file = path_(x$get_path, "DESCRIPTION"))
+  citmeta <- citation_meta$new(x$get_path)
+  updated_authors <- citmeta$get_person
   this_desc$set_authors(updated_authors)
-  path(x$get_path, "DESCRIPTION") |>
+  path_(x$get_path, "DESCRIPTION") |>
     this_desc$write()
   version <- as.character(this_desc$get_version())
   c(
@@ -126,12 +136,13 @@ check_description <- function(x = ".") {
       !grepl("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$", version)
     ],
     "Language field not set."[is.na(this_desc$get("Language"))],
-    attr(updated_authors, "errors")
+    citmeta$get_errors
   ) |>
     x$add_error(item = "DESCRIPTION", keep = FALSE)
-  x$add_notes(notes, item = "DESCRIPTION")
+  x$add_notes(c(notes, citmeta$get_notes), item = "DESCRIPTION")
+  x$add_warnings(c(citmeta$get_warnings), item = "DESCRIPTION")
 
-  check_license(x = x, org = org)
+  check_license(x = x)
 }
 
 #' Make your DESCRIPTION tidy
@@ -152,7 +163,7 @@ tidy_desc <- function(x = ".") {
   defer(options("crayon.enabled" = old_crayon))
   options("crayon.enabled" = FALSE)
 
-  desc <- description$new(path(x$get_path, "DESCRIPTION"))
+  desc <- description$new(path_(x$get_path, "DESCRIPTION"))
 
   # Alphabetise dependencies
   deps <- desc$get_deps()
@@ -171,17 +182,14 @@ tidy_desc <- function(x = ".") {
   # Normalize all fields (includes reordering)
   # Wrap in a try() so it always succeeds, even if user options are malformed
   try(desc$normalize(), silent = TRUE)
-  path(x$get_path, "DESCRIPTION") |>
+  path_(x$get_path, "DESCRIPTION") |>
     desc$write()
   return(desc)
 }
 
 unchanged_repo <- function(repo, old_status) {
   current_status <- git_status(repo = repo)
-  ok <- identical(
-    current_status,
-    old_status
-  )
+  ok <- identical(current_status, old_status)
   new_files <- current_status$file
   old_files <- old_status$file
   changes <- c(
@@ -219,7 +227,6 @@ unchanged_repo <- function(repo, old_status) {
 #' @inheritParams set_license
 #' @importFrom assertthat assert_that
 #' @importFrom desc description
-#' @importFrom fs file_exists path
 #' @export
 #' @family package
 check_license <- function(x = ".", org) {
@@ -228,9 +235,7 @@ check_license <- function(x = ".", org) {
     org <- org_list$new()$read(x$get_path)
   }
   if (x$package) {
-    this_desc <- description$new(
-      file = path(x$get_path, "DESCRIPTION")
-    )
+    this_desc <- description$new(file = path_(x$get_path, "DESCRIPTION"))
 
     # check if the license is allowed
     current_license <- this_desc$get_field("License")
@@ -247,11 +252,9 @@ check_license <- function(x = ".", org) {
       fmt = fmt,
       current_license,
       paste(names(allowed_licenses), collapse = "; ")
-    )[
-      !current_license %in% names(allowed_licenses)
-    ] -> problems
+    )[!current_license %in% names(allowed_licenses)] -> problems
   } else {
-    path(x$get_path, "README.md") |>
+    path_(x$get_path, "README.md") |>
       readLines() -> readme
     regex <- paste0(
       "^\\[!\\[(.*)\\]\\(https:\\/\\/img\\.shields\\.io\\/badge\\/License-.*?",
@@ -263,11 +266,7 @@ check_license <- function(x = ".", org) {
       "Multiple license badges found in README.md"[length(which_badge) > 1]
     ) -> problems
     if (length(problems)) {
-      x$add_error(
-        errors = problems,
-        item = "license",
-        keep = FALSE
-      )
+      x$add_error(errors = problems, item = "license", keep = FALSE)
       return(x)
     }
     gsub(regex, "\\2", readme[which_badge]) |>
@@ -275,7 +274,7 @@ check_license <- function(x = ".", org) {
     regex <- ".*mailto:(.*?)\\)\\[\\^cph\\].*"
     which_badge <- grep(regex, readme)
     gsub(regex, "\\1", readme[which_badge]) |>
-      gsub(pattern = "%40", replacement = "@") |>
+      gsub(pattern = "%40", replacement = "@", fixed = TRUE) |>
       org$get_allowed_licenses(type = "project") -> allowed_license
     fmt <- paste(
       "%s license is not allowed in this organisation.",
@@ -294,7 +293,7 @@ check_license <- function(x = ".", org) {
   }
 
   # check if LICENSE.md exists
-  if (!file_exists(path(x$get_path, "LICENSE.md"))) {
+  if (!file_test("-f", path_(x$get_path, "LICENSE.md"))) {
     x$add_error(
       errors = c(problems, "No LICENSE.md file"),
       item = "license",
@@ -305,7 +304,7 @@ check_license <- function(x = ".", org) {
   }
 
   # check if LICENSE.md matches the official version
-  path(x$get_path, "LICENSE.md") |>
+  path_(x$get_path, "LICENSE.md") |>
     readLines() -> current
   get_official_license_location(license = current_license, org = org) |>
     readLines() -> official
@@ -344,28 +343,6 @@ check_license <- function(x = ".", org) {
     )
     set_license(x, license = current_license, org = org)
   }
-  x$add_error(
-    errors = problems,
-    item = "license",
-    keep = FALSE
-  )
+  x$add_error(errors = problems, item = "license", keep = FALSE)
   return(x)
-}
-
-#' @importFrom assertthat assert_that is.string
-#' @importFrom utils person
-check_authors <- function(this_desc, org) {
-  assert_that(inherits(org, "org_list"))
-  rightsholder <- this_desc$get_author(role = "cph")
-  funder <- this_desc$get_author(role = "fnd")
-  problems <- org$validate_rules(rightsholder = rightsholder, funder = funder)
-  authors <- this_desc$get_authors()
-  lang <- ifelse(
-    is.na(this_desc$get("Language")),
-    "en-GB",
-    this_desc$get("Language")
-  )
-  updated_person <- org$validate_person(person = authors, lang = lang)
-  attr(updated_person, "errors") <- c(problems, attr(updated_person, "errors"))
-  return(updated_person)
 }

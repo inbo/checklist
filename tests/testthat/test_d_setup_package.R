@@ -17,12 +17,36 @@ test_that("setup_package() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
+  stub(
+    create_package,
+    "package_maintainer",
+    list(
+      authors = c(
+        person(
+          given = "Given",
+          family = "Test",
+          email = "given.test@vlaanderen.be",
+          comment = c(
+            ORCID = "0000-0002-1825-0097",
+            affiliation = "Vlaamse overheid"
+          ),
+          role = c("aut", "cre")
+        ),
+        person(
+          given = "The checklist organisation",
+          email = "info@organisation.checklist",
+          role = c("cph", "fnd")
+        )
+      ),
+      org = org
+    )
+  )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
-  repo <- path(path, package)
+  repo <- path_(path, package)
   new_files <- c(
     "_pkgdown.yml",
     ".gitignore",
@@ -32,8 +56,8 @@ test_that("setup_package() works", {
     "LICENSE.md",
     "NEWS.md",
     "README.Rmd",
-    path(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
-    path(
+    path_(".github", c("CODE_OF_CONDUCT.md", "CONTRIBUTING.md")),
+    path_(
       ".github",
       "workflows",
       c(
@@ -43,33 +67,33 @@ test_that("setup_package() works", {
         "release.yml"
       )
     ),
-    path("pkgdown", "extra.css"),
-    path("man", "figures", "background-pattern.png")
+    path_("pkgdown", "extra.css"),
+    path_("man", "figures", "background-pattern.png")
   )
-  file_delete(path(path, package, new_files))
+  unlink(path_(path, package, new_files))
   git_add(files = new_files, repo = repo)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
   expect_message(
-    setup_package(path(path, package)),
+    setup_package(path_(path, package)),
     "package prepared for checklist::check_package()"
   )
-  expect_true(all(file.exists(path(path, package, new_files))))
+  expect_true(all(file.exists(path_(path, package, new_files))))
 
   gert::git_commit_all("setup package", repo = repo)
 
   expect_message(
-    setup_package(path(path, package)),
+    setup_package(path_(path, package)),
     "package prepared for checklist::check_package()"
   )
 
-  path(path, package, "README.Rmd") |>
+  path_(path, package, "README.Rmd") |>
     readLines() -> old_readme
   expect_equal(length(grep("10.5281/zenodo.8063503", old_readme)), 0)
-  expect_null(add_badges(path(path, package), doi = "10.5281/zenodo.8063503"))
-  path(path, package, "README.Rmd") |>
+  expect_null(add_badges(path_(path, package), doi = "10.5281/zenodo.8063503"))
+  path_(path, package, "README.Rmd") |>
     readLines() -> new_readme
   expect_equal(length(grep("10.5281/zenodo.8063503", new_readme)), 1)
   expect_equal(length(old_readme) + 1, length(new_readme))

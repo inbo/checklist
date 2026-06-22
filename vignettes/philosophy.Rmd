@@ -54,7 +54,6 @@ On a package, you can run `check_package()` to run these additional checks.
 - `check_cran()`: runs `rcmdcheck::rcmdcheck()` to check whether the package meets CRAN standards.
 - `check_description()`: checks the `DESCRIPTION` file for common problems.
 - `check_documentation()`: checks whether the documentation is up-to-date.
-- `check_codemeta()`: checks whether the `codemeta.json` file is present and valid.
 - build the documentation website with `pkgdown`
 - check the code coverage of the unit tests with `covr::package_coverage()`.
   Adding more code should not (significantly) decrease the code coverage.

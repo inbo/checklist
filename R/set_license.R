@@ -8,12 +8,12 @@
 #' @family setup
 #' @export
 #' @importFrom assertthat assert_that
+#' @importFrom citeme license_local_remote org_list select_license
 #' @importFrom desc description
-#' @importFrom fs file_copy file_exists path
 set_license <- function(x = ".", license, org) {
   x <- read_checklist(x = x)
-  license_file <- path(x$get_path, "LICENSE.md")
-  if (file_exists(license_file)) {
+  license_file <- path_(x$get_path, "LICENSE.md")
+  if (file_test("-f", license_file)) {
     return(invisible(NULL))
   }
   if (missing(org)) {
@@ -21,17 +21,17 @@ set_license <- function(x = ".", license, org) {
   }
   if (x$package) {
     assert_that(
-      file_exists(path(x$get_path, "DESCRIPTION")),
+      file_test("-f", path_(x$get_path, "DESCRIPTION")),
       msg = sprintf("No `DESCRIPTION` file found at %s", x$get_path)
     )
-    this_desc <- description$new(file = path(x$get_path, "DESCRIPTION"))
+    this_desc <- description$new(file = path_(x$get_path, "DESCRIPTION"))
     assert_that(
       this_desc$has_fields("License"),
       msg = "`DESCRIPTION` has no `License`field."
     )
     license <- this_desc$get_field("License")
   } else if (missing(license)) {
-    license <- ask_license(org, type = "project")
+    license <- select_license(org, type = "project")
   }
   get_official_license_location(license = license, org = org) |>
     readLines() |>
@@ -53,7 +53,7 @@ set_license <- function(x = ".", license, org) {
     paste(collapse = ", ") -> cph
   paste0("YEAR: ", format(Sys.Date(), "%Y")) |>
     c(sprintf("COPYRIGHT HOLDER: %s", cph)) |>
-    writeLines(path(x$get_path, "LICENSE"))
+    writeLines(path_(x$get_path, "LICENSE"))
   mit <- readLines(license_file)
   mit[3] <- gsub("<YEAR>", format(Sys.Date(), "%Y"), mit[3])
   mit[3] <- gsub("<COPYRIGHT HOLDER>", cph, mit[3])
@@ -61,15 +61,16 @@ set_license <- function(x = ".", license, org) {
   return(invisible(NULL))
 }
 
+#' @importFrom citeme ssh_http
 get_official_license_location <- function(license, org) {
   switch(
     license,
-    "CC BY 4.0" = path("generic_template", "cc_by_4_0.md"),
-    "CC BY-SA 4.0" = path("generic_template", "cc_by_sa_4_0.md"),
-    "CC0" = path("generic_template", "cc0.md"),
-    "GPL-3" = path("generic_template", "gplv3.md"),
-    "MIT" = path("generic_template", "mit.md"),
-    "MIT + file LICENSE" = path("generic_template", "mit.md"),
+    "CC BY 4.0" = path_("generic_template", "cc_by_4_0.md"),
+    "CC BY-SA 4.0" = path_("generic_template", "cc_by_sa_4_0.md"),
+    "CC0" = path_("generic_template", "cc0.md"),
+    "GPL-3" = path_("generic_template", "gplv3.md"),
+    "MIT" = path_("generic_template", "mit.md"),
+    "MIT + file LICENSE" = path_("generic_template", "mit.md"),
     NA
   ) |>
     system.file(package = "checklist") -> license_location
@@ -85,8 +86,8 @@ get_official_license_location <- function(license, org) {
   if (!grepl("^http", url)) {
     return(license_location$remote_file)
   }
-  R_user_dir("checklist", "config") |>
-    path(
+  R_user_dir("citeme", "config") |>
+    path_(
       tolower(url) |>
         gsub(pattern = "https://", replacement = ""),
       license_location$local_file

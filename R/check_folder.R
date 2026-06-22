@@ -36,7 +36,6 @@
 #' @inheritParams read_checklist
 #' @family project
 #' @export
-#' @importFrom fs dir_ls path path_rel
 check_folder <- function(x = ".") {
   x <- read_checklist(x = x)
   if (x$package) {

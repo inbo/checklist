@@ -16,7 +16,6 @@
 #' 1. `check_filename()`
 #' 1. `check_description()`
 #' 1. `check_documentation()`
-#' 1. `check_codemeta()`
 #'
 #' @inheritParams read_checklist
 #' @param fail Should the function return an error in case of a problem?
@@ -26,8 +25,9 @@
 #' Defaults to `TRUE` on an interactive session and `FALSE` on a non-interactive
 #' session.
 #' @param quiet Whether to print check output during checking.
+#' @inheritParams check_cran
 #' @importFrom assertthat assert_that is.flag is.string noNA
-#' @importFrom fs file_delete
+#' @importFrom citeme org_list
 #' @importFrom pkgdown build_site
 #' @importFrom withr defer
 #' @export
@@ -36,7 +36,8 @@ check_package <- function(
   x = ".",
   fail = !interactive(),
   pkgdown = interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  time_out = 30
 ) {
   assert_that(is.flag(fail), noNA(fail))
   assert_that(is.flag(pkgdown), noNA(pkgdown))
@@ -53,7 +54,7 @@ check_package <- function(
   quiet_cat("Checking spelling\n", quiet = quiet)
   x <- check_spelling(x = x, quiet = quiet)
 
-  x <- check_cran(x = x, quiet = quiet)
+  x <- check_cran(x = x, quiet = quiet, time_out = time_out)
 
   quiet_cat("Checking code style\n", quiet = quiet)
   x <- check_lintr(x, quiet = quiet)
@@ -70,9 +71,6 @@ check_package <- function(
   quiet_cat("Updating citation\n", quiet = quiet)
   x <- update_citation(x, quiet = quiet)
 
-  quiet_cat("Checking code metadata\n", quiet = quiet)
-  x <- check_codemeta(x)
-
   x <- check_environment(x)
   x <- check_folder(x)
 
@@ -87,7 +85,7 @@ check_package <- function(
     Sys.setenv(CI = TRUE)
     if (quiet) {
       junk <- tempfile(fileext = ".txt")
-      defer(file_delete(junk))
+      defer(unlink(junk))
       sink(junk)
       build_site(x$get_path, preview = FALSE)
       sink()

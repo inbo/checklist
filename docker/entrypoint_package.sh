@@ -35,7 +35,19 @@ fi
 # install the roxygen2 version mentions in the DESCRIPTION
 ROXYGEN_LINE=$(cat DESCRIPTION | grep "^RoxygenNote:")
 RO_VERSION=${ROXYGEN_LINE#*: }
-Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
+if [ -n "$RO_VERSION" ]; then
+  echo '\nInstalling roxygen2 version' $RO_VERSION '...\n'
+  Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
+else
+  ROXYGEN_LINE=$(cat DESCRIPTION | grep "^Config/roxygen2/version:")
+  RO_VERSION=${ROXYGEN_LINE#*: }
+  if [ -n "$RO_VERSION" ]; then
+    echo '\nInstalling roxygen2 version' $RO_VERSION '...\n'
+    Rscript -e "remotes::install_version('roxygen2', version = '$RO_VERSION')"
+  else
+    echo '\nNo roxygen2 version specified in DESCRIPTION, using the latest version.\n'
+  fi
+fi
 
 Rscript --no-save --no-restore --no-init-file -e 'options(warn = 2); install.packages(checklist:::list_missing_packages(), quiet = TRUE)'
 if [ $? -ne 0 ]; then
@@ -44,7 +56,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo '\nGetting the organisation settting...\n'
-Rscript --no-save --no-restore --no-init-file -e 'checklist::get_default_org_list()'
+Rscript --no-save --no-restore --no-init-file -e 'citeme::get_default_org_list()'
 
 echo '\nChecking the package...\n'
 Rscript --no-save --no-restore --no-init-file -e 'checklist::check_package()'

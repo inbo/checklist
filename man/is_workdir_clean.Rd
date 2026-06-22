@@ -21,12 +21,10 @@ Otherwise \code{FALSE}
 A clean working directory has no staged, unstaged or untracked files.
 }
 \seealso{
-Other git: 
-\code{\link{clean_git}()},
-\code{\link{create_draft_pr}()},
-\code{\link{get_branches_tags}()},
-\code{\link{is_repository}()},
-\code{\link{new_branch}()},
-\code{\link{set_tag}()}
+Other git:
+\code{\link[=clean_git]{clean_git()}},
+\code{\link[=is_repository]{is_repository()}},
+\code{\link[=new_branch]{new_branch()}},
+\code{\link[=set_tag]{set_tag()}}
 }
 \concept{git}

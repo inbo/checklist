@@ -28,27 +28,19 @@ COPY docker/upgrade_texlive.sh /rocker_scripts/upgrade_texlive.sh
 
 RUN /rocker_scripts/upgrade_texlive.sh
 
-RUN Rscript --no-save --no-restore -e 'install.packages("pak")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes", dependencies = TRUE)'
-
-## install INLA
-RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("fmesher")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("sn")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("INLA")'
-
-## install checklist dependencies
-RUN  Rscript --no-save --no-restore -e 'pak::pkg_install("assertthat")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("codemetar")' \
+RUN  Rscript --no-save --no-restore -e 'install.packages("pak")' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("remotes", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("assertthat")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("hunspell")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("lintr")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("renv")' \
   && Rscript --no-save --no-restore -e 'pak::pkg_install("showtext")' \
-  && Rscript --no-save --no-restore -e 'pak::pkg_install("zen4R")'
+  && Rscript --no-save --no-restore -e 'pak::pkg_install("citeme")'
 
 ## install checklist
 COPY . /checklist/
-RUN Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgrade = "always", dependencies = TRUE)'
-RUN Rscript --no-save --no-restore -e 'checklist:::install_dictionary(c("nl_BE", "fr_BE", "de_DE"))'
+RUN  Rscript --no-save --no-restore -e 'remotes::install_local("checklist", upgrade = "always", dependencies = TRUE)' \
+  && Rscript --no-save --no-restore -e 'checklist:::install_dictionary(c("nl_BE", "fr_BE", "de_DE"))'
 
 COPY docker/entrypoint_package.sh /entrypoint_package.sh
 COPY docker/entrypoint_project.sh /entrypoint_project.sh

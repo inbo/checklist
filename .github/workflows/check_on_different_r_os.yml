@@ -18,16 +18,18 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release', skip_test: 'false'}
-          - {os: windows-latest, r: 'release', skip_test: 'true'}
-          - {os: ubuntu-24.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest", skip_test: 'false'}
-          - {os: ubuntu-24.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest", skip_test: 'false'}
+          - {os: macOS-latest,   r: 'release', skip_spelling: 'false', skip_create: 'true'}
+          - {os: windows-latest, r: 'release', skip_spelling: 'false', skip_create: 'true'}
+          - {os: ubuntu-24.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest", skip_spelling: 'false', skip_create: 'true'}
+          - {os: ubuntu-24.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest", skip_spelling: 'false', skip_create: 'true'}
 
     env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       _R_CHECK_SYSTEM_CLOCK_: false
-      RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      RSPM: ${{ matrix.config.rspm }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      SKIP_SPELLING: ${{ matrix.config.skip_spelling }}
+      SKIP_CREATE: ${{ matrix.config.skip_create }}
       ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
 
     steps:
@@ -36,10 +38,9 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          extra-repositories: https://inbo.r-universe.dev
+          extra-repositories: https://inbo.r-universe.dev https://cranhaven.r-universe.dev
 
       - uses: r-lib/actions/setup-pandoc@v2
-
 
       - name: linux dependencies
         if: runner.os == 'linux'
@@ -56,8 +57,8 @@ jobs:
             r-cran-r6 r-cran-rcmdcheck r-cran-remotes r-cran-rmarkdown \
             r-cran-roxygen2 r-cran-rstudioapi r-cran-sessioninfo \
             r-cran-testthat r-cran-withr r-cran-yaml
-          Rscript --no-save --no-restore -e 'install.packages("remotes")'
-          Rscript --no-save --no-restore -e 'remotes::install_cran(c("assertthat", "bookdown", "codemetar", "covr", "curl", "cyclocomp", "desc", "devtools", "fs", "gert", "hexSticker", "httr", "hunspell", "jsonlite", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
+          Rscript --no-save --no-restore -e 'install.packages("pak")'
+          Rscript --no-save --no-restore -e 'pak::pkg_install(c("assertthat", "bookdown", "inbo/citeme", "cli", "covr", "curl", "cyclocomp", "desc", "devtools", "gert", "hexSticker", "hunspell", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: runner.os != 'linux'
@@ -68,6 +69,3 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           error-on: '"error"'
-        env:
-          ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
-          SKIP_TEST: ${{ matrix.config.skip_test }}

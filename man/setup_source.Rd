@@ -20,13 +20,12 @@ a
 and the checklist configuration file (\code{checklist.yml}).
 }
 \seealso{
-Other setup: 
-\code{\link{create_package}()},
-\code{\link{create_project}()},
-\code{\link{new_org_list}()},
-\code{\link{prepare_ghpages}()},
-\code{\link{set_license}()},
-\code{\link{setup_package}()},
-\code{\link{setup_project}()}
+Other setup:
+\code{\link[=create_package]{create_package()}},
+\code{\link[=create_project]{create_project()}},
+\code{\link[=prepare_ghpages]{prepare_ghpages()}},
+\code{\link[=set_license]{set_license()}},
+\code{\link[=setup_package]{setup_package()}},
+\code{\link[=setup_project]{setup_project()}}
 }
 \concept{setup}

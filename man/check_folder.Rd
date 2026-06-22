@@ -47,8 +47,8 @@ Optionally add description of the data as markdown files.
 }
 
 \seealso{
-Other project: 
-\code{\link{check_project}()},
-\code{\link{check_source}()}
+Other project:
+\code{\link[=check_project]{check_project()}},
+\code{\link[=check_source]{check_source()}}
 }
 \concept{project}

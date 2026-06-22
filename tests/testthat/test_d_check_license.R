@@ -17,19 +17,43 @@ test_that("check_license() works", {
   )
   stub(create_package, "ask_keywords", c("key", "word"))
   stub(create_package, "ask_language", "en-GB")
-  stub(create_package, "ask_license", "MIT")
+  stub(create_package, "select_license", "MIT")
+  stub(
+    create_package,
+    "package_maintainer",
+    list(
+      authors = c(
+        person(
+          given = "Given",
+          family = "Test",
+          email = "given.test@vlaanderen.be",
+          comment = c(
+            ORCID = "0000-0002-1825-0097",
+            affiliation = "Vlaamse overheid"
+          ),
+          role = c("aut", "cre")
+        ),
+        person(
+          given = "The checklist organisation",
+          email = "info@organisation.checklist",
+          role = c("cph", "fnd")
+        )
+      ),
+      org = org
+    )
+  )
   hide_output <- tempfile(fileext = ".txt")
-  defer(file_delete(hide_output))
+  defer(unlink(hide_output))
   sink(hide_output)
   suppressMessages(create_package(path = path, package = package))
   sink()
-  repo <- path(path, package)
+  repo <- path_(path, package)
   git_config_set(name = "user.name", value = "junk", repo = repo)
   git_config_set(name = "user.email", value = "junk@inbo.be", repo = repo)
   gert::git_commit("initial commit", repo = repo)
 
   org <- org_list$new()$read(repo)
-  mit <- readLines(path(repo, "LICENSE.md"))
+  mit <- readLines(path_(repo, "LICENSE.md"))
   expect_identical(
     mit[3],
     sprintf(
@@ -38,19 +62,13 @@ test_that("check_license() works", {
       org$get_person(org$which_rightsholder$required, lang = "en-GB")$given
     )
   )
-  expect_identical(
-    file.exists(path(repo, "LICENSE")),
-    TRUE
-  )
+  expect_identical(file.exists(path_(repo, "LICENSE")), TRUE)
   x <- check_license(repo, org = org)
-  expect_identical(
-    x$.__enclos_env__$private$errors$license,
-    character(0)
-  )
+  expect_identical(x$.__enclos_env__$private$errors$license, character(0))
 
   # copyright holder mismatch
   mit[3] <- paste0("Copyright (c) ", format(Sys.Date(), "%Y"), " INBO")
-  writeLines(mit, path(repo, "LICENSE.md"))
+  writeLines(mit, path_(repo, "LICENSE.md"))
   expect_is(x <- check_license(repo, org = org), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,
@@ -60,7 +78,7 @@ test_that("check_license() works", {
     )
   )
 
-  file_delete(path(repo, "LICENSE.md"))
+  unlink(path_(repo, "LICENSE.md"))
   expect_is(x <- check_license(repo, org = org), "checklist")
   expect_identical(
     x$.__enclos_env__$private$errors$license,

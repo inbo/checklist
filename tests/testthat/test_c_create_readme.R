@@ -15,8 +15,32 @@ test_that("create readme", {
     mock("title of the project", "A short description")
   )
   stub(create_readme, "ask_keywords", mock("keyword"))
-  expect_null(
-    create_readme(path = path, org = org, type = "project", lang = "en-GB")
+  stub(
+    create_readme,
+    "project_maintainer",
+    list(
+      authors = data.frame(
+        given = c("Given", "The checklist organisation") |>
+          rep(each = 2),
+        family = c("Test", "") |>
+          rep(each = 2),
+        email = c("given.test@vlaanderen.be", "info@organisation.checklist") |>
+          rep(each = 2),
+        orcid = c("0000-0002-1825-0097", "") |>
+          rep(each = 2),
+        affiliation = c("Vlaamse overheid", "") |>
+          rep(each = 2),
+        role = c("aut", "cre", "fnd", "cph")
+      ) |>
+        individual2badge(),
+      org = org
+    )
   )
-  expect_true(file_exists(path(path, "README.md")))
+  expect_null(create_readme(
+    path = path,
+    org = org,
+    type = "project",
+    lang = "en-GB"
+  ))
+  expect_true(file_test("-f", path_(path, "README.md")))
 })

@@ -45,7 +45,7 @@ Use `setup_project()` when you want to change the settings later.
 - Do you want to check the license file?
   This compares the `LICENSE.md` in your project with the `LICENSE.md`.
 - Do you want to update the citation files?
-  
+
 # Add or update `checklist` tools in an existing project
 
 Run `setup_project(path_to_your_project)`.
@@ -83,3 +83,14 @@ In case of a previous set-up, it will take that into account.
             - activate "Require status checks to pass before merging"
                 - search and select "check project with checklist"
                 - activate Require "branches to be up to date before merging"
+
+# Failing checks in the GitHub Action
+
+When you push code to GitHub, the `check_project` GitHub Action runs `check_project()` on your project.
+If any of the checks fail, you will see a red cross in the "Actions" tab of your repository on GitHub.
+Click on the "Actions" tab and then on the failed workflow to see which check(s) failed and what the error message is.
+You can then fix the issues locally and push the changes to GitHub to run the checks again.
+Pro tip: you can also run `check_project()` locally to see which checks fail before pushing to GitHub.
+
+The GitHub Action might fail because of other issues, like problems with installing dependencies.
+Please have a look at this [section](getting_started.html#failing-check-package-on-github-actions) in the `vignette("getting_started", package = "checklist")` for more details on how to troubleshoot failing checks in the GitHub Action.

@@ -1,7 +1,7 @@
 test_that("check_environment() works", {
   tmp_dir <- tempfile()
-  dir_create(tmp_dir)
-  defer(file_delete(tmp_dir))
+  dir.create(tmp_dir, recursive = TRUE, showWarnings = FALSE)
+  defer(unlink(tmp_dir))
   checklist$new(tmp_dir, language = "en-GB", package = FALSE) |>
     write_checklist()
   old_gha <- Sys.getenv("GITHUB_ACTIONS", "false")

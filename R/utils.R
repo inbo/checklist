@@ -53,31 +53,6 @@ on_failure(is_workdir_clean) <- function(call, env) {
   "Working directory is not clean. Please commit or stash changes first."
 }
 
-#' Check if a vector contains valid email
-#'
-#' It only checks the format of the text, not if the email address exists.
-#' @param email A vector with email addresses.
-#' @return A logical vector.
-#' @export
-#' @importFrom assertthat assert_that
-#' @family utils
-validate_email <- function(email) {
-  assert_that(is.character(email))
-  # expression taken from https://emailregex.com/
-  grepl(
-    paste0(
-      "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"",
-      "(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|",
-      "\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*",
-      "[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|",
-      "2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]",
-      "[0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a",
-      "\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])"
-    ),
-    tolower(email)
-  )
-}
-
 checklist_extract <- function(x, name = "value", prefix = rep("", length(x))) {
   paste0(prefix, vapply(x, `[[`, character(1), name))
 }
@@ -255,9 +230,9 @@ checklist_summarise_spelling <- function(spelling) {
         "Potential spelling errors for `%s`\nWords:\n%s\nFiles:\n%s",
         i,
         paste(
-          c_sort(
-            as.character(unique(spelling$message[spelling$language == i]))
-          ),
+          c_sort(as.character(unique(spelling$message[
+            spelling$language == i
+          ]))),
           collapse = ", "
         ),
         paste(
@@ -276,7 +251,8 @@ checklist_template <- function(
   notes,
   spelling,
   required,
-  pak
+  pak,
+  gha_install
 ) {
   template <- list(
     description = "Configuration file for checklist::check_pkg()",
@@ -293,6 +269,7 @@ checklist_template <- function(
   }
   template$spelling <- spelling
   template$pak <- pak
+  template$gha_install <- gha_install
   return(template)
 }
 
@@ -362,31 +339,6 @@ execshell <- function(commandstring, intern = FALSE, path = ".", ...) {
   }
 }
 
-
-#' Check if a file is tracked and not modified
-#'
-#' @param file path relative to the git root directory.
-#' @param repo path to the repository
-#'
-#' @importFrom gert git_status git_ls
-#' @importFrom assertthat assert_that is.string
-#'
-#' @noRd
-is_tracked_not_modified <- function(file, repo = ".") {
-  assert_that(is.string(file))
-  tracked <- try(git_ls(repo = repo), silent = TRUE)
-  if (inherits(tracked, "try-error")) {
-    if (grepl("could not find repository", tracked)) {
-      return(TRUE)
-    }
-    stop(tracked)
-  }
-  is_tracked <- file %in% tracked$path
-  status <- git_status(repo = repo)
-  is_not_modified <- !file %in% status$file[status$status == "modified"]
-  return(is_tracked && is_not_modified)
-}
-
 #' @importFrom gert git_branch_list git_diff git_info
 #' @importFrom cli cli_h1 cli_text col_green col_red
 checklist_diff <- function(root) {
@@ -424,4 +376,18 @@ checklist_diff <- function(root) {
     }
   )
   return(invisible(NULL))
+}
+
+#' Construct file paths with forward slashes
+#'
+#' A wrapper around `file.path()`` that always uses forward slashes as the
+#' path separator.
+#' @param ... character vectors passed to `file.path()`.
+#' @return A character vector of file paths.
+#' @noRd
+#' @keywords internal
+path_ <- function(...) {
+  dots <- list(...)
+  dots$fsep <- "/"
+  do.call(what = "file.path", args = dots)
 }

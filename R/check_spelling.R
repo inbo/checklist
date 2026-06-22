@@ -11,7 +11,6 @@
 #' @inheritParams check_package
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
-#' @importFrom fs path
 #' @importFrom tools loadPkgRdMacros loadRdMacros
 #' @family both
 check_spelling <- function(x = ".", quiet = FALSE) {
@@ -20,7 +19,7 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   md_files <- x$get_md
   if (x$package) {
     rd_files <- x$get_rd
-    macros <- path(R.home("share"), "Rd", "macros", "system.Rd") |>
+    macros <- path_(R.home("share"), "Rd", "macros", "system.Rd") |>
       loadRdMacros(loadPkgRdMacros(x$get_path, macros = NULL))
   } else {
     rd_files <- data.frame(language = character(0), path = character(0))
@@ -45,20 +44,20 @@ check_spelling <- function(x = ".", quiet = FALSE) {
         package = x$package
       )
       r_issues <- vapply(
-        path(root, r_files$path[r_files$language == lang]),
+        path_(root, r_files$path[r_files$language == lang]),
         FUN = spelling_parse_r,
         FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist
       )
       md_issues <- vapply(
-        path(root, md_files$path[md_files$language == lang]),
+        path_(root, md_files$path[md_files$language == lang]),
         FUN = spelling_parse_md,
         FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist,
         x = x
       )
       rd_issues <- vapply(
-        path(root, rd_files$path[rd_files$language == lang]),
+        path_(root, rd_files$path[rd_files$language == lang]),
         FUN = spelling_parse_rd,
         FUN.VALUE = vector(mode = "list", length = 1),
         wordlist = wordlist,
@@ -88,14 +87,13 @@ check_spelling <- function(x = ".", quiet = FALSE) {
   return(x)
 }
 
-#' @importFrom fs file_exists path
 #' @importFrom hunspell dictionary
 spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
-  path("spelling", "inbo.dic") |>
+  path_("spelling", "inbo.dic") |>
     system.file(package = "checklist") |>
     readLines() -> add_words
   if (package) {
-    path(root, "DESCRIPTION") |>
+    path_(root, "DESCRIPTION") |>
       description$new() -> descr
     descr$get_authors() |>
       format(include = c("given", "family")) |>
@@ -110,14 +108,14 @@ spelling_wordlist <- function(lang = "en_GB", root = ".", package = FALSE) {
     }
   }
 
-  path("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
+  path_("spelling", gsub("(.*)_.*", "stats_\\1.dic", lang)) |>
     system.file(package = "checklist") -> dict
-  if (file_exists(dict)) {
+  if (file_test("-f", dict)) {
     readLines(dict) |>
       c(add_words) -> add_words
   }
-  dict <- path(root, "inst", tolower(lang), ext = "dic")
-  if (file_exists(dict)) {
+  dict <- paste0(path_(root, "inst", tolower(lang)), ".dic")
+  if (file_test("-f", dict)) {
     readLines(dict) |>
       c(add_words) -> add_words
   }
@@ -160,31 +158,23 @@ spelling_check <- function(text, filename, wordlist, raw_text = text) {
     text = raw_text,
     problems = problems,
     FUN = function(i, text, problems) {
-      list(
-        vapply(
-          problems[[i]],
-          FUN.VALUE = vector(mode = "list", length = 1),
-          text = text,
-          i = i,
-          FUN = function(word, text, i) {
-            detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
-            if (min(detect) == -1) {
-              return(
-                list(
-                  data.frame(
-                    line = integer(0),
-                    column = integer(0),
-                    message = character(0)
-                  )
-                )
-              )
-            }
-            list(
-              data.frame(line = i, column = as.vector(detect), message = word)
-            )
+      list(vapply(
+        problems[[i]],
+        FUN.VALUE = vector(mode = "list", length = 1),
+        text = text,
+        i = i,
+        FUN = function(word, text, i) {
+          detect <- gregexpr(spelling_clean_problem(word), text[i])[[1]]
+          if (min(detect) == -1) {
+            return(list(data.frame(
+              line = integer(0),
+              column = integer(0),
+              message = character(0)
+            )))
           }
-        )
-      )
+          list(data.frame(line = i, column = as.vector(detect), message = word))
+        }
+      ))
     }
   )
   result <- do.call(rbind, unlist(result, recursive = FALSE))
@@ -222,7 +212,6 @@ spelling_clean_problem <- function(problem) {
 #' @param x The `checklist_spelling` object
 #' @param ... currently ignored
 #' @export
-#' @importFrom fs path_common path_rel
 #' @importFrom stats aggregate
 #' @family both
 print.checklist_spelling <- function(x, ...) {
@@ -236,8 +225,8 @@ print.checklist_spelling <- function(x, ...) {
   ) {
     return(rstudio_source_markers(issues = x)) # nocov
   }
-  common <- path_common(x$file)
-  x$file <- path_rel(x$file, start = common)
+  common <- path_common_(x$file)
+  x$file <- path_rel_(x$file, start = common)
   x <- x[order(x$file, x$line, x$message), ]
   display <- aggregate(
     column ~ file + language + message + line,
@@ -276,7 +265,6 @@ print.checklist_spelling <- function(x, ...) {
   return(invisible(NULL))
 }
 
-#' @importFrom fs path_common
 rstudio_source_markers <- function(issues) {
   # nocov start
   # nocov_start
@@ -284,7 +272,7 @@ rstudio_source_markers <- function(issues) {
     requireNamespace("rstudioapi", quietly = TRUE),
     msg = "This function requires the `rstudioapi` package"
   )
-  common <- path_common(issues$file)
+  common <- path_common_(issues$file)
   issues$message <- sprintf(
     "`%s` not found in the dictionary or wordlist for %s.",
     issues$message,
@@ -315,7 +303,6 @@ install_dictionary <- function(lang) {
   install_german(lang[!ok])
 }
 
-#' @importFrom fs file_copy
 install_dutch <- function(lang) {
   if (length(grep("^nl", lang)) == 0) {
     return(FALSE)
@@ -327,26 +314,25 @@ install_dutch <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.dic",
-    path(target, "nl_NL.dic")
+    path_(target, "nl_NL.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/nl_NL.aff",
-    path(target, "nl_NL.aff")
+    path_(target, "nl_NL.aff")
   )
-  file_copy(
-    path(target, "nl_NL.dic"),
-    path(target, "nl_BE.dic"),
+  file.copy(
+    path_(target, "nl_NL.dic"),
+    path_(target, "nl_BE.dic"),
     overwrite = TRUE
   )
-  file_copy(
-    path(target, "nl_NL.aff"),
-    path(target, "nl_BE.aff"),
+  file.copy(
+    path_(target, "nl_NL.aff"),
+    path_(target, "nl_BE.aff"),
     overwrite = TRUE
   )
   return(TRUE)
 }
 
-#' @importFrom fs file_copy file_move
 #' @importFrom utils unzip
 install_french <- function(lang) {
   if (length(grep("^fr", lang)) == 0) {
@@ -359,26 +345,25 @@ install_french <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.dic",
-    path(target, "fr_FR.dic")
+    path_(target, "fr_FR.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/fr_FR.aff",
-    path(target, "fr_FR.aff")
+    path_(target, "fr_FR.aff")
   )
-  file_copy(
-    path(target, "fr_FR.dic"),
-    path(target, "fr_BE.dic"),
+  file.copy(
+    path_(target, "fr_FR.dic"),
+    path_(target, "fr_BE.dic"),
     overwrite = TRUE
   )
-  file_copy(
-    path(target, "fr_FR.aff"),
-    path(target, "fr_BE.aff"),
+  file.copy(
+    path_(target, "fr_FR.aff"),
+    path_(target, "fr_BE.aff"),
     overwrite = TRUE
   )
   return(TRUE)
 }
 
-#' @importFrom fs file_copy file_move
 #' @importFrom utils unzip
 install_german <- function(lang) {
   if (length(grep("^de", lang)) == 0) {
@@ -391,11 +376,11 @@ install_german <- function(lang) {
   target <- system.file("dict", package = "hunspell")
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/de_DE.dic",
-    path(target, "de_DE.dic")
+    path_(target, "de_DE.dic")
   )
   curl::curl_download(
     "https://github.com/inbo/hunspell-dict/raw/main/de_DE.aff",
-    path(target, "de_DE.aff")
+    path_(target, "de_DE.aff")
   )
   return(TRUE)
 }

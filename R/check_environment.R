@@ -12,9 +12,7 @@ check_environment <- function(x = ".") {
     x$add_error(character(0), item = "repository secret", keep = FALSE)
     return(invisible(x))
   }
-  problems <- c(
-    "CODECOV_TOKEN"[Sys.getenv("CODECOV_TOKEN") == ""]
-  )
+  problems <- c("CODECOV_TOKEN"[Sys.getenv("CODECOV_TOKEN") == ""])
   if (length(problems) == 0) {
     x$add_error(character(0), item = "repository secret", keep = FALSE)
     return(invisible(x))
