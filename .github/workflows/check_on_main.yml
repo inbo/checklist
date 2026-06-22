@@ -1,19 +1,30 @@
 on:
   push:
-    branches:
-      - main
-permissions:
-  contents: write
+    branches-ignore:
+      - ghpages
 
-name: "check package on main with checklist"
+name: "check package with checklist"
 
 jobs:
   check-package:
-    runs-on: ubuntu-latest
-    name: "check package"
+    runs-on: ubuntu-24.04
+    name: check-package
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
+      RSPM: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest"
+    permissions:
+      contents: read
     steps:
-      - uses: inbo/actions/check_pkg@devel
+      - name: "Check package with checklist"
+        uses: inbo/actions/check_pkg@composite
+  deploy-pages:
+    name: deploy-gh-pages
+    runs-on: ubuntu-24.04
+    needs: check-package
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - name: "Tag and deploy gh-pages"
+        uses: inbo/actions/check_deploy@composite
