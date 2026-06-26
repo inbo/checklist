@@ -12,7 +12,7 @@ body:
     attributes:
       label: What happened?
       description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see! Please copy and paste both your code and the error message you received.
+      placeholder: Tell us what you see! Please copy and paste both your code and the error message you received. Please **do not** attach screenshots of your code or error messages. We need to be able to copy and paste your code and error messages to help you.
     validations:
       required: true
   - type: textarea
