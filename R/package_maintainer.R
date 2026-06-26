@@ -1,9 +1,16 @@
 #' @importFrom citeme individual2person
 package_maintainer <- function(org, lang) {
   message("Please select the maintainer")
-  maintainer <- individual2person(role = c("aut", "cre"), lang = lang)
+  maintainer <- individual2person(
+    role = c("aut", "cre"),
+    lang = lang,
+    org = org
+  )
   while (isTRUE(ask_yes_no("Add another author?", default = FALSE))) {
-    maintainer <- c(maintainer, individual2person(role = "aut", lang = lang))
+    maintainer <- c(
+      maintainer,
+      individual2person(role = "aut", lang = lang, org = org)
+    )
   }
   info <- ask_rightsholder_funder(org = org, type = "rightsholder")
   selected_org <- info$selection
