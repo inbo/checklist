@@ -1,3 +1,8 @@
+# checklist 0.6.1
+
+* Improve bug report template
+* Correct pass the organisation when creating a package skeleton (#197)
+
 # checklist 0.6.0
 
 ## Breaking changes
