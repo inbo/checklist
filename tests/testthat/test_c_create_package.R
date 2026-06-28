@@ -246,6 +246,8 @@ test_that("create_package() works", {
     unlist(x$.__enclos_env__$private$allowed_notes),
     sep = "\n"
   )
+  # skip further tests on R-universe
+  skip_if(Sys.getenv("MY_UNIVERSE") != "")
   expect_false(identical(
     old_checklist$.__enclos_env__$private$allowed_notes,
     x$.__enclos_env__$private$allowed_notes
