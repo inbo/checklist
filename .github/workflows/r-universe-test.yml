@@ -1,0 +1,13 @@
+name: Test R-universe
+
+on:
+  pull_request:
+    branches-ignore:
+      - ghpages
+
+jobs:
+  build:
+    name: R-universe testing
+    uses: r-universe-org/workflows/.github/workflows/build.yml@v3
+    with:
+      universe: ${{ github.repository_owner }}

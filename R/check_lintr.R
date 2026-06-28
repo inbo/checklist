@@ -21,15 +21,13 @@
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom cyclocomp cyclocomp
 #' @importFrom gert git_submodule_list
 #' @importFrom lintr lint_dir lint_package
 #' @importFrom withr defer
 #' @family both
 check_lintr <- function(x = ".", quiet = FALSE) {
   assert_that(is.flag(quiet), noNA(quiet))
-  stopifnot(
-    "Please install the `cyclocomp` package" = requireNamespace("cyclocomp")
-  )
   x <- read_checklist(x = x)
   options(lintr.linter_file = select_lintr_file(x$get_path))
   old_lint_option <- getOption("lintr.rstudio_source_markers", TRUE)

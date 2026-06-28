@@ -1,7 +1,7 @@
 Type: Package
 Package: checklist
 Title: A Thorough and Strict Set of Checks for R Packages and Source Code
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
@@ -22,8 +22,9 @@ Depends:
     R (>= 4.1.0)
 Imports:
     assertthat,
-    citeme (>= 0.1.2),
+    citeme (>= 0.1.4),
     cli,
+    cyclocomp,
     desc,
     devtools (> 2.4.0),
     gert,
@@ -41,7 +42,6 @@ Suggests:
     bookdown,
     covr,
     curl,
-    cyclocomp,
     knitr,
     mockery,
     pak,

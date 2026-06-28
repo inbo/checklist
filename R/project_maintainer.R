@@ -1,10 +1,10 @@
 #' @importFrom citeme ask_yes_no individual2badge select_individual
 project_maintainer <- function(org, lang) {
   message("Please select the corresponding author")
-  select_individual(lang = lang) |>
+  select_individual(lang = lang, org = org) |>
     individual2badge(role = c("aut", "cre")) -> author
   while (isTRUE(ask_yes_no("add another author?", default = FALSE))) {
-    select_individual(lang = lang) |>
+    select_individual(lang = lang, org = org) |>
       individual2badge(role = "aut") -> extra
     attr(author, "footnote") |>
       c(attr(extra, "footnote")) -> footnote
