@@ -25,11 +25,11 @@ Source:
 [`inst/CITATION`](https://github.com/inbo/checklist/blob/main/inst/CITATION)
 
 Onkelinx, Thierry (2026) checklist: A Thorough and Strict Set of Checks
-for R Packages and Source Code. Version 0.6.0.
+for R Packages and Source Code. Version 0.6.1.
 https://inbo.github.io/checklist/
 
     @Manual{,
-      title = {checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.6.0},
+      title = {checklist: A Thorough and Strict Set of Checks for R Packages and Source Code. Version 0.6.1},
       author = {Thierry Onkelinx},
       year = {2026},
       url = {https://inbo.github.io/checklist/},

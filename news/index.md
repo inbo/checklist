@@ -1,5 +1,11 @@
 # Changelog
 
+## checklist 0.6.1
+
+- Improve bug report template
+- Correct pass the organisation when creating a package skeleton
+  ([\#197](https://github.com/inbo/checklist/issues/197))
+
 ## checklist 0.6.0
 
 ### Breaking changes
