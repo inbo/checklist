@@ -33,14 +33,14 @@ jobs:
       ZENODO_SANDBOX: ${{ secrets.ZENODO_SANDBOX }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
-      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           r-version: ${{ matrix.config.r }}
           extra-repositories: https://inbo.r-universe.dev https://cranhaven.r-universe.dev
 
-      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-pandoc@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
 
       - name: linux dependencies
         if: runner.os == 'linux'
@@ -60,12 +60,12 @@ jobs:
           Rscript --no-save --no-restore -e 'install.packages("pak")'
           Rscript --no-save --no-restore -e 'pak::pkg_install(c("assertthat", "bookdown", "inbo/citeme", "cli", "covr", "curl", "cyclocomp", "desc", "devtools", "gert", "hexSticker", "hunspell", "knitr", "lintr", "mockery", "pdftools", "pkgdown", "R6", "rcmdcheck", "renv", "rmarkdown", "roxygen2", "rstudioapi", "sessioninfo", "showtext", "sysfonts", "testthat", "withr", "yaml"))'
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         if: runner.os != 'linux'
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
+      - uses: r-lib/actions/check-r-package@d3c5be51b12e724e68f33216ca3c148b66d5f0b6 # v2
         with:
           error-on: '"error"'
