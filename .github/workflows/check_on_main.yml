@@ -17,7 +17,7 @@ jobs:
       contents: read
     steps:
       - name: "Check package with checklist"
-        uses: inbo/actions/check_pkg@composite
+        uses: inbo/actions/check_pkg@a29089fc9a2ea38b9d9bd62c0d1db3b448b224c8 # composite
   deploy-pages:
     name: deploy-gh-pages
     runs-on: ubuntu-24.04
@@ -27,4 +27,4 @@ jobs:
       contents: write
     steps:
       - name: "Tag and deploy gh-pages"
-        uses: inbo/actions/check_deploy@composite
+        uses: inbo/actions/check_deploy@a29089fc9a2ea38b9d9bd62c0d1db3b448b224c8 # composite
