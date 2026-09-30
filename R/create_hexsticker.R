@@ -109,8 +109,8 @@ string2svg <- function(string) {
   text(0.5, 0.5, string, family = "Flanders Art Sans", cex = 4)
   dev.off()
   svg_string <- readLines(tmp, encoding = "UTF8")
-  svg_string <- head(tail(svg_string, -4), -2)
-  svg_string <- gsub("<path .* d=\"(.*) \"/>", "\\1", svg_string)
+  svg_string <- grepv("<path", svg_string)
+  svg_string <- gsub("<path .*? d=\"(.*) \"/>", "\\1", svg_string)
   svg_string <- unlist(strsplit(svg_string, " ?Z ?"))
   svg_string <- vapply(
     strsplit(svg_string, " "),
