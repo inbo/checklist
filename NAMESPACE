@@ -42,104 +42,136 @@ export(update_citation)
 export(write_checklist)
 export(yesno)
 importFrom(R6,R6Class)
-importFrom(assertthat,"on_failure<-")
-importFrom(assertthat,assert_that)
-importFrom(assertthat,has_name)
-importFrom(assertthat,is.flag)
-importFrom(assertthat,is.number)
-importFrom(assertthat,is.string)
-importFrom(assertthat,noNA)
-importFrom(citeme,add_badges)
-importFrom(citeme,ask_language)
-importFrom(citeme,ask_url)
-importFrom(citeme,ask_yes_no)
-importFrom(citeme,cache_org)
-importFrom(citeme,citation_meta)
-importFrom(citeme,coalesce)
-importFrom(citeme,get_available_organisations)
-importFrom(citeme,individual2badge)
-importFrom(citeme,individual2df)
-importFrom(citeme,individual2person)
-importFrom(citeme,is_tracked_not_modified)
-importFrom(citeme,license_local_remote)
-importFrom(citeme,menu_first)
-importFrom(citeme,new_org_item)
-importFrom(citeme,new_org_list)
-importFrom(citeme,org_list)
-importFrom(citeme,org_list_from_url)
-importFrom(citeme,select_individual)
-importFrom(citeme,select_license)
-importFrom(citeme,ssh_http)
-importFrom(citeme,validate_language)
-importFrom(cli,cli_h1)
-importFrom(cli,cli_text)
-importFrom(cli,col_green)
-importFrom(cli,col_red)
+importFrom(assertthat,
+  "on_failure<-",
+  assert_that,
+  has_name,
+  is.flag,
+  is.number,
+  is.string,
+  noNA
+)
+importFrom(citeme,
+  add_badges,
+  ask_language,
+  ask_url,
+  ask_yes_no,
+  cache_org,
+  citation_meta,
+  coalesce,
+  get_available_organisations,
+  individual2badge,
+  individual2df,
+  individual2person,
+  is_tracked_not_modified,
+  license_local_remote,
+  menu_first,
+  new_org_item,
+  new_org_list,
+  org_list,
+  org_list_from_url,
+  select_individual,
+  select_license,
+  ssh_http,
+  validate_language
+)
+importFrom(cli,
+  cli_h1,
+  cli_text,
+  col_green,
+  col_red
+)
 importFrom(cyclocomp,cyclocomp)
-importFrom(desc,desc)
-importFrom(desc,description)
-importFrom(devtools,build_readme)
-importFrom(devtools,document)
-importFrom(gert,git_add)
-importFrom(gert,git_ahead_behind)
-importFrom(gert,git_branch)
-importFrom(gert,git_branch_checkout)
-importFrom(gert,git_branch_create)
-importFrom(gert,git_branch_delete)
-importFrom(gert,git_branch_exists)
-importFrom(gert,git_branch_list)
-importFrom(gert,git_commit)
-importFrom(gert,git_commit_id)
-importFrom(gert,git_config)
-importFrom(gert,git_config_set)
-importFrom(gert,git_diff)
-importFrom(gert,git_fetch)
-importFrom(gert,git_find)
-importFrom(gert,git_info)
-importFrom(gert,git_init)
-importFrom(gert,git_log)
-importFrom(gert,git_ls)
-importFrom(gert,git_pull)
-importFrom(gert,git_push)
-importFrom(gert,git_remote_add)
-importFrom(gert,git_remote_list)
-importFrom(gert,git_rm)
-importFrom(gert,git_stat_files)
-importFrom(gert,git_status)
-importFrom(gert,git_submodule_list)
-importFrom(gert,git_tag_create)
-importFrom(gert,git_tag_list)
-importFrom(grDevices,dev.off)
-importFrom(grDevices,svg)
-importFrom(graphics,plot.new)
-importFrom(graphics,text)
-importFrom(hunspell,dictionary)
-importFrom(hunspell,hunspell)
-importFrom(hunspell,list_dictionaries)
-importFrom(lintr,lint_dir)
-importFrom(lintr,lint_package)
+importFrom(desc,
+  desc,
+  description
+)
+importFrom(devtools,
+  build_readme,
+  document
+)
+importFrom(gert,
+  git_add,
+  git_ahead_behind,
+  git_branch,
+  git_branch_checkout,
+  git_branch_create,
+  git_branch_delete,
+  git_branch_exists,
+  git_branch_list,
+  git_commit,
+  git_commit_id,
+  git_config,
+  git_config_set,
+  git_diff,
+  git_fetch,
+  git_find,
+  git_info,
+  git_init,
+  git_log,
+  git_ls,
+  git_pull,
+  git_push,
+  git_remote_add,
+  git_remote_list,
+  git_rm,
+  git_stat_files,
+  git_status,
+  git_submodule_list,
+  git_tag_create,
+  git_tag_list
+)
+importFrom(grDevices,
+  dev.off,
+  svg
+)
+importFrom(graphics,
+  plot.new,
+  text
+)
+importFrom(hunspell,
+  dictionary,
+  hunspell,
+  list_dictionaries
+)
+importFrom(lintr,
+  lint_dir,
+  lint_package
+)
 importFrom(pkgdown,build_site)
 importFrom(rcmdcheck,rcmdcheck)
-importFrom(rmarkdown,pandoc_exec)
-importFrom(rmarkdown,yaml_front_matter)
+importFrom(rmarkdown,
+  pandoc_exec,
+  yaml_front_matter
+)
 importFrom(sessioninfo,session_info)
-importFrom(stats,aggregate)
-importFrom(stats,na.omit)
-importFrom(stats,setNames)
-importFrom(tools,R_user_dir)
-importFrom(tools,RdTextFilter)
-importFrom(tools,loadPkgRdMacros)
-importFrom(tools,loadRdMacros)
-importFrom(tools,toTitleCase)
-importFrom(utils,browseURL)
-importFrom(utils,data)
-importFrom(utils,file_test)
-importFrom(utils,head)
-importFrom(utils,installed.packages)
-importFrom(utils,menu)
-importFrom(utils,tail)
-importFrom(utils,unzip)
-importFrom(withr,defer)
-importFrom(withr,with_path)
-importFrom(yaml,read_yaml)
-importFrom(yaml,write_yaml)
+importFrom(stats,
+  aggregate,
+  na.omit,
+  setNames
+)
+importFrom(tools,
+  R_user_dir,
+  RdTextFilter,
+  loadPkgRdMacros,
+  loadRdMacros,
+  toTitleCase
+)
+importFrom(utils,
+  browseURL,
+  data,
+  file_test,
+  head,
+  installed.packages,
+  menu,
+  tail,
+  unzip
+)
+importFrom(withr,
+  defer,
+  with_path
+)
+importFrom(yaml,
+  read_yaml,
+  write_yaml
+)
