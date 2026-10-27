@@ -10,8 +10,8 @@
 #' @param path Where to create the package directory.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
-#' @importFrom citeme ask_language individual2badge individual2df org_list
-#' @importFrom citeme org_list_from_url select_license ssh_http
+#' @importFrom citeme ask_keywords ask_language individual2badge individual2df
+#' @importFrom citeme org_list org_list_from_url select_license ssh_http
 #' @importFrom desc description
 #' @importFrom gert git_add git_init
 #' @importFrom tools toTitleCase
@@ -254,24 +254,4 @@ append_communities <- function(desc, org) {
     return(desc)
   }
   desc$set("Config/citeme/communities", paste(communities, collapse = "; "))
-}
-
-ask_keywords <- function() {
-  repeat {
-    readline(prompt = "Enter one or more keywords separated by `;` ") |>
-      strsplit(";") |>
-      unlist() |>
-      gsub(pattern = "^\\s+", replacement = "") |>
-      gsub(pattern = "\\s+$", replacement = "") -> keywords
-    keywords <- keywords[keywords != ""]
-    if (length(keywords) > 0) {
-      break
-    }
-    warning(
-      "Please enter at least one keyword.",
-      immediate. = TRUE,
-      call. = FALSE
-    )
-  }
-  return(keywords)
 }

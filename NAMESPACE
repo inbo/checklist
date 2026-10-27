@@ -54,6 +54,7 @@ importFrom(assertthat,
 )
 importFrom(citeme,
   add_badges,
+  ask_keywords,
   ask_language,
   ask_url,
   ask_yes_no,

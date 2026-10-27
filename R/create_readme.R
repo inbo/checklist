@@ -1,4 +1,5 @@
-#' @importFrom citeme add_badges license_local_remote select_license ssh_http
+#' @importFrom citeme add_badges ask_keywords license_local_remote
+#' @importFrom citeme select_license ssh_http
 create_readme <- function(
   path,
   org,
