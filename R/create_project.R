@@ -5,7 +5,7 @@
 #' @param project The name of the project.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
-#' @importFrom citeme ask_language ask_yes_no new_org_list org_list
+#' @importFrom citeme ask_language ask_yes_no get_token new_org_list org_list
 #' @importFrom citeme org_list_from_url select_license
 #' @family setup
 create_project <- function(path, project) {
@@ -24,6 +24,13 @@ create_project <- function(path, project) {
   if (use_vc) {
     preferred_protocol() |>
       sprintf(project) -> git
+    if (grepl("github.com", git)) {
+      ssh_http(git) |>
+        get_token() -> token
+      if (!is.null(token)) {
+        create_github_repo(token$password)
+      }
+    }
     org <- org_list_from_url(git)
   } else {
     org <- new_org_list()

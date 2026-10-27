@@ -44,6 +44,14 @@ create_package <- function(package, path = ".") {
   keywords <- ask_keywords()
   preferred_protocol() |>
     sprintf(package) -> git
+  if (grepl("github.com", git)) {
+    ssh_http(git) |>
+      get_token() -> token
+    if (!is.null(token)) {
+      create_github_repo(token$password)
+    }
+  }
+
   org <- org_list_from_url(git)
   license <- select_license(org, type = "package")
   language <- ask_language(
