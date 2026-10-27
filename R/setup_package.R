@@ -14,7 +14,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom citeme ask_language individual2badge individual2df org_list
 #' @importFrom desc desc
-#' @importFrom gert git_add
+#' @importFrom gert git_add git_remote_list git_rm
 #' @importFrom utils file_test
 #' @family setup
 setup_package <- function(path = ".") {
@@ -172,12 +172,6 @@ setup_package <- function(path = ".") {
     dir.create(recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = path,
-    filename = "check_on_branch.yml",
-    template = "package_template",
-    target = path_(".github", "workflows")
-  )
-  insert_file(
-    repo = path,
     filename = "check_on_main.yml",
     template = "package_template",
     target = path_(".github", "workflows")
@@ -188,12 +182,15 @@ setup_package <- function(path = ".") {
     template = "package_template",
     target = path_(".github", "workflows")
   )
-  insert_file(
-    repo = path,
-    filename = "release.yml",
-    template = "package_template",
-    target = path_(".github", "workflows")
+
+  old_gha <- path_(
+    ".github",
+    "workflows",
+    c("check_on_branch.yml", "release.yml")
   )
+  git_rm(old_gha, repo = path)
+  path_(path, old_gha) |>
+    unlink()
 
   # Add agents
   add_agents(x)

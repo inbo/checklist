@@ -187,12 +187,6 @@ create_package <- function(package, path = ".") {
   dir.create(path_(path, target), recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = repo,
-    filename = "check_on_branch.yml",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
     filename = "check_on_main.yml",
     template = "package_template",
     target = target
@@ -200,12 +194,6 @@ create_package <- function(package, path = ".") {
   insert_file(
     repo = repo,
     filename = "check_on_different_r_os.yml",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
-    filename = "release.yml",
     template = "package_template",
     target = target
   )
