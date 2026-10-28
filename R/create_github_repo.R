@@ -3,7 +3,7 @@ create_github_repo <- function(git) {
     "`git` must be a character" = is.character(git),
     "`git` must be of length 1" = length(git) == 1,
     "`git` must not be `NA`" = !is.na(git),
-    "`curl` package is not installed" = requireNamespace("curl")
+    "`curl` package is not installed" = requireNamespace("curl", quietly = TRUE)
   )
   grepv(pattern = "github.com", git) |>
     head(1) -> url
@@ -36,15 +36,7 @@ create_github_repo <- function(git) {
       basename(git) |>
         gsub(pattern = "\\.git$", replacement = "")
     ) -> json_body
-  curl::new_handle() |>
-    curl::handle_setopt(customrequest = "POST") |>
-    curl::handle_setopt(postfields = charToRaw(json_body)) |>
-    curl::handle_setheaders(
-      "Authorization" = paste("Bearer", token$password),
-      "Accept" = "application/vnd.github+json",
-      "X-GitHub-Api-Version" = "2022-11-28",
-      "Content-Type" = "application/json"
-    ) -> h
+  github_handle(token, method = "POST", body = json_body) -> h
   ssh_http(git) |>
     basename() |>
     sprintf(fmt = "https://api.github.com/orgs/%s/repos") |>

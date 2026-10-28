@@ -4,16 +4,15 @@
 \alias{setup_branch_protection}
 \title{Protect the default branch on GitHub}
 \usage{
-setup_branch_protection(git, token, package = TRUE)
+setup_branch_protection(git, package = TRUE)
 }
 \arguments{
 \item{git}{the url of the repo.}
 
-\item{token}{the token for GitHub}
-
 \item{package}{logical, whether the repo is a package or not.
 If \code{TRUE}, the default branch protection ruleset will be set for packages,
-otherwise for projects.}
+otherwise for projects.
+When the ruleset already exists, it is updated instead of created.}
 }
 \value{
 \code{TRUE} in case not a GitHub repository, or if the ruleset was

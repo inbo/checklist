@@ -4,6 +4,7 @@
 #' @param package logical, whether the repo is a package or not.
 #' If `TRUE`, the default branch protection ruleset will be set for packages,
 #' otherwise for projects.
+#' When the ruleset already exists, it is updated instead of created.
 #' @return `TRUE` in case not a GitHub repository, or if the ruleset was
 #' successfully activated.
 #' @export
@@ -14,7 +15,10 @@ setup_branch_protection <- function(git, package = TRUE) {
     "`git` must be a character" = is.character(git),
     "`git` must be of length 1" = length(git) == 1,
     "`git` must not be `NA`" = !is.na(git),
-    "`curl` package is not installed" = requireNamespace("curl"),
+    "`curl` package is not installed" = requireNamespace(
+      "curl",
+      quietly = TRUE
+    ),
     "`package` must be a logical" = is.logical(package),
     "`package` must be of length 1" = length(package) == 1,
     "`package` must not be `NA`" = !is.na(package)
@@ -32,9 +36,12 @@ setup_branch_protection <- function(git, package = TRUE) {
     return(TRUE)
   }
 
+  # The name must match the one used when looking up an existing ruleset.
+  "Default Branch Protection Ruleset" -> ruleset_name
+
   c(
     "{",
-    "  \"name\": \"Default Branch Protection Ruleset\",",
+    sprintf("  \"name\": \"%s\",", ruleset_name),
     "  \"target\": \"branch\",",
     " \"enforcement\": \"active\",",
     "  \"conditions\": {",
@@ -78,27 +85,47 @@ setup_branch_protection <- function(git, package = TRUE) {
   ) |>
     paste(collapse = "\n") -> json_body
 
-  curl::new_handle() |>
-    curl::handle_setopt(customrequest = "POST") |>
-    curl::handle_setopt(postfields = charToRaw(json_body)) |>
-    curl::handle_setheaders(
-      "Authorization" = paste("Bearer", token$password),
-      "Accept" = "application/vnd.github+json",
-      "X-GitHub-Api-Version" = "2022-11-28",
-      "Content-Type" = "application/json"
-    ) -> h
-
   sprintf(
     "https://api.github.com/repos/%s/%s/rulesets",
     ssh_http(git) |>
       basename(),
     basename(git) |>
       gsub(pattern = "\\.git$", replacement = "")
-  ) |>
-    curl::curl_fetch_memory(handle = h) -> response
+  ) -> api_url
+
+  # Look up an existing ruleset first.
+  # Creating a ruleset with an existing name fails with a 422 status.
+  github_handle(token) |>
+    curl::curl_fetch_memory(url = api_url) -> listed
+  if (!listed$status_code %in% c(200, 201)) {
+    paste(
+      "Failed to list the existing rulesets.",
+      "API request failed with status: %s",
+      "Error details:",
+      "%s",
+      sep = "\n"
+    ) |>
+      sprintf(listed$status_code, rawToChar(listed$content)) |>
+      stop()
+  }
+  rawToChar(listed$content) |>
+    ruleset_id(name = ruleset_name) -> id
+
+  if (is.null(id)) {
+    "POST" -> method
+    api_url -> target_url
+    "Success! Ruleset activated." -> success_message
+  } else {
+    "PUT" -> method
+    paste(api_url, id, sep = "/") -> target_url
+    "Success! Ruleset updated." -> success_message
+  }
+
+  github_handle(token, method = method, body = json_body) |>
+    curl::curl_fetch_memory(url = target_url) -> response
 
   if (response$status_code %in% c(200, 201)) {
-    message("Success! Ruleset activated.")
+    message(success_message)
     return(TRUE)
   }
 
