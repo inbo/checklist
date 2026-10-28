@@ -29,7 +29,8 @@ create_project <- function(path, project) {
       ssh_http(git) |>
         get_token() -> token
       if (!is.null(token)) {
-        create_github_repo(token$password)
+        create_github_repo(git = git, token = token$password)
+        setup_branch_protection(git = git, package = FALSE)
       }
     }
     org <- org_list_from_url(git)

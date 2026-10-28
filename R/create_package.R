@@ -48,7 +48,8 @@ create_package <- function(package, path = ".") {
     ssh_http(git) |>
       get_token() -> token
     if (!is.null(token)) {
-      create_github_repo(token$password)
+      create_github_repo(git = git, token = token$password)
+      setup_branch_protection(git = git, package = TRUE)
     }
   }
 

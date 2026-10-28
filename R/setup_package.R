@@ -23,6 +23,9 @@ setup_package <- function(path = ".") {
     file_test("-f", path_(path, "DESCRIPTION")),
     msg = paste("No DESCRIPTION file found at", path)
   )
+  stopifnot("packages must be in a git repository" = is_repository(path))
+  setup_branch_protection(git = git_remote_list()$url, package = TRUE)
+
   descript <- desc(path)
   package <- descript$get("Package")
   version <- descript$get_version()
