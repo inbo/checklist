@@ -25,14 +25,8 @@ create_project <- function(path, project) {
   if (use_vc) {
     preferred_protocol() |>
       sprintf(project) -> git
-    if (grepl("github.com", git)) {
-      ssh_http(git) |>
-        get_token() -> token
-      if (!is.null(token)) {
-        create_github_repo(git = git, token = token$password)
-        setup_branch_protection(git = git, package = FALSE)
-      }
-    }
+    create_github_repo(git = git)
+    setup_branch_protection(git = git, package = FALSE)
     org <- org_list_from_url(git)
   } else {
     org <- new_org_list()
