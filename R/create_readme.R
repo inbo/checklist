@@ -25,7 +25,6 @@ create_readme <- function(
     info <- project_maintainer(org = org, lang = lang)
     authors <- info$authors
     org <- info$org
-    org$write(x = path)
   }
   if (missing(title)) {
     title <- readline(prompt = "Enter the title: ")

@@ -1,6 +1,6 @@
 library(mockery)
 test_that("create_package() works", {
-  skip_if(identical(Sys.getenv("SKIP_CREATE"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_CREATE", "true"), "true"))
 
   stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
   org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")

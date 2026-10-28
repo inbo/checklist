@@ -18,10 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {name: 'R release on macOS', os: macOS-latest,   r: 'release'}
-          - {name: 'R release on Windows', os: windows-latest, r: 'release'}
-          - {name: 'R devel on Ubuntu', os: ubuntu-26.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/resolute/latest"}
-          - {name: 'R oldrel on Ubuntu', os: ubuntu-26.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/resolute/latest"}
+          - {name: 'R release on macOS', os: macOS-latest,   r: 'release', skip_spelling: false, skip_create: false}
+          - {name: 'R release on Windows', os: windows-latest, r: 'release', skip_spelling: false, skip_create: false}
+          - {name: 'R devel on Ubuntu', os: ubuntu-26.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/resolute/latest", skip_spelling: false, skip_create: false}
+          - {name: 'R oldrel on Ubuntu', os: ubuntu-26.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/resolute/latest", skip_spelling: false, skip_create: false}
 
     env:
       _R_CHECK_SYSTEM_CLOCK_: false
@@ -42,11 +42,11 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@8efa4208c1e4a4837731d3c22011c7550205df2f
 
-
       - uses: r-lib/actions/setup-r-dependencies@8efa4208c1e4a4837731d3c22011c7550205df2f
-        if: runner.os == 'windows'
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            inbo/citeme@devel
           needs: check
 
       - uses: r-lib/actions/check-r-package@196dc04f2cf1bc6b642b368cb754a7b98eb9eec6

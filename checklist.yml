@@ -2,17 +2,14 @@ description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
   warnings:
-  - motivation: Package not on CRAN
-    value: |-
-      checking CRAN incoming feasibility ... WARNING
-      Maintainer: 'Thierry Onkelinx <thierry.onkelinx@inbo.be>'
-
-      New submission
-
-      Strong dependencies not in the CRAN or BioC software repositories:
-        citeme
-      Availability using Additional_repositories specification:
-        citeme   yes   https://inbo.r-universe.dev
+  - motivation: add false positive warning
+    value: "checking CRAN incoming feasibility ... WARNING\nMaintainer: 'Thierry Onkelinx
+      <thierry.onkelinx@inbo.be>'\n\nNew submission\n\nStrong dependencies not in
+      the CRAN or BioC software repositories:\n  citeme\nAvailability using Additional_repositories
+      specification:\n  citeme   yes   https://inbo.r-universe.dev\n\nFound the following
+      (possibly) invalid URLs:\n  URL: https://ror.org/\n    From: inst/doc/getting_started.html\n
+      \   Status: 429\n    Message: Too Many Requests\n\nFound the following (possibly)
+      invalid ROR IDs:\n  ID: 00j54wy13\t(from: DESCRIPTION)"
   notes: []
 required:
 - CITATION

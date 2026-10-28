@@ -8,6 +8,6 @@ on:
 jobs:
   build:
     name: R-universe testing
-    uses: r-universe-org/workflows/.github/workflows/build.yml@v3
+    uses: r-universe-org/workflows/.github/workflows/build.yml@a56eeadedf95fa847f6d57f0d62f7a157e582342
     with:
       universe: ${{ github.repository_owner }}
