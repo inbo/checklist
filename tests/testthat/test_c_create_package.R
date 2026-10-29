@@ -117,7 +117,17 @@ test_that("create_package() works", {
     build_vignettes = FALSE,
     quiet = TRUE
   )
-  defer(remove.packages(package))
+  defer({
+    # Documentation checks can leave the dummy package loaded and attached.
+    # Unload it before deleting files needed by `sessionInfo()`.
+    if (package %in% loadedNamespaces()) {
+      devtools::unload(pkg = repo)
+    }
+    remove.packages(package)
+    expect_false(package %in% loadedNamespaces())
+    expect_false(paste0("package:", package) %in% search())
+    expect_length(find.package(package, quiet = TRUE), 0)
+  })
 
   current_gha <- Sys.getenv("GITHUB_ACTIONS")
   if (current_gha != "") {
