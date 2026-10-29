@@ -10,8 +10,8 @@
 #' @param path Where to create the package directory.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
-#' @importFrom citeme ask_language individual2badge individual2df org_list
-#' @importFrom citeme org_list_from_url select_license ssh_http
+#' @importFrom citeme ask_keywords ask_language individual2badge individual2df
+#' @importFrom citeme org_list org_list_from_url select_license ssh_http
 #' @importFrom desc description
 #' @importFrom gert git_add git_init
 #' @importFrom tools toTitleCase
@@ -44,6 +44,9 @@ create_package <- function(package, path = ".") {
   keywords <- ask_keywords()
   preferred_protocol() |>
     sprintf(package) -> git
+  create_github_repo(git = git)
+  setup_branch_protection(git = git, package = TRUE)
+
   org <- org_list_from_url(git)
   license <- select_license(org, type = "package")
   language <- ask_language(
@@ -66,10 +69,6 @@ create_package <- function(package, path = ".") {
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
-  # add organsation info
-  org$write(x = path)
-  git_add("organisation.yml", repo = repo)
-
   # create DESCRIPTION
   desc <- desc::description$new("!new")
   desc$set("Package", package)
@@ -88,6 +87,7 @@ create_package <- function(package, path = ".") {
   desc$set("RoxygenNote", installed.packages()["roxygen2", "Version"])
   desc$del("Maintainer")
   desc$write(path_(path, "DESCRIPTION"))
+  tidy_desc(x)
   git_add("DESCRIPTION", repo = repo)
 
   # create NAMESPACE
@@ -179,12 +179,6 @@ create_package <- function(package, path = ".") {
   dir.create(path_(path, target), recursive = TRUE, showWarnings = FALSE)
   insert_file(
     repo = repo,
-    filename = "check_on_branch.yml",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
     filename = "check_on_main.yml",
     template = "package_template",
     target = target
@@ -192,12 +186,6 @@ create_package <- function(package, path = ".") {
   insert_file(
     repo = repo,
     filename = "check_on_different_r_os.yml",
-    template = "package_template",
-    target = target
-  )
-  insert_file(
-    repo = repo,
-    filename = "release.yml",
     template = "package_template",
     target = target
   )
@@ -258,24 +246,4 @@ append_communities <- function(desc, org) {
     return(desc)
   }
   desc$set("Config/citeme/communities", paste(communities, collapse = "; "))
-}
-
-ask_keywords <- function() {
-  repeat {
-    readline(prompt = "Enter one or more keywords separated by `;` ") |>
-      strsplit(";") |>
-      unlist() |>
-      gsub(pattern = "^\\s+", replacement = "") |>
-      gsub(pattern = "\\s+$", replacement = "") -> keywords
-    keywords <- keywords[keywords != ""]
-    if (length(keywords) > 0) {
-      break
-    }
-    warning(
-      "Please enter at least one keyword.",
-      immediate. = TRUE,
-      call. = FALSE
-    )
-  }
-  return(keywords)
 }

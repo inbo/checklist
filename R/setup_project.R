@@ -20,6 +20,7 @@ setup_project <- function(path = ".") {
   } else {
     if (is_repository(path)) {
       git <- git_remote_list(path)$url
+      setup_branch_protection(git = git, package = FALSE)
     } else {
       preferred_protocol() |>
         sprintf(basename(path)) -> git

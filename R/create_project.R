@@ -5,8 +5,9 @@
 #' @param project The name of the project.
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
-#' @importFrom citeme ask_language ask_yes_no new_org_list org_list
-#' @importFrom citeme org_list_from_url select_license
+#' @importFrom citeme ask_keywords ask_language ask_yes_no get_token
+#' @importFrom citeme new_org_list org_list org_list_from_url select_license
+#' @importFrom citeme ssh_http
 #' @family setup
 create_project <- function(path, project) {
   assert_that(is.string(path), noNA(path), file_test("-d", path))
@@ -24,6 +25,8 @@ create_project <- function(path, project) {
   if (use_vc) {
     preferred_protocol() |>
       sprintf(project) -> git
+    create_github_repo(git = git)
+    setup_branch_protection(git = git, package = FALSE)
     org <- org_list_from_url(git)
   } else {
     org <- new_org_list()

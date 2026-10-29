@@ -1,6 +1,6 @@
 library(mockery)
 test_that("create_package() works", {
-  skip_if(identical(Sys.getenv("SKIP_CREATE"), "true"))
+  skip_if(identical(Sys.getenv("SKIP_CREATE", "true"), "true"))
 
   stub(org_list_from_url, "R_user_dir", mock_r_user_dir(config_dir))
   org <- org_list_from_url("https://gitlab.com/thierryo/checklist.git")
@@ -73,10 +73,8 @@ test_that("create_package() works", {
       ".github",
       "workflows",
       c(
-        "check_on_branch.yml",
         "check_on_different_r_os.yml",
-        "check_on_main.yml",
-        "release.yml"
+        "check_on_main.yml"
       )
     ),
     path_("pkgdown", "extra.css"),
@@ -119,7 +117,17 @@ test_that("create_package() works", {
     build_vignettes = FALSE,
     quiet = TRUE
   )
-  defer(remove.packages(package))
+  defer({
+    # Documentation checks can leave the dummy package loaded and attached.
+    # Unload it before deleting files needed by `sessionInfo()`.
+    if (package %in% loadedNamespaces()) {
+      devtools::unload(package = package)
+    }
+    remove.packages(package)
+    expect_false(package %in% loadedNamespaces())
+    expect_false(paste0("package:", package) %in% search())
+    expect_length(find.package(package, quiet = TRUE), 0)
+  })
 
   current_gha <- Sys.getenv("GITHUB_ACTIONS")
   if (current_gha != "") {

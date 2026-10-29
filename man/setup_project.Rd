@@ -20,6 +20,7 @@ Other setup:
 \code{\link[=create_project]{create_project()}},
 \code{\link[=prepare_ghpages]{prepare_ghpages()}},
 \code{\link[=set_license]{set_license()}},
+\code{\link[=setup_branch_protection]{setup_branch_protection()}},
 \code{\link[=setup_package]{setup_package()}},
 \code{\link[=setup_source]{setup_source()}}
 }
