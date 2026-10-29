@@ -121,7 +121,7 @@ test_that("create_package() works", {
     # Documentation checks can leave the dummy package loaded and attached.
     # Unload it before deleting files needed by `sessionInfo()`.
     if (package %in% loadedNamespaces()) {
-      devtools::unload(pkg = repo)
+      devtools::unload(package = package)
     }
     remove.packages(package)
     expect_false(package %in% loadedNamespaces())

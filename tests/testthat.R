@@ -1,4 +1,4 @@
 library(testthat)
 library(checklist)
 
-test_check("checklist")
+test_check("checklist", reporter = SummaryReporter$new())

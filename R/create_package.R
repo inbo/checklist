@@ -69,10 +69,6 @@ create_package <- function(package, path = ".") {
   write_checklist(x)
   git_add("checklist.yml", repo = repo)
 
-  # add organsation info
-  org$write(x = path)
-  git_add("organisation.yml", repo = repo)
-
   # create DESCRIPTION
   desc <- desc::description$new("!new")
   desc$set("Package", package)
@@ -91,6 +87,7 @@ create_package <- function(package, path = ".") {
   desc$set("RoxygenNote", installed.packages()["roxygen2", "Version"])
   desc$del("Maintainer")
   desc$write(path_(path, "DESCRIPTION"))
+  tidy_desc(x)
   git_add("DESCRIPTION", repo = repo)
 
   # create NAMESPACE
