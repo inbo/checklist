@@ -1,4 +1,5 @@
-#' @importFrom citeme add_badges license_local_remote select_license ssh_http
+#' @importFrom citeme add_badges ask_keywords license_local_remote
+#' @importFrom citeme select_license ssh_http
 create_readme <- function(
   path,
   org,
@@ -24,7 +25,6 @@ create_readme <- function(
     info <- project_maintainer(org = org, lang = lang)
     authors <- info$authors
     org <- info$org
-    org$write(x = path)
   }
   if (missing(title)) {
     title <- readline(prompt = "Enter the title: ")

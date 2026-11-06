@@ -12,12 +12,16 @@ jobs:
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT_GITHUB_COM: ${{ secrets.GITHUB_TOKEN }}
       RSPM: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest"
+      SKIP_CREATE: false
     permissions:
       contents: read
     steps:
       - name: "Check package with checklist"
-        uses: inbo/actions/check_pkg@composite
+        uses: inbo/actions/check_pkg@main
+        with:
+          inbo-branch: devel
   deploy-pages:
     name: deploy-gh-pages
     runs-on: ubuntu-24.04
@@ -27,4 +31,4 @@ jobs:
       contents: write
     steps:
       - name: "Tag and deploy gh-pages"
-        uses: inbo/actions/check_deploy@composite
+        uses: inbo/actions/check_deploy@main

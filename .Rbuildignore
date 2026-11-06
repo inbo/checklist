@@ -1,4 +1,5 @@
 ^.*\.Rproj$
+^.posit$
 ^.*\.zenodo.json$
 ^.dockerignore$
 ^CITATION\.cff$

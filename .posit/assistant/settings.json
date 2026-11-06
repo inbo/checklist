@@ -1,0 +1,24 @@
+{
+  "permission": {
+    "skill": {
+      "r-pkg-code": "allow"
+    },
+    "read": {
+      "*/HEAD": "allow"
+    },
+    "bash": {
+      "sed *": "allow",
+      "grep *": "allow",
+      "head *": "allow",
+      "air *": "allow",
+      "tail *": "allow",
+      "Rscript *": "allow"
+    },
+    "edit": {
+      "*.R": "allow"
+    },
+    "executeCode": {
+      "*": "allow"
+    }
+  }
+}

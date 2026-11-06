@@ -17,7 +17,7 @@ contact:
   affiliation: Research Institute for Nature and Forest (INBO)
   orcid: 0000-0001-8804-4216
 doi: 10.5281/zenodo.4028303
-license: GPL-3.0
+license: GPL-3.0-only
 repository-code: https://github.com/inbo/checklist/
 type: software
 abstract: "An opinionated set of rules for R packages and R source code projects."
@@ -26,4 +26,4 @@ identifiers:
   value: 10.5281/zenodo.4028303
 - type: url
   value: https://inbo.github.io/checklist/
-version: 0.6.1
+version: 0.6.2

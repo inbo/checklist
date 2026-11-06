@@ -7,7 +7,7 @@
 is_repository(path = ".")
 }
 \arguments{
-\item{path}{the location of the git repository, see details.}
+\item{path}{the location of the git repository, see the "path" section.}
 }
 \value{
 TRUE if directory is in a git repository else FALSE

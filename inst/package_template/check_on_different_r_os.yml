@@ -14,16 +14,16 @@ jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.name }}
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-24.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest"}
-          - {os: ubuntu-24.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/noble/latest"}
+          - {name: 'R release on macOS', os: macOS-latest,   r: 'release'}
+          - {name: 'R release on Windows', os: windows-latest, r: 'release'}
+          - {name: 'R devel on Ubuntu', os: ubuntu-26.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/resolute/latest"}
+          - {name: 'R oldrel on Ubuntu', os: ubuntu-26.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/resolute/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -32,20 +32,27 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
 
-      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r@3d375b4861295696a870e3f189d4564d4ca9da6d
         with:
           r-version: ${{ matrix.config.r }}
           extra-repositories: https://inbo.r-universe.dev https://cranhaven.r-universe.dev
 
-      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-pandoc@6cf11da387d58095e7bd4ce3bcc075bd9aea9716
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@8efa4208c1e4a4837731d3c22011c7550205df2f
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            any::remotes
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
+      - name: windows dependencies
+        if: runner.os == 'windows'
+        run: |
+          Rscript --no-save --no-restore -e 'remotes::install_local()'
+
+      - uses: r-lib/actions/check-r-package@196dc04f2cf1bc6b642b368cb754a7b98eb9eec6
         with:
           error-on: '"error"'

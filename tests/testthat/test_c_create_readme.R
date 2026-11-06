@@ -36,6 +36,7 @@ test_that("create readme", {
       org = org
     )
   )
+  expect_length(list.files(path), 0)
   expect_null(create_readme(
     path = path,
     org = org,

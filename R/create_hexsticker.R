@@ -109,8 +109,8 @@ string2svg <- function(string) {
   text(0.5, 0.5, string, family = "Flanders Art Sans", cex = 4)
   dev.off()
   svg_string <- readLines(tmp, encoding = "UTF8")
-  svg_string <- head(tail(svg_string, -4), -2)
-  svg_string <- gsub("<path .* d=\"(.*) \"/>", "\\1", svg_string)
+  svg_string <- grepv("<path", svg_string)
+  svg_string <- gsub("<path .*? d=\"(.*) \"/>", "\\1", svg_string)
   svg_string <- unlist(strsplit(svg_string, " ?Z ?"))
   svg_string <- vapply(
     strsplit(svg_string, " "),
@@ -133,31 +133,4 @@ string2svg <- function(string) {
   svg_string[, c("x", "y")] <- svg_string[, c("x", "y")] / scaling
   unlink(tmp)
   return(svg_string)
-}
-
-prepare_icon <- function(icon) {
-  assert_that(is.string(icon))
-  icon <- normalizePath(icon, winslash = "/", mustWork = TRUE)
-  base <- readLines(icon)
-  base <- paste(base, collapse = "")
-  if (grepl("viewBox", base)) {
-    view_box <- gsub(".*?viewBox ?= ?\"?(.*?)\">.*", "\\1", base)
-    view_box <- gsub("\".*", "", view_box)
-    view_box <- strsplit(view_box, " ")[[1]]
-    width <- view_box[3]
-    height <- view_box[4]
-  } else {
-    width <- gsub(
-      ".*<svg.*width=\"(.*)p(t|x)\" height=\"(.*)p(t|x)\".*>",
-      "\\1",
-      base
-    )
-    height <- gsub(
-      ".*<svg.*width=\"(.*)p(t|x)\" height=\"(.*)p(t|x)\".*>",
-      "\\3",
-      base
-    )
-  }
-  base <- gsub(".*<svg.*?>(.*)</svg>", "\\1", base)
-  list(svg = base, width = width, height = height)
 }
